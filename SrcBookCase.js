@@ -1,7 +1,7 @@
 function bookCase() {
     let publicfile;
     try{
-        publicfile = config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
+        publicfile = config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
     }catch(e){
         let cfgfile = "hiker://files/rules/Src/Ju/config.json";
         if (fileExist(cfgfile)) {
@@ -80,7 +80,7 @@ function bookCase() {
                     pic_url: it.picUrl,
                     desc: col=='movie_1_vertical_pic'?"🕓 "+mask+"\n\n🔘 "+last:last,
                     url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
-                        require(config.依赖);
+                        require(config.聚阅);
                         erji();
                         putMyVar('从书架进二级','1');
                     }),

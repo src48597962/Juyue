@@ -4,7 +4,7 @@ if (Jucfg != "") {
     eval("var Juconfig=" + Jucfg + ";");
 } else {
     var Juconfig = {};
-    Juconfig["依赖"] = config.聚源 || "https://gitcode.net/src48597962/hk/-/raw/Ju/SrcJuPublic.js";
+    Juconfig["依赖"] = config.聚阅 || "https://gitcode.net/src48597962/hk/-/raw/Ju/SrcJuPublic.js";
     writeFile(cfgfile, JSON.stringify(Juconfig));
 }
 
@@ -92,7 +92,7 @@ function getListData(lx, selectType) {
 }
 //选择主页源新方法hikerPop
 function selectSource2(selectType) {
-        const hikerPop = $.require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + "plugins/hikerPop.js");
+        const hikerPop = $.require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + "plugins/hikerPop.js");
         let sourceList = getListData("yi", selectType);
 
         hikerPop.setUseStartActivity(false);
@@ -296,7 +296,7 @@ function selectSource(selectType) {
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
-        require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
         getYiData(datatype);
     }, datatype)
 }
@@ -505,13 +505,13 @@ function getYiData(datatype, od) {
                     title: "未获取到数据",
                     desc: "下拉刷新重试或点此更换主页源",
                     url: $('#noLoading#').lazyRule((input) => {
-                        require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
                         return selectSource(input);
                     }, runMode),
                     col_type: "text_center_1",
                 })
             } else if (getData.length > 0) {
-                require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
                 getData.forEach(item => {
                     try {
                         item = toerji(item, info);
@@ -532,7 +532,7 @@ function getYiData(datatype, od) {
                 title: runMode + " 主页源不存在\n需先选择配置主页源",//\n设置-选择漫画/小说/听书/
                 desc: "点此或上面分类按钮皆可选择",//设置长按菜单可以开启界面切换开关
                 url: $('#noLoading#').lazyRule((input) => {
-                    require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, runMode),
                 col_type: "text_center_1",
@@ -544,7 +544,7 @@ function getYiData(datatype, od) {
                 title: runMode + " 主页源不存在",
                 content: "需先选择配置主页源",
                 confirm: $.toString((input) => {
-                    require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, runMode),
                 cancel: $.toString(() => {
@@ -558,7 +558,7 @@ function getYiData(datatype, od) {
 
 //简繁互转,x可不传，默认转成简体，传2则是转成繁体
 function jianfan(str, x) {
-    require(config.聚源.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
+    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
     return PYStr(str, x);
 }
 //重定义打印日志，只允许调试模式下打印
@@ -572,7 +572,7 @@ log = function (msg) {
 function JySearch(sskeyword, sstype) {
     if (sstype == "聚搜接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            require(config.聚源.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
+            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
             xunmi(name);
         }, sskeyword);
     } else if (sstype == "云盘接口") {
@@ -588,7 +588,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚源.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAliDisk.js');
+            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAliDisk.js');
             aliDiskSearch(name);
         }, sskeyword);
     } else if (sstype == "Alist接口") {
@@ -604,7 +604,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚源.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAlist.js');
+            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAlist.js');
             alistSearch2(name, 1);
         }, sskeyword);
     } else {

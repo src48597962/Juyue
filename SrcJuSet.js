@@ -1,7 +1,7 @@
 ////本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 let publicfile;
 try{
-    publicfile = config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
+    publicfile = config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
 }catch(e){
     let cfgfile = "hiker://files/rules/Src/Ju/config.json";
     if (fileExist(cfgfile)) {
@@ -28,7 +28,7 @@ function SRCSet() {
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile) => {
             setPageTitle('增加 | 聚阅接口');
-            require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
             jiekouapi(sourcefile);
         }, sourcefile),
         img: "http://123.56.105.145/tubiao/more/25.png",
@@ -64,7 +64,7 @@ function SRCSet() {
     d.push({
         title: '操作',
         url: $(["批量选择","批量测试","接口更新","清空接口"], 2).select(() => {
-            require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
             if(input=="接口更新"){
                 showLoading("更新中...");
                 let updatelist = [];
@@ -134,7 +134,7 @@ function SRCSet() {
                         if(duoselect.length>0){
                             ssdatalist = duoselect;
                         }else{
-                            require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
                             ssdatalist = getListData("yx", getMyVar("SrcJu_jiekouType","全部"));
                         }
                         let page = 1;
@@ -265,17 +265,17 @@ function SRCSet() {
         url: $(["聚阅口令","文件导入"], 2 , "选择导入方式").select(() => {
             if(input=="聚阅口令"){
                 return $("", "聚阅分享口令").input(() => {
-                    require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
                     return JYimport(input);
                 })
             }else if(input=="文件导入"){
                 return `fileSelect://`+$.toString(()=>{
                     if(/JYshare_/.test(input) && input.endsWith('txt')){
-                        require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
                         input = '聚阅接口￥' + aesEncode('SrcJu', input) + '￥文件导入';
                         return JYimport(input);
                     }else if(/JYimport_/.test(input) && input.endsWith('hiker')){
-                        require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
                         let content = fetch('file://'+input);
                         return JYimport(content);
                     }else{
@@ -311,7 +311,7 @@ function SRCSet() {
             if(duoselect.length>0){
                 sharelist = duoselect;
             }else{
-                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
                 sharelist = getListData("yx", getMyVar("SrcJu_jiekouType","全部"));
             }
             sharelist.reverse();//从显示排序回到实际排序
@@ -471,7 +471,7 @@ function SRCSet() {
             title: "反向选择",
             url: $('#noLoading#').lazyRule((jkdatalist) => {
                 jkdatalist = JSON.parse(base64Decode(jkdatalist));
-                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
                 duoselect(jkdatalist);
                 return "toast://已反选";
             },base64Encode(JSON.stringify(jkdatalist))),
@@ -534,7 +534,7 @@ function SRCSet() {
             title: (it.stop?`<font color=#f20c00>`:"") + it.name + (it.parse ? " [主页源]" : "") + (it.erparse ? " [搜索源]" : "") + (it.stop?`</font>`:""),
             url: getMyVar('SrcJu_批量选择模式')?$('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
-                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
                 duoselect(data);
                 return "hiker://empty";
             },base64Encode(JSON.stringify(it))):$(["分享", "编辑", "删除", it.stop?"启用":"禁用","选择","改名"], 2).select((sourcefile,data,paste) => {
@@ -557,7 +557,7 @@ function SRCSet() {
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile, data) => {
                         setPageTitle('编辑 | 聚阅接口');
-                        require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
                         jiekouapi(sourcefile, JSON.parse(base64Decode(data)));
                     }, sourcefile, base64Encode(JSON.stringify(data)))
                 } else if (input == "删除") {
@@ -588,7 +588,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://' + sm;
                 } else if (input=="选择") {
-                    require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
                     duoselect(data);
                     return "hiker://empty";
                 } else if (input == "改名") {
@@ -798,7 +798,7 @@ function jiekouapi(sourcefile, data, look) {
                         putMyVar('SrcJu_sousuoTest','1');
                         clearMyVar("SrcJu_停止搜索线程");
                         let d = [];
-                        require(config.依赖);
+                        require(config.聚阅);
                         d = search(name,"sousuotest",sdata);
                         d.push({
                             title: "测试搜索第"+MY_PAGE+"页结束",

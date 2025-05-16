@@ -3,7 +3,7 @@
 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
-function yiji() {
+function yiji(testSource) {
     let sourcedata = yidatalist.filter(it => {
         return it.name==sourcename && it.type==runMode;
     });
@@ -21,7 +21,7 @@ function yiji() {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
             }catch(e){
-                //xlog("√缓存临时文件失败>"+e.message);
+                //log("缓存临时文件失败>"+e.message);
             }
             页码 = parse["页码"];
             转换 = parse["转换"];
@@ -31,20 +31,70 @@ function yiji() {
             }
         }
     } catch (e) {
-        xlog("√一级源接口加载异常>" + e.message);
+        log("一级源接口加载异常>" + e.message);
     }
     页码 = 页码 || {};
     转换 = 转换 || {};
     let d = [];
     if(MY_PAGE==1){
+        d.push({
+            title: "切换站源",
+            url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
+                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
+                return selectSource();
+            }),
+            pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/切源.svg',
+            col_type: "icon_3_round_fill",
+            extra: {
+                longClick: []
+            }
+        })
+        let searchModeS = (MY_NAME=="海阔视界"?["分组接口","当前接口","当前页面"]:["聚合搜索","当前页面"]).map(v=>{
+            return v==getItem("接口搜索方式","当前页面")?`‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`:v+'  ';
+        });
+
+        d.push({
+            title: getItem("接口搜索方式","当前接口"),
+            url: $(searchModeS,1).select(()=>{
+                input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
+                setItem("接口搜索方式",input);
+                refreshPage();
+                return "toast://搜索方式设置为："+input+(input=="当前页面"?"，只能搜索1页":"");
+            }),
+            pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/搜索.svg',
+            col_type: "icon_3_round_fill"
+        })
+
+        d.push({
+            title: "管理设置",
+            url: testSource?"toast://测试模式下不能进入设置菜单":(["本地接口管理"],1).select(()=>{
+                if(input=="本地接口管理"){
+                    putMyVar('guanli','jk');
+                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                        setPageTitle('本地接口管理');
+                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
+                        SRCSet();
+                    })
+                }
+            }),
+            pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/设置.svg',
+            col_type: "icon_3_round_fill",
+            extra: {
+                longClick: []
+            }
+        })
+    }
+
+    /*
+    if(MY_PAGE==1){
         if(getMyVar('SrcJu_versionCheck', '0') == '0'){
             let programversion = $.require("config").version || 0;
-            if(programversion<14){
+            if(programversion<1){
                 confirm({
                     title: "温馨提示",
                     content: "发现小程序新版本",
                     confirm: $.toString(() => {
-                        return "海阔视界首页频道规则【聚阅√】￥home_rule_url￥http://hiker.nokia.press/hikerule/rulelist.json?id=6337"
+                        return "海阔视界首页频道规则【聚阅】￥home_rule_url￥http://hiker.nokia.press/hikerule/rulelist.json?id=6337"
                     }),
                     cancel: $.toString(() => {
                         return "toast://不升级小程序，则功能不全或有异常"
@@ -248,6 +298,8 @@ function yiji() {
     }
     //加载主页内容
     getYiData('主页', d);
+*/
+    setResult(d);
 }
 
 //二级+源搜索
@@ -335,12 +387,12 @@ function erji() {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
             }catch(e){
-                //log("√缓存临时文件失败>"+e.message);
+                //log("缓存临时文件失败>"+e.message);
             }
         }
         sauthor = parse["作者"];
     } catch (e) {
-        xlog("√加载搜索源接口代码错误>"+e.message);
+        log("加载搜索源接口代码错误>"+e.message);
     }
     try {
         if (parse && surl) {
@@ -355,11 +407,11 @@ function erji() {
                     try{
                         公共['预处理']();
                     }catch(e){
-                        xlog('√执行预处理报错，信息>'+e.message);
+                        log('执行预处理报错，信息>'+e.message);
                     }
                 }
             }catch(e){
-                xlog("√加载公共代码错误>"+e.message);
+                log("加载公共代码错误>"+e.message);
             }
             
             标识 = stype + "_" + sname;
@@ -386,7 +438,7 @@ function erji() {
                     details = 二级获取(surl);
                 }catch(e){
                     details = {};
-                    xlog("√二级获取数据错误>"+e.message);
+                    log("二级获取数据错误>"+e.message);
                 }
             }
             
@@ -418,10 +470,10 @@ function erji() {
                 线路s = details.line?details.line:["线路"];
                 列表s = details.line?details.list:[details.list];
                 if(线路s.length != 列表s.length){
-                    xlog('√'+sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
+                    log(sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
                 }
             }catch(e){
-                xlog('√'+sname+">线路或列表返回数据有误>"+e.message);
+                log(sname+">线路或列表返回数据有误>"+e.message);
             }
             if(details.listparse){//选集列表需要动态解析获取
                 let 线路选集 = details.listparse(lineid,线路s[lineid]) || [];
@@ -443,7 +495,7 @@ function erji() {
                         }
                     }
                 }catch(e){
-                    xlog('√'+sname+'分页选集处理失败>'+e.message);
+                    log(sname+'分页选集处理失败>'+e.message);
                 }
             }
             
@@ -484,7 +536,7 @@ function erji() {
                 try{
                     列表 = checkAndReverseArray(列表);
                 }catch(e){
-                    //xlog('√强制修正选集顺序失败>'+e.message)
+                    //log('强制修正选集顺序失败>'+e.message)
                 }
             }
             if (getMyVar(sname + 'sort') == '1') {
@@ -501,7 +553,7 @@ function erji() {
                 let url = input.split("##")[1];
                 let 公共 = {};
                 try{
-                    公共 = $.require('jiekou'+(/聚阅/.test(参数.规则名)?'':'?rule=聚阅√')).公共(参数.标识);
+                    公共 = $.require('jiekou'+(/聚阅/.test(参数.规则名)?'':'?rule=聚阅')).公共(参数.标识);
                 }catch(e){
                     //toast('未找到聚阅规则子页面');
                 }
@@ -1011,7 +1063,7 @@ function erji() {
         }
     } catch (e) {
         toast('有异常，看日志');
-        xlog('√'+sname + '>加载详情失败>' + e.message);
+        log(sname + '>加载详情失败>' + e.message);
     }
 
     if (isload) {
@@ -1319,7 +1371,7 @@ function search(keyword, mode, sdata, group, type) {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                     cacheData(objdata);
                 }catch(e){
-                    //xlog("√缓存临时文件失败>"+e.message);
+                    //log("缓存临时文件失败>"+e.message);
                 }
                 eval("let gonggong = " + objdata.public);
                 if (gonggong && gonggong.ext && /^http/.test(gonggong.ext)) {
@@ -1331,7 +1383,7 @@ function search(keyword, mode, sdata, group, type) {
                     try{
                         公共['预处理']();
                     }catch(e){
-                        xlog('√执行预处理报错，信息>'+e.message);
+                        log('执行预处理报错，信息>'+e.message);
                     }
                 }
                 标识 = objdata.type + "_" + objdata.name;
@@ -1350,11 +1402,11 @@ function search(keyword, mode, sdata, group, type) {
                     if(code.includes("+")&&code.includes("=")){
                         code = eval(code.split("=")[0]);
                     }
-                    xlog('识别验证码：'+code);
+                    log('识别验证码：'+code);
                     return code;
                 }
                 ssdata = 搜索(name,page,公共,参数) || [];
-                //xlog('√'+objdata.name+">搜索结果>"+ssdata.length);
+                //log(objdata.name+">搜索结果>"+ssdata.length);
                 let resultdata = [];
                 ssdata.forEach(item => {
                     let extra = item.extra || {};
@@ -1399,7 +1451,7 @@ function search(keyword, mode, sdata, group, type) {
             }
             return {result:[], success:0};
         } catch (e) {
-            xlog('√'+objdata.name + '>搜索失败>' + e.message);
+            log(objdata.name + '>搜索失败>' + e.message);
             return {result:[], success:0};
         }
     }
@@ -1539,7 +1591,7 @@ function Version() {
                     }, nowtime, newVersion.SrcJu),
                     cancel: ''
                 })
-                xlog('√检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.SrcJudesc[newVersion.SrcJu]);
+                log('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.SrcJudesc[newVersion.SrcJu]);
             }
             putMyVar('SrcJu_Version', '-V' + newVersion.SrcJu);
         } catch (e) { }
@@ -1564,7 +1616,7 @@ function newsousuopage(keyword,searchtype,relyfile) {
     addListener('onRefresh', $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
     }));
-    setPageTitle("搜索|聚阅√");
+    setPageTitle("搜索|聚阅");
     if(relyfile){
         if(!getMyVar('SrcJu_rely') && config.聚阅){
             putMyVar('SrcJu_rely',config.聚阅);

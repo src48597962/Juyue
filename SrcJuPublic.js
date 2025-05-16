@@ -1,11 +1,8 @@
 let cfgfile = "hiker://files/rules/Src/Ju/config.json";
+let Juconfig = {};
 let Jucfg = fetch(cfgfile);
 if (Jucfg != "") {
-    eval("var Juconfig=" + Jucfg + ";");
-} else {
-    var Juconfig = {};
-    Juconfig["依赖"] = config.聚阅 || "https://gitcode.net/src48597962/hk/-/raw/Ju/SrcJuPublic.js";
-    writeFile(cfgfile, JSON.stringify(Juconfig));
+    eval("Juconfig=" + Jucfg + ";");
 }
 
 let runTypes = ["漫画", "小说", "听书", "图集", "影视", "音频", "聚合", "其它"];

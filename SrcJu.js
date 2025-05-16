@@ -67,7 +67,7 @@ function yiji(testSource) {
 
         d.push({
             title: "管理设置",
-            url: testSource?"toast://测试模式下不能进入设置菜单":(["本地接口管理"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理"],1).select(()=>{
                 if(input=="本地接口管理"){
                     putMyVar('guanli','jk');
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {

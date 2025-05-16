@@ -1,16 +1,6 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
-//聚集型、接口型、平台型空壳小程序，接口分为主页源和搜索源
-let publicfile;
-try{
-    publicfile = config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-}catch(e){
-    let cfgfile = "hiker://files/rules/Src/Ju/config.json";
-    if (fileExist(cfgfile)) {
-        eval("let Juconfig=" + fetch(cfgfile) + ";");
-        publicfile = Juconfig["依赖"].match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-    }
-}
-require(publicfile);
+//空壳小程序，接口分为主页源和搜索源
+require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji() {
@@ -22,18 +12,13 @@ function yiji() {
     let 转换 = {};
     let runType;
     try {
-        if (sourcedata.length > 0) {
+        if (sourcedata.length==1) {
             eval("let source = " + sourcedata[0].parse);
-            if (source.ext && /^http/.test(source.ext)) {
-                requireCache(source.ext, 48);
-                parse = yidata;
-            } else {
-                parse = source;
-            }
+            parse = source;
             runType = sourcedata[0].type;
             storage0.putMyVar('一级源接口信息',{name: sourcename, type: runType, group: sourcedata[0].group, img: sourcedata[0].img});//传导给方法文件
             try{
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
             }catch(e){
                 //xlog("√缓存临时文件失败>"+e.message);
@@ -67,13 +52,12 @@ function yiji() {
                 });
             }
             Version();
-            downloadicon();
         }
         
         d.push({
             title: "管理",
             url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                 SRCSet();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
@@ -137,7 +121,7 @@ function yiji() {
                                 sousuoextra.newWindow = true;
                                 updateItem("sousuopageid",{extra:sousuoextra});
                             },sousuoextra));
-                            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             getYiData(zz);
                         },sousuoextra,zz)
                     },sousuoextra,页码[zz],zz),
@@ -177,7 +161,7 @@ function yiji() {
         d.push({
             title: Juconfig["btnmenu5"] || "书架",
             url: Juconfig["btnmenu5"] == "历史" ? "hiker://history?rule="+MY_RULE.title : Juconfig["btnmenu5"] == "收藏" ? "hiker://collection?rule="+MY_RULE.title : $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                 bookCase();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/286.png",
@@ -186,7 +170,7 @@ function yiji() {
                 longClick: [{
                     title: "切换按钮",
                     js: $.toString(() => {
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return $(["书架", "收藏", "历史"], 1).select((cfgfile, Juconfig) => {
                             Juconfig["btnmenu5"] = input;
                             writeFile(cfgfile, JSON.stringify(Juconfig));
@@ -203,7 +187,7 @@ function yiji() {
             let item = {
                 title: runMode==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
                 url: runMode==it?$('#noLoading#').lazyRule((input) => {
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
                     Juconfig["runMode"] = input;
@@ -348,7 +332,7 @@ function erji() {
             storage0.putMyVar('二级源接口信息',{name: sname, type: stype, group: sgroup||"", img: sourcedata[0].img||""});
             
             try{
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
             }catch(e){
                 //log("√缓存临时文件失败>"+e.message);
@@ -509,7 +493,7 @@ function erji() {
             stype = details.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             let 解析 = parse['解析'] || function (url,公共,参数) {
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcParseS.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
                 return SrcParseS.聚阅(url, (stype=="听书"||stype=="音频")?1:0);
             };
@@ -592,7 +576,7 @@ function erji() {
                 d.push({
                     title: "书架/下载",
                     url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                         bookCase();
                     }),
                     pic_url: 'http://123.56.105.145/tubiao/messy/70.svg',
@@ -1332,7 +1316,7 @@ function search(keyword, mode, sdata, group, type) {
             }
             if(parse){
                 try{
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                     cacheData(objdata);
                 }catch(e){
                     //xlog("√缓存临时文件失败>"+e.message);
@@ -1533,26 +1517,6 @@ function setMark(data) {
     writeFile(markfile, JSON.stringify(marklist));
     return 1;
 }
-//图标下载
-function downloadicon() {
-    try {
-        if (!fileExist('hiker://files/cache/src/管理.svg')) {
-            downloadFile('http://123.56.105.145/tubiao/messy/13.svg', 'hiker://files/cache/src/管理.svg');
-        }
-        if (!fileExist('hiker://files/cache/src/更新.webp')) {
-            downloadFile(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + "img/更新.webp", 'hiker://files/cache/src/更新.webp');
-        }
-        if (!fileExist('hiker://files/cache/src/分类.webp')) {
-            downloadFile(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + "img/分类.webp", 'hiker://files/cache/src/分类.webp');
-        }
-        if (!fileExist('hiker://files/cache/src/排行.webp')) {
-            downloadFile(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + "img/排行.webp", 'hiker://files/cache/src/排行.webp');
-        }
-        if (!fileExist('hiker://files/cache/src/收藏.svg')) {
-            downloadFile('http://123.56.105.145/tubiao/messy/165.svg', 'hiker://files/cache/src/收藏.svg');
-        }
-    } catch (e) { }
-}
 
 //版本检测
 function Version() {
@@ -1561,7 +1525,7 @@ function Version() {
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
     if (getMyVar('SrcJu_versionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
         try {
-            eval(request(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcTmplVersion.js'))
+            eval(request(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcTmplVersion.js'))
             if (parseFloat(newVersion.SrcJu) > parseFloat(nowVersion)) {
                 confirm({
                     title: '发现新版本，是否更新？',

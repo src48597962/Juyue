@@ -10,7 +10,7 @@ function toerji(item,info) {
         extra.surl = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
         extra.sname = info.name;
         item.url = $("hiker://empty?type="+info.type+"#immersiveTheme##autoCache#").rule(() => {
-            require(config.依赖);
+            require(config.聚阅);
             erji();
         })
         item.extra = extra;
@@ -19,7 +19,7 @@ function toerji(item,info) {
 }
 //简繁互转,x可不传，默认转成简体，传2则是转成繁体
 function jianfan(str,x) {
-    require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
+    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
     return PYStr(str,x);
 }
 //写接口数据临时缓存
@@ -86,7 +86,7 @@ function banner(start, arr, data, cfg){
     }
     let obj = {
         data: data,
-        method: config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
+        method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
         info: storage0.getMyVar('一级源接口信息')
     };
     registerTask(id, time, $.toString((obj) => {

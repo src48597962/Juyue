@@ -142,9 +142,7 @@ function yiji(testSource) {
             }
             d.push(item);
         })
-        d.push({
-            col_type: "blank_block"
-        })
+
         let searchurl = $('').lazyRule((jkdata) => {
             if(getItem('接口搜索方式','当前接口')=="当前接口"){
                 if(jkdata){

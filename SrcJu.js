@@ -145,6 +145,57 @@ function yiji(testSource) {
         d.push({
             col_type: "blank_block"
         })
+        let searchurl = $('').lazyRule((jkdata) => {
+            if(getItem('接口搜索方式','当前接口')=="当前接口"){
+                if(jkdata){
+                    storage0.putMyVar('Src_Jy_搜索临时搜索数据', jkdata);
+                    return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
+                }else{
+                    return 'toast://未找到接口数据'
+                }
+            }else if(getItem('接口搜索方式')=="分组接口"){
+                putMyVar('Src_Jy_搜索临时搜索分组', jkdata.group||jkdata.type);
+                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
+            }else if(getItem('接口搜索方式')=="代理聚搜"){
+                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
+            }else if(getItem('接口搜索方式')=="聚合搜索"){
+                return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input) => {
+                    require(config.聚影);
+                    newSearch(input);
+                },input);
+            }else{
+                require(config.聚影); 
+                let d = search(input, 'dianboyiji' , jkdata);
+                if(d.length>0){
+                    deleteItemByCls('dianbosousuolist');
+                    addItemAfter('dianbosousuoid', d);
+                }else{
+                    return 'toast://无结果';
+                }
+                return 'hiker://empty';
+            }
+        },sourcedata[0]);
+        d.push({
+            title: "搜索",
+            url: $.toString((searchurl) => {
+                input = input.trim();
+                if(input == ''){
+                    return "hiker://empty"
+                }
+                return input + searchurl;
+            },searchurl),
+            desc: "搜你想要的...",
+            col_type: "input",
+            extra: {
+                id: 'dianbosousuoid',
+                titleVisible: true,
+                onChange: $.toString(() => {
+                    if(input==""){
+                        deleteItemByCls('dianbosousuolist');
+                    }
+                })
+            }
+        });
         putMyVar(runMode+"_"+sourcename, "1");
     }
 

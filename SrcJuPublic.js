@@ -87,91 +87,7 @@ function getListData(lx, selectType) {
 
     return result;
 }
-//选择主页源新方法hikerPop
-function selectSource2(selectType) {
-        const hikerPop = $.require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + "plugins/hikerPop.js");
-        let sourceList = getListData("yi", selectType);
 
-        hikerPop.setUseStartActivity(false);
-
-        let items = sourceList.map(v => {
-            return {title:v.name,icon:v.img};
-        });
-        let spen = 3;
-        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
-
-        let pop = hikerPop.selectBottomResIcon({
-            iconList: items,
-            columns: spen,
-            title: "当前源>" + selectType + "_" + sourcename,
-            noAutoDismiss: false,
-            position: index,
-            toPosition: index,
-            extraInputBox: new hikerPop.ResExtraInputBox({
-                hint: "源关键字",
-                title: "ok",
-                onChange(s, manage) {
-                    //log("onChange:"+s);
-                    let flist = items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
-                    manage.change(flist);
-                },
-                defaultValue: "",
-                click(s, manage) {
-                    //toast(s);
-                    //log(manage.iconList);
-                },
-                titleVisible: false
-            }),
-            longClick(s, i) {
-                /*
-                showSelectOptions({
-                    title: "分享视频源",
-                    options: ["JS文件分享"].concat(getPastes()),
-                    col: 2,
-                    js: $.toString(name => {
-                        
-                    }, s.replace(/[’‘]/g, ""))
-                });
-                */
-            },
-            click(item, i, manage) {
-                pop.dismiss();
-
-                let input = item.title.replace(/[’‘]/g, "");
-                return changeSource(selectType, input);
-            },
-            menuClick(manage) {
-                hikerPop.selectCenter({
-                    options: ["改变样式", "排序方法:" + (getItem('sourceListSort', 'update') == 'name' ? "名称" : "时间"), "列表倒序"],
-                    columns: 2,
-                    title: "请选择",
-                    click(s, i) {
-                        if (i === 0) {
-                            spen = spen == 3 ? 2 : 3;
-                            manage.changeColumns(spen);
-                            manage.scrollToPosition(index, false);
-                        } else if (i === 1) {
-                            setItem("sourceListSort", getItem('sourceListSort') == 'name' ? "update" : "name");
-                            let items = getListData("yi", selectType).map(v => {
-                                return {title:v.name,icon:v.img};
-                            });
-                            manage.change(items);
-                            let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
-                            manage.scrollToPosition(index, true);
-                            manage.setSelectedIndex(index);
-                        } else if (i === 2) {
-                            items.reverse();
-                            manage.change(items);
-                            let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
-                            manage.setSelectedIndex(index);
-                            manage.scrollToPosition(index, true);
-                        }
-                    }
-                });
-            }
-        });
-    return 'hiker://empty';
-}
 function changeSource(stype, sname) {
     if (stype == runMode && sname == Juconfig[stype + 'sourcename']) {
         return 'toast://' + stype + ' 主页源：' + sname;
@@ -214,90 +130,96 @@ function changeSource(stype, sname) {
 }
 //封装选择主页源方法
 function selectSource(selectType) {
-    if (getItem('selectSource_col_type') == 'hikerPop') {
-        return selectSource2(selectType);
-    }
-    let sourcenames = [];
-    let selectIndex = -1;
+    const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+    let sourceList = getListData("yi", selectType);
 
-    if ((MY_NAME == "海阔视界" && getAppVersion() >= 4706)) {
-        getListData("yi", selectType).forEach((it, i) => {
-            if (sourcenames.indexOf(it.name) == -1) {
-                if (Juconfig[runMode + 'sourcename'] == it.name) {
-                    it.name = it.name + '√';
-                    selectIndex = i;
+    hikerPop.setUseStartActivity(false);
+
+    let items = sourceList.map(v => {
+        return {title:v.name,icon:v.img};
+    });
+    let spen = 3;
+    let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
+
+    let pop = hikerPop.selectBottomResIcon({
+        iconList: items,
+        columns: spen,
+        title: "当前源>" + selectType + "_" + sourcename,
+        noAutoDismiss: false,
+        position: index,
+        toPosition: index,
+        extraInputBox: new hikerPop.ResExtraInputBox({
+            hint: "源关键字",
+            title: "ok",
+            onChange(s, manage) {
+                //log("onChange:"+s);
+                let flist = items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+                manage.change(flist);
+            },
+            defaultValue: "",
+            click(s, manage) {
+                //toast(s);
+                //log(manage.iconList);
+            },
+            titleVisible: false
+        }),
+        longClick(s, i) {
+            /*
+            showSelectOptions({
+                title: "分享视频源",
+                options: ["JS文件分享"].concat(getPastes()),
+                col: 2,
+                js: $.toString(name => {
+                    
+                }, s.replace(/[’‘]/g, ""))
+            });
+            */
+        },
+        click(item, i, manage) {
+            pop.dismiss();
+
+            let input = item.title.replace(/[’‘]/g, "");
+            return changeSource(selectType, input);
+        },
+        menuClick(manage) {
+            hikerPop.selectCenter({
+                options: ["改变样式", "排序方法:" + (getItem('sourceListSort', 'update') == 'name' ? "名称" : "时间"), "列表倒序"],
+                columns: 2,
+                title: "请选择",
+                click(s, i) {
+                    if (i === 0) {
+                        spen = spen == 3 ? 2 : 3;
+                        manage.changeColumns(spen);
+                        manage.scrollToPosition(index, false);
+                    } else if (i === 1) {
+                        setItem("sourceListSort", getItem('sourceListSort') == 'name' ? "update" : "name");
+                        let items = getListData("yi", selectType).map(v => {
+                            return {title:v.name,icon:v.img};
+                        });
+                        manage.change(items);
+                        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
+                        manage.scrollToPosition(index, true);
+                        manage.setSelectedIndex(index);
+                    } else if (i === 2) {
+                        items.reverse();
+                        manage.change(items);
+                        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
+                        manage.setSelectedIndex(index);
+                        manage.scrollToPosition(index, true);
+                    }
                 }
-                sourcenames.push({ title: it.name, icon: it.img });
-            }
-        })
-    } else {
-        getListData("yi", selectType).forEach(it => {
-            if (sourcenames.indexOf(it.name) == -1) {
-                if (Juconfig[runMode + 'sourcename'] == it.name) {
-                    it.name = '‘‘’’<span style="color:red" title="' + it.name + '">' + it.name + '</span>';
-                }
-                sourcenames.push(it.name);
-            }
-        })
-    }
-
-    if (sourcenames.length == 0) {
-        return "toast://当前分类无接口"
-    }
-
-    return $(sourcenames, 3, selectType + ">主页源>" + sourcename, selectIndex).select((runMode, sourcename, cfgfile, Juconfig) => {
-
-        input = input.replace(/‘|’|“|”|<[^>]+>/g, "").replace(/(.*)√/, '$1');
-        if (Juconfig["runMode"] == runMode && input == Juconfig[runMode + 'sourcename']) {
-            return 'toast://' + runMode + ' 主页源：' + input;
+            });
         }
-        if (typeof (unRegisterTask) != "undefined") {
-            unRegisterTask("juyue");
-        } else {
-            toast("软件版本过低，可能存在异常");
-        }
-        try {
-            let listMyVar = listMyVarKeys();
-            listMyVar.forEach(it => {
-                if (!/^SrcJu_|initConfig/.test(it)) {
-                    clearMyVar(it);
-                }
-            })
-        } catch (e) {
-            xlog('清MyVar失败>' + e.message);
-            clearMyVar(MY_RULE.title + "分类");
-            clearMyVar(MY_RULE.title + "更新");
-            clearMyVar(MY_RULE.title + "类别");
-            clearMyVar(MY_RULE.title + "地区");
-            clearMyVar(MY_RULE.title + "进度");
-            clearMyVar(MY_RULE.title + "排序");
-            clearMyVar("排名");
-            clearMyVar("分类");
-            clearMyVar("更新");
-            clearMyVar(runMode + "_" + sourcename);
-            clearMyVar("一级源接口信息");
-        }
-        try {
-            refreshX5WebView('about:blank');
-        } catch (e) { }
-
-        Juconfig["runMode"] = runMode;
-        Juconfig[runMode + 'sourcename'] = input;
-        writeFile(cfgfile, JSON.stringify(Juconfig));
-        refreshPage(false);
-        return 'toast://' + runMode + ' 主页源已设置为：' + input;
-    }, selectType, sourcename, cfgfile, Juconfig)
-    //}});
-    //return "hiker://empty";
+    });
+    return 'hiker://empty';
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
-        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
         getYiData(datatype);
     }, datatype)
 }
-
 //获取一级数据
 function getYiData(datatype, od) {
     addListener('onRefresh', $.toString(() => {
@@ -314,17 +236,12 @@ function getYiData(datatype, od) {
     let parse;
     let 公共;
     try {
-        if (sourcedata.length > 0) {
+        if (sourcedata.length==1) {
             eval("let source = " + sourcedata[0].parse);
-            if (source.ext && /^http/.test(source.ext)) {
-                requireCache(source.ext, 48);
-                parse = yidata;
-            } else {
-                parse = source;
-            }
+            parse = source;
         }
     } catch (e) {
-        xlog("√一级源代码加载异常>" + e.message);
+        xlog("一级源代码加载异常>" + e.message);
     }
     if (parse) {
         try {
@@ -338,7 +255,7 @@ function getYiData(datatype, od) {
                 try {
                     公共['预处理']();
                 } catch (e) {
-                    xlog('√执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                    xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
             }
             let info = { type: sourcedata[0].type, name: sourcedata[0].name };
@@ -485,13 +402,14 @@ function getYiData(datatype, od) {
                 MY_URL = obj.url.replace('fyAll', fyAll).replace('fyclass', fyclass).replace('fyarea', fyarea).replace('fyyear', fyyear).replace('fysort', fysort).replace('fypage', fypage);
                 执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
             }
+            
             let getData = [];
             try {
                 eval("let 数据 = " + 执行str);
                 getData = 数据() || [];
             } catch (e) {
                 getData = [];
-                xlog('√执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
             if (loading) {
                 deleteItemByCls("loading_gif");
@@ -502,13 +420,13 @@ function getYiData(datatype, od) {
                     title: "未获取到数据",
                     desc: "下拉刷新重试或点此更换主页源",
                     url: $('#noLoading#').lazyRule((input) => {
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return selectSource(input);
                     }, runMode),
                     col_type: "text_center_1",
                 })
             } else if (getData.length > 0) {
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 getData.forEach(item => {
                     try {
                         item = toerji(item, info);
@@ -520,7 +438,7 @@ function getYiData(datatype, od) {
             d = d.concat(getData);
         } catch (e) {
             toast(datatype + "代码报错，更换主页源或联系接口作者");
-            xlog("√报错信息>" + e.message + " 错误行#" + e.lineNumber);
+            xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
         }
         setResult(d);
     } else {
@@ -529,7 +447,7 @@ function getYiData(datatype, od) {
                 title: runMode + " 主页源不存在\n需先选择配置主页源",//\n设置-选择漫画/小说/听书/
                 desc: "点此或上面分类按钮皆可选择",//设置长按菜单可以开启界面切换开关
                 url: $('#noLoading#').lazyRule((input) => {
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, runMode),
                 col_type: "text_center_1",
@@ -541,7 +459,7 @@ function getYiData(datatype, od) {
                 title: runMode + " 主页源不存在",
                 content: "需先选择配置主页源",
                 confirm: $.toString((input) => {
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, runMode),
                 cancel: $.toString(() => {
@@ -555,7 +473,7 @@ function getYiData(datatype, od) {
 
 //简繁互转,x可不传，默认转成简体，传2则是转成繁体
 function jianfan(str, x) {
-    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
+    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcSimple.js');
     return PYStr(str, x);
 }
 //重定义打印日志，只允许调试模式下打印
@@ -569,7 +487,7 @@ log = function (msg) {
 function JySearch(sskeyword, sstype) {
     if (sstype == "聚搜接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
+            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
             xunmi(name);
         }, sskeyword);
     } else if (sstype == "云盘接口") {
@@ -585,7 +503,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAliDisk.js');
+            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyAliDisk.js');
             aliDiskSearch(name);
         }, sskeyword);
     } else if (sstype == "Alist接口") {
@@ -601,11 +519,11 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyAlist.js');
+            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyAlist.js');
             alistSearch2(name, 1);
         }, sskeyword);
     } else {
-        return "hiker://search?rule=聚影√&s=" + sskeyword;
+        return "hiker://search?rule=聚影&s=" + sskeyword;
     }
 }
 // 按拼音排序
@@ -639,122 +557,3 @@ function replaceLast(str, search, replacement) {
 
     return str; // 如果没找到，返回原字符串
 }
-
-/*
-
-function selectSource2(selectType) {
-        const hikerPop = $.require("http://hiker.nokia.press/hikerule/rulelist.json?id=6966");
-        let sourceList = getListData("yi", selectType);
-
-        hikerPop.setUseStartActivity(false);
-
-        let names = sourceList.map(v => v.name == sourcename ? "‘‘" + v.name + "’’" : v.name);
-        let spen = 3;
-
-        let pop = hikerPop.selectBottomRes({
-            options: names,
-            columns: spen,
-            title: "当前源>" + selectType + "_" + sourcename,
-            noAutoDismiss: true,
-            position: 1,
-            extraInputBox: new hikerPop.ResExtraInputBox({
-                hint: "源关键字",
-                title: "ok",
-                onChange(s, manage) {
-                    //log("onChange:"+s);
-                    let flist = names.filter(x => x.includes(s));
-                    manage.list.length = 0;
-                    flist.forEach(x => {
-                        manage.list.push(x);
-                    });
-                    manage.change();
-                },
-                defaultValue: "",
-                click(s, manage) {
-                    //toast(s);
-                    //log(manage.list);
-                },
-                titleVisible: false
-            }),
-            longClick(s, i) {
-                showSelectOptions({
-                    title: "分享视频源",
-                    options: ["JS文件分享"].concat(getPastes()),
-                    col: 2,
-                    js: $.toString(name => {
-                        
-                    }, s.replace(/[’‘]/g, ""))
-                });
-            },
-            click(s, i, manage) {
-                pop.dismiss();
-
-                let input = s.replace(/[’‘]/g, "");
-                if (selectType == runMode && input == Juconfig[selectType + 'sourcename']) {
-                    return 'toast://' + selectType + ' 主页源：' + input;
-                }
-                if (typeof (unRegisterTask) != "undefined") {
-                    unRegisterTask("juyue");
-                } else {
-                    toast("软件版本过低，可能存在异常");
-                }
-                try {
-                    let listMyVar = listMyVarKeys();
-                    listMyVar.forEach(it => {
-                        if (!/^SrcJu_|initConfig/.test(it)) {
-                            clearMyVar(it);
-                        }
-                    })
-                } catch (e) {
-                    xlog('清MyVar失败>' + e.message);
-                    clearMyVar(MY_RULE.title + "分类");
-                    clearMyVar(MY_RULE.title + "更新");
-                    clearMyVar(MY_RULE.title + "类别");
-                    clearMyVar(MY_RULE.title + "地区");
-                    clearMyVar(MY_RULE.title + "进度");
-                    clearMyVar(MY_RULE.title + "排序");
-                    clearMyVar("排名");
-                    clearMyVar("分类");
-                    clearMyVar("更新");
-                    clearMyVar(runMode + "_" + sourcename);
-                    clearMyVar("一级源接口信息");
-                }
-                try {
-                    refreshX5WebView('about:blank');
-                } catch (e) { }
-
-                Juconfig["runMode"] = runMode;
-                Juconfig[runMode + 'sourcename'] = input;
-                writeFile(cfgfile, JSON.stringify(Juconfig));
-                refreshPage(false);
-                return 'toast://' + runMode + ' 主页源已设置为：' + input;
-            },
-            menuClick(manage) {
-                hikerPop.selectCenter({
-                    options: ["改变样式", "排序方法:" + (getItem('sourceListSort', 'update') == 'name' ? "名称" : "时间"), "列表倒序"],
-                    columns: 2,
-                    title: "请选择",
-                    click(s, i) {
-                        if (i === 0) {
-                            spen = spen == 3 ? 2 : 3;
-                            manage.changeColumns(spen);
-                        } else if (i === 1) {
-                            setItem("sourceListSort", getItem('sourceListSort') == 'name' ? "" : "name");
-                            manage.list.length = 0;
-                            let names = getListData("yi", selectType).map(v => v.name == sourcename ? "‘‘" + v.name + "’’" : v.name);
-                            names.forEach(x => {
-                                manage.list.push(x);
-                            });
-                            manage.change();
-                        } else if (i === 2) {
-                            manage.list.reverse();
-                            names.reverse();
-                            manage.change();
-                        }
-                    }
-                });
-            }
-        });
-    return 'hiker://empty';
-}
-*/

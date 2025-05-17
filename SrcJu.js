@@ -84,9 +84,10 @@ function yiji(testSource) {
             }
         })
         let typemenubtn = getTypeNames("主页");
+        let Color = '#3399cc';
         typemenubtn.forEach((it) =>{
             let item = {
-                title: runMode==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+                title: runMode==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
                 url: runMode==it?$('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
@@ -100,6 +101,7 @@ function yiji(testSource) {
             }
             if(runMode==it){
                 item.extra = {
+                    backgroundColor: runMode==it?"#20" + Color.replace('#',''):"",
                     longClick: [{
                         title: "删除当前",
                         js: $.toString((sourcefile,id) => {

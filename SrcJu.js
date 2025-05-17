@@ -83,6 +83,69 @@ function yiji(testSource) {
                 longClick: []
             }
         })
+        let typemenubtn = getTypeNames("主页");
+        typemenubtn.forEach((it) =>{
+            let item = {
+                title: runMode==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+                url: runMode==it?$('#noLoading#').lazyRule((input) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    return selectSource(input);
+                }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
+                    Juconfig["runMode"] = input;
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    refreshPage(false);
+                    return 'toast://主页源分类分组已切换为：' + input;
+                }, cfgfile, Juconfig ,it),
+                col_type: "scroll_button"//runModes_btntype
+            }
+            if(runMode==it){
+                item.extra = {
+                    longClick: [{
+                        title: "删除当前",
+                        js: $.toString((sourcefile,id) => {
+                            return $("确定删除："+id).confirm((sourcefile,id)=>{
+                                let sourcedata = fetch(sourcefile);
+                                eval("var datalist=" + sourcedata + ";");
+                                let index = datalist.indexOf(datalist.filter(d => d.type+"_"+d.name == id)[0]);
+                                datalist.splice(index, 1);
+                                writeFile(sourcefile, JSON.stringify(datalist));
+                                clearMyVar('SrcJu_searchMark');
+                                return 'toast://已删除';
+                            },sourcefile,id)
+                        }, sourcefile, runType+"_"+sourcename)
+                    },{
+                        title: "列表排序：" + getItem("sourceListSort", "update"),
+                        js: $.toString(() => {
+                            return $(["更新时间","接口名称"], 1).select(() => {
+                                if(input=='接口名称'){
+                                    setItem("sourceListSort","name");
+                                }else{
+                                    clearItem("sourceListSort");
+                                }
+                                refreshPage(false);
+                            })
+                        })
+                    },{
+                        title: "选源方式：" + (getItem("selectSource_col_type")=='hikerPop'?"hikerPop":"原生组件"),
+                        js: $.toString(() => {
+                            return $(["hikerPop","原生组件"], 1).select(() => {
+                                if(input=='hikerPop'){
+                                    setItem("selectSource_col_type","hikerPop");
+                                }else{
+                                    clearItem("selectSource_col_type");
+                                }
+                                refreshPage(false);
+                            })
+                        })
+                    }]
+                }
+            }
+            d.push(item);
+        })
+        d.push({
+            col_type: "blank_block"
+        })
+        putMyVar(runMode+"_"+sourcename, "1");
     }
 
     /*

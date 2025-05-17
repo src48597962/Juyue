@@ -362,7 +362,9 @@ function yiji(testSource) {
     //加载主页内容
     getYiData('主页', d);
 */
-    setResult(d);
+    //setResult(d);
+    //加载主页内容
+    getYiData('主页', d);
 }
 
 //二级+源搜索

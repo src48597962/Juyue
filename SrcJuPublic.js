@@ -301,6 +301,35 @@ function getYiData(datatype, od) {
                 执行str = replaceLast(执行str, 'setResult', 'return ')
             }
 
+            let 转换 = parse["转换"] || {};
+            let zz = 转换["排行"] || "排行";
+            if(parse&&parse[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/229.png",
+                    col_type: 'icon_small_3'
+                })
+            }
+            zz = 转换["分类"] || "分类";
+            if(parse&&parse[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/288.png",
+                    col_type: 'icon_small_3'
+                })
+            }
+            zz = 转换["更新"] || "更新";
+            if(parse&&parse[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/288.png",
+                    col_type: 'icon_small_3'
+                })
+            }
+
             let obj = parse.四大金刚 || {};
             if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
                 let class_name = (obj.class_name || "").split('&').filter(item => item != '');

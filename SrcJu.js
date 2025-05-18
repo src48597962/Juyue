@@ -87,7 +87,7 @@ function yiji(testSource) {
                 return selectSource();
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/切源.svg',
-            col_type: "icon_small_3",
+            col_type: "icon_3_fill",
             extra: {
                 longClick: []
             }
@@ -105,7 +105,7 @@ function yiji(testSource) {
                 return "toast://搜索方式设置为："+input+(input=="当前页面"?"，只能搜索1页":"");
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/搜索.svg',
-            col_type: "icon_small_3"//icon_3_round_fill
+            col_type: "icon_3_fill"//icon_3_round_fill
         })
 
         d.push({
@@ -121,7 +121,7 @@ function yiji(testSource) {
                 }
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/设置.svg',
-            col_type: "icon_small_3",
+            col_type: "icon_3_fill",
             extra: {
                 longClick: []
             }

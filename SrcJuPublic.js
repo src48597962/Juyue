@@ -229,8 +229,8 @@ function getYiData(datatype, od) {
     }));
 
     let d = od || [];
-    let sourcedata = yidatalist.filter(it => {
-        return it.name == sourcename && it.type == runMode;
+    let sourcedata = datalist.filter(it => {
+        return it.id==homeSourceId;
     });
     let parse;
     let 公共;

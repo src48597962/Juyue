@@ -38,6 +38,48 @@ function yiji(testSource) {
     let d = [];
     if(MY_PAGE==1){
         d.push({
+            title: "管理",
+            url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                SRCSet();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/129.png",
+            col_type: 'icon_4'
+        })
+        d.push({
+            title: "收藏",
+            url: "hiker://collection?rule="+MY_RULE.title,
+            pic_url: "http://123.56.105.145/tubiao/more/109.png",
+            col_type: 'icon_4'
+        })
+        d.push({
+            title: "搜索",
+            url: $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
+                require(config.聚阅);
+                newsousuopage();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/101.png",
+            col_type: 'icon_4'
+        })
+        d.push({
+            title: "历史",
+            url: "hiker://history?rule="+MY_RULE.title,
+            pic_url: "http://123.56.105.145/tubiao/more/213.png",
+            col_type: 'icon_4'
+        })
+        /*
+        d.push({
+            title: Juconfig["btnmenu5"] || "书架",
+            url: Juconfig["btnmenu5"] == "历史" ? "hiker://history?rule="+MY_RULE.title : Juconfig["btnmenu5"] == "收藏" ? "hiker://collection?rule="+MY_RULE.title : $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
+                bookCase();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/286.png",
+            col_type: 'icon_4'
+        })
+        */
+        /*
+        d.push({
             title: "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
                 require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
@@ -83,6 +125,7 @@ function yiji(testSource) {
                 longClick: []
             }
         })
+        */
         let typemenubtn = getTypeNames("主页");
         let Color = '#3399cc';
         typemenubtn.forEach((it) =>{

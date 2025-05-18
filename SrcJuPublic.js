@@ -149,11 +149,7 @@ function selectSource(selectType) {
                 putMyVar("SrcJu_sourceListFilter", s);
                 tmpList = sourceList.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
                 let flist = getnames(tmpList).items;
-                manage.list.length = 0;
-                flist.forEach(x => {
-                    manage.list.push(x);
-                });
-                manage.change();
+                manage.change(flist);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {

@@ -150,7 +150,7 @@ function selectSource(selectType) {
             onChange(s, manage) {
                 //log("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
-                tmpList = sourceList.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+                tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                 let flist = getnames(tmpList).items;
                 manage.change(flist);
             },

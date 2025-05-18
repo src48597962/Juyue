@@ -181,7 +181,7 @@ function selectSource(selectType) {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["改变样式", "排序方法:" + (getItem('sourceListSort') == '接口名称' ? "接口名称" : "更新时间"), "列表倒序"],
+                options: ["改变样式", "排序:" + (getItem('sourceListSort') == '接口名称' ? "接口名称" : "更新时间"), "列表倒序"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {

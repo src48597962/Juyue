@@ -317,7 +317,7 @@ function getYiData(datatype, od) {
                 d.push({
                     title: zz,
                     url: rulePage(zz,页码[zz]),
-                    pic_url: "http://123.56.105.145/tubiao/more/288.png",
+                    pic_url: "http://123.56.105.145/tubiao/more/287.png",
                     col_type: 'icon_small_3'
                 })
             }

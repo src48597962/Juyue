@@ -120,7 +120,7 @@ function selectSource(selectType) {
     let tmpList = sourceList;
     hikerPop.setUseStartActivity(false);
 
-    function getnames(list) {
+    function getitems(list) {
         let index = 0;
         let items = list.map((v,i) => {
             if(v.id==homeSourceId){
@@ -132,15 +132,15 @@ function selectSource(selectType) {
         return {items:items, index:index};
     }
 
-    let index_names = getnames(sourceList);
-    let index = index_names.index;
-    let items = index_names.items;
+    let index_items = getitems(sourceList);
+    let index = index_items.index;
+    let items = index_items.items;
     let spen = 3;
 
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源>" + homeSourceId,
+        title: "当前源>" + (homeSourceId||"无"),
         noAutoDismiss: false,
         position: index,
         toPosition: index,
@@ -151,7 +151,7 @@ function selectSource(selectType) {
                 //log("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
-                let flist = getnames(tmpList).items;
+                let flist = getitems(tmpList).items;
                 manage.change(flist);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),

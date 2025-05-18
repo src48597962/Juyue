@@ -1,4 +1,13 @@
-let cfgfile = "hiker://files/rules/Src/Ju/config.json";
+// 本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
+let libspath = "hiker://files/data/聚阅/"; //依赖文件路径
+let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
+let cachepath = "hiker://files/_cache/Juyue/"; //缓存文件路径
+let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
+let jkfile = rulepath + "jiekou.json";
+let cfgfile = rulepath + "config.json";
+let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
+let gzip = $.require(codepath + "plugins/gzip.js");
+
 let Juconfig = {};
 let Jucfg = fetch(cfgfile);
 if (Jucfg != "") {
@@ -6,53 +15,65 @@ if (Jucfg != "") {
 }
 
 let runTypes = ["漫画", "小说", "听书", "图集", "影视", "音频", "聚合", "其它"];
-let runMode = Juconfig["runMode"] || "漫画";
-let sourcename = Juconfig[runMode + 'sourcename'] || "";//主页源名称
-let stopTypes = storage0.getItem('stopTypes', []);
+let homeType = Juconfig["homeType"] || runTypes[0];
+let sourceName = Juconfig[homeType + '_source'] || "";//主页源名称
+let homeSourceId = sourceName ? homeType+"_"+sourceName : "";
 
-let sourcefile = "hiker://files/rules/Src/Ju/jiekou.json";
-let sourcedata = fetch(sourcefile);
-if (sourcedata != "") {
-    try {
-        eval("var datalist=" + sourcedata + ";");
-    } catch (e) {
-        var datalist = [];
+//获取接口列表数据
+function getListDatas(lx, selectType, isyx) {
+    let datalist = [];
+    let sourcedata = fetch(jkfile);
+    if(sourcedata != ""){
+        try{
+            eval("datalist=" + sourcedata+ ";");
+        }catch(e){ }
     }
-} else {
-    var datalist = [];
+    datalist.forEach(it=>{
+        it.id = it.type+"_"+it.name;
+    }) 
+    if (lx == "yi") {
+        datalist = datalist.filter(it => it.parse);
+    } else if (lx == "er") {
+        datalist = datalist.filter(it => it.erparse);
+    }
+    if(selectType){
+        datalist = datalist.filter(it => {
+            return selectType == it.type || selectType == it.group;
+        })
+    }
+    
+    if (getItem("sourceListSort") == "接口名称") {
+        datalist = sortByPinyin(datalist);
+    }else{
+        datalist.reverse();
+    }
+    
+    let withoutStop = datalist.filter(item => !item.stop);
+    if(isyx){
+        return withoutStop;
+    }
+    // 禁用的放到最后
+    let withStop = datalist.filter(item => item.stop);
+    // 合并数组
+    let result = withoutStop.concat(withStop);
+
+    return result;
 }
 
-datalist.reverse();
-
-let yxdatalist = datalist.filter(it => {
-    return !it.stop;
-});
-let yidatalist = yxdatalist.filter(it => {
-    return it.parse;
-});
-let erdatalist = yxdatalist.filter(it => {
-    return it.erparse;
-});
 //获取类型名称数组
 function getTypeNames(is) {
     let snames = [];
-    if (is == "主页") {
-        runTypes.forEach(it => {
-            if (stopTypes.indexOf(it) == -1) {
-                snames.push(it);
-            }
-        })
-    } else if (is == "搜索页") {
+    if (is == "搜索页") {
         snames = ["漫画", "小说", "听书", "影视", "聚合"];
     } else {
         snames = runTypes;
     }
     return snames;
 }
-//获取类型名称数组
+//获取分组名称数组
 function getGroupNames() {
     let gnames = [];
-    erdatalist.forEach(it => {
+    getListDatas('all', '', 1).forEach(it => {
         if (it.group && gnames.indexOf(it.group) == -1) {
             gnames.push(it.group);
         }
@@ -60,36 +81,8 @@ function getGroupNames() {
     return gnames;
 }
 
-//获取接口列表数据
-function getListData(lx, selectType) {
-    let jkdatalist = [];
-    if (lx == "all") {
-        jkdatalist = datalist;
-    } else if (lx == "yx") {
-        jkdatalist = yxdatalist;
-    } else if (lx == "yi") {
-        jkdatalist = yidatalist;
-    } else if (lx == "er") {
-        jkdatalist = erdatalist;
-    }
-    jkdatalist = jkdatalist.filter(it => {
-        return selectType == "全部" || selectType == it.type;
-    })
-    if (getItem('sourceListSort', 'update') == 'name') {
-        jkdatalist = sortByPinyin(jkdatalist);
-    }
-
-    // 禁用的放到最后
-    let withStop = jkdatalist.filter(item => item.stop);
-    let withoutStop = jkdatalist.filter(item => !item.stop);
-    // 合并数组
-    let result = withoutStop.concat(withStop);
-
-    return result;
-}
-
 function changeSource(stype, sname) {
-    if (stype == runMode && sname == Juconfig[stype + 'sourcename']) {
+    if (homeSourceId==stype+"_"+sname) {
         return 'toast://' + stype + ' 主页源：' + sname;
     }
     if (typeof (unRegisterTask) != "undefined") {
@@ -100,23 +93,12 @@ function changeSource(stype, sname) {
     try {
         let listMyVar = listMyVarKeys();
         listMyVar.forEach(it => {
-            if (!/^SrcJu_|initConfig/.test(it)) {
+            if (!/^SrcJu_|initConfig|gmParams/.test(it)) {
                 clearMyVar(it);
             }
         })
     } catch (e) {
-        xlog('清MyVar失败>' + e.message);
-        clearMyVar(MY_RULE.title + "分类");
-        clearMyVar(MY_RULE.title + "更新");
-        clearMyVar(MY_RULE.title + "类别");
-        clearMyVar(MY_RULE.title + "地区");
-        clearMyVar(MY_RULE.title + "进度");
-        clearMyVar(MY_RULE.title + "排序");
-        clearMyVar("排名");
-        clearMyVar("分类");
-        clearMyVar("更新");
-        clearMyVar(stype + "_" + sourcename);
-        clearMyVar("一级源接口信息");
+        toast('软件版本过低，请升级软件');
     }
     try {
         refreshX5WebView('about:blank');
@@ -131,20 +113,31 @@ function changeSource(stype, sname) {
 //封装选择主页源方法
 function selectSource(selectType) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-    let sourceList = getListData("yi", selectType);
-
+    let sourceList = getListDatas("yi", selectType, 1);
+    let tmpList = sourceList;
     hikerPop.setUseStartActivity(false);
 
-    let items = sourceList.map(v => {
-        return {title:v.name,icon:v.img};
-    });
+    function getnames(list) {
+        let index = 0;
+        let items = list.map((v,i) => {
+            if(v.id==homeSourceId){
+                index = i;
+                v.name = `‘‘’’<strong><font color="#6dc9ff">`+v.name+`</front></strong>`;
+            }
+            return {title:v.name, icon:v.img};
+        });
+        return {items:items, index:index};
+    }
+
+    let index_names = getnames(sourceList);
+    let index = index_names.index;
+    let items = index_names.items;
     let spen = 3;
-    let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
 
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源>" + selectType + "_" + sourcename,
+        title: "当前源>" + homeSourceId,
         noAutoDismiss: false,
         position: index,
         toPosition: index,
@@ -153,10 +146,16 @@ function selectSource(selectType) {
             title: "ok",
             onChange(s, manage) {
                 //log("onChange:"+s);
-                let flist = items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
-                manage.change(flist);
+                putMyVar("SrcJu_sourceListFilter", s);
+                tmpList = sourceList.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+                let flist = getnames(tmpList).items;
+                manage.list.length = 0;
+                flist.forEach(x => {
+                    manage.list.push(x);
+                });
+                manage.change();
             },
-            defaultValue: "",
+            defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
                 //toast(s);
                 //log(manage.iconList);
@@ -183,7 +182,7 @@ function selectSource(selectType) {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["改变样式", "排序方法:" + (getItem('sourceListSort', 'update') == 'name' ? "名称" : "时间"), "列表倒序"],
+                options: ["改变样式", "排序方法:" + (getItem('sourceListSort') == '接口名称' ? "接口名称" : "更新时间"), "列表倒序"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -192,8 +191,8 @@ function selectSource(selectType) {
                         manage.changeColumns(spen);
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
-                        setItem("sourceListSort", getItem('sourceListSort') == 'name' ? "update" : "name");
-                        let items = getListData("yi", selectType).map(v => {
+                        setItem("sourceListSort", getItem('sourceListSort') == '接口名称' ? "更新时间" : "接口名称");
+                        let items = getListDatas("yi", selectType, 1).map(v => {
                             return {title:v.name,icon:v.img};
                         });
                         manage.change(items);

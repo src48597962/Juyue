@@ -114,7 +114,7 @@ function yiji(testSource) {
                                 clearMyVar('SrcJu_searchMark');
                                 return 'toast://已删除';
                             },sourcefile,id)
-                        }, sourcefile, runType+"_"+sourcename)
+                        }, jkfile, homeSourceId)
                     },{
                         title: "列表排序：" + getItem("sourceListSort", "update"),
                         js: $.toString(() => {

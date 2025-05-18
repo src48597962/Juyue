@@ -4,7 +4,7 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let sourcedata = datalist.filter(it => {
+    let sourcedata = getListDatas("yi", "", 1).filter(it => {
         return it.id==homeSourceId;
     });
     let parse = {};
@@ -1220,7 +1220,7 @@ function search(keyword, mode, sdata, group, type) {
     if (sdata) {
         ssdatalist.push(sdata);
     }else if (sssname){
-        ssdatalist = getListData("er", ssstype).filter(it=>{
+        ssdatalist = getListDatas("er", ssstype, 1).filter(it=>{
             return it.name==sssname;
         });
     }else{

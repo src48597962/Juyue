@@ -472,28 +472,17 @@ function getYiData(datatype, od) {
     } else {
         if (datatype == "主页") {
             d.push({
-                title: runType + " 主页源不存在\n需先选择配置主页源",//\n设置-选择漫画/小说/听书/
+                title: homeType + " 主页源不存在\n需先选择配置主页源",//\n设置-选择漫画/小说/听书/
                 desc: "点此或上面分类按钮皆可选择",//设置长按菜单可以开启界面切换开关
                 url: $('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
-                }, runType),
+                }, homeType),
                 col_type: "text_center_1",
                 extra: {
                     lineVisible: false
                 }
             })
-            confirm({
-                title: runType + " 主页源不存在",
-                content: "需先选择配置主页源",
-                confirm: $.toString((input) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    return selectSource(input);
-                }, runType),
-                cancel: $.toString(() => {
-                    return "toast://点击当前分类名称可以切换主页源";
-                })
-            });
         }
         setResult(d);
     }

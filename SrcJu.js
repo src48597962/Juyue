@@ -4,8 +4,8 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let sourcedata = yidatalist.filter(it => {
-        return it.name==sourcename && it.type==runMode;
+    let sourcedata = datalist.filter(it => {
+        return it.id==homeSourceId;
     });
     let parse = {};
     let 页码 = {};

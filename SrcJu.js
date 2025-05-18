@@ -37,6 +37,7 @@ function yiji(testSource) {
     转换 = 转换 || {};
     let d = [];
     if(MY_PAGE==1){
+        /*
         d.push({
             title: "管理",
             url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
@@ -67,7 +68,7 @@ function yiji(testSource) {
             pic_url: "http://123.56.105.145/tubiao/more/213.png",
             col_type: 'icon_small_4'
         })
-        /*
+        
         d.push({
             title: Juconfig["btnmenu5"] || "书架",
             url: Juconfig["btnmenu5"] == "历史" ? "hiker://history?rule="+MY_RULE.title : Juconfig["btnmenu5"] == "收藏" ? "hiker://collection?rule="+MY_RULE.title : $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
@@ -78,7 +79,7 @@ function yiji(testSource) {
             col_type: 'icon_4'
         })
         */
-        /*
+
         d.push({
             title: "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -86,7 +87,7 @@ function yiji(testSource) {
                 return selectSource();
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/切源.svg',
-            col_type: "icon_3_round_fill",
+            col_type: "icon_small_3",
             extra: {
                 longClick: []
             }
@@ -104,7 +105,7 @@ function yiji(testSource) {
                 return "toast://搜索方式设置为："+input+(input=="当前页面"?"，只能搜索1页":"");
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/搜索.svg',
-            col_type: "icon_3_round_fill"
+            col_type: "icon_small_3"//icon_3_round_fill
         })
 
         d.push({
@@ -120,12 +121,12 @@ function yiji(testSource) {
                 }
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/设置.svg',
-            col_type: "icon_3_round_fill",
+            col_type: "icon_small_3",
             extra: {
                 longClick: []
             }
         })
-        */
+
         let typemenubtn = getTypeNames("主页");
         let Color = '#3399cc';
         typemenubtn.forEach((it) =>{

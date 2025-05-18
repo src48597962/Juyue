@@ -16,7 +16,7 @@ function yiji(testSource) {
             eval("let source = " + sourcedata[0].parse);
             parse = source;
             runType = sourcedata[0].type;
-            storage0.putMyVar('一级源接口信息',{name: sourcename, type: runType, group: sourcedata[0].group, img: sourcedata[0].img});//传导给方法文件
+            storage0.putMyVar('一级源接口信息',{name: sourceName, type: runType, group: sourcedata[0].group, img: sourcedata[0].img});//传导给方法文件
             try{
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
@@ -25,8 +25,8 @@ function yiji(testSource) {
             }
             页码 = parse["页码"] || {};
             转换 = parse["转换"] || {};
-            let 提示 = "当前主页源：" + sourcename + (parse["作者"] ? "，作者：" + parse["作者"] : "");
-            if(!getMyVar(runMode+"_"+sourcename)){
+            let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
+            if(!getMyVar(homeSourceId)){
                 toast(提示);
             }
         }
@@ -87,21 +87,21 @@ function yiji(testSource) {
         let Color = '#3399cc';
         typemenubtn.forEach((it) =>{
             let item = {
-                title: runMode==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-                url: runMode==it?$('#noLoading#').lazyRule((input) => {
+                title: homeType==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+                url: homeType==it?$('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
-                    Juconfig["runMode"] = input;
+                    Juconfig["homeType"] = input;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     refreshPage(false);
                     return 'toast://主页源分类分组已切换为：' + input;
                 }, cfgfile, Juconfig ,it),
-                col_type: "scroll_button"//runModes_btntype
+                col_type: "scroll_button"
             }
-            if(runMode==it){
+            if(homeType==it){
                 item.extra = {
-                    backgroundColor: runMode==it?"#20" + Color.replace('#',''):"",
+                    backgroundColor: homeType==it?"#20" + Color.replace('#',''):"",
                     longClick: [{
                         title: "删除当前",
                         js: $.toString((sourcefile,id) => {
@@ -184,7 +184,7 @@ function yiji(testSource) {
                 })
             }
         });
-        putMyVar(runMode+"_"+sourcename, "1");
+        putMyVar(homeSourceId, "1");
     }
 
     //加载主页内容

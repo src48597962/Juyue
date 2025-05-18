@@ -104,7 +104,7 @@ function changeSource(stype, sname) {
         refreshX5WebView('about:blank');
     } catch (e) { }
 
-    Juconfig["runType"] = stype;
+    Juconfig["homeType"] = stype;
     Juconfig[stype + '_source'] = sname;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
@@ -240,7 +240,7 @@ function getYiData(datatype, od) {
             parse = source;
         }
     } catch (e) {
-        xlog("一级源代码加载异常>" + e.message);
+        log("一级源代码加载异常>" + e.message);
     }
     if (parse) {
         try {
@@ -254,7 +254,7 @@ function getYiData(datatype, od) {
                 try {
                     公共['预处理']();
                 } catch (e) {
-                    xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                    log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
             }
             let info = { type: sourcedata[0].type, name: sourcedata[0].name };
@@ -432,13 +432,15 @@ function getYiData(datatype, od) {
                 执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
             }
             
+            let error = "";
             let getData = [];
             try {
                 eval("let 数据 = " + 执行str);
                 getData = 数据() || [];
             } catch (e) {
                 getData = [];
-                xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                error = e.message;
+                log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
             if (loading) {
                 deleteItemByCls("loading_gif");
@@ -447,11 +449,8 @@ function getYiData(datatype, od) {
             if (getData.length == 0 && page == 1) {
                 d.push({
                     title: "未获取到数据",
-                    desc: "下拉刷新重试或点此更换主页源",
-                    url: $('#noLoading#').lazyRule((input) => {
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        return selectSource(input);
-                    }, runType),
+                    desc: error,
+                    url: "hiker://empty",
                     col_type: "text_center_1",
                 })
             } else if (getData.length > 0) {
@@ -467,7 +466,7 @@ function getYiData(datatype, od) {
             d = d.concat(getData);
         } catch (e) {
             toast(datatype + "代码报错，更换主页源或联系接口作者");
-            xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+            log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
         }
         setResult(d);
     } else {

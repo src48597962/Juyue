@@ -301,6 +301,7 @@ function getYiData(datatype, od) {
                 执行str = replaceLast(执行str, 'setResult', 'return ')
             }
 
+            let 页码 = parse["页码"] || {};
             let 转换 = parse["转换"] || {};
             let zz = 转换["排行"] || "排行";
             if(parse&&parse[zz]){

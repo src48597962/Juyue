@@ -23,8 +23,8 @@ function yiji(testSource) {
             }catch(e){
                 //log("缓存临时文件失败>"+e.message);
             }
-            页码 = parse["页码"];
-            转换 = parse["转换"];
+            页码 = parse["页码"] || {};
+            转换 = parse["转换"] || {};
             let 提示 = "当前主页源：" + sourcename + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(runMode+"_"+sourcename)){
                 toast(提示);
@@ -33,57 +33,14 @@ function yiji(testSource) {
     } catch (e) {
         log("一级源接口加载异常>" + e.message);
     }
-    页码 = 页码 || {};
-    转换 = 转换 || {};
+
     let d = [];
     if(MY_PAGE==1){
-        /*
-        d.push({
-            title: "管理",
-            url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                SRCSet();
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: 'icon_small_4'
-        })
-        d.push({
-            title: "收藏",
-            url: "hiker://collection?rule="+MY_RULE.title,
-            pic_url: "http://123.56.105.145/tubiao/more/109.png",
-            col_type: 'icon_small_4'
-        })
-        d.push({
-            title: "搜索",
-            url: $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
-                require(config.聚阅);
-                newsousuopage();
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/101.png",
-            col_type: 'icon_small_4'
-        })
-        d.push({
-            title: "历史",
-            url: "hiker://history?rule="+MY_RULE.title,
-            pic_url: "http://123.56.105.145/tubiao/more/213.png",
-            col_type: 'icon_small_4'
-        })
         
-        d.push({
-            title: Juconfig["btnmenu5"] || "书架",
-            url: Juconfig["btnmenu5"] == "历史" ? "hiker://history?rule="+MY_RULE.title : Juconfig["btnmenu5"] == "收藏" ? "hiker://collection?rule="+MY_RULE.title : $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
-                bookCase();
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/286.png",
-            col_type: 'icon_4'
-        })
-        */
-
         d.push({
             title: "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();
             }),
             pic_url: config.聚阅.replace(/[^/]*$/,'') + 'img/切源.svg',
@@ -112,10 +69,9 @@ function yiji(testSource) {
             title: "管理设置",
             url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理"],1).select(()=>{
                 if(input=="本地接口管理"){
-                    putMyVar('guanli','jk');
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
-                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
                     })
                 }
@@ -167,18 +123,6 @@ function yiji(testSource) {
                                     setItem("sourceListSort","name");
                                 }else{
                                     clearItem("sourceListSort");
-                                }
-                                refreshPage(false);
-                            })
-                        })
-                    },{
-                        title: "选源方式：" + (getItem("selectSource_col_type")=='hikerPop'?"hikerPop":"原生组件"),
-                        js: $.toString(() => {
-                            return $(["hikerPop","原生组件"], 1).select(() => {
-                                if(input=='hikerPop'){
-                                    setItem("selectSource_col_type","hikerPop");
-                                }else{
-                                    clearItem("selectSource_col_type");
                                 }
                                 refreshPage(false);
                             })
@@ -243,221 +187,6 @@ function yiji(testSource) {
         putMyVar(runMode+"_"+sourcename, "1");
     }
 
-    /*
-    if(MY_PAGE==1){
-        if(getMyVar('SrcJu_versionCheck', '0') == '0'){
-            let programversion = $.require("config").version || 0;
-            if(programversion<1){
-                confirm({
-                    title: "温馨提示",
-                    content: "发现小程序新版本",
-                    confirm: $.toString(() => {
-                        return "海阔视界首页频道规则【聚阅】￥home_rule_url￥http://hiker.nokia.press/hikerule/rulelist.json?id=6337"
-                    }),
-                    cancel: $.toString(() => {
-                        return "toast://不升级小程序，则功能不全或有异常"
-                    })
-                });
-            }
-            Version();
-        }
-        
-        d.push({
-            title: "管理",
-            url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                SRCSet();
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: 'icon_5',
-            extra: {
-                newWindow: true,
-                windowId: MY_RULE.title + "管理"
-            }
-        })
-        let zz = 转换["排行"] || "排行";
-        if(parse&&parse[zz]){
-            d.push({
-                title: zz,
-                url: rulePage(zz,页码[zz]),
-                pic_url: "http://123.56.105.145/tubiao/more/229.png",
-                col_type: 'icon_5'
-            })
-        }else{
-            d.push({
-                title: "收藏",
-                url: "hiker://collection?rule="+MY_RULE.title,
-                pic_url: "http://123.56.105.145/tubiao/more/109.png",
-                col_type: 'icon_5'
-            })
-        }
-        let sousuoextra = {
-            id: "sousuopageid",
-            newWindow: true,
-            windowId: MY_RULE.title + "搜索页",
-            longClick: [{
-                title: "🔍搜索",
-                js: $.toString(() => {
-                    return $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
-                        require(config.聚阅);
-                        newsousuopage();
-                    })
-                })
-            },{
-                title: "🔎聚搜代理："+(getItem('searchmode')=="jusousuo"?"是":"否"),
-                js: $.toString(() => {
-                    if(getItem('searchmode')=="jusousuo"){
-                        clearItem('searchmode');
-                        return "toast://取消软件聚搜代理，走小程序聚搜";
-                    }else{
-                        setItem('searchmode', "jusousuo");
-                        return "toast://开启软件聚搜代理，走软件聚搜";
-                    }
-                })
-            }]
-        }
-        
-        zz = 转换["分类"] || "分类";
-        if(parse&&parse[zz]){
-            d.push({
-                title: zz,
-                url: $('#noLoading#').lazyRule((sousuoextra,ispage,zz) => {
-                        delete sousuoextra.newWindow;
-                        updateItem("sousuopageid",{extra:sousuoextra});
-                        return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((sousuoextra,zz) => {
-                            addListener("onClose", $.toString((sousuoextra) => {
-                                sousuoextra.newWindow = true;
-                                updateItem("sousuopageid",{extra:sousuoextra});
-                            },sousuoextra));
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            getYiData(zz);
-                        },sousuoextra,zz)
-                    },sousuoextra,页码[zz],zz),
-                pic_url: "http://123.56.105.145/tubiao/more/287.png",
-                col_type: 'icon_5',
-                extra: sousuoextra
-            })
-        }else{
-            d.push({
-                title: "搜索",
-                url: $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
-                    require(config.聚阅);
-                    newsousuopage();
-                }),
-                pic_url: "http://123.56.105.145/tubiao/more/101.png",
-                col_type: 'icon_5',
-                extra: sousuoextra
-            })
-        }
-        zz = 转换["更新"] || "更新";
-        if(parse&&parse[zz]){
-            d.push({
-                title: zz,
-                url: rulePage(zz,页码[zz]),
-                pic_url: "http://123.56.105.145/tubiao/more/288.png",
-                col_type: 'icon_5'
-            })
-        }else{
-            d.push({
-                title: "历史",
-                url: "hiker://history?rule="+MY_RULE.title,
-                pic_url: "http://123.56.105.145/tubiao/more/213.png",
-                col_type: 'icon_5'
-            })
-        }
-        
-        d.push({
-            title: Juconfig["btnmenu5"] || "书架",
-            url: Juconfig["btnmenu5"] == "历史" ? "hiker://history?rule="+MY_RULE.title : Juconfig["btnmenu5"] == "收藏" ? "hiker://collection?rule="+MY_RULE.title : $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
-                bookCase();
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/286.png",
-            col_type: 'icon_5',
-            extra: {
-                longClick: [{
-                    title: "切换按钮",
-                    js: $.toString(() => {
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        return $(["书架", "收藏", "历史"], 1).select((cfgfile, Juconfig) => {
-                            Juconfig["btnmenu5"] = input;
-                            writeFile(cfgfile, JSON.stringify(Juconfig));
-                            refreshPage(false);
-                            return 'toast://已切换为' + input;
-                        }, cfgfile, Juconfig)
-                    })
-                }]
-            }
-        })
-
-        let typemenubtn = getTypeNames("主页");
-        typemenubtn.forEach((it) =>{
-            let item = {
-                title: runMode==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
-                url: runMode==it?$('#noLoading#').lazyRule((input) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    return selectSource(input);
-                }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
-                    Juconfig["runMode"] = input;
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                    refreshPage(false);
-                    return 'toast://主页源分类分组已切换为：' + input;
-                }, cfgfile, Juconfig ,it),
-                col_type: "scroll_button"//runModes_btntype
-            }
-            if(runMode==it){
-                item.extra = {
-                    longClick: [{
-                        title: "删除当前",
-                        js: $.toString((sourcefile,id) => {
-                            return $("确定删除："+id).confirm((sourcefile,id)=>{
-                                let sourcedata = fetch(sourcefile);
-                                eval("var datalist=" + sourcedata + ";");
-                                let index = datalist.indexOf(datalist.filter(d => d.type+"_"+d.name == id)[0]);
-                                datalist.splice(index, 1);
-                                writeFile(sourcefile, JSON.stringify(datalist));
-                                clearMyVar('SrcJu_searchMark');
-                                return 'toast://已删除';
-                            },sourcefile,id)
-                        }, sourcefile, runType+"_"+sourcename)
-                    },{
-                        title: "列表排序：" + getItem("sourceListSort", "update"),
-                        js: $.toString(() => {
-                            return $(["更新时间","接口名称"], 1).select(() => {
-                                if(input=='接口名称'){
-                                    setItem("sourceListSort","name");
-                                }else{
-                                    clearItem("sourceListSort");
-                                }
-                                refreshPage(false);
-                            })
-                        })
-                    },{
-                        title: "选源方式：" + (getItem("selectSource_col_type")=='hikerPop'?"hikerPop":"原生组件"),
-                        js: $.toString(() => {
-                            return $(["hikerPop","原生组件"], 1).select(() => {
-                                if(input=='hikerPop'){
-                                    setItem("selectSource_col_type","hikerPop");
-                                }else{
-                                    clearItem("selectSource_col_type");
-                                }
-                                refreshPage(false);
-                            })
-                        })
-                    }]
-                }
-            }
-            d.push(item);
-        })
-        d.push({
-            col_type: "blank_block"
-        })
-        putMyVar(runMode+"_"+sourcename, "1");
-    }
-    //加载主页内容
-    getYiData('主页', d);
-*/
-    //setResult(d);
     //加载主页内容
     getYiData('主页', d);
 }

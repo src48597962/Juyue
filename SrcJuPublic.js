@@ -121,7 +121,7 @@ function selectSource(selectType) {
     hikerPop.setUseStartActivity(false);
 
     function getitems(list) {
-        let index = 0;
+        let index = -1;
         let items = list.map((v,i) => {
             if(v.id==homeSourceId){
                 index = i;
@@ -176,10 +176,8 @@ function selectSource(selectType) {
         click(item, i, manage) {
             pop.dismiss();
 
-            log(item);
-            return "hiker://empty"
-            //let input = item.title.replace(/[’‘]/g, "");
-            //return changeSource(selectType, input);
+            let sourceid = item.id;
+            return changeSource(sourceid.split("_")[0], sourceid.split("_")[1]);
         },
         menuClick(manage) {
             hikerPop.selectCenter({

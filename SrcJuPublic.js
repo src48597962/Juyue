@@ -127,7 +127,7 @@ function selectSource(selectType) {
                 index = i;
                 v.name = `‘‘’’<strong><font color="#6dc9ff">`+v.name+`</front></strong>`;
             }
-            return {title:v.name, icon:v.img, id:v.id};
+            return {title:v.name, icon:v.img, id:v.id, type:v.type};
         });
         return {items:items, index:index};
     }

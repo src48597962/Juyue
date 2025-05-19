@@ -4,12 +4,12 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let jkdata = readSourceData(homeSourceId);
-    
+    let jkdata;
     try {
+        jkdata = readSourceData(homeSourceId);
         if (jkdata.parse) {
             let parse = jkdata.parse;
-            storage0.putMyVar('一级源接口信息',{name: sourceName, type: runType, group: jkdata.group, img: jkdata.img});//传导给方法文件
+            storage0.putMyVar('一级源接口信息',{name: sourceName, type: homeType, group: jkdata.group, img: jkdata.img});//传导给方法文件
 
             let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(homeSourceId)){
@@ -17,7 +17,7 @@ function yiji(testSource) {
             }
         }
     } catch (e) {
-        log("一级源接口加载异常>" + e.message);
+        log("一级源接口加载异常>" + e.message + ' 错误行#' + e.lineNumber);
     }
 
     let d = [];

@@ -4,9 +4,7 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let sourcedata = getListDatas("yi", "", 1).filter(it => {
-        return it.id==homeSourceId;
-    });
+    let sourcedata = readSourceData(homeSourceId);
     let parse = {};
     try {
         if (sourcedata.length==1) {

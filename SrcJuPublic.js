@@ -8,7 +8,7 @@ let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/s
 let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-    writeFile(jkfile, fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    writeFile(jkfile, fetch("hiker://files/rules/Src/Ju/jiekou.json").replace(/sourcename/g,'sourceName'));
 }
 
 let Juconfig = {};
@@ -175,7 +175,7 @@ function selectSource(selectType) {
         click(item, i, manage) {
             pop.dismiss();
 
-            let sourceid = item.id;
+            let sourceid = item.url;
             return changeSource(sourceid.split("_")[0], sourceid.split("_")[1]);
         },
         menuClick(manage) {

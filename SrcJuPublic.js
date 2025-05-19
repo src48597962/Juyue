@@ -485,8 +485,8 @@ function getYiData(datatype, od) {
         setResult(d);
     }
 }
-//读取接口缓存数据
-function readJkData(fileid){
+//读取源接口数据
+function readSourceData(fileid){
     let cachefile = cachepath + `${fileid}.json`;
     let jkdata = {};
     try{

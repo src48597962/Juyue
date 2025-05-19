@@ -125,7 +125,7 @@ function selectSource(selectType) {
         let items = list.map((v,i) => {
             if(v.id==homeSourceId){
                 index = i;
-                v.name = `‘‘’’<strong><font color="#6dc9ff">`+v.name+`</front></strong>`;
+                v.name = `<strong><font color="#6dc9ff">`+v.name+`</front></strong>`;
             }
             return {title:v.name, icon:v.img, url:v.id};
         });

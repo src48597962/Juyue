@@ -977,7 +977,7 @@ function selectBottomResIcon({
         let items = {
             icon: String(item.getIcon()),
             title: String(item.getTitle()),
-            id: String(item.getUrl())
+            url: String(item.getUrl())
         };
         let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
         if (noAutoDismiss) {

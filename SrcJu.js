@@ -122,7 +122,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }
-        },sourcedata[0]);
+        },jkdata);
         d.push({
             title: "搜索",
             url: $.toString((searchurl) => {

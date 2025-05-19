@@ -8,9 +8,10 @@ function yiji(testSource) {
     
     try {
         if (jkdata.parse) {
+            let parse = jkdata.parse;
             storage0.putMyVar('一级源接口信息',{name: sourceName, type: runType, group: jkdata.group, img: jkdata.img});//传导给方法文件
 
-            let 提示 = "当前主页源：" + homeSourceId + (jkdata["author"] ? "，作者：" + jkdata["author"] : "");
+            let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(homeSourceId)){
                 toast(提示);
             }

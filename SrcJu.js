@@ -8,23 +8,17 @@ function yiji(testSource) {
         return it.id==homeSourceId;
     });
     let parse = {};
-    let 页码 = {};
-    let 转换 = {};
-    let runType;
     try {
         if (sourcedata.length==1) {
-            eval("let source = " + sourcedata[0].parse);
-            parse = source;
-            runType = sourcedata[0].type;
-            storage0.putMyVar('一级源接口信息',{name: sourceName, type: runType, group: sourcedata[0].group, img: sourcedata[0].img});//传导给方法文件
+            eval("parse = " + sourcedata[0].parse);
+            storage0.putMyVar('一级源接口信息',{name: sourceName, type: sourcedata[0].type, group: sourcedata[0].group, img: sourcedata[0].img});//传导给方法文件
             try{
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 cacheData(sourcedata[0]);
             }catch(e){
                 //log("缓存临时文件失败>"+e.message);
             }
-            页码 = parse["页码"] || {};
-            转换 = parse["转换"] || {};
+
             let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(homeSourceId)){
                 toast(提示);
@@ -101,33 +95,7 @@ function yiji(testSource) {
             }
             if(homeType==it){
                 item.extra = {
-                    backgroundColor: homeType==it?"#20" + Color.replace('#',''):"",
-                    longClick: [{
-                        title: "删除当前",
-                        js: $.toString((sourcefile,id) => {
-                            return $("确定删除："+id).confirm((sourcefile,id)=>{
-                                let sourcedata = fetch(sourcefile);
-                                eval("var datalist=" + sourcedata + ";");
-                                let index = datalist.indexOf(datalist.filter(d => d.type+"_"+d.name == id)[0]);
-                                datalist.splice(index, 1);
-                                writeFile(sourcefile, JSON.stringify(datalist));
-                                clearMyVar('SrcJu_searchMark');
-                                return 'toast://已删除';
-                            },sourcefile,id)
-                        }, jkfile, homeSourceId)
-                    },{
-                        title: "列表排序：" + getItem("sourceListSort", "update"),
-                        js: $.toString(() => {
-                            return $(["更新时间","接口名称"], 1).select(() => {
-                                if(input=='接口名称'){
-                                    setItem("sourceListSort","name");
-                                }else{
-                                    clearItem("sourceListSort");
-                                }
-                                refreshPage(false);
-                            })
-                        })
-                    }]
+                    backgroundColor: homeType==it?"#20" + Color.replace('#',''):""
                 }
             }
             d.push(item);

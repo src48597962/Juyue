@@ -974,11 +974,13 @@ function selectBottomResIcon({
         });
     let iconAdapter = new com.example.hikerview.ui.home.view.BookmarkFolderAdapter(getActivityContext(), booksList, (v, i) => {
         let item = booksList.get(i);
+        /*
         let items = {
             icon: String(item.getIcon()),
             title: String(item.getTitle())
         };
-        let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
+        */
+        let func = () => tryCallBack(getDefaultValue(click, "function", null), [item, Number(i), resOptionsManage]);
         if (noAutoDismiss) {
             func();
         } else {

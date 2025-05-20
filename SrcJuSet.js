@@ -129,55 +129,6 @@ function SRCSet() {
     d.push({
         col_type: "line"
     });
-    for (let i = 0; i < 8; i++) {
-        d.push({
-            col_type: "blank_block"
-        })
-    }
-    
-
-    let typebtn = getTypeNames();
-    typebtn.unshift("全部");
-    typebtn.forEach(it =>{
-        let obj = {
-            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
-            url: $('#noLoading#').lazyRule((it) => {
-                if(getMyVar("selectGroup")!=it){
-                    putMyVar("selectGroup",it);
-                    refreshPage(false);
-                }
-                return "hiker://empty";
-            },it),
-            col_type: 'scroll_button'
-        }
-        
-        if(it != "全部"){
-            obj.extra = {};
-            let longClick = [];
-            if(getMyVar("selectGroup")==it){
-                longClick.push()
-            }
-            if(longClick.length>0){obj["extra"].longClick = longClick;}
-        }else{
-            obj.extra = {
-                longClick: [{
-                    title: "列表排序：" + getItem("sourceListSort", "update"),
-                    js: $.toString(() => {
-                        return $(["更新时间","接口名称"], 1).select(() => {
-                            if(input=='接口名称'){
-                                setItem("sourceListSort","name");
-                            }else{
-                                clearItem("sourceListSort");
-                            }
-                            refreshPage(false);
-                        })
-                    })
-                }]
-            }
-        }
-        
-        d.push(obj);
-    })
     d.push({
         title: "🔍",
         url: $.toString(() => {
@@ -191,66 +142,136 @@ function SRCSet() {
             titleVisible: true
         }
     });
+
+    let groupNames = getJiekouGroups(datalist);
+    groupNames.unshift("全部");
+    let color = "#6dc9ff";
+    groupNames.forEach(it =>{
+        let obj = {
+            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #`+color+`">`+it+`</span></b>`:it,
+            url: $('#noLoading#').lazyRule((it) => {
+                if(getMyVar("selectGroup")!=it){
+                    putMyVar("selectGroup",it);
+                    refreshPage(false);
+                }
+                return "hiker://empty";
+            },it),
+            col_type: 'scroll_button',
+            extra: {
+                backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + color.replace('#',''):""
+            }
+        }
+        
+        if(it == "全部"){
+            obj.extra.longClick = [{
+                title: "列表排序：" + getItem("sourceListSort", "更新时间"),
+                js: $.toString(() => {
+                    return $(["更新时间","接口名称"], 1).select(() => {
+                        setItem("sourceListSort", input);
+                        refreshPage(false);
+                    })
+                })
+            }]
+        }
+        d.push(obj);
+    })
+    
     if(getMyVar('批量选择模式')){
+        d.push({
+            col_type: "blank_block"
+        });
         d.push({
             title: "反向选择",
             url: $('#noLoading#').lazyRule((jkdatalist) => {
                 jkdatalist = JSON.parse(base64Decode(jkdatalist));
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
+                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 duoselect(jkdatalist);
                 return "toast://已反选";
-            },base64Encode(JSON.stringify(jkdatalist))),
+            }, base64Encode(JSON.stringify(jkdatalist))),
             col_type: 'scroll_button'
         })
         d.push({
             title: "删除所选",
-            url: $('#noLoading#').lazyRule((sourcefile) => {
-                let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
+            url: $('#noLoading#').lazyRule(() => {
+                let duoselect = storage0.getMyVar('duoselect') || [];
                 if(duoselect.length==0){
                     return "toast://未选择";
                 }
-                return $("确定要删除选择的"+duoselect.length+"个接口？").confirm((sourcefile,duoselect)=>{
-                    let sourcedata = fetch(sourcefile);
-                    eval("var datalist=" + sourcedata + ";");
-                    for(let i = 0; i < datalist.length; i++) {
-                        let id = datalist[i].type+"_"+datalist[i].name;
-                        if(duoselect.some(item => item.name == datalist[i].name && item.type==datalist[i].type)){
-                            deleteItem(id);
-                            datalist.splice(i, 1);
-                            i--;
-                        }
-                    }
-                    writeFile(sourcefile, JSON.stringify(datalist));
-                    clearMyVar('SrcJu_searchMark');
-                    clearMyVar('duoSelectLists');
+                return $("确定要删除选择的"+duoselect.length+"个接口？").confirm((duoselect)=>{
+                    require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    deleteData(duoselect);
                     refreshPage(false);
                     return 'toast://已删除选择';
-                },sourcefile,duoselect)
-            },jkfile),
+                }, duoselect)
+            }),
             col_type: 'scroll_button'
         })
         d.push({
+            title: "调整分组",
+            url: $('#noLoading#').lazyRule(()=>{
+                    let duoselect = storage0.getMyVar('duoselect') || [];
+                    if(duoselect.length>0){
+                        return $("","选定的"+duoselect.length+"个接口新分组名").input((duoselect)=>{
+                            input = input.trim();
+                            if(input==""){
+                                return "hiker://empty";
+                            }else if(input=="全部"){
+                                return "toast://分组名不能为：全部";
+                            }else if(input.includes('[') || input.includes(']')){
+                                return "toast://分组名不能包含：[]";
+                            }
+                            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                            eval("var datalist=" + fetch(jkfile) + ";");
+                            datalist.forEach(data=>{
+                                if(duoselect.some(item => data.id==item.id)){
+                                    if(input){
+                                        data.group  = input;
+                                    }else{
+                                        delete data.group;
+                                    }
+                                }
+                            })
+                            writeFile(jkfile, JSON.stringify(datalist));
+                            clearMyVar('duoselect');
+                            refreshPage(false);
+                            return "toast://已批量调整接口分组";
+                        }, duoselect)
+                    }else{
+                        return "toast://请选择";
+                    }
+                }),
+            col_type: "scroll_button"
+        });
+        d.push({
             title: "禁用所选",
-            url: $('#noLoading#').lazyRule((sourcefile) => {
-                let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
+            url: $('#noLoading#').lazyRule(() => {
+                let duoselect = storage0.getMyVar('duoselect') || [];
                 if(duoselect.length==0){
                     return "toast://未选择";
                 }
-                return $("确定要禁用选择的"+duoselect.length+"个接口？").confirm((sourcefile,duoselect)=>{
-                    let sourcedata = fetch(sourcefile);
-                    eval("var datalist=" + sourcedata + ";");
-                    for(let i = 0; i < datalist.length; i++) {
-                        if(duoselect.some(item => item.name == datalist[i].name && item.type==datalist[i].type)){
-                            datalist[i].stop = 1;
-                        }
-                    }
-                    writeFile(sourcefile, JSON.stringify(datalist));
-                    clearMyVar('SrcJu_searchMark');
-                    clearMyVar('duoSelectLists');
+                return $("确定要禁用选择的"+duoselect.length+"个接口？").confirm((duoselect)=>{
+                    require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    let sm = dataHandle(duoselect, '禁用');
                     refreshPage(false);
-                    return 'toast://已禁用选择';
-                },sourcefile,duoselect)
-            },jkfile),
+                    return 'toast://' + sm;
+                },duoselect)
+            }),
+            col_type: 'scroll_button'
+        })
+        d.push({
+            title: "启用所选",
+            url: $('#noLoading#').lazyRule(() => {
+                let duoselect = storage0.getMyVar('duoselect') || [];
+                if(duoselect.length==0){
+                    return "toast://未选择";
+                }
+                return $("确定要启用选择的"+duoselect.length+"个接口？").confirm((duoselect)=>{
+                    require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    let sm = dataHandle(duoselect, '启用');
+                    refreshPage(false);
+                    return 'toast://' + sm;
+                },duoselect)
+            }),
             col_type: 'scroll_button'
         })
     }

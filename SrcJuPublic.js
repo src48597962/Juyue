@@ -29,7 +29,7 @@ if (Jucfg != "") {
 let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
 let homeSourceId = Juconfig["homeSourceId"] || "";
-let sourcename = homeSourceId.split('_').shift().jion('_');//旧源名称
+let sourcename = homeSourceId.split('_').slice(1).join('_');//旧源名称
 
 //获取接口列表数据
 function getDatas(lx, isyx) {

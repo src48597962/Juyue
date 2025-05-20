@@ -640,6 +640,28 @@ function duoselect(datas){
     })
     storage0.putMyVar('SrcJu_duoselect',duoselect);
 }
+//删除统一入口
+function deleteData(data){
+    let sourcedata = fetch(jkfile);
+    eval("let datalist=" + sourcedata + ";");
+    let dellist= [];
+    if(!data){
+        dellist = Object.assign(dellist, datalist);
+    }else if($.type(data)=='object'){
+        dellist.push(data);
+    }else if($.type(data)=='array'){
+        dellist = data;
+    }
+
+    dellist.forEach(it => {
+        let index = datalist.indexOf(datalist.filter(d => it.id==d.id )[0]);
+        datalist.splice(index, 1);
+    })
+
+    writeFile(jkfile, JSON.stringify(datalist));
+    clearMyVar('SrcJu_searchMark');
+    clearMyVar('duoSelectLists');
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     let id = 'juyue';

@@ -60,7 +60,7 @@ function getDatas(lx, isyx) {
 
     return result;
 }
-	//获取分组接口列表
+// 获取分组接口列表
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
     datas = datas.filter(it=>{
@@ -69,6 +69,17 @@ function getGroupLists(datas, k) {
     })
 
     return datas;
+}
+//获取接口分组名arry
+function getJiekouGroups(datas) {
+    let groupNams = [];
+    datas.forEach(it => {
+        let group = it.group||it.type;
+        if (groupNams.indexOf(group)==-1){
+            groupNams.push(group);
+        }
+    })
+    return groupNams;
 }
 //获取类型名称数组
 function getTypeNames(is) {

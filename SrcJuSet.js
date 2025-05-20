@@ -1,15 +1,5 @@
 ////本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
-let publicfile;
-try{
-    publicfile = config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-}catch(e){
-    let cfgfile = "hiker://files/rules/Src/Ju/config.json";
-    if (fileExist(cfgfile)) {
-        eval("let Juconfig=" + fetch(cfgfile) + ";");
-        publicfile = Juconfig["依赖"].match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-    }
-}
-require(publicfile);
+require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 function SRCSet() {
     addListener("onClose", $.toString(() => {
@@ -28,43 +18,19 @@ function SRCSet() {
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile) => {
             setPageTitle('增加 | 聚阅接口');
-            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             jiekouapi(sourcefile);
         }, jkfile),
         img: "http://123.56.105.145/tubiao/more/25.png",
         col_type: "icon_4",
         extra: {
-            longClick: [{
-                title: getMyVar("SrcJu_调试模式")?'退出调试':'调试模式',
-                js: $.toString(() => {
-                    return $().lazyRule(() => {
-                        if(getMyVar("SrcJu_调试模式")){
-                            clearMyVar("SrcJu_调试模式");
-                        }else{
-                            putMyVar("SrcJu_调试模式", "1");
-                        }
-                        return "toast://已设置"
-                    })
-                })
-            },{
-                title: getItem("SrcJu_接口日志")?'关接口日志':'开接口日志',
-                js: $.toString(() => {
-                    return $().lazyRule(() => {
-                        if(getItem("SrcJu_接口日志")){
-                            clearItem("SrcJu_接口日志");
-                        }else{
-                            setItem("SrcJu_接口日志", "1");
-                        }
-                        return "toast://已设置"
-                    })
-                })
-            }]
+            longClick: []
         }
     });
     d.push({
         title: '操作',
         url: $(["批量选择","清空接口"], 2).select(() => {
-            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="清空接口"){
                 return $("确定清空所有接口吗？").confirm((sourcefile)=>{
                     return $("确定想好了吗，清空后无法恢复！").confirm((sourcefile)=>{
@@ -96,17 +62,17 @@ function SRCSet() {
         url: $(["聚阅口令","文件导入"], 2 , "选择导入方式").select(() => {
             if(input=="聚阅口令"){
                 return $("", "聚阅分享口令").input(() => {
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                     return JYimport(input);
                 })
             }else if(input=="文件导入"){
                 return `fileSelect://`+$.toString(()=>{
                     if(/JYshare_/.test(input) && input.endsWith('txt')){
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         input = '聚阅接口￥' + aesEncode('SrcJu', input) + '￥文件导入';
                         return JYimport(input);
                     }else if(/JYimport_/.test(input) && input.endsWith('hiker')){
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         let content = fetch('file://'+input);
                         return JYimport(content);
                     }else{
@@ -142,7 +108,7 @@ function SRCSet() {
             if(duoselect.length>0){
                 sharelist = duoselect;
             }else{
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 sharelist = getListData("yx", getMyVar("SrcJu_jiekouType","全部"));
             }
             sharelist.reverse();//从显示排序回到实际排序
@@ -228,13 +194,8 @@ function SRCSet() {
     let typebtn = getTypeNames();
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
-        let typename = it;
-        if(it != "全部" && stopTypes.indexOf(it)>-1){
-            typename = typename+"(停)";
-        }
-
         let obj = {
-            title: getMyVar("SrcJu_jiekouType","全部")==it?`““””<b><span style="color: #3399cc">`+typename+`</span></b>`:typename,
+            title: getMyVar("SrcJu_jiekouType","全部")==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("SrcJu_jiekouType")!=it){
                     putMyVar("SrcJu_jiekouType",it);
@@ -249,19 +210,7 @@ function SRCSet() {
             obj.extra = {};
             let longClick = [];
             if(getMyVar("SrcJu_jiekouType")==it){
-                longClick.push({
-                    title: (stopTypes.indexOf(it)>-1?"启用":"停用")+it,
-                    js: $.toString((stopTypes,it) => {
-                        if(stopTypes.indexOf(it)>-1){
-                            stopTypes.splice(stopTypes.indexOf(it), 1);
-                        }else{
-                            stopTypes.push(it);
-                        }
-                        storage0.setItem('stopTypes', stopTypes);
-                        refreshPage(false);
-                        return "hiker://empty";
-                    },stopTypes,it)
-                })
+                longClick.push()
             }
             if(longClick.length>0){obj["extra"].longClick = longClick;}
         }else{
@@ -302,7 +251,7 @@ function SRCSet() {
             title: "反向选择",
             url: $('#noLoading#').lazyRule((jkdatalist) => {
                 jkdatalist = JSON.parse(base64Decode(jkdatalist));
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 duoselect(jkdatalist);
                 return "toast://已反选";
             },base64Encode(JSON.stringify(jkdatalist))),
@@ -365,7 +314,7 @@ function SRCSet() {
             title: (it.stop?`<font color=#f20c00>`:"") + it.name + (it.parse ? " [主页源]" : "") + (it.erparse ? " [搜索源]" : "") + (it.stop?`</font>`:""),
             url: getMyVar('SrcJu_批量选择模式')?$('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
-                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 duoselect(data);
                 return "hiker://empty";
             },base64Encode(JSON.stringify(it))):$(["分享", "编辑", "删除", it.stop?"启用":"禁用","选择","改名"], 2).select((sourcefile,data,paste) => {
@@ -388,7 +337,7 @@ function SRCSet() {
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile, data) => {
                         setPageTitle('编辑 | 聚阅接口');
-                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         jiekouapi(sourcefile, JSON.parse(base64Decode(data)));
                     }, sourcefile, base64Encode(JSON.stringify(data)))
                 } else if (input == "删除") {
@@ -419,7 +368,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://' + sm;
                 } else if (input=="选择") {
-                    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                     duoselect(data);
                     return "hiker://empty";
                 } else if (input == "改名") {
@@ -739,164 +688,5 @@ function jiekouapi(sourcefile, data, look) {
             }, jkfile,data?data.type:"",runTypes)
         });
     }
-    setResult(d);
-}
-
-function JYimport(input,ruleTitle) {
-    try {
-        input = input.replace("云口令：","");
-        let inputname = input.split('￥')[0];
-        if (inputname == "聚阅接口") {
-            showLoading("正在导入，请稍后...");
-            let parseurl = aesDecode('SrcJu', input.split('￥')[1]);
-            //xlog(parseurl);
-            let datalist2;
-            if(/^http|^云/.test(parseurl) && parseurl.includes('/')){
-                let content = parsePaste(parseurl.replace('https://netcut.cn/apidb/','云2oooole/apidb/'));
-                datalist2 = JSON.parse(aesDecode('SrcJu', content));
-            }else if(/JYshare_/.test(parseurl)){
-                datalist2 = JSON.parse(aesDecode('SrcJu', fetch('file://'+parseurl)));
-            }else{
-                datalist2 = JSON.parse(parseurl);
-            }
-            let num = 0;
-            datalist.reverse();
-            let datalist3 = [];//存放待二次确认的临时接口
-            datalist2.forEach(data=>{
-                data['updatetime'] = data['updatetime'] || $.dateFormat(new Date(),"yyyy-MM-dd HH:mm:ss");
-                let index = datalist.findIndex(item => item.name == data.name && item.type==data.type);
-                if (index>-1) {
-                    //存在时，做对应处理
-                    if(Juconfig['ImportType']=="Skip"){
-                        //跳过，啥也不做
-                    }else if(Juconfig['ImportType']=="Confirm"){
-                        //二次手工确认代码
-                        if(datalist[index].updatetime != data.updatetime){
-                            datalist3.push(data);
-                        }else{
-                            num = num + 1;
-                        }
-                    }else{
-                        //默认是覆盖已存在的
-                        datalist.splice(index, 1);
-                        datalist.push(data);
-                        num = num + 1;
-                    }
-                }else{
-                    //不存在，则导入
-                    datalist.push(data);
-                    num = num + 1;
-                }
-            })
-            writeFile(jkfile, JSON.stringify(datalist));
-            clearMyVar('SrcJu_searchMark');
-            hideLoading();
-            if(datalist3.length==0){
-                refreshPage(false);
-                return "toast://合计" + datalist2.length + "个，导入" + num + "个";
-            }else{
-                toast("合计" +datalist2.length + "个，导入" + num + "个，有" + datalist3.length + "个需手工确认");
-                storage0.putVar('importConfirm', datalist3);
-                ruleTitle = ruleTitle || MY_RULE.title;
-                return "hiker://page/importConfirm?rule=" + ruleTitle;//聚阅√测
-            }
-        } else {
-            return "toast://非法口令";
-        }
-    } catch (e) {
-        hideLoading();
-        xlog('√口令解析失败>'+e.message);
-        return "toast://口令有误或无法访问";
-    }
-}
-
-function importConfirm(ruleTitle) {
-    ruleTitle = ruleTitle || "聚阅√";
-    addListener("onClose", $.toString(() => {
-        clearMyVar('SrcJu_searchMark');
-        clearVar('importConfirm');
-    }));
-    let datalist3 = storage0.getVar('importConfirm', []); 
-    let d = [];
-    d.push({
-        title: "本次导入共发现"+datalist3.length+"个已存在接口",
-        desc: "点击下面接口进行对应操作",
-        url: "hiker://empty",
-        col_type: 'text_center_1'
-    });
-    datalist3.forEach(it=>{
-        d.push({
-            title: (it.stop?`<font color=#f20c00>`:"") + it.name + (it.parse ? " [主页源]" : "") + (it.erparse ? " [搜索源]" : "") + (it.stop?`</font>`:""),
-            url: $(["查看导入", "查看本地", "覆盖导入", "改名导入"], 2).select((sourcefile, data,ruleTitle) => {
-                data = JSON.parse(base64Decode(data));
-                if (input == "查看本地") {
-                    return $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile,dataid,ruleTitle) => {
-                        setPageTitle('查看本地数据');
-                        require($.require("config?rule="+ruleTitle).rely.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
-                        let data = datalist.filter(d => d.name == dataid.name && d.type==dataid.type)[0];
-                        jiekouapi(sourcefile, data, 1);
-                    }, sourcefile, {type:data.type, name:data.name}, ruleTitle)
-                }else if (input == "查看导入") {
-                    return $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile,data,ruleTitle) => {
-                        setPageTitle('查看导入数据');
-                        require($.require("config?rule="+ruleTitle).rely.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
-                        jiekouapi(sourcefile, data, 1);
-                    }, sourcefile, data, ruleTitle)
-                } else if (input == "覆盖导入") {
-                    return $("将覆盖本地，确认？").confirm((sourcefile,data)=>{
-                        let sourcedata = fetch(sourcefile);
-                        eval("var datalist=" + sourcedata + ";");
-                        let index = datalist.indexOf(datalist.filter(d => d.name==data.name && d.type==data.type)[0]);
-                        datalist.splice(index, 1);
-                        data['updatetime'] = data['updatetime'] || $.dateFormat(new Date(),"yyyy-MM-dd HH:mm:ss");
-                        datalist.push(data);
-                        writeFile(sourcefile, JSON.stringify(datalist));
-                        clearMyVar('SrcJu_searchMark');
-                        let importlist = storage0.getVar('importConfirm', []);
-                        if(importlist.length==1){
-                            back(false);
-                        }else{
-                            let index2 = importlist.indexOf(importlist.filter(d => d.name==data.name && d.type==data.type)[0]);
-                            importlist.splice(index2, 1);
-                            storage0.putVar('importConfirm', importlist);
-                            deleteItem(data.type+"_"+data.name);
-                        }
-                        return 'toast://已覆盖导入';
-                    },sourcefile,data)
-                } else if (input == "改名导入") {
-                    return $(data.name,"输入新名称").input((sourcefile,data)=>{
-                        let sourcedata = fetch(sourcefile);
-                        eval("var datalist=" + sourcedata + ";");
-                        let index = datalist.indexOf(datalist.filter(d => d.name==input && d.type==data.type)[0]);
-                        if(index>-1){
-                            return "toast://名称已存在，未保存";
-                        }else{
-                            data.name = input;
-                            data['updatetime'] = data['updatetime'] || $.dateFormat(new Date(),"yyyy-MM-dd HH:mm:ss");
-                            datalist.push(data);
-                            writeFile(sourcefile, JSON.stringify(datalist));
-                            clearMyVar('SrcJu_searchMark');
-                            let importlist = storage0.getVar('importConfirm', []);
-                            if(importlist.length==1){
-                                back(false);
-                            }else{
-                                let index2 = importlist.indexOf(importlist.filter(d => d.name==data.name && d.type==data.type)[0]);
-                                importlist.splice(index2, 1);
-                                storage0.putVar('importConfirm', importlist);
-                                deleteItem(data.type+"_"+data.name);
-                            }
-                            return 'toast://已保存，新接口名称为：'+input;
-                        }
-                    },sourcefile,data)
-                }
-            }, jkfile, base64Encode(JSON.stringify(it)), ruleTitle),
-            desc: (it.group?"["+it.group+"] ":"") + it.type,
-            img: it.img || "http://123.56.105.145/tubiao/ke/31.png",
-            col_type: "avatar",
-            extra: {
-                id: it.type+"_"+it.name
-            }
-        });
-    })
     setResult(d);
 }

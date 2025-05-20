@@ -132,7 +132,7 @@ function dataHandle(data, input) {
 }
 // 文字上色
 function colorTitle(title, Color) {
-    return '““””<font color="' + Color + '">' + title + '</font>';
+    return '<font color="' + Color + '">' + title + '</font>';
 }
 // 获取接口对应的显示标题
 function getDataTitle(data) {

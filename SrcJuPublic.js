@@ -28,7 +28,7 @@ let homeSourceId = sourceName ? homeType+"_"+sourceName : "";
 let sourcename = sourceName;//旧源名称
 
 //获取接口列表数据
-function getListDatas(lx, selectType, isyx) {
+function getDatas(lx, isyx) {
     let datalist = [];
     let sourcedata = fetch(jkfile);
     if(sourcedata != ""){
@@ -41,11 +41,6 @@ function getListDatas(lx, selectType, isyx) {
         datalist = datalist.filter(it => it.parse);
     } else if (lx == "er") {
         datalist = datalist.filter(it => it.erparse);
-    }
-    if(selectType){
-        datalist = datalist.filter(it => {
-            return selectType == it.type || selectType == it.group;
-        })
     }
     
     if (getItem("sourceListSort") == "接口名称") {
@@ -65,6 +60,16 @@ function getListDatas(lx, selectType, isyx) {
 
     return result;
 }
+	//获取分组接口列表
+function getGroupLists(datas, k) {
+    k = k=="全部"?"":k;
+    datas = datas.filter(it=>{
+        let group = it.group||it.type;
+        return !k || (k==group);
+    })
+
+    return datas;
+}
 //获取类型名称数组
 function getTypeNames(is) {
     let snames = [];
@@ -78,7 +83,7 @@ function getTypeNames(is) {
 //获取分组名称数组
 function getGroupNames() {
     let gnames = [];
-    getListDatas('all', '', 1).forEach(it => {
+    getDatas('all', true).forEach(it => {
         if (it.group && gnames.indexOf(it.group) == -1) {
             gnames.push(it.group);
         }
@@ -118,7 +123,10 @@ function changeSource(stype, sname) {
 //封装选择主页源方法
 function selectSource(selectType) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-    let sourceList = getListDatas("yi", selectType, 1);
+    let sourceList = getDatas("yi", true);
+    if(selectType){
+        sourceList = getGroupLists(sourceList, selectType);
+    }
     let tmpList = sourceList;
     hikerPop.setUseStartActivity(false);
 
@@ -192,7 +200,7 @@ function selectSource(selectType) {
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
                         setItem("sourceListSort", getItem('sourceListSort') == '接口名称' ? "更新时间" : "接口名称");
-                        let items = getListDatas("yi", selectType, 1).map(v => {
+                        let items = getDatas("yi", true).map(v => {
                             return {title:v.name,icon:v.img};
                         });
                         manage.change(items);
@@ -229,7 +237,7 @@ function getYiData(datatype, od) {
     }));
 
     let d = od || [];
-    let sourcedata = getListDatas('yi', '', 1).filter(it => {
+    let sourcedata = getDatas('yi', true).filter(it => {
         return it.id==homeSourceId;
     });
     let parse;
@@ -496,7 +504,7 @@ function readSourceData(fileid){
         if(cachefiledata){
             eval("jkdata=" + cachefiledata);
         }else{
-            let jklist = getListDatas('all', '', 1).filter(it=>{
+            let jklist = getDatas('all', true).filter(it=>{
                 return it.id == fileid;
             });
             if(jklist.length==1){

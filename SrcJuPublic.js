@@ -90,6 +90,68 @@ function getGroupNames() {
     })
     return gnames;
 }
+// 接口处理公共方法
+function dataHandle(data, input) {
+    let sourcedata = fetch(jkfile);
+    eval("let datalist=" + sourcedata + ";");
+
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    
+    waitlist.forEach(it => {
+        let index = datalist.findIndex(item => item.id === it.id);
+        if(input == "禁用"){
+            datalist[index].stop = 1;
+        }else if(input == "启用"){
+            delete datalist[index].stop;
+        }else if(input == "置顶"){
+            const [target] = datalist.splice(index, 1);
+            datalist.push(target);
+        }
+    })
+    writeFile(jkfile, JSON.stringify(datalist));
+    clearMyVar('SrcJu_searchMark');
+    clearMyVar('duoselect');
+    return input + '：已处理' + waitlist.length + '个';
+}
+// 文字上色
+function colorTitle(title, Color) {
+    return '““””<font color="' + Color + '">' + title + '</font>';
+}
+// 获取接口对应的显示标题
+function getDataTitle(data) {
+    return data.name + '  ““””<small><font color=grey>('+data.type+')' + (data.group&&data.group!=data.type?' [' + data.group + ']':'') + '</font></small>';
+}
+// 接口多选处理方法
+function duoselect(data){
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+
+    let duoselect = storage0.getMyVar('duoselect') || [];
+    waitlist.forEach(data=>{
+        if(!duoselect.some(item => data.id==item.id)){
+            duoselect.push(data);
+            updateItem(data.id, {title: colorTitle(getDataTitle(data),'#3CB371')});
+        }else{
+            for(var i = 0; i < duoselect.length; i++) {
+                if(data.id == duoselect[i].id) {
+                    duoselect.splice(i, 1);
+                    break;
+                }
+            }
+            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
+        }
+    })
+    storage0.putMyVar('duoselect',duoselect);
+}
 //执行切换源接口
 function changeSource(stype, sname) {
     if (homeSourceId==stype+"_"+sname) {

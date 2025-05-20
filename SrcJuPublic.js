@@ -12,20 +12,19 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     olddatalist.forEach(it=>{
         let yi = it.parse;
         let er = it.erparse;
-        let ver = ["yi.ver", "yi.Ver", "yi.version", "er.ver", "er.Ver", "er.version"];
-        for(i=0; i<ver.length; i++){
-            it.version = eval(ver[i]);
-            if(it.version){
-                break;
-            }
-        }
+        it.version = yi.ver||yi.Ver||yi.version||er.ver||er.Ver||er.version;
         it.author = yi.作者;
         if(er.作者 && er.作者!=it.author){
             it.author = it.author + "&" + er.作者;
         }
-        for(i=0; i<ver.length; i++){
-            delete ver[i];
-        }
+        delete yi.ver;
+        delete yi.Ver;
+        delete yi.version;
+        delete er.ver;
+        delete er.Ver;
+        delete er.version;
+        delete yi.作者;
+        delete er.作者;
         it.parse = yi;
         it.erparse = er;
     });

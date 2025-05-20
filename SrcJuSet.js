@@ -11,7 +11,6 @@ function SRCSet() {
         clearMyVar('selectGroup');
     }));
 
-    setPageTitle("♥管理"+getMyVar('SrcJu_Version', ''));
     let d = [];
     d.push({
         title: '增加',

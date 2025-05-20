@@ -115,7 +115,7 @@ function dataHandle(data, input) {
     })
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
-    clearMyVar('duoselect');
+    clearMyVar('duoSelectLists');
     return input + '：已处理' + waitlist.length + '个';
 }
 // 文字上色
@@ -124,7 +124,7 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data) {
-    return data.name + '  ““””<small><font color=grey>('+data.type+')' + (data.group&&data.group!=data.type?' [' + data.group + ']':'') + '</font></small>';
+    return data.name + '  ““””<small><font color=grey>('+data.type+')' + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + '</font></small>';
 }
 // 接口多选处理方法
 function duoselect(data){
@@ -135,22 +135,41 @@ function duoselect(data){
         waitlist = data;
     }
 
-    let duoselect = storage0.getMyVar('duoselect') || [];
+    let selectlist = storage0.getMyVar('duoSelectLists') || [];
     waitlist.forEach(data=>{
-        if(!duoselect.some(item => data.id==item.id)){
-            duoselect.push(data);
+        if(!selectlist.some(item => data.id==item.id)){
+            selectlist.push(data);
             updateItem(data.id, {title: colorTitle(getDataTitle(data),'#3CB371')});
         }else{
-            for(var i = 0; i < duoselect.length; i++) {
-                if(data.id == duoselect[i].id) {
-                    duoselect.splice(i, 1);
-                    break;
-                }
-            }
+            let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id )[0]);
+            selectlist.splice(index, 1);
             updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
         }
     })
-    storage0.putMyVar('duoselect',duoselect);
+    storage0.putMyVar('duoSelectLists',selectlist);
+}
+
+//删除统一入口
+function deleteData(data){
+    let sourcedata = fetch(jkfile);
+    eval("let datalist=" + sourcedata + ";");
+    let dellist= [];
+    if(!data){
+        dellist = Object.assign(dellist, datalist);
+    }else if($.type(data)=='object'){
+        dellist.push(data);
+    }else if($.type(data)=='array'){
+        dellist = data;
+    }
+
+    dellist.forEach(it => {
+        let index = datalist.indexOf(datalist.filter(d => it.id==d.id )[0]);
+        datalist.splice(index, 1);
+    })
+
+    writeFile(jkfile, JSON.stringify(datalist));
+    clearMyVar('SrcJu_searchMark');
+    clearMyVar('duoSelectLists');
 }
 //执行切换源接口
 function changeSource(stype, sname) {
@@ -686,54 +705,6 @@ function jianfan(str,x) {
     return PYStr(str,x);
 }
 
-//接口管理多选方法
-function duoselect(datas){
-    let datalist = [];
-    if($.type(datas)=="array"){
-        datalist = datas;
-    }else if($.type(datas)=="object"){
-        datalist.push(datas);
-    }
-    let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
-    datalist.forEach(data=>{
-        let id = data.type+"_"+data.name;
-        if(!duoselect.some(item => item.name == data.name && item.type==data.type)){
-            duoselect.push(data);
-            updateItem(id, {title:'<font color=#3CB371>'+data.name + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "")});
-        }else{
-            for(var i = 0; i < duoselect.length; i++) {
-                if(duoselect[i].type+"_"+duoselect[i].name == id) {
-                    duoselect.splice(i, 1);
-                    break;
-                }
-            }
-            updateItem(id, {title:(data.stop?`<font color=#f20c00>`:"") + data.name + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + (data.stop?`</font>`:"")});
-        }
-    })
-    storage0.putMyVar('SrcJu_duoselect',duoselect);
-}
-//删除统一入口
-function deleteData(data){
-    let sourcedata = fetch(jkfile);
-    eval("let datalist=" + sourcedata + ";");
-    let dellist= [];
-    if(!data){
-        dellist = Object.assign(dellist, datalist);
-    }else if($.type(data)=='object'){
-        dellist.push(data);
-    }else if($.type(data)=='array'){
-        dellist = data;
-    }
-
-    dellist.forEach(it => {
-        let index = datalist.indexOf(datalist.filter(d => it.id==d.id )[0]);
-        datalist.splice(index, 1);
-    })
-
-    writeFile(jkfile, JSON.stringify(datalist));
-    clearMyVar('SrcJu_searchMark');
-    clearMyVar('duoSelectLists');
-}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     let id = 'juyue';

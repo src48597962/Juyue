@@ -11,6 +11,10 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
+        it.group = it.type=="听书"?"听书":it.group;
+        it.type = it.type=="听书"?"音频":it.type;
+        it.group = it.type=="影视"?"影视":it.group;
+        it.type = it.type=="影视"?"视频":it.type;
         delete it.updatetime;
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
@@ -22,11 +26,10 @@ if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
 
-let runTypes = ["漫画", "小说", "听书", "图集", "影视", "音频", "聚合", "其它"];
-let homeType = Juconfig["homeType"] || runTypes[0];
-let sourceName = Juconfig[homeType + '_source'] || "";//主页源名称
-let homeSourceId = sourceName ? homeType+"_"+sourceName : "";
-let sourcename = sourceName;//旧源名称
+let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
+let homeGroup = Juconfig["homeGroup"] || "";
+let homeSourceId = Juconfig["homeSourceId"] || "";
+let sourcename = homeSourceId.split('_').shift().join('_');//旧源名称
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -184,9 +187,9 @@ function deleteData(data){
     clearMyVar('duoSelectLists');
 }
 //执行切换源接口
-function changeSource(stype, sname) {
-    if (homeSourceId==stype+"_"+sname) {
-        return 'toast://' + stype + ' 主页源：' + sname;
+function changeSource(sourceid) {
+    if (homeSourceId==sourceid) {
+        return 'toast://主页源：' + sourceid;
     }
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");
@@ -207,11 +210,10 @@ function changeSource(stype, sname) {
         refreshX5WebView('about:blank');
     } catch (e) { }
 
-    Juconfig["homeType"] = stype;
-    Juconfig[stype + '_source'] = sname;
+    Juconfig['homeSourceId'] = sourceid;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
-    return 'toast://' + stype + ' 主页源已设置为：' + sname;
+    return 'toast://主页源已设置为：' + sourceid;
 }
 //封装选择主页源方法
 function selectSource(selectType) {
@@ -279,7 +281,7 @@ function selectSource(selectType) {
             pop.dismiss();
 
             let sourceid = item.url;
-            return changeSource(sourceid.split("_")[0], sourceid.split("_")[1]);
+            return changeSource(sourceid);
         },
         menuClick(manage) {
             hikerPop.selectCenter({
@@ -573,12 +575,12 @@ function getYiData(datatype, od) {
     } else {
         if (datatype == "主页") {
             d.push({
-                title: homeType + " 主页源不存在\n需先选择配置主页源",//\n设置-选择漫画/小说/听书/
-                desc: "点此或上面分类按钮皆可选择",//设置长按菜单可以开启界面切换开关
+                title: homeGroup + " 主页源不存在\n需先选择配置主页源",
+                desc: "点此或上面按钮皆可选择",
                 url: $('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
-                }, homeType),
+                }, homeGroup),
                 col_type: "text_center_1",
                 extra: {
                     lineVisible: false

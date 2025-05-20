@@ -30,7 +30,7 @@ function SRCSet() {
             setPageTitle('增加 | 聚阅接口');
             require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
             jiekouapi(sourcefile);
-        }, sourcefile),
+        }, jkfile),
         img: "http://123.56.105.145/tubiao/more/25.png",
         col_type: "icon_4",
         extra: {
@@ -63,33 +63,9 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $(["批量选择","批量测试","接口更新","清空接口"], 2).select(() => {
+        url: $(["批量选择","清空接口"], 2).select(() => {
             require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
-            if(input=="接口更新"){
-                showLoading("更新中...");
-                let updatelist = [];
-                yxdatalist.forEach(it=>{
-                    try{
-                        eval("let yparse = " + it.parse);
-                        if (yparse && yparse.ext && /^http/.test(yparse.ext) && updatelist.indexOf(yparse.ext)==-1) {
-                            fetchCache(yparse.ext, 0);
-                            updatelist.push(yparse.ext);
-                        }
-                        eval("let eparse = " + it.erparse);
-                        if (eparse && eparse.ext && /^http/.test(eparse.ext) && updatelist.indexOf(eparse.ext)==-1) {
-                            fetchCache(eparse.ext, 0);
-                        }
-                        eval("let gparse = " + it.public);
-                        if (gparse && gparse.ext && /^http/.test(gparse.ext) && updatelist.indexOf(gparse.ext)==-1) {
-                            fetchCache(gparse.ext, 0);
-                        }
-                    }catch(e){
-
-                    }
-                })
-                hideLoading();
-                return "toast://在线接口更新完成";
-            }else if(input=="清空接口"){
+            if(input=="清空接口"){
                 return $("确定清空所有接口吗？").confirm((sourcefile)=>{
                     return $("确定想好了吗，清空后无法恢复！").confirm((sourcefile)=>{
                         let datalist = [];
@@ -98,7 +74,7 @@ function SRCSet() {
                         refreshPage(false);
                         return 'toast://已清空';
                     },sourcefile)
-                },sourcefile)
+                },jkfile)
             }else if(input=="批量选择"){
                 let sm;
                 if(getMyVar('SrcJu_批量选择模式')){
@@ -110,151 +86,6 @@ function SRCSet() {
                 }
                 refreshPage(false);
                 return "toast://"+sm;
-            }else if(input=="批量测试"){
-                return $(getItem('searchtestkey', '斗罗大陆'),"输入测试搜索关键字").input(()=>{
-                    setItem("searchtestkey",input);
-                    return $("hiker://empty#noRecordHistory##noHistory#").rule((name) => {
-                        addListener("onClose", $.toString(() => {
-                            putMyVar("停止搜索线程", "1");
-                        }));
-                        clearMyVar("停止搜索线程");
-                        let d = [];
-                        d.push({
-                            title: "",
-                            col_type: 'text_center_1',
-                            url: "hiker://empty",
-                            extra: {
-                                id: "testsousuoloading",
-                                lineVisible: false
-                            }
-                        });
-                        setResult(d);
-                        let ssdatalist;
-                        let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
-                        if(duoselect.length>0){
-                            ssdatalist = duoselect;
-                        }else{
-                            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
-                            ssdatalist = getListData("yx", getMyVar("SrcJu_jiekouType","全部"));
-                        }
-                        let page = 1;
-                        let success = 0;
-                        let faillist = [];
-                        let task = function (obj) {
-                            let objdata = obj.data;
-                            let name = obj.name;
-                            let 标识 = objdata.type + "_" + objdata.name;
-                            try {
-                                let parse;
-                                let 公共;
-                                eval("let source = " + objdata.erparse);
-                                if (source.ext && /^http/.test(source.ext)) {
-                                    requireCache(source.ext, 48);
-                                    parse = erdata;
-                                } else {
-                                    parse = source;
-                                }
-                                if(parse){
-                                    eval("let gonggong = " + objdata.public);
-                                    if (gonggong && gonggong.ext && /^http/.test(gonggong.ext)) {
-                                        requireCache(gonggong.ext, 48);
-                                        gonggong = ggdata;
-                                    }
-                                    公共 = gonggong || parse['公共'] || {};
-                                    let ssdata = [];
-                                    eval("let 搜索 = " + parse['搜索'])
-                                    let 参数 = {"规则名": MY_RULE.title, "标识": 标识}
-                                    function ocr(codeurl,headers) {
-                                        headers= headers || {};
-                                        let img = convertBase64Image(codeurl,headers).replace('data:image/jpeg;base64,','');
-                                        let code = request('https://api.xhofe.top/ocr/b64/text', { body: img, method: 'POST', headers: {"Content-Type":"text/html"}});
-                                        code = code.replace(/o/g, '0').replace(/u/g, '0').replace(/I/g, '1').replace(/l/g, '1').replace(/g/g, '9');
-                                        if(code.includes("+")&&code.includes("=")){
-                                            code = eval(code.split("=")[0]);
-                                        }
-                                        return code;
-                                    }
-                                    ssdata = 搜索(name,page,公共,参数) || [];
-                                    let resultdata = [];
-                                    ssdata.forEach(item => {
-                                        if(item.title.includes(name)){
-                                            resultdata.push(item);
-                                        }
-                                    })
-                                    return {result:resultdata.length, success:1, id:标识};
-                                }
-                                return {success:0, message:'未找到搜索代码', id:标识};
-                            } catch (e) {
-                                return {success:0, message:e.message, id:标识};
-                            }
-                        }
-                        let list = ssdatalist.map((item) => {
-                            return {
-                                func: task,
-                                param: {"data":item,"name":name},
-                                id: item.type+"_"+item.name
-                            }
-                        });
-                        if (list.length > 0) {
-                            updateItem("testsousuoloading", { title: "‘‘’’<small>("+list.length+")批量测试搜索中.</small>" });
-                            be(list, {
-                                func: function (obj, id, error, taskResult) {
-                                    if(getMyVar("停止搜索线程")=="1"){
-                                        return "break";
-                                    }else{
-                                        let additem = {
-                                            title: taskResult.id,
-                                            url: $(["删除", "禁用"], 2).select((id) => {
-                                                let sourcefile = "hiker://files/rules/Src/Ju/jiekou.json";
-                                                if (input == "删除") {
-                                                    return $("确定删除："+id).confirm((sourcefile,id)=>{
-                                                        let sourcedata = fetch(sourcefile);
-                                                        eval("var datalist=" + sourcedata + ";");
-                                                        let index = datalist.indexOf(datalist.filter(d => d.type+"_"+d.name == id)[0]);
-                                                        datalist.splice(index, 1);
-                                                        writeFile(sourcefile, JSON.stringify(datalist));
-                                                        clearMyVar('SrcJu_searchMark');
-                                                        deleteItem(id);
-                                                        return 'toast://已删除';
-                                                    },sourcefile,id)
-                                                } else if (input == "禁用") {
-                                                    let sourcedata = fetch(sourcefile);
-                                                    eval("var datalist=" + sourcedata + ";");
-                                                    let index = datalist.indexOf(datalist.filter(d => d.type+"_"+d.name == id)[0]);
-                                                    datalist[index].stop = 1;
-                                                    writeFile(sourcefile, JSON.stringify(datalist));
-                                                    clearMyVar('SrcJu_searchMark');
-                                                    deleteItem(id);
-                                                    return 'toast://' + id + "已禁用";
-                                                }
-                                            }, taskResult.id),
-                                            col_type: "text_1",
-                                            extra: {
-                                                id: taskResult.id
-                                            }
-                                        }
-                                        if (taskResult.success==1) {
-                                            success++;
-                                            additem.title = "‘‘’’<font color=#f13b66a>"+additem.title;
-                                            additem.desc = "成功搜索到条目数："+taskResult.result;
-                                            addItemBefore("testsousuoloading", additem);
-                                        }else{
-                                            additem.title = "““"+additem.title+"””";
-                                            additem.desc = taskResult.message;
-                                            faillist.push(additem);
-                                        }
-                                    }
-                                },
-                                param: {
-                                }
-                            });
-                            addItemBefore("testsousuoloading", faillist);
-                            updateItem("testsousuoloading", { title: "‘‘’’<small><font color=#f13b66a>" + success + "</font>/" + list.length + "，测试搜索完成</small>" });
-                        } else {
-                            updateItem("testsousuoloading", { title: "‘‘’’<small>无接口</small>" });
-                        }
-                    }, input);
-                });
             }
         }),
         img: "http://123.56.105.145/tubiao/more/290.png",
@@ -501,7 +332,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://已删除选择';
                 },sourcefile,duoselect)
-            },sourcefile),
+            },jkfile),
             col_type: 'scroll_button'
         })
         d.push({
@@ -525,7 +356,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://已禁用选择';
                 },sourcefile,duoselect)
-            },sourcefile),
+            },jkfile),
             col_type: 'scroll_button'
         })
     }
@@ -603,7 +434,7 @@ function SRCSet() {
                         return 'toast://已重命名';
                     },sourcefile,data)
                 }
-            }, sourcefile, base64Encode(JSON.stringify(it)), Juconfig['sharePaste']),
+            }, jkfile, base64Encode(JSON.stringify(it)), Juconfig['sharePaste']),
             desc: (it.group?"["+it.group+"] ":"") + it.type,
             img: it.img || "http://123.56.105.145/tubiao/ke/31.png",
             col_type: "avatar",
@@ -905,7 +736,7 @@ function jiekouapi(sourcefile, data, look) {
                 } catch (e) {
                     return "toast://接口数据异常，请确认对象格式";
                 }
-            }, sourcefile,data?data.type:"",runTypes)
+            }, jkfile,data?data.type:"",runTypes)
         });
     }
     setResult(d);
@@ -957,7 +788,7 @@ function JYimport(input,ruleTitle) {
                     num = num + 1;
                 }
             })
-            writeFile(sourcefile, JSON.stringify(datalist));
+            writeFile(jkfile, JSON.stringify(datalist));
             clearMyVar('SrcJu_searchMark');
             hideLoading();
             if(datalist3.length==0){
@@ -1058,7 +889,7 @@ function importConfirm(ruleTitle) {
                         }
                     },sourcefile,data)
                 }
-            }, sourcefile, base64Encode(JSON.stringify(it)), ruleTitle),
+            }, jkfile, base64Encode(JSON.stringify(it)), ruleTitle),
             desc: (it.group?"["+it.group+"] ":"") + it.type,
             img: it.img || "http://123.56.105.145/tubiao/ke/31.png",
             col_type: "avatar",

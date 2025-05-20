@@ -20,7 +20,7 @@ function SRCSet() {
             jiekouapi();
         }),
         img: "http://123.56.105.145/tubiao/more/25.png",
-        col_type: "icon_4",
+        col_type: "icon_small_4",
         extra: {
             longClick: []
         }
@@ -62,51 +62,42 @@ function SRCSet() {
             }
         }),
         img: "http://123.56.105.145/tubiao/more/290.png",
-        col_type: "icon_4"
+        col_type: "icon_small_4"
     });
     d.push({
         title: '导入',
-        url: $(["聚阅口令","文件导入"], 2 , "选择导入方式").select(() => {
-            if(input=="聚阅口令"){
-                return $("", "聚阅分享口令").input(() => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                    return JYimport(input);
-                })
-            }else if(input=="文件导入"){
-                return `fileSelect://`+$.toString(()=>{
-                    if(/JYshare_/.test(input) && input.endsWith('txt')){
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                        input = '聚阅接口￥' + aesEncode('SrcJu', input) + '￥文件导入';
-                        return JYimport(input);
-                    }else if(/JYimport_/.test(input) && input.endsWith('hiker')){
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                        let content = fetch('file://'+input);
-                        return JYimport(content);
-                    }else{
-                        return "toast://请选择正确的聚阅接口分享文件"
-                    }
-                })
+        url: $("","聚阅口令").input(()=>{
+            if(input==""){
+                return 'toast://不能为空';
             }
+            if(input.indexOf('@import=js:')>-1){
+                input = input.split('@import=js:')[0].replace('云口令：','').trim();
+            }
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJySet.js');
+            return JYimport(input);
         }),
         img: "http://123.56.105.145/tubiao/more/43.png",
-        col_type: "icon_4",
-        extra: {
-            longClick: [{
-                title: Juconfig['ImportType']=="Skip"?'导入模式：跳过':Juconfig['ImportType']=="Confirm"?'导入模式：确认':'导入模式：覆盖',
-                js: $.toString((cfgfile, Juconfig) => {
-                    return $(["覆盖", "跳过", "确认"],2).select((cfgfile,Juconfig) => {
-                        Juconfig["ImportType"] = input=="覆盖"?"Coverage":input=="跳过"?"Skip":"Confirm";
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
-                        if(input=="确认"){
-                            toast("提醒：手工确认模式，不支持云口令直接导入，需点击导入按钮");
-                        }
-                        refreshPage(false);
-                        return 'toast://导入模式已设置为：' + input;
-                    }, cfgfile, Juconfig)
-                },cfgfile, Juconfig)
-            }]
-        }
+        col_type: "icon_small_4"
     });
+    let pastes = getPastes();
+    pastes.push('云口令文件');
+    
+    let datalist = getDatas('all');
+    if(getMyVar('onlyStopJk')){
+        datalist = datalist.filter(item => item.stop);
+    }
+    let selectgroup = guanliType=='jk'?getMyVar("Src_Jy_jiekouGroup",""):"";
+    let jkdatalist = getGroupLists(datalist, selectgroup);
+
+    if(getMyVar("seacrhJiekou")){
+        jkdatalist = jkdatalist.filter(it=>{
+            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1;
+        })
+    }
+    let yxdatalist = jkdatalist.filter(it=>{
+        return !it.stop;
+    });
+    storage0.putMyVar("jkdatalist", jkdatalist);
     d.push({
         title: '分享',
         url: yxdatalist.length == 0 ? "toast://有效聚阅接口为0，无法分享" : $().b64().lazyRule(() => {
@@ -160,7 +151,7 @@ function SRCSet() {
             },sharelist)
         }),
         img: "http://123.56.105.145/tubiao/more/3.png",
-        col_type: "icon_4",
+        col_type: "icon_small_4",
         extra: {
             longClick: [{
                 title: '单接口分享剪贴板：' + (Juconfig['sharePaste'] || "自动选择"),

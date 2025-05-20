@@ -338,50 +338,74 @@ function SRCSet() {
 
 function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
-        clearMyVar('SrcJu_jiekoudata');
-        clearMyVar('SrcJu_jiekouname');
-        clearMyVar('SrcJu_jiekouimg');
-        clearMyVar('SrcJu_jiekoutype');
-        clearMyVar('SrcJu_jiekougroup');
-        clearMyVar('SrcJu_jiekouparse');
-        clearMyVar('SrcJu_jiekouerparse');
-        clearMyVar('SrcJu_jiekoupublic');
-        clearMyVar('SrcJu_jiekouedit');
+        clearMyVar('apiname');
+        clearMyVar('apiimg');
+        clearMyVar('apitype');
+        clearMyVar('apigroup');
+        clearMyVar('apiparse');
+        clearMyVar('apierparse');
+        clearMyVar('apipublic');
+        clearMyVar('isload');
     }));
-    if (data&&getMyVar('SrcJu_jiekouedit')!="1") {
-        storage0.putMyVar('SrcJu_jiekoudata', data);
-        putMyVar('SrcJu_jiekouedit', '1');
-        putMyVar('SrcJu_jiekouname', data.name);
-        putMyVar('SrcJu_jiekouimg', data.img||"");
-        putMyVar('SrcJu_jiekoutype', data.type||"");
-        putMyVar('SrcJu_jiekougroup', data.group||"");
-        storage0.putMyVar('SrcJu_jiekouparse', data.parse);
-        storage0.putMyVar('SrcJu_jiekouerparse', data.erparse ? data.erparse : "");
-        storage0.putMyVar('SrcJu_jiekoupublic', data.public ? data.public : "");
+    if(data){
+        if(getMyVar('isload', '0')=="0"){
+            putMyVar('apiname', data.name);
+            putMyVar('apiimg', data.img||"");
+            putMyVar('apitype', data.type||"");
+            putMyVar('apigroup', data.group||"");
+            storage0.putMyVar('apiparse', data.parse);
+            storage0.putMyVar('apierparse', data.erparse ? data.erparse : "");
+            storage0.putMyVar('apipublic', data.public ? data.public : "");
+            putMyVar('isload', '1');
+        }
     }
+
     let d = [];
     d.push({
         title: '名称',
         col_type: 'input',
         desc: "接口名称",
         extra: {
-            defaultValue: getMyVar('SrcJu_jiekouname') || "",
+            defaultValue: getMyVar('apiname') || "",
             titleVisible: false,
             onChange: $.toString(() => {
-                putMyVar('SrcJu_jiekouname', input);
+                putMyVar('apiname', input);
             })
         }
     });
     d.push({
-        title: '接口类型：'+ getMyVar('SrcJu_jiekoutype',''),
+        title: '接口类型：'+ getMyVar('apitype',''),
         col_type: 'text_1',
         url: $(getTypeNames(),2,"接口类型").select(() => {
-            putMyVar('SrcJu_jiekoutype',input);
+            putMyVar('apitype',input);
             refreshPage(false);
             return 'toast://接口类型已设置为：' + input;
         }),
         extra: {
-            lineVisible: false
+            //lineVisible: false
+        }
+    });
+
+    let groupNames = getGroupNames();
+    groupNames.push("自定义");
+    d.push({
+        title: '接口分组：'+ getMyVar('apigroup',''),
+        col_type: 'text_1',
+        url: $(groupNames,2,"接口分组：").select(() => {
+            if(input=="自定义"){
+                return $("", "自定义搜索分组名称").input(() => {
+                    putMyVar('apigroup',input);
+                    refreshPage(false);
+                    return 'toast://接口分组已设置为：' + input;
+                })
+            }else{
+                putMyVar('apigroup',input);
+                refreshPage(false);
+            }
+            return 'toast://接口分组已设置为：' + input;
+        }),
+        extra: {
+            //lineVisible: false
         }
     });
     d.push({
@@ -389,34 +413,11 @@ function jiekouapi(data, look) {
         col_type: 'input',
         desc:"接口图标可留空",
         extra: {
-            defaultValue: getMyVar('SrcJu_jiekouimg') || "",
+            defaultValue: getMyVar('apiimg') || "",
             titleVisible: false,
             onChange: $.toString(() => {
-                putMyVar('SrcJu_jiekouimg', input);
+                putMyVar('apiimg', input);
             })
-        }
-    });
-
-    let groupNames = getGroupNames();
-    groupNames.push("自定义");
-    d.push({
-        title: '搜索分组：'+ getMyVar('SrcJu_jiekougroup',''),
-        col_type: 'text_1',
-        url: $(groupNames,2,"搜索分组：").select(() => {
-            if(input=="自定义"){
-                return $("", "自定义搜索分组名称").input(() => {
-                    putMyVar('SrcJu_jiekougroup',input);
-                    refreshPage(false);
-                    return 'toast://搜索分组已设置为：' + input;
-                })
-            }else{
-                putMyVar('SrcJu_jiekougroup',input);
-                refreshPage(false);
-            }
-            return 'toast://搜索分组已设置为：' + input;
-        }),
-        extra: {
-            lineVisible: false
         }
     });
     d.push({
@@ -424,14 +425,14 @@ function jiekouapi(data, look) {
         col_type: 'input',
         desc: "一级主页数据源, 可以留空",
         extra: {
-            defaultValue: storage0.getMyVar('SrcJu_jiekouparse') || "",
+            defaultValue: storage0.getMyVar('apiparse') || "",
             titleVisible: false,
             type: "textarea",
             highlight: true,
             height: 2,
             onChange: $.toString(() => {
                 if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("SrcJu_jiekouparse", input)
+                    storage0.putMyVar("apiparse", input)
                 }
             })
         }
@@ -441,14 +442,14 @@ function jiekouapi(data, look) {
         col_type: 'input',
         desc: "二级搜索数据源, 可以留空",
         extra: {
-            defaultValue: storage0.getMyVar('SrcJu_jiekouerparse') || "",
+            defaultValue: storage0.getMyVar('apierparse') || "",
             titleVisible: false,
             type: "textarea",
             highlight: true,
             height: 2,
             onChange: $.toString(() => {
                 if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("SrcJu_jiekouerparse", input)
+                    storage0.putMyVar("apierparse", input)
                 }
             })
         }
@@ -458,14 +459,14 @@ function jiekouapi(data, look) {
         col_type: 'input',
         desc: "公共变量, {}对象",
         extra: {
-            defaultValue: storage0.getMyVar('SrcJu_jiekoupublic') || "",
+            defaultValue: storage0.getMyVar('apipublic') || "",
             titleVisible: false,
             type: "textarea",
             highlight: true,
             height: 2,
             onChange: $.toString(() => {
                 if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("SrcJu_jiekoupublic", input)
+                    storage0.putMyVar("apipublic", input)
                 }
             })
         }
@@ -486,10 +487,10 @@ function jiekouapi(data, look) {
             col_type: 'text_2',
             url: $(getItem('searchtestkey', '斗罗大陆'),"输入测试搜索关键字").input(()=>{
                 setItem("searchtestkey",input);
-                let name = getMyVar('SrcJu_jiekouname');
-                let type = getMyVar('SrcJu_jiekoutype','漫画');
-                let erparse = getMyVar('SrcJu_jiekouerparse');
-                let public = getMyVar('SrcJu_jiekoupublic');
+                let name = getMyVar('apiname');
+                let type = getMyVar('apitype','漫画');
+                let erparse = getMyVar('apierparse');
+                let public = getMyVar('apipublic');
                 if(!name || !erparse){
                     return "toast://名称或搜索源接口不能为空";
                 }
@@ -535,26 +536,26 @@ function jiekouapi(data, look) {
             title: '保存接口',
             col_type: 'text_2',
             url: $().lazyRule((sourcefile,oldtype,runTypes) => {
-                if (!getMyVar('SrcJu_jiekouname')) {
+                if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
-                if (!getMyVar('SrcJu_jiekouparse') && !getMyVar('SrcJu_jiekouerparse')) {
+                if (!getMyVar('apiparse') && !getMyVar('apierparse')) {
                     return "toast://主页源数据和搜索源数据不能同时为空";
                 }
-                if (!getMyVar('SrcJu_jiekoutype')) {
+                if (!getMyVar('apitype')) {
                     return "toast://接口类型不能为空";
                 }
                 try {
-                    let name = getMyVar('SrcJu_jiekouname');
+                    let name = getMyVar('apiname');
                     if (runTypes.indexOf(name)>-1) {
                         return "toast://接口名称不能属于类型名";
                     }
-                    let img = getMyVar('SrcJu_jiekouimg');
-                    let type = getMyVar('SrcJu_jiekoutype');
-                    let group = getMyVar('SrcJu_jiekougroup');
-                    let parse = getMyVar('SrcJu_jiekouparse');
-                    let erparse = getMyVar('SrcJu_jiekouerparse');
-                    let public = getMyVar('SrcJu_jiekoupublic');
+                    let img = getMyVar('apiimg');
+                    let type = getMyVar('apitype');
+                    let group = getMyVar('apigroup');
+                    let parse = getMyVar('apiparse');
+                    let erparse = getMyVar('apierparse');
+                    let public = getMyVar('apipublic');
                     let newapi = {
                         name: name,
                         type: type

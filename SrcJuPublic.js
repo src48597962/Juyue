@@ -8,7 +8,11 @@ let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/s
 let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-    writeFile(jkfile, fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    olddatalist.forEach(it=>{
+        it.id = it.type+"_"+it.name;
+    })
+    writeFile(jkfile, JSON.stringify(olddatalist));
 }
 
 let Juconfig = {};
@@ -32,9 +36,7 @@ function getListDatas(lx, selectType, isyx) {
             eval("datalist=" + sourcedata+ ";");
         }catch(e){ }
     }
-    datalist.forEach(it=>{
-        it.id = it.type+"_"+it.name;
-    }) 
+     
     if (lx == "yi") {
         datalist = datalist.filter(it => it.parse);
     } else if (lx == "er") {

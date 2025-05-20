@@ -182,12 +182,12 @@ function SRCSet() {
         });
         d.push({
             title: "反向选择",
-            url: $('#noLoading#').lazyRule((jkdatalist) => {
-                jkdatalist = JSON.parse(base64Decode(jkdatalist));
+            url: $('#noLoading#').lazyRule(() => {
+                let jkdatalist = storage0.getMyVar("jkdatalist") || [];
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 duoselect(jkdatalist);
                 return "toast://已反选";
-            }, base64Encode(JSON.stringify(jkdatalist))),
+            }),
             col_type: 'scroll_button'
         })
         d.push({
@@ -337,7 +337,7 @@ function SRCSet() {
     setResult(d);
 }
 
-function jiekouapi(sourcefile, data, look) {
+function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_jiekoudata');
         clearMyVar('SrcJu_jiekouname');

@@ -3,24 +3,22 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 function SRCSet() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('SrcJu_duoselect');
-        clearMyVar("SrcJu_seacrhJiekou");
-        clearMyVar('SrcJu_批量选择模式');
+        clearMyVar('duoSelectLists');
+        clearMyVar("seacrhJiekou");
+        clearMyVar('jkdatalist');
+        clearMyVar('批量选择模式');
+        clearMyVar('onlyStopJk');
     }));
-    addListener('onRefresh', $.toString(() => {
-        clearMyVar('SrcJu_seacrhJiekou');
-        clearMyVar('SrcJu_批量选择模式');
-    }));
-    clearMyVar('SrcJu_duoselect');
+
     setPageTitle("♥管理"+getMyVar('SrcJu_Version', ''));
     let d = [];
     d.push({
         title: '增加',
-        url: $('hiker://empty#noRecordHistory##noHistory#').rule((sourcefile) => {
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
             setPageTitle('增加 | 聚阅接口');
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            jiekouapi(sourcefile);
-        }, jkfile),
+            jiekouapi();
+        }),
         img: "http://123.56.105.145/tubiao/more/25.png",
         col_type: "icon_4",
         extra: {
@@ -29,26 +27,35 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $(["批量选择","清空接口"], 2).select(() => {
+        url: $(["批量选择","查看禁用","清空所有"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-            if(input=="清空接口"){
-                return $("确定清空所有接口吗？").confirm((sourcefile)=>{
-                    return $("确定想好了吗，清空后无法恢复！").confirm((sourcefile)=>{
-                        let datalist = [];
-                        writeFile(sourcefile, JSON.stringify(datalist));
-                        clearMyVar('SrcJu_searchMark');
-                        refreshPage(false);
-                        return 'toast://已清空';
-                    },sourcefile)
-                },jkfile)
-            }else if(input=="批量选择"){
+            if(input=="批量选择"){
                 let sm;
-                if(getMyVar('SrcJu_批量选择模式')){
-                    clearMyVar('SrcJu_批量选择模式');
+                if(getMyVar('批量选择模式')){
+                    clearMyVar('批量选择模式');
+                    clearMyVar('duoselect');
                     sm = "退出批量选择模式";
                 }else{
-                    putMyVar('SrcJu_批量选择模式','1');
+                    putMyVar('批量选择模式','1');
                     sm = "进入批量选择模式";
+                }
+                refreshPage(false);
+                return "toast://"+sm;
+            }else if(input=="清空所有"){
+                return $("确定要删除本地所有的源接口吗？").confirm(()=>{
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    deleteData();
+                    refreshPage(false);
+                    return 'toast://已全部清空';
+                })
+            }else if(input=="查看禁用"){
+                let sm;
+                if(getMyVar('onlyStopJk')){
+                    clearMyVar('onlyStopJk');
+                    sm = "退出仅显示禁用列表";
+                }else{
+                    putMyVar('onlyStopJk','1');
+                    sm = "进入仅显示禁用列表";
                 }
                 refreshPage(false);
                 return "toast://"+sm;
@@ -104,7 +111,7 @@ function SRCSet() {
         title: '分享',
         url: yxdatalist.length == 0 ? "toast://有效聚阅接口为0，无法分享" : $().b64().lazyRule(() => {
             let sharelist;
-            let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
+            let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
             if(duoselect.length>0){
                 sharelist = duoselect;
             }else{
@@ -183,9 +190,9 @@ function SRCSet() {
         })
     }
     let jkdatalist;
-    if(getMyVar("SrcJu_seacrhJiekou")){
+    if(getMyVar("seacrhJiekou")){
         jkdatalist = datalist.filter(it=>{
-            return it.name.indexOf(getMyVar("SrcJu_seacrhJiekou"))>-1;
+            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1;
         })
     }else{
         jkdatalist = getListData("all", getMyVar("SrcJu_jiekouType","全部"));
@@ -236,17 +243,17 @@ function SRCSet() {
     d.push({
         title: "🔍",
         url: $.toString(() => {
-            putMyVar("SrcJu_seacrhJiekou",input);
+            putMyVar("seacrhJiekou",input);
             refreshPage(false);
         }),
         desc: "搜你想要的...",
         col_type: "input",
         extra: {
-            defaultValue: getMyVar('SrcJu_seacrhJiekou',''),
+            defaultValue: getMyVar('seacrhJiekou',''),
             titleVisible: true
         }
     });
-    if(getMyVar('SrcJu_批量选择模式')){
+    if(getMyVar('批量选择模式')){
         d.push({
             title: "反向选择",
             url: $('#noLoading#').lazyRule((jkdatalist) => {
@@ -260,7 +267,7 @@ function SRCSet() {
         d.push({
             title: "删除所选",
             url: $('#noLoading#').lazyRule((sourcefile) => {
-                let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
+                let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
                 if(duoselect.length==0){
                     return "toast://未选择";
                 }
@@ -277,7 +284,7 @@ function SRCSet() {
                     }
                     writeFile(sourcefile, JSON.stringify(datalist));
                     clearMyVar('SrcJu_searchMark');
-                    clearMyVar('SrcJu_duoselect');
+                    clearMyVar('duoSelectLists');
                     refreshPage(false);
                     return 'toast://已删除选择';
                 },sourcefile,duoselect)
@@ -287,7 +294,7 @@ function SRCSet() {
         d.push({
             title: "禁用所选",
             url: $('#noLoading#').lazyRule((sourcefile) => {
-                let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
+                let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
                 if(duoselect.length==0){
                     return "toast://未选择";
                 }
@@ -301,7 +308,7 @@ function SRCSet() {
                     }
                     writeFile(sourcefile, JSON.stringify(datalist));
                     clearMyVar('SrcJu_searchMark');
-                    clearMyVar('SrcJu_duoselect');
+                    clearMyVar('duoSelectLists');
                     refreshPage(false);
                     return 'toast://已禁用选择';
                 },sourcefile,duoselect)
@@ -312,7 +319,7 @@ function SRCSet() {
     jkdatalist.forEach(it => {
         d.push({
             title: (it.stop?`<font color=#f20c00>`:"") + it.name + (it.parse ? " [主页源]" : "") + (it.erparse ? " [搜索源]" : "") + (it.stop?`</font>`:""),
-            url: getMyVar('SrcJu_批量选择模式')?$('#noLoading#').lazyRule((data) => {
+            url: getMyVar('批量选择模式')?$('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 duoselect(data);

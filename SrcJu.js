@@ -9,7 +9,7 @@ function yiji(testSource) {
         jkdata = readSourceData(homeSourceId);
         if (jkdata.parse) {
             let parse = jkdata.parse;
-            storage0.putMyVar('一级源接口信息',{name: sourceName, type: homeType, group: jkdata.group, img: jkdata.img});//传导给方法文件
+            storage0.putMyVar('一级源接口信息',{name: sourceName, type: jkdata.type, group: jkdata.group, img: jkdata.img});//传导给方法文件
 
             let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(homeSourceId)){
@@ -73,21 +73,21 @@ function yiji(testSource) {
         let Color = '#3399cc';
         typemenubtn.forEach((it) =>{
             let item = {
-                title: homeType==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-                url: homeType==it?$('#noLoading#').lazyRule((input) => {
+                title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+                url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);
                 }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
-                    Juconfig["homeType"] = input;
+                    Juconfig["homeGroup"] = input;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     refreshPage(false);
                     return 'toast://主页源分类分组已切换为：' + input;
                 }, cfgfile, Juconfig ,it),
                 col_type: "scroll_button"
             }
-            if(homeType==it){
+            if(homeGroup==it){
                 item.extra = {
-                    backgroundColor: homeType==it?"#20" + Color.replace('#',''):""
+                    backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
                 }
             }
             d.push(item);

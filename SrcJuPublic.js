@@ -11,6 +11,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
+        delete it.updatetime;
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

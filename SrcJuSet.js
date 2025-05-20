@@ -351,7 +351,7 @@ function jiekouapi(data, look) {
     if(data){
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
-            putMyVar('apiversion', data.version||"");
+            putMyVar('apiversion', data.version||"1");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
@@ -376,10 +376,10 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '接口版本号：'+ getMyVar('apiversion','1'),
+        title: '接口版本号：'+ getMyVar('apiversion',''),
         col_type: 'text_1',
-        url: $(getMyVar('apiversion','1'), "接口版本号").input(() => {
-            putMyVar('apiauthor',input);
+        url: $(getMyVar('apiversion',''), "接口版本号").input(() => {
+            putMyVar('apiversion',input);
             refreshPage(false);
             return 'toast://接口版本号已设置为：' + input;
         }),
@@ -587,7 +587,7 @@ function jiekouapi(data, look) {
                         } catch (e) {}
                     }
                     let index = datalist.indexOf(datalist.filter(d => d.id==newid)[0]);
-                    if (index > -1) {
+                    if (!oldid && index > -1) {
                         return "toast://已存在-" + newid;
                     } else {
                         index = datalist.indexOf(datalist.filter(d =>  d.id==oldid)[0]);

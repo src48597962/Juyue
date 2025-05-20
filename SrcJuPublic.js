@@ -8,7 +8,28 @@ let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/s
 let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-    writeFile(jkfile, fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    olddatalist.forEach(it=>{
+        let yi = it.parse;
+        let er = it.erparse;
+        let ver = ["yi.ver", "yi.Ver", "yi.version", "er.ver", "er.Ver", "er.version"];
+        for(i=0; i<ver.length; i++){
+            it.version = eval(ver[i]);
+            if(it.version){
+                break;
+            }
+        }
+        it.author = yi.作者;
+        if(er.作者 && er.作者!=it.author){
+            it.author = it.author + "&" + er.作者;
+        }
+        for(i=0; i<ver.length; i++){
+            delete ver[i];
+        }
+        it.parse = yi;
+        it.erparse = er;
+    });
+    writeFile(jkfile, JSON.stringify(olddatalist));
 }
 
 let Juconfig = {};

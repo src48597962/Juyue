@@ -8,6 +8,7 @@ function SRCSet() {
         clearMyVar('jkdatalist');
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
+        clearMyVar('selectGroup');
     }));
 
     setPageTitle("♥管理"+getMyVar('SrcJu_Version', ''));
@@ -86,12 +87,12 @@ function SRCSet() {
     if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }
-    let selectgroup = guanliType=='jk'?getMyVar("Src_Jy_jiekouGroup",""):"";
-    let jkdatalist = getGroupLists(datalist, selectgroup);
+
+    let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));
 
     if(getMyVar("seacrhJiekou")){
         jkdatalist = jkdatalist.filter(it=>{
-            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1;
+            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1 || (it.author||"").indexOf(getMyVar("seacrhJiekou"))>-1;
         })
     }
     let yxdatalist = jkdatalist.filter(it=>{
@@ -100,75 +101,28 @@ function SRCSet() {
     storage0.putMyVar("jkdatalist", jkdatalist);
     d.push({
         title: '分享',
-        url: yxdatalist.length == 0 ? "toast://有效聚阅接口为0，无法分享" : $().b64().lazyRule(() => {
-            let sharelist;
-            let duoselect = storage0.getMyVar('duoSelectLists')?storage0.getMyVar('duoSelectLists'):[];
-            if(duoselect.length>0){
-                sharelist = duoselect;
-            }else{
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                sharelist = getListData("yx", getMyVar("SrcJu_jiekouType","全部"));
-            }
-            sharelist.reverse();//从显示排序回到实际排序
-            let pastes = getPastes();
-            pastes.push('文件分享');
-            pastes.push('云口令文件');
-            return $(pastes, 2 , "选择剪贴板").select((sharelist) => {
-                if(input=='文件分享'){
-                    let sharetxt = aesEncode('SrcJu', JSON.stringify(sharelist));
-                    let sharefile = 'hiker://files/_cache/JYshare_'+sharelist.length+'_'+$.dateFormat(new Date(),"HHmmss")+'.txt';
-                    writeFile(sharefile, sharetxt);
-                    if(fileExist(sharefile)){
-                        return 'share://'+sharefile;
-                    }else{
-                        return 'toast://分享文件生成失败';
-                    }
-                }else if(input=='云口令文件'){
-                    let sharetxt = aesEncode('SrcJu', JSON.stringify(sharelist));
-                    let code = '聚阅接口￥' + sharetxt + '￥云口令文件';
-                    let sharefile = 'hiker://files/_cache/JYimport_'+sharelist.length+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
-                    writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=`+MY_RULE.title+`");`);
-                    if(fileExist(sharefile)){
-                        return 'share://'+sharefile;
-                    }else{
-                        return 'toast://云口令文件生成失败';
-                    }
-                }else{
-                    showLoading('分享上传中，请稍后...');
-                    let pasteurl = sharePaste(aesEncode('SrcJu', JSON.stringify(sharelist)), input);
-                    hideLoading();
-                    if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
-                        pasteurl = pasteurl.replace('云6oooole', 'https://pasteme.tyrantg.com').replace('云5oooole', 'https://cmd.im').replace('云7oooole', 'https://note.ms').replace('云9oooole', 'https://txtpbbd.cn').replace('云10oooole', 'https://hassdtebin.com');   
-                        log('剪贴板地址>'+pasteurl);
-                        let code = '聚阅接口￥' + aesEncode('SrcJu', pasteurl) + '￥共' + sharelist.length + '条('+input+')';
-                        copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=`+MY_RULE.title+`");`);
-                        refreshPage(false);
-                        return "toast://聚阅分享口令已生成";
-                    } else {
-                        return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
-                    }
-                }
-            },sharelist)
+        url: yxdatalist.length == 0 ? "toast://有效接口为0，无法分享" : $(pastes,2).select(()=>{
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            return JYshare(input);
         }),
         img: "http://123.56.105.145/tubiao/more/3.png",
         col_type: "icon_small_4",
         extra: {
             longClick: [{
-                title: '单接口分享剪贴板：' + (Juconfig['sharePaste'] || "自动选择"),
-                js: $.toString((cfgfile, Juconfig) => {
+                title: '单接口分享剪贴板：' + getItem("sharePaste","自动选择"),
+                js: $.toString(() => {
                     let pastes = getPastes();
                     pastes.unshift('自动选择');
-                    return $(pastes,2,'指定单接口分享时用哪个剪贴板').select((cfgfile,Juconfig) => {
+                    return $(pastes,2,'指定单接口分享时用哪个剪贴板').select(() => {
                         if(input=="自动选择"){
-                            delete Juconfig["sharePaste"];
+                            clearItem("sharePaste");
                         }else{
-                            Juconfig["sharePaste"] = input;
+                            setItem("sharePaste", input);
                         }
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
                         refreshPage(false);
                         return 'toast://单接口分享剪贴板已设置为：' + input;
-                    }, cfgfile, Juconfig)
-                },cfgfile, Juconfig)
+                    })
+                })
             }]
         }
     });
@@ -180,23 +134,16 @@ function SRCSet() {
             col_type: "blank_block"
         })
     }
-    let jkdatalist;
-    if(getMyVar("seacrhJiekou")){
-        jkdatalist = datalist.filter(it=>{
-            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1;
-        })
-    }else{
-        jkdatalist = getListData("all", getMyVar("SrcJu_jiekouType","全部"));
-    }
+    
 
     let typebtn = getTypeNames();
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
         let obj = {
-            title: getMyVar("SrcJu_jiekouType","全部")==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
-                if(getMyVar("SrcJu_jiekouType")!=it){
-                    putMyVar("SrcJu_jiekouType",it);
+                if(getMyVar("selectGroup")!=it){
+                    putMyVar("selectGroup",it);
                     refreshPage(false);
                 }
                 return "hiker://empty";
@@ -207,7 +154,7 @@ function SRCSet() {
         if(it != "全部"){
             obj.extra = {};
             let longClick = [];
-            if(getMyVar("SrcJu_jiekouType")==it){
+            if(getMyVar("selectGroup")==it){
                 longClick.push()
             }
             if(longClick.length>0){obj["extra"].longClick = longClick;}

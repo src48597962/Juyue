@@ -374,6 +374,30 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
+        title: '接口作者：'+ getMyVar('apiauthor',''),
+        col_type: 'text_1',
+        url: $(getMyVar('apiauthor',''), "接口作者").input(() => {
+            putMyVar('apiauthor',input);
+            refreshPage(false);
+            return 'toast://接口作者已设置为：' + input;
+        }),
+        extra: {
+            //lineVisible: false
+        }
+    });
+    d.push({
+        title: '接口版本号：'+ getMyVar('apiversion','1'),
+        col_type: 'text_1',
+        url: $(getMyVar('apiversion','1'), "接口版本号").input(() => {
+            putMyVar('apiauthor',input);
+            refreshPage(false);
+            return 'toast://接口版本号已设置为：' + input;
+        }),
+        extra: {
+            //lineVisible: false
+        }
+    });
+    d.push({
         title: '接口类型：'+ getMyVar('apitype',''),
         col_type: 'text_1',
         url: $(getTypeNames(),2,"接口类型").select(() => {

@@ -339,6 +339,8 @@ function SRCSet() {
 function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('apiname');
+        clearMyVar('apiauthor');
+        clearMyVar('apiversion');
         clearMyVar('apiimg');
         clearMyVar('apitype');
         clearMyVar('apigroup');
@@ -350,6 +352,8 @@ function jiekouapi(data, look) {
     if(data){
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
+            putMyVar('apiauthor', data.author||"");
+            putMyVar('apiversion', data.version||"");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
@@ -487,7 +491,7 @@ function jiekouapi(data, look) {
             titleVisible: false,
             type: "textarea",
             highlight: true,
-            height: 2,
+            height: 1,
             onChange: $.toString(() => {
                 if (/{|}/.test(input) || !input) {
                     storage0.putMyVar("apipublic", input)
@@ -495,16 +499,7 @@ function jiekouapi(data, look) {
             })
         }
     });
-    if(data&&data.updatetime){
-        d.push({
-            title: '更新时间：'+ data.updatetime,
-            col_type: 'text_1',
-            url: 'hiker://empty',
-            extra: {
-                lineVisible: false
-            }
-        });
-    }
+
     if(!look){
         d.push({
             title: '测试搜索',

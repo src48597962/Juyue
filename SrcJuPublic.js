@@ -135,7 +135,7 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data) {
-    return data.name + '  ““””<small><font color=grey>('+data.type+')' + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + '</font></small>';
+    return data.name + '  <small><font color=grey>('+data.type+')' + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + '</font></small>';
 }
 // 接口多选处理方法
 function duoselect(data){

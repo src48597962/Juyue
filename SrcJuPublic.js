@@ -17,16 +17,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
 
-        let newjkjson = {};
-        // 合并 it.obj1, it.obj2, it.obj3
-        [parse, erparse, public].forEach(function(obj) {
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    newjkjson[key] = obj[key];
-                }
-            }
-        });
-        //let newjkjson = deepMerge({}, erparse, parse, public);
+        let newjkjson = deepMerge({}, erparse, parse, public);
         let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;

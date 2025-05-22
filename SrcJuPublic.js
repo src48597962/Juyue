@@ -12,6 +12,10 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
+        log($.type(it.public));
+        log($.type(it.parse));
+        log($.type(it.erparse));
+
         let public = it.public || {};
         let parse = it.parse || {};
         let erparse = it.erparse || {};

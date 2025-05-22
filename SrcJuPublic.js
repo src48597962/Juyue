@@ -22,7 +22,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         log($.type(public));
         log($.type(parse));
         log($.type(erparse));
-        let newjkjson = Object.assign({}, erparse, parse, public);
+        let newjkjson = Object.assign({}, erparse);
         let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;

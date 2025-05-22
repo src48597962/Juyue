@@ -9,22 +9,6 @@ let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/s
 let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-    function deepMerge(target, ...sources) {
-        if (!sources.length) return target;
-        const source = sources.shift();
-
-        if (typeof target === 'object' && typeof source === 'object') {
-            for (let key in source) {
-                if (typeof source[key] === 'object' && source[key] !== null) {
-                    if (!target[key]) target[key] = {};
-                    deepMerge(target[key], source[key]);
-                } else {
-                    target[key] = source[key];
-                }
-            }
-        }
-        return deepMerge(target, ...sources);
-    }
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
@@ -35,10 +19,17 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let public = " + itpublic);
         eval("let parse = " + itparse);
         eval("let erparse = " + iterparse);
-        log($.type(public));
-        log($.type(parse));
-        log($.type(erparse));
-        let newjkjson = deepMerge({}, erparse, parse, public);
+
+        it.merged = {};
+        // 合并 it.obj1, it.obj2, it.obj3
+        [parse, erparse, public].forEach(function(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    it.merged[key] = obj[key];
+                }
+            }
+        });
+        //let newjkjson = deepMerge({}, erparse, parse, public);
         let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
@@ -49,7 +40,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        writeFile(newjkurl, JSON.stringify(newjkjson));
+        writeFile(newjkurl, JSON.stringify(it.merged));
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

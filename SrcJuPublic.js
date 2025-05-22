@@ -204,6 +204,7 @@ function changeSource(sourceid) {
             }
         })
     } catch (e) {
+        log("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
         toast('软件版本过低，请升级软件');
     }
     try {
@@ -343,7 +344,7 @@ function getYiData(datatype, od) {
             parse = source;
         }
     } catch (e) {
-        log("一级源代码加载异常>" + e.message);
+        log("一级源代码加载异常>" + e.message + " 错误行#" + e.lineNumber);
     }
     if (parse) {
         try {
@@ -608,7 +609,7 @@ function readSourceData(fileid){
             }
         }
     }catch(e){
-        log("接口数据加载失败>"+fileid+">"+e.message);
+        log("接口数据加载失败>"+fileid+">"+e.message + " 错误行#" + e.lineNumber);
     }
     return jkdata;
 }
@@ -770,7 +771,7 @@ function banner(start, arr, data, cfg){
             require(obj.method);
             updateItem('bar', toerji(item,obj.info));
         } catch (e) {
-            log(e.message)
+            log("幻灯片处理异常>" + e.message + " 错误行#" + e.lineNumber)
             unRegisterTask('juyue')
         }
         putMyVar('banneri', i);

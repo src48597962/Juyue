@@ -9,20 +9,20 @@ function yiji(testSource) {
         jkdata = readSourceData(homeSourceId);
         if (jkdata.parse) {
             let parse = jkdata.parse;
-            storage0.putMyVar('一级源接口信息',{name: sourceName, type: jkdata.type, group: jkdata.group, img: jkdata.img});//传导给方法文件
+            storage0.putMyVar('一级源接口信息',{name: jkdata.name, type: jkdata.type, group: jkdata.group, img: jkdata.img});//传导给方法文件
 
             let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
             if(!getMyVar(homeSourceId)){
                 toast(提示);
+                putMyVar(homeSourceId, "1");
             }
         }
     } catch (e) {
         log("一级源接口加载异常>" + e.message + ' 错误行#' + e.lineNumber);
     }
-
+    
     let d = [];
     if(MY_PAGE==1){
-        
         d.push({
             title: "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -144,9 +144,9 @@ function yiji(testSource) {
                 })
             }
         });
-        putMyVar(homeSourceId, "1");
     }
 
+    
     //加载主页内容
     getYiData('主页', d);
 }

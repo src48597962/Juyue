@@ -12,9 +12,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
-        log($.type(it.public));
-        log($.type(it.parse));
-        log($.type(it.erparse));
+
 
         let itpublic = it.public || '{}';
         let itparse = it.parse || '{}';
@@ -22,6 +20,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let public = " + itpublic);
         eval("let parse = " + itparse);
         eval("let erparse = " + iterparse);
+        log($.type(public));
+        log($.type(parse));
+        log($.type(erparse));
         let newjkjson = Object.assign({}, public, parse, erparse);
         /*
         if(it.public){

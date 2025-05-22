@@ -11,14 +11,12 @@ let gzip = $.require(codepath + "plugins/gzip.js");
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
-        it.id = it.type+"_"+it.name;
-
+        it.id = it.type + "_" + it.name;
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
-
         let newjkjson = Object.assign({}, erparse, parse, public);
-        let newjkurl = jkfilespath+it.id+'.json';
+        let newjkurl = jkfilespath + it.id + '.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;
@@ -131,7 +129,7 @@ function dataHandle(data, input) {
     }
     
     waitlist.forEach(it => {
-        let index = datalist.findIndex(item => item.id === it.id);
+        let index = datalist.findIndex(item => item.url === it.url);
         if(input == "禁用"){
             datalist[index].stop = 1;
         }else if(input == "启用"){
@@ -165,13 +163,13 @@ function duoselect(data){
 
     let selectlist = storage0.getMyVar('duoSelectLists') || [];
     waitlist.forEach(data=>{
-        if(!selectlist.some(item => data.id==item.id)){
+        if(!selectlist.some(item => data.url==item.url)){
             selectlist.push(data);
-            updateItem(data.id, {title: colorTitle(getDataTitle(data),'#3CB371')});
+            updateItem(data.url, {title: colorTitle(getDataTitle(data),'#3CB371')});
         }else{
-            let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id )[0]);
+            let index = selectlist.indexOf(selectlist.filter(d => data.url==d.url)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
+            updateItem(data.url, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
         }
     })
     storage0.putMyVar('duoSelectLists',selectlist);
@@ -191,7 +189,7 @@ function deleteData(data){
     }
 
     dellist.forEach(it => {
-        let index = datalist.indexOf(datalist.filter(d => it.id==d.id )[0]);
+        let index = datalist.indexOf(datalist.filter(d => it.url==d.url)[0]);
         datalist.splice(index, 1);
     })
 
@@ -242,10 +240,10 @@ function selectSource(selectType) {
     function getitems(list) {
         let index = -1;
         let items = list.map((v,i) => {
-            if(v.id==homeSourceId){
+            if(v.url==homeSourceId){
                 index = i;
             }
-            return {title:v.name, icon:v.img, url:v.id};
+            return {title:v.name, icon:v.img, url:v.url};
         });
         return {items:items, index:index};
     }
@@ -347,7 +345,7 @@ function getYiData(datatype, od) {
 
     let d = od || [];
     let sourcedata = getDatas('yi', true).filter(it => {
-        return it.id==homeSourceId;
+        return it.url==homeSourceId;
     });
     let parse;
     let 公共;
@@ -603,28 +601,6 @@ function getYiData(datatype, od) {
         }
         setResult(d);
     }
-}
-//读取源接口数据
-function readSourceData(fileid){
-    let cachefile = cachepath + `${fileid}.json`;
-    let jkdata = {};
-    try{
-        let cachefiledata = fetch(cachefile);
-        if(cachefiledata){
-            eval("jkdata=" + cachefiledata);
-        }else{
-            let jklist = getDatas('all', true).filter(it=>{
-                return it.id == fileid;
-            });
-            if(jklist.length==1){
-                jkdata = jklist[0];
-                writeFile(cachefile,JSON.stringify(jkdata));
-            }
-        }
-    }catch(e){
-        log("接口数据加载失败>"+fileid+">"+e.message + " 错误行#" + e.lineNumber);
-    }
-    return jkdata;
 }
 
 //重定义打印日志，只允许调试模式下打印

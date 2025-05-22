@@ -314,6 +314,7 @@ function getBookList(arr) {
         bookmark.setDir(false);
         bookmark.setUrl(it.url || it.title || "");
         bookmark.setIcon(it.icon || "");
+        bookmark.setData(it.data || {});
         list.add(bookmark);
     }
     return list;
@@ -977,7 +978,8 @@ function selectBottomResIcon({
         let items = {
             icon: String(item.getIcon()),
             title: String(item.getTitle()),
-            url: String(item.getUrl())
+            url: String(item.getUrl()),
+            data: String(item.getData())
         };
         let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
         if (noAutoDismiss) {

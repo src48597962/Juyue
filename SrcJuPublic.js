@@ -14,7 +14,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         const source = sources.shift();
 
         if (typeof target === 'object' && typeof source === 'object') {
-            for (const key in source) {
+            for (let key in source) {
                 if (typeof source[key] === 'object' && source[key] !== null) {
                     if (!target[key]) target[key] = {};
                     deepMerge(target[key], source[key]);

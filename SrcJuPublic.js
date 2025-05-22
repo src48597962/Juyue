@@ -2,6 +2,7 @@
 let libspath = "hiker://files/data/聚阅/"; //依赖文件路径
 let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
 let cachepath = "hiker://files/_cache/Juyue/"; //缓存文件路径
+let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
 let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
@@ -11,11 +12,16 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
+        let newjkfile = Object.assign({}, it.public, it.parse, it.erparse);
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
         delete it.updatetime;
+        delete it.public;
+        delete it.parse;
+        delete it.erparse;
+        writeFile(jkfilespath+it.id+'.json', JSON.stringify(newjkfile));
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

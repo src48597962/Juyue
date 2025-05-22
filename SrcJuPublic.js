@@ -12,7 +12,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
-        let newjkjson = {};
+        eval("let oldjkjson = " + it);
+        let newjkjson = Object.assign({}, oldjkjson.public||{}, oldjkjson.parse||{}, oldjkjson.erparse||{});
+        /*
         if(it.public){
             newjkjson = Object.assign(newjkjson, JSON.parse(it.public));
         }
@@ -22,6 +24,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         if(it.erparse){
             newjkjson = Object.assign(newjkjson, JSON.parse(it.erparse));
         }
+        */
         let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
@@ -32,7 +35,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        writeFile(newjkurl, JSON.stringify(newjkfile));
+        writeFile(newjkurl, JSON.stringify(newjkjson));
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

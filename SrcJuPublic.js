@@ -16,9 +16,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         let itpublic = it.public || '{}';
         let itparse = it.parse || '{}';
         let iterparse = it.erparse || '{}';
-        eval("let public = " + itpublic);
-        eval("let parse = " + itparse);
-        eval("let erparse = " + iterparse);
+        let public = JSON.parse(itpublic);
+        let parse = JSON.parse(itparse);
+        let erparse = JSON.parse(iterparse);
         log($.type(public));
         log($.type(parse));
         log($.type(erparse));

@@ -12,16 +12,18 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
-        let newjkfile = Object.assign({}, it.public, it.parse, it.erparse);
+        let newjkfile = Object.assign({}, JSON.parse(it.public||"\{\}"), JSON.parse(it.parse||"\{\}"), JSON.parse(it.erparse||"\{\}"));
+        let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
+        it.url = newjkurl;
         delete it.updatetime;
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        writeFile(jkfilespath+it.id+'.json', JSON.stringify(newjkfile));
+        writeFile(newjkurl, JSON.stringify(newjkfile));
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

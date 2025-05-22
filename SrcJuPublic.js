@@ -39,8 +39,9 @@ if (Jucfg != "") {
 
 let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
-let homeSourceId = Juconfig["homeSourceId"] || "";
-let sourcename = homeSourceId.split('_').slice(1).join('_');//旧源名称
+let homeSource = Juconfig["homeSource"] || {};
+let homeSourceId = homeSource.id || "";
+let sourcename = homeSource.name || "";//旧源名称
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -129,7 +130,7 @@ function dataHandle(data, input) {
     }
     
     waitlist.forEach(it => {
-        let index = datalist.findIndex(item => item.url === it.url);
+        let index = datalist.findIndex(item => item.id === it.id);
         if(input == "禁用"){
             datalist[index].stop = 1;
         }else if(input == "启用"){
@@ -163,13 +164,13 @@ function duoselect(data){
 
     let selectlist = storage0.getMyVar('duoSelectLists') || [];
     waitlist.forEach(data=>{
-        if(!selectlist.some(item => data.url==item.url)){
+        if(!selectlist.some(item => data.id==item.id)){
             selectlist.push(data);
-            updateItem(data.url, {title: colorTitle(getDataTitle(data),'#3CB371')});
+            updateItem(data.id, {title: colorTitle(getDataTitle(data),'#3CB371')});
         }else{
-            let index = selectlist.indexOf(selectlist.filter(d => data.url==d.url)[0]);
+            let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.url, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
+            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
         }
     })
     storage0.putMyVar('duoSelectLists',selectlist);
@@ -189,7 +190,7 @@ function deleteData(data){
     }
 
     dellist.forEach(it => {
-        let index = datalist.indexOf(datalist.filter(d => it.url==d.url)[0]);
+        let index = datalist.indexOf(datalist.filter(d => it.id==d.id)[0]);
         datalist.splice(index, 1);
     })
 
@@ -198,9 +199,9 @@ function deleteData(data){
     clearMyVar('duoSelectLists');
 }
 //执行切换源接口
-function changeSource(sourceid) {
-    if (homeSourceId==sourceid) {
-        return 'toast://主页源：' + sourceid;
+function changeSource(sourcedata) {
+    if (homeSourceId==sourcedata.id) {
+        return 'toast://主页源：' + homeSourceId;
     }
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");
@@ -222,10 +223,10 @@ function changeSource(sourceid) {
         refreshX5WebView('about:blank');
     } catch (e) { }
 
-    Juconfig['homeSourceId'] = sourceid;
+    Juconfig['homeSource'] = sourcedata;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
-    return 'toast://主页源已设置为：' + sourceid;
+    return 'toast://主页源已设置为：' + sourcedata.id;
 }
 //封装选择主页源方法
 function selectSource(selectType) {
@@ -240,10 +241,10 @@ function selectSource(selectType) {
     function getitems(list) {
         let index = -1;
         let items = list.map((v,i) => {
-            if(v.url==homeSourceId){
+            if(v.id==homeSourceId){
                 index = i;
             }
-            return {title:v.name, icon:v.img, url:v.url};
+            return {title:v.name, icon:v.img, data:v};
         });
         return {items:items, index:index};
     }
@@ -292,8 +293,8 @@ function selectSource(selectType) {
         click(item, i, manage) {
             pop.dismiss();
 
-            let sourceid = item.url;
-            return changeSource(sourceid);
+            let sourcedata = item.data;
+            return changeSource(sourcedata);
         },
         menuClick(manage) {
             hikerPop.selectCenter({
@@ -345,7 +346,7 @@ function getYiData(datatype, od) {
 
     let d = od || [];
     let sourcedata = getDatas('yi', true).filter(it => {
-        return it.url==homeSourceId;
+        return it.id==homeSourceId;
     });
     let parse;
     let 公共;

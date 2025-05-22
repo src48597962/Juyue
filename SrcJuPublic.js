@@ -13,19 +13,16 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     olddatalist.forEach(it=>{
         it.id = it.type+"_"+it.name;
 
-        let itpublic = it.public || '{}';
-        let itparse = it.parse || '{}';
-        let iterparse = it.erparse || '{}';
-        eval("let public = " + itpublic);
-        eval("let parse = " + itparse);
-        eval("let erparse = " + iterparse);
+        eval("let public = " + (it.public || '{}'));
+        eval("let parse = " + (it.parse || '{}'));
+        eval("let erparse = " + (it.erparse || '{}'));
 
-        it.merged = {};
+        let newjkjson = {};
         // 合并 it.obj1, it.obj2, it.obj3
         [parse, erparse, public].forEach(function(obj) {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
-                    it.merged[key] = obj[key];
+                    newjkjson[key] = obj[key];
                 }
             }
         });
@@ -40,7 +37,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        writeFile(newjkurl, JSON.stringify(it.merged));
+        writeFile(newjkurl, newjkjson.toString());
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

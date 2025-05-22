@@ -16,9 +16,12 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         log($.type(it.parse));
         log($.type(it.erparse));
 
-        let public = it.public || {};
-        let parse = it.parse || {};
-        let erparse = it.erparse || {};
+        let itpublic = it.public || '{}';
+        let itparse = it.parse || '{}';
+        let iterparse = it.erparse || '{}';
+        eval("let public = " + itpublic);
+        eval("let parse = " + itparse);
+        eval("let erparse = " + iterparse);
         let newjkjson = Object.assign({}, public, parse, erparse);
         /*
         if(it.public){

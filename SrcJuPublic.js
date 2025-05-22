@@ -17,7 +17,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
 
-        let newjkjson = deepMerge({}, erparse, parse, public);
+        let newjkjson = Object.assign({}, erparse, parse, public);
         let newjkurl = jkfilespath+it.id+'.json';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;

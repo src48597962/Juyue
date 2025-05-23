@@ -14,7 +14,7 @@ function serializeObject(obj) {
   for (var key in obj) {
     if (typeof obj[key] === 'function') {
       // 将函数转为字符串
-      result[key] = "[FUNCTION]" + obj[key].toString();
+      result[key] = obj[key].toString();
     } else {
       // 直接复制值
       result[key] = obj[key];

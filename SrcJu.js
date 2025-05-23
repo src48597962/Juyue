@@ -166,7 +166,7 @@ function yiji(testSource) {
             let lists = [];
 
             let lockgroups = Juconfig["lockgroups"] || [];
-            if((lockgroups.indexOf(sourceGroup)>-1 || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('已验证指纹')!='1'){
+            if((lockgroups.indexOf(homeGroup)>-1 || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('已验证指纹')!='1'){
                 const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
                 if (hikerPop.canBiometric() !== 0) {
                     return "toast://调用生物学验证出错";

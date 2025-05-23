@@ -80,9 +80,7 @@ function getDatas(lx, isyx) {
     }
      
     if (lx == "yi") {
-        datalist = datalist.filter(it => it.parse);
-    } else if (lx == "er") {
-        datalist = datalist.filter(it => it.erparse);
+        datalist = datalist.filter(it => !it.onlysearch);
     }
     
     if (getItem("sourceListSort") == "接口名称") {
@@ -177,7 +175,7 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data) {
-    return data.name + '  <small><font color=grey>('+data.type+')' + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + '</font></small>';
+    return data.name + '  <small><font color=grey>('+data.type+')' + (data.onlysearch ? " [搜索源]" : "") + '</font></small>';
 }
 // 接口多选处理方法
 function duoselect(data){

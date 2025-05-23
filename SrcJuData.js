@@ -12,14 +12,6 @@ function getYiData(jkdata, datatype, dd) {
     let 公共 = rule;
 
     try {
-        if (公共['预处理']) {
-            try {
-                公共['预处理']();
-            } catch (e) {
-                log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-            }
-        }
-
         let page = MY_PAGE || 1;
 
         let itemid = jkdata.id + "_" + datatype;
@@ -58,8 +50,10 @@ function getYiData(jkdata, datatype, dd) {
             putMyVar('动态加载loading', itemid);
         }
 
-        let 执行str = rule[datatype].toString();
         let 页码 = rule["页码"] || {};
+        if(!页码["主页"] && datatype==="主页"){
+            return [];
+        }
         let 转换 = rule["转换"] || {};
         let zz = 转换["排行"] || "排行";
         if(rule[zz]){
@@ -88,7 +82,7 @@ function getYiData(jkdata, datatype, dd) {
                 col_type: 'icon_small_3'
             })
         }
-
+        let 执行str = rule[datatype].toString();
         let obj = rule.四大金刚 || {};
         if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
@@ -194,6 +188,13 @@ function getYiData(jkdata, datatype, dd) {
         let error = "";
         let getData = [];
         try {
+            if (公共['预处理']) {
+                try {
+                    公共['预处理']();
+                } catch (e) {
+                    log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                }
+            }
             let setResult = function (d){
                 return d;
             }

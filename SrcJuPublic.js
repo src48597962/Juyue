@@ -38,7 +38,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         const keys = Object.keys(obj);
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
-            const isLast = i === keys.length - 1;
+            let isLast = i === keys.length - 1;
 
             // 处理键名（确保特殊字符被正确引用）
             const formattedKey = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key)
@@ -76,7 +76,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             let result = '[\n';
 
             for (let i = 0; i < value.length; i++) {
-                const isLast = i === value.length - 1;
+                let isLast = i === value.length - 1;
                 result += `${indent}${formatValue(value[i], indentSize)}${isLast ? '\n' : ',\n'}`;
             }
 
@@ -93,7 +93,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                const isLast = i === keys.length - 1;
+                let isLast = i === keys.length - 1;
                 const formattedKey = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key)
                     ? key
                     : JSON.stringify(key);

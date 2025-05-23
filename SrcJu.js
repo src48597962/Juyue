@@ -4,16 +4,16 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let jkdata;
+    let jkdata = {};
     try {
-        jkdata = homeSource;
-        if (jkdata.parse) {
-            let parse = jkdata.parse;
-            storage0.putMyVar('一级源接口信息',{name: jkdata.name, type: jkdata.type, group: jkdata.group, img: jkdata.img});//传导给方法文件
-
-            let 提示 = "当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : "");
+        let yxdatalist = getDatas('yi', 1);
+        let index = yxdatalist.findIndex(d => d.id === homeSourceId);
+        jkdata = yxdatalist[index] || {};
+        if(jkdata.name){
+            storage0.putMyVar('一级源接口信息', jkdata);
             if(!getMyVar(homeSourceId)){
-                toast(提示);
+                //toast("当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : ""));
+                toast("当前主页源：" + homeSourceId);
                 putMyVar(homeSourceId, "1");
             }
         }
@@ -112,7 +112,7 @@ function yiji(testSource) {
                     newSearch(input);
                 },input);
             }else{
-                require(config.聚影); 
+                require(config.聚阅); 
                 let d = search(input, 'dianboyiji' , jkdata);
                 if(d.length>0){
                     deleteItemByCls('dianbosousuolist');
@@ -122,7 +122,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }
-        },jkdata);
+        }, jkdata);
         d.push({
             title: "搜索",
             url: $.toString((searchurl) => {
@@ -144,11 +144,78 @@ function yiji(testSource) {
                 })
             }
         });
+        if(!jkdata.name){
+            d.push({
+                title: homeGroup + " 主页源不存在\n需先选择配置主页源",
+                desc: "点此或上面按钮皆可选择",
+                url: $('#noLoading#').lazyRule((input) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    return selectSource(input);
+                }, homeGroup),
+                col_type: "text_center_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
     }
-
     
     //加载主页内容
-    getYiData('主页', d);
+    if(jkdata.name){
+        try{
+            let yidata = {lists:[]}
+
+            let lockgroups = Juconfig["lockgroups"] || [];
+            if((lockgroups.indexOf(sourceGroup)>-1 || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('已验证指纹')!='1'){
+                const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                if (hikerPop.canBiometric() !== 0) {
+                    return "toast://调用生物学验证出错";
+                }
+                let pop = hikerPop.checkByBiometric(() => {
+                    putMyVar('已验证指纹','1');
+                    refreshPage(false);
+                    if(parseInt(getMyVar('点播下滑num','0'))>1){
+                        selectSource(homeGroup);
+                    }
+                });
+            }else{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
+                log('开始获取一级数据');
+                let t1 = new Date().getTime();
+                yidata = getYiData(jkdata);
+                let t2 = new Date().getTime();
+                log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
+            }
+
+            let lists = yidata.lists;
+            if(lists.length>0){
+                d = d.concat(yidata.lists);
+            }else if(yidata.error && MY_PAGE==1){
+                d.push({
+                    title: "列表获取失败",
+                    desc: yidata.error,
+                    url: 'hiker://empty',
+                    col_type: 'text_center_1'
+                }); 
+            }else if(vodlists.length == 0 && MY_PAGE==1){
+                d.push({
+                    title: '列表为空',
+                    desc: '未获取到内容',
+                    url: 'hiker://empty',
+                    col_type: 'text_center_1'
+                });
+            }
+        }catch(e){
+            d.push({
+                title: '源接口异常了，请更换',
+                desc: '调用一级数据异常>' + e.message + ' 错误行#' + e.lineNumber,
+                url: 'hiker://empty',
+                col_type: 'text_center_1'
+            });
+            log(jkdata.name+'>调用一级数据异常>' + e.message + ' 错误行#' + e.lineNumber);
+        }
+    }
+    setResult(d);
 }
 
 //二级+源搜索

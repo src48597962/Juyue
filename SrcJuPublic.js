@@ -10,6 +10,25 @@ let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+    function objectToJsCode(obj) {
+        let jsCode = `let rule = {`;
+
+        for (let key in obj) {
+            if (typeof obj[key] === 'function') {
+                // 处理函数
+                jsCode += `  ${key}: ${obj[key].toString()},`;
+            } else {
+                // 处理普通属性
+                jsCode += `  ${key}: ${JSON.stringify(obj[key])},`;
+            }
+        }
+
+        // 移除最后一个逗号
+        jsCode = jsCode.replace(/,$/, '');
+        jsCode += '};\n';
+
+        return jsCode;
+    }
     olddatalist.forEach(it=>{
         it.id = it.type + "_" + it.name;
         eval("let public = " + (it.public || '{}'));
@@ -26,10 +45,10 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        storage0.putMyVar('newjkjson', newjkjson);
+        //storage0.putMyVar('newjkjson', newjkjson);
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
 
-        writeFile(newjkurl, 'let rule = ' + getMyVar('newjkjson'));
+        writeFile(newjkurl, objectToJsCode(newjkjson));
         
     })
     writeFile(jkfile, JSON.stringify(olddatalist));

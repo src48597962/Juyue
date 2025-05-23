@@ -8,7 +8,7 @@ function getYiData(jkdata, datatype, dd) {
 
     eval(fetch(jkdata.url));
 
-    let d = [];
+    let d = dd || [];
     let 公共 = rule;
 
     try {
@@ -18,7 +18,6 @@ function getYiData(jkdata, datatype, dd) {
         let loading;
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar('动态加载loading') != itemid) {
             loading = 1;
-            d = dd || [];
             d.push({
                 title: "",
                 url: "hiker://empty",
@@ -51,7 +50,7 @@ function getYiData(jkdata, datatype, dd) {
         }
 
         let 页码 = rule["页码"] || {};
-        if(!页码["主页"] && datatype==="主页" && page>1){
+        if(!页码[datatype] && page>1){
             return [];
         }
         let 转换 = rule["转换"] || {};

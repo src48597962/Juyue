@@ -65,9 +65,7 @@ if (Jucfg != "") {
 
 let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
-let homeSource = Juconfig["homeSource"] || {};
-let homeSourceId = homeSource.id || "";
-let sourcename = homeSource.name || "";//旧源名称
+let homeSourceId = Juconfig[homeGroup + "_SourceId"] || "";
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -246,8 +244,8 @@ function changeSource(sourcedata) {
     try {
         refreshX5WebView('about:blank');
     } catch (e) { }
-
-    Juconfig['homeSource'] = sourcedata;
+    let sourceGroup = sourcedata.group || sourcedata.type;
+    Juconfig[sourceGroup+'_SourceId'] = sourcedata.id;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
     return 'toast://主页源已设置为：' + sourcedata.id;

@@ -6,7 +6,7 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 function yiji(testSource) {
     let jkdata;
     try {
-        jkdata = readSourceData(homeSourceId);
+        jkdata = homeSource;
         if (jkdata.parse) {
             let parse = jkdata.parse;
             storage0.putMyVar('一级源接口信息',{name: jkdata.name, type: jkdata.type, group: jkdata.group, img: jkdata.img});//传导给方法文件

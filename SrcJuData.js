@@ -58,7 +58,6 @@ function getYiData(jkdata, datatype, dd) {
         }
 
         let 执行str = rule[datatype].toString();
-        log(执行str);
         let 页码 = rule["页码"] || {};
         let 转换 = rule["转换"] || {};
         let zz = 转换["排行"] || "排行";
@@ -89,7 +88,7 @@ function getYiData(jkdata, datatype, dd) {
             })
         }
 
-        let obj = parse.四大金刚 || {};
+        let obj = rule.四大金刚 || {};
         if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');

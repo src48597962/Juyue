@@ -14,7 +14,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     function objectToJsCode(obj, variableName) {
     let jsCode = `let ${variableName} = {\n`;
     
-    for (const key in obj) {
+    for (let key in obj) {
         if (typeof obj[key] === 'function') {
         // 处理函数
         jsCode += `  ${key}: ${obj[key].toString()},\n`;

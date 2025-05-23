@@ -163,7 +163,7 @@ function yiji(testSource) {
     //加载主页内容
     if(jkdata.name){
         try{
-            let yidata = {lists:[]}
+            let lists = [];
 
             let lockgroups = Juconfig["lockgroups"] || [];
             if((lockgroups.indexOf(sourceGroup)>-1 || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('已验证指纹')!='1'){
@@ -182,29 +182,12 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
-                yidata = getYiData(jkdata);
+                lists = getYiData(jkdata);
                 let t2 = new Date().getTime();
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
 
-            let lists = yidata.lists;
-            if(lists.length>0){
-                d = d.concat(yidata.lists);
-            }else if(yidata.error && MY_PAGE==1){
-                d.push({
-                    title: "列表获取失败",
-                    desc: yidata.error,
-                    url: 'hiker://empty',
-                    col_type: 'text_center_1'
-                }); 
-            }else if(vodlists.length == 0 && MY_PAGE==1){
-                d.push({
-                    title: '列表为空',
-                    desc: '未获取到内容',
-                    url: 'hiker://empty',
-                    col_type: 'text_center_1'
-                });
-            }
+            d = d.concat(lists);
         }catch(e){
             d.push({
                 title: '源接口异常了，请更换',

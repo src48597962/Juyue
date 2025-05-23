@@ -8,7 +8,7 @@ function getYiData(jkdata, datatype, dd) {
 
     eval(fetch(jkdata.url));
 
-    let d = dd || [];
+    let d = [];
     let 公共 = rule;
 
     try {
@@ -26,6 +26,7 @@ function getYiData(jkdata, datatype, dd) {
         let loading;
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar('动态加载loading') != itemid) {
             loading = 1;
+            d = dd || [];
             d.push({
                 title: "",
                 url: "hiker://empty",

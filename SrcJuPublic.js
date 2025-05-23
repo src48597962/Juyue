@@ -27,8 +27,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.parse;
         delete it.erparse;
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        storage0.putMyVar("newjkjson", newjkjson);
-        writeFile(newjkurl, getMyVar("newjkjson"));
+        writeFile(newjkurl, newjkjson.toString());
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

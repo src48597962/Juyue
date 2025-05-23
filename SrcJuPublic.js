@@ -31,7 +31,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         return jsCode;
     }
     */
-    function objectToJsCode(obj, indentSize = 2) {
+    function objectToJsCode(obj, indentSize) {
         const indent = ' '.repeat(indentSize);
         let jsCode = 'let rule = {\n';
 

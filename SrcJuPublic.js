@@ -7,6 +7,21 @@ let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
+// 序列化函数
+function serializeObject(obj) {
+  var result = {};
+  // 手动复制所有属性
+  for (var key in obj) {
+    if (typeof obj[key] === 'function') {
+      // 将函数转为字符串
+      result[key] = "[FUNCTION]" + obj[key].toString();
+    } else {
+      // 直接复制值
+      result[key] = obj[key];
+    }
+  }
+  return JSON.stringify(result);
+}
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
@@ -27,7 +42,8 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.parse;
         delete it.erparse;
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        writeFile(newjkurl, newjkjson.toString());
+        writeFile(newjkurl, serializeObject(newjkjson));
+        
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
 }

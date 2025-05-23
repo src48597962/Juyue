@@ -1,4 +1,4 @@
-function getYiData(jkdata, datatype) {
+function getYiData(jkdata, datatype, dd) {
     addListener('onRefresh', $.toString(() => {
         clearMyVar('动态加载loading')
     }));
@@ -8,7 +8,7 @@ function getYiData(jkdata, datatype) {
 
     eval(fetch(jkdata.url));
 
-    let d = [];
+    let d = dd || [];
     let 公共 = rule;
 
     try {
@@ -20,9 +20,9 @@ function getYiData(jkdata, datatype) {
             }
         }
 
-        let 标识 = jkdata.id;
-        let itemid = 标识 + "_" + datatype;
         let page = MY_PAGE || 1;
+
+        let itemid = jkdata.id + "_" + datatype;
         let loading;
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar('动态加载loading') != itemid) {
             loading = 1;

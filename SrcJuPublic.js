@@ -316,7 +316,7 @@ function selectSource(selectType) {
         },
         click(item, i, manage) {
             pop.dismiss();
-
+            log(item);
             let sourcedata = item.data;
             return changeSource(sourcedata);
         },

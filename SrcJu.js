@@ -187,7 +187,7 @@ function yiji(testSource) {
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
 
-            d = d.concat(lists);
+            d = lists;
         }catch(e){
             d.push({
                 title: '源接口异常了，请更换',

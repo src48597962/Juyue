@@ -51,7 +51,7 @@ function getYiData(jkdata, datatype, dd) {
         }
 
         let 页码 = rule["页码"] || {};
-        if(!页码["主页"] && datatype==="主页"){
+        if(!页码["主页"] && datatype==="主页" && page>1){
             return [];
         }
         let 转换 = rule["转换"] || {};

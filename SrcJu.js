@@ -113,10 +113,10 @@ function yiji(testSource) {
                 },input);
             }else{
                 require(config.聚阅); 
-                let d = search(input, 'dianboyiji' , jkdata);
+                let d = search(input, 'yiji' , jkdata);
                 if(d.length>0){
-                    deleteItemByCls('dianbosousuolist');
-                    addItemAfter('dianbosousuoid', d);
+                    deleteItemByCls('homesousuolist');
+                    addItemAfter('homesousuoid', d);
                 }else{
                     return 'toast://无结果';
                 }
@@ -135,11 +135,11 @@ function yiji(testSource) {
             desc: "搜你想要的...",
             col_type: "input",
             extra: {
-                id: 'dianbosousuoid',
+                id: 'homesousuoid',
                 titleVisible: true,
                 onChange: $.toString(() => {
                     if(input==""){
-                        deleteItemByCls('dianbosousuolist');
+                        deleteItemByCls('homesousuolist');
                     }
                 })
             }
@@ -182,7 +182,7 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
-                lists = getYiData(jkdata);
+                lists = getYiData(jkdata, '主页');
                 let t2 = new Date().getTime();
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }

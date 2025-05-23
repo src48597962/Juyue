@@ -37,7 +37,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
         let newjkjson = Object.assign({}, public, parse, erparse);
-        let newjkurl = jkfilespath + it.id + '.js';
+        let newjkurl = jkfilespath + it.id + '.txt';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;

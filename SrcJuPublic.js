@@ -11,17 +11,26 @@ let gzip = $.require(codepath + "plugins/gzip.js");
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
     // 将对象转换为JS代码字符串
-    function objectToJsCode(obj, variableName) {
-    let jsCode = `let ${variableName} = {\n`;
-    
-    for (let key in obj) {
-        if (typeof obj[key] === 'function') {
-        // 处理函数
-        jsCode += `  ${key}: ${obj[key].toString()},\n`;
-        } else {
-        // 处理普通属性
-        jsCode += `  ${key}: ${JSON.stringify(obj[key])},\n`;
+    function objectToJsCode(obj) {
+        let variableName = 'data';
+        let jsCode = `let ${variableName} = {\n`;
+        
+        for (const key in obj) {
+            if (typeof obj[key] === 'function') {
+            // 处理函数
+            jsCode += `  ${key}: ${obj[key].toString()},\n`;
+            } else {
+            // 处理普通属性
+            jsCode += `  ${key}: ${JSON.stringify(obj[key])},\n`;
+            }
         }
+        
+        // 移除最后一个逗号
+        jsCode = jsCode.replace(/,\n$/, '\n');
+        jsCode += '};\n\n';
+        jsCode += `module.exports = ${variableName};`;
+        
+        return jsCode;
     }
 
     olddatalist.forEach(it=>{
@@ -41,7 +50,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.parse;
         delete it.erparse;
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        writeFile(newjkurl, objectToJsCode(newjkjson, 'data'));
+        writeFile(newjkurl, objectToJsCode(newjkjson));
         
     })
     writeFile(jkfile, JSON.stringify(olddatalist));

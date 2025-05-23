@@ -10,96 +10,6 @@ let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
-    function objectToJsCode(obj, indentSize = 2) {
-        const indent = ' '.repeat(indentSize);
-        let jsCode = `let rule = {\n`;
-
-        const keys = Object.keys(obj);
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            const isLast = i === keys.length - 1;
-
-            // 处理键名（确保特殊字符被正确引用）
-            const formattedKey = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key)
-                ? key
-                : JSON.stringify(key);
-
-            if (typeof obj[key] === 'function') {
-                // 格式化函数
-                const funcStr = formatFunction(obj[key], indentSize + 2);
-                jsCode += `${indent}${formattedKey}: ${funcStr}`;
-            } else {
-                // 格式化普通属性
-                jsCode += `${indent}${formattedKey}: ${formatValue(obj[key], indentSize + 2)}`;
-            }
-
-            // 添加逗号（除非是最后一个属性）
-            jsCode += isLast ? '\n' : ',\n';
-        }
-
-        jsCode += '};\n\n';
-
-        return jsCode;
-    }
-
-    // 辅助函数：格式化值
-    function formatValue(value, indentSize) {
-        if (value === undefined) {
-            return 'undefined';
-        }
-
-        // 处理数组
-        if (Array.isArray(value)) {
-            if (value.length === 0) return '[]';
-
-            const indent = ' '.repeat(indentSize);
-            let result = '[\n';
-
-            for (let i = 0; i < value.length; i++) {
-                const isLast = i === value.length - 1;
-                result += `${indent}${formatValue(value[i], indentSize)}${isLast ? '\n' : ',\n'}`;
-            }
-
-            return result + ' '.repeat(indentSize - 2) + ']';
-        }
-
-        // 处理对象
-        if (typeof value === 'object' && value !== null) {
-            const keys = Object.keys(value);
-            if (keys.length === 0) return '{}';
-
-            const indent = ' '.repeat(indentSize);
-            let result = '{\n';
-
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                const isLast = i === keys.length - 1;
-                const formattedKey = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key)
-                    ? key
-                    : JSON.stringify(key);
-
-                result += `${indent}${formattedKey}: ${formatValue(value[key], indentSize)}${isLast ? '\n' : ',\n'}`;
-            }
-
-            return result + ' '.repeat(indentSize - 2) + '}';
-        }
-
-        // 默认使用JSON.stringify
-        return JSON.stringify(value);
-    }
-
-    // 辅助函数：格式化函数
-    function formatFunction(func, indentSize) {
-        const funcStr = func.toString();
-        const indent = ' '.repeat(indentSize);
-
-        // 简单格式化：添加换行和缩进
-        return funcStr
-            .replace(/\{\s*/, '{\n' + indent)
-            .replace(/\s*\}$/, '\n' + ' '.repeat(indentSize - 2) + '}')
-            .replace(/;\s*/g, ';\n' + indent);
-    }
-
     olddatalist.forEach(it=>{
         it.id = it.type + "_" + it.name;
         eval("let public = " + (it.public || '{}'));
@@ -116,11 +26,14 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
+        storage0.putMyVar('newjkjson', newjkjson);
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        writeFile(newjkurl, objectToJsCode(newjkjson));
+
+        writeFile(newjkurl, 'let rule = ' + getMyVar('newjkjson'));
         
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
+    clearMyVar('newjkjson');
 }
 
 let Juconfig = {};

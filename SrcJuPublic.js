@@ -72,7 +72,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         if (Array.isArray(value)) {
             if (value.length === 0) return '[]';
 
-            const indent = ' '.repeat(indentSize);
+            let indent = ' '.repeat(indentSize);
             let result = '[\n';
 
             for (let i = 0; i < value.length; i++) {
@@ -88,7 +88,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             const keys = Object.keys(value);
             if (keys.length === 0) return '{}';
 
-            const indent = ' '.repeat(indentSize);
+            let indent = ' '.repeat(indentSize);
             let result = '{\n';
 
             for (let i = 0; i < keys.length; i++) {

@@ -182,7 +182,7 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
-                lists = getYiData(jkdata, '主页');
+                lists = getYiData(jkdata, '主页', d);
                 let t2 = new Date().getTime();
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }

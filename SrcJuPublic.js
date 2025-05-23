@@ -316,8 +316,8 @@ function selectSource(selectType) {
         },
         click(item, i, manage) {
             pop.dismiss();
-            log(item);
-            let sourcedata = item.data;
+
+            let sourcedata = JSON.parse(item.data);
             return changeSource(sourcedata);
         },
         menuClick(manage) {

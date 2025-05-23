@@ -1,4 +1,4 @@
-function getYiData(jkdata, type) {
+function getYiData(jkdata, datatype) {
     addListener('onRefresh', $.toString(() => {
         clearMyVar('动态加载loading')
     }));
@@ -56,7 +56,7 @@ function getYiData(jkdata, type) {
             putMyVar('动态加载loading', itemid);
         }
 
-        let 执行str = rule[type].toString();
+        let 执行str = rule[datatype].toString();
         let 页码 = rule["页码"] || {};
         let 转换 = rule["转换"] || {};
         let zz = 转换["排行"] || "排行";

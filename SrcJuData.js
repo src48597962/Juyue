@@ -5,6 +5,7 @@ function getYiData(jkdata, datatype) {
     addListener('onClose', $.toString(() => {
         clearMyVar('动态加载loading')
     }));
+
     eval(fetch(jkdata.url));
 
     let d = [];
@@ -57,6 +58,7 @@ function getYiData(jkdata, datatype) {
         }
 
         let 执行str = rule[datatype].toString();
+        log(执行str);
         let 页码 = rule["页码"] || {};
         let 转换 = rule["转换"] || {};
         let zz = 转换["排行"] || "排行";
@@ -228,5 +230,6 @@ function getYiData(jkdata, datatype) {
         toast(datatype + "代码报错，更换主页源或联系接口作者修复");
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
+
     return d;
 }

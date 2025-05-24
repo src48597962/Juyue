@@ -1,3 +1,4 @@
+// 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
     addListener('onRefresh', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading')
@@ -42,32 +43,34 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(datatype==="主页"){
             let 转换 = rule["转换"] || {};
-            let zz = 转换["排行"] || "排行";
-            if(rule[zz]){
-                d.push({
-                    title: zz,
-                    url: rulePage(zz,页码[zz]),
-                    pic_url: "http://123.56.105.145/tubiao/more/229.png",
-                    col_type: 'icon_small_3'
-                })
-            }
-            zz = 转换["分类"] || "分类";
-            if(rule[zz]){
-                d.push({
-                    title: zz,
-                    url: rulePage(zz,页码[zz]),
-                    pic_url: "http://123.56.105.145/tubiao/more/287.png",
-                    col_type: 'icon_small_3'
-                })
-            }
-            zz = 转换["更新"] || "更新";
-            if(rule[zz]){
-                d.push({
-                    title: zz,
-                    url: rulePage(zz,页码[zz]),
-                    pic_url: "http://123.56.105.145/tubiao/more/288.png",
-                    col_type: 'icon_small_3'
-                })
+            let z1 = 转换["排行"] || "排行";
+            let z2 = 转换["分类"] || "分类";
+            let z3 = 转换["更新"] || "更新";
+            if(rule[z1] && rule[z2] && rule[z3]){
+                if(rule[z1]){
+                    d.push({
+                        title: z1,
+                        url: rulePage(z1,页码[z1]),
+                        pic_url: "http://123.56.105.145/tubiao/more/229.png",
+                        col_type: 'icon_small_3'
+                    })
+                }
+                if(rule[z2]){
+                    d.push({
+                        title: z2,
+                        url: rulePage(z2,页码[z2]),
+                        pic_url: "http://123.56.105.145/tubiao/more/287.png",
+                        col_type: 'icon_small_3'
+                    })
+                }
+                if(rule[z3]){
+                    d.push({
+                        title: z3,
+                        url: rulePage(z3,页码[z3]),
+                        pic_url: "http://123.56.105.145/tubiao/more/288.png",
+                        col_type: 'icon_small_3'
+                    })
+                }
             }
         }
         let 执行str = rule[datatype].toString();
@@ -213,4 +216,29 @@ function getYiData(datatype, jkdata, dd) {
     }
 
     return d;
+}
+// 获取二级数据
+function getErData(jkdata, url) {
+    eval(fetch(jkdata.url));
+
+    let 公共 = rule;
+    let error = "";
+    let details = {};
+    try {
+        if (公共['预处理']) {
+            try {
+                公共['预处理']();
+            } catch (e) {
+                error = '执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber;
+            }
+        }
+        eval("let 二级获取 = " + rule['二级'])
+        details = 二级获取(url);
+    } catch (e) {
+        error = '执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber;
+    }
+    if(error){
+        details.error = error;
+    }
+    return details;
 }

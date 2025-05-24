@@ -390,7 +390,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '接口类型：'+ getMyVar('apitype',''),
         col_type: 'text_1',
-        url: $(getTypeNames(),2,"接口类型").select(() => {
+        url: $(runTypes,2,"接口类型").select(() => {
             putMyVar('apitype',input);
             refreshPage(false);
             return 'toast://接口类型已设置为：' + input;

@@ -120,9 +120,9 @@ function getJiekouGroups(datas) {
     return groupNams;
 }
 //获取类型名称数组
-function getTypeNames(is) {
+function getTypeNames(s) {
     let snames = [];
-    if (is == "搜索页") {
+    if (s == "搜索页") {
         snames = ["漫画", "小说", "听书", "影视", "聚合"];
     } else {
         snames = runTypes;

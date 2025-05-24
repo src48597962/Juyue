@@ -40,33 +40,35 @@ function getYiData(datatype, jkdata, dd) {
         if(!页码[datatype] && page>1){
             return [];
         }
-        let 转换 = rule["转换"] || {};
-        let zz = 转换["排行"] || "排行";
-        if(rule[zz]){
-            d.push({
-                title: zz,
-                url: rulePage(zz,页码[zz]),
-                pic_url: "http://123.56.105.145/tubiao/more/229.png",
-                col_type: 'icon_small_3'
-            })
-        }
-        zz = 转换["分类"] || "分类";
-        if(rule[zz]){
-            d.push({
-                title: zz,
-                url: rulePage(zz,页码[zz]),
-                pic_url: "http://123.56.105.145/tubiao/more/287.png",
-                col_type: 'icon_small_3'
-            })
-        }
-        zz = 转换["更新"] || "更新";
-        if(rule[zz]){
-            d.push({
-                title: zz,
-                url: rulePage(zz,页码[zz]),
-                pic_url: "http://123.56.105.145/tubiao/more/288.png",
-                col_type: 'icon_small_3'
-            })
+        if(datatype==="主页"){
+            let 转换 = rule["转换"] || {};
+            let zz = 转换["排行"] || "排行";
+            if(rule[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/229.png",
+                    col_type: 'icon_small_3'
+                })
+            }
+            zz = 转换["分类"] || "分类";
+            if(rule[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/287.png",
+                    col_type: 'icon_small_3'
+                })
+            }
+            zz = 转换["更新"] || "更新";
+            if(rule[zz]){
+                d.push({
+                    title: zz,
+                    url: rulePage(zz,页码[zz]),
+                    pic_url: "http://123.56.105.145/tubiao/more/288.png",
+                    col_type: 'icon_small_3'
+                })
+            }
         }
         let 执行str = rule[datatype].toString();
         let obj = rule.四大金刚 || {};
@@ -187,7 +189,6 @@ function getYiData(datatype, jkdata, dd) {
             eval("let 数据 = " + 执行str);
             getData = 数据() || [];
         } catch (e) {
-            getData = [];
             error = e.message;
             log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
         }
@@ -201,7 +202,7 @@ function getYiData(datatype, jkdata, dd) {
                 col_type: "text_center_1",
             })
         } else if (getData.length > 0) {
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
+            //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
             getData.forEach(item => {
                 try {
                     item = toerji(item, info);

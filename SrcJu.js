@@ -212,91 +212,29 @@ function erji() {
     }));
 
     clearMyVar('二级加载扩展列表');
-    let isload;//是否正确加载
-    let detailsfile = cachepath + "erdetails.json";
+
+    let name = MY_PARAMS.name.replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();
+    let detailsfile = cachepath + "erdetails.json";//二级加载完后的临时数据文件
+    let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
+
     let erjidetails = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
-    erjidetails.name = MY_PARAMS.name || erjidetails.name || "";
-    let name = erjidetails.name.replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();
-    let myerjiextra = storage0.getMyVar('二级附加临时对象') || {};//二级换源时临时extra数据
-    let d = [];
-    let parse = {};
-    let 公共;
-    let 标识;
-    let details;
-    let stype = MY_PARAMS.stype;
-    let smark = getMark(name, stype);//足迹记录
-    let extrasource = [myerjiextra, MY_PARAMS, smark];
-    let erjiextra;
-    let sname;
-    let surl;
-    let sgroup;
-    let lineid = smark.lineid || 0;
-    let pageid = smark.pageid || 0;
-    let detailload;
-    let oldMY_PARAMS = Object.assign({}, MY_PARAMS);
-    let pic;
-    for(let i=0; i<extrasource.length; i++){
-        sname = extrasource[i].sname || "";
-        surl = extrasource[i].surl || "";
-        if(sname&&surl){
-            erjiextra = extrasource[i];
-            break;
-        }
-    }
+    let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS;//二级换源时临时extra数据
+    let jkdata = erjiextra.data;//接口数据
+    let surl = erjiextra.url;//二级请求url
+    let sname = jkdata.name;//二级源名称
+    let sgroup = jkdata.group || jkdata.type;//二级源所在分组
+    let sid = jkdata.id;//二级源id
+    let smark = getMark(surl, sid);//足迹记录
+    let lineid = smark.lineid || 0;//线路索引id
+    let pageid = smark.pageid || 0;//分页索引id
     
-    //匹配取接口数据
-    let sourcedata = erdatalist.filter(it => {
-        return it.name == sname && it.type == stype;
-    });
-    let sourcedata2;//用于正常加载时，将二级接口存入当前页面PARAMS，确保分享时可以打开
+    let d = [];
+    let isload;//是否正确加载
+    let details;
+    let pic;
+    
     try {
-        if (sourcedata.length == 0 && MY_PARAMS && MY_PARAMS.sourcedata) {
-            sourcedata.push(MY_PARAMS.sourcedata);
-        }
-        if (sourcedata.length > 0 && sourcedata[0].erparse) {
-            eval("let source = " + sourcedata[0].erparse);
-            if (source.ext && /^http/.test(source.ext)) {
-                requireCache(source.ext, 48);
-                parse = erdata;
-            } else {
-                parse = source;
-            }
-            sourcedata2 = sourcedata[0];
-            sgroup = sourcedata2.group;
-            storage0.putMyVar('二级源接口信息',{name: sname, type: stype, group: sgroup||"", img: sourcedata[0].img||""});
-            
-            try{
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-                cacheData(sourcedata[0]);
-            }catch(e){
-                //log("缓存临时文件失败>"+e.message);
-            }
-        }
-        sauthor = parse["作者"];
-    } catch (e) {
-        log("加载搜索源接口代码错误>"+e.message);
-    }
-    try {
-        if (parse && surl) {
-            try{
-                eval("let gonggong = " + sourcedata[0].public);
-                if (gonggong && gonggong.ext && /^http/.test(gonggong.ext)) {
-                    requireCache(gonggong.ext, 48);
-                    gonggong = ggdata;
-                }
-                公共 = gonggong || parse['公共'] || {};
-                if(公共['预处理']){
-                    try{
-                        公共['预处理']();
-                    }catch(e){
-                        log('执行预处理报错，信息>'+e.message);
-                    }
-                }
-            }catch(e){
-                log("加载公共代码错误>"+e.message);
-            }
-            
-            标识 = stype + "_" + sname;
+        if (sid&&surl) {
             MY_URL = surl;
             let detailsmark;
             if(getMyVar('是否取缓存文件') && getMyVar('一级源接口信息') && !getMyVar("SrcJu_调试模式")){
@@ -304,7 +242,7 @@ function erji() {
                 if (detailsdata != "") {
                     try{
                         eval("let detailsjson=" + detailsdata + ";");
-                        if(detailsjson.sname==sname && detailsjson.surl==surl){
+                        if(detailsjson.sid==sid && detailsjson.surl==surl){
                             detailsmark = detailsjson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快
                         }
                     }catch(e){ }
@@ -342,7 +280,7 @@ function erji() {
                 col_type: 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
-            detailload = 1;
+
             lineid = parseInt(getMyVar("SrcJu_"+surl+"_line", lineid.toString()));
             pageid = parseInt(getMyVar("SrcJu_"+surl+"_page", pageid.toString()));
 
@@ -1377,16 +1315,15 @@ function search(keyword, mode, sdata, group, type) {
 }
 
 //取本地足迹记录
-function getMark(name, stype) {
-    let markfile = "hiker://files/rules/Src/Ju/mark.json";
+function getMark(surl, sid) {
+    let marklist = [];
+    let markfile = rulepath + "mark.json";
     let markdata = fetch(markfile);
     if (markdata != "") {
-        eval("var marklist=" + markdata + ";");
-    } else {
-        var marklist = [];
+        eval("marklist=" + markdata + ";");
     }
     let mark = marklist.filter(it => {
-        return it.name == name && it.stype == stype;
+        return it.surl==surl && it.sid==sid;
     })
     if (mark.length > 0) {
         return mark[0];

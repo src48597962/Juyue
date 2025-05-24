@@ -11,16 +11,11 @@ function yiji(testSource) {
         jkdata = yxdatalist[index] || {};
         if(jkdata.name){
             storage0.putMyVar('一级源接口信息', jkdata);
-            if(!getMyVar(homeSourceId)){
-                //toast("当前主页源：" + homeSourceId + (parse["作者"] ? "，作者：" + parse["作者"] : ""));
-                toast("当前主页源：" + homeSourceId);
-                putMyVar(homeSourceId, "1");
-            }
         }
     } catch (e) {
         log("一级源接口加载异常>" + e.message + ' 错误行#' + e.lineNumber);
     }
-    
+    let author;
     let d = [];
     if(MY_PAGE==1){
         d.push({
@@ -203,7 +198,7 @@ function yiji(testSource) {
 
 //二级+源搜索
 function erji() {
-    addListener("onClose", $.toString((isback,surl) => {
+    addListener("onClose", $.toString(() => {
         clearMyVar('二级详情临时对象');
         clearMyVar('二级附加临时对象');
         clearMyVar('二级简介打开标识');
@@ -214,19 +209,8 @@ function erji() {
             clearMyVar('从书架进二级');
             refreshPage(false);
         }
-        if(isback && surl!=getMyVar('rulepageid')){
-            back(false);
-        }else{
-            clearMyVar('rulepageid');
-        }
-    },MY_PARAMS.back||0, MY_PARAMS.surl));
-    addListener('onRefresh', $.toString(() => {
-        putMyVar('加载异常自动换源','1');
     }));
-    //用于二级套娃自动返回计数
-    if(MY_PARAMS.back && !getMyVar('rulepageid')){
-        putMyVar('rulepageid', MY_PARAMS.surl);
-    }
+
     clearMyVar('二级加载扩展列表');
     let isload;//是否正确加载
     let sauthor;

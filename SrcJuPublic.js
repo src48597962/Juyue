@@ -431,18 +431,17 @@ function sortByPinyin(arr) {
     return arrNew
 }
 //修正按钮元素
-function toerji(item, info) {
+function toerji(item, jkdata) {
     try{
-        info = info || storage0.getMyVar('一级源接口信息');
+        jkdata = jkdata || storage0.getMyVar('一级源接口信息');
         if(item.url && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty'){
             let extra = item.extra || {};
             extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
             extra.img = extra.img || item.pic_url || item.img;
-            extra.stype = info.type;
             extra.pageTitle = extra.pageTitle || extra.name;
-            extra.surl = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
-            extra.sname = info.name;
-            item.url = $("hiker://empty?type="+info.type+"#immersiveTheme##autoCache#").rule(() => {
+            extra.url = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+            extra.data = jkdata;
+            item.url = $("hiker://empty?type="+jkdata.type+"#immersiveTheme##autoCache#").rule(() => {
                 require(config.聚阅);
                 erji();
             })

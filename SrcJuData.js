@@ -43,7 +43,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
-                toast("当前主页源：" + jkdata.id + (rule["作者"] ? "，作者：" + rule["作者"] : ""));
+                toast(jkdata.id + (rule["作者"] ? "，作者：" + rule["作者"] : ""));
                 putMyVar(jkdata.id, "1");
             }
             let 转换 = rule["转换"] || {};

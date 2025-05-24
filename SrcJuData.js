@@ -202,13 +202,8 @@ function getYiData(datatype, jkdata, dd) {
                 col_type: "text_center_1",
             })
         } else if (getData.length > 0) {
-            //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
             getData.forEach(item => {
-                try {
-                    item = toerji(item, info);
-                } catch (e) {
-                    //log(item);
-                }
+                item = toerji(item, jkdata);
             })
         }
         d = d.concat(getData);

@@ -32,17 +32,16 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     }
     
     olddatalist.forEach(it=>{
-        it.id = it.type + "_" + it.name;
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
         let newjkjson = Object.assign({}, public, parse, erparse);
-        let newjkurl = jkfilespath + it.id + '.txt';
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
-        it.url = newjkurl;
+        it.id = it.type + "_" + it.name;
+        it.url = jkfilespath + it.id + '.txt';;
         delete it.updatetime;
         delete it.public;
         delete it.parse;
@@ -50,7 +49,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         //storage0.putMyVar('newjkjson', newjkjson);
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
 
-        writeFile(newjkurl, objectToJsCode(newjkjson));
+        writeFile(it.url, objectToJsCode(newjkjson));
         
     })
     writeFile(jkfile, JSON.stringify(olddatalist));

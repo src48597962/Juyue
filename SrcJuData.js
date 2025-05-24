@@ -42,6 +42,10 @@ function getYiData(datatype, jkdata, dd) {
             return [];
         }
         if(datatype==="主页"){
+            if(!getMyVar(jkdata.id)){
+                toast("当前主页源：" + jkdata.id + (rule["作者"] ? "，作者：" + rule["作者"] : ""));
+                putMyVar(jkdata.id, "1");
+            }
             let 转换 = rule["转换"] || {};
             let z1 = 转换["排行"] || "排行";
             let z2 = 转换["分类"] || "分类";

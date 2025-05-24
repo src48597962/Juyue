@@ -157,29 +157,6 @@ function yiji(testSource) {
                     lineVisible: false
                 }
             })
-        }else{
-            if (typeof(setPreResult)!="undefined" && getMyVar('主页动态加载loading')!='1') {
-                d.push({
-                    title: "",
-                    url: "hiker://empty",
-                    col_type: "text_1",
-                    extra: {
-                        lineVisible: false,
-                        cls: "loading_gif"
-                    }
-                })
-                d.push({
-                    pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
-                    col_type: "pic_1_center",
-                    url: "hiker://empty",
-                    extra: {
-                        cls: "loading_gif"
-                    }
-                })
-                setPreResult(d);
-                d = [];
-                putMyVar('主页动态加载loading', '1');
-            }
         }
     }
     
@@ -210,7 +187,7 @@ function yiji(testSource) {
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
 
-            d = d.concat(lists);
+            d = lists;
         }catch(e){
             d.push({
                 title: '加载主页源异常了，请更换',

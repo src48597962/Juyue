@@ -119,11 +119,13 @@ function getJiekouGroups(datas) {
     })
     return groupNams;
 }
-//获取类型名称数组
+//获取不同场景分组分类名称数组
 function getTypeNames(s) {
     let snames = [];
     if (s == "搜索页") {
         snames = ["漫画", "小说", "听书", "影视", "聚合"];
+    } else if (s == "主页") {
+        snames = getJiekouGroups(getDatas('yi', 1));
     } else {
         snames = runTypes;
     }

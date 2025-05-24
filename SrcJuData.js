@@ -1,10 +1,10 @@
 function getYiData(datatype, jkdata, dd) {
-    addListener('onRefresh', $.toString(() => {
+    addListener('onRefresh', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading')
-    }));
-    addListener('onClose', $.toString(() => {
+    },datatype));
+    addListener('onClose', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading')
-    }));
+    },datatype));
 
     eval(fetch(jkdata.url));
 

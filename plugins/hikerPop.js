@@ -314,7 +314,7 @@ function getBookList(arr) {
         bookmark.setDir(false);
         //bookmark.setUrl(it.url || it.title || "");
         bookmark.setIcon(it.icon || "");
-        bookmark.setUrl(JSON.stringify(it.data));
+        bookmark.setUrl(JSON.stringify(it.data||{}));
         list.add(bookmark);
     }
     return list;

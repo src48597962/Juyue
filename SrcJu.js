@@ -15,7 +15,7 @@ function yiji(testSource) {
     } catch (e) {
         log("一级源接口加载异常>" + e.message + ' 错误行#' + e.lineNumber);
     }
-    let author;
+
     let d = [];
     if(MY_PAGE==1){
         d.push({

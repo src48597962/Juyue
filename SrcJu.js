@@ -157,6 +157,29 @@ function yiji(testSource) {
                     lineVisible: false
                 }
             })
+        }else{
+            if (typeof(setPreResult)!="undefined" && getMyVar('主页动态加载loading')!='1') {
+                d.push({
+                    title: "",
+                    url: "hiker://empty",
+                    col_type: "text_1",
+                    extra: {
+                        lineVisible: false,
+                        cls: "loading_gif"
+                    }
+                })
+                d.push({
+                    pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+                    col_type: "pic_1_center",
+                    url: "hiker://empty",
+                    extra: {
+                        cls: "loading_gif"
+                    }
+                })
+                setPreResult(d);
+                d = [];
+                putMyVar('主页动态加载loading', '1');
+            }
         }
     }
     
@@ -182,16 +205,16 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
-                lists = getYiData(jkdata, '主页', d);
+                lists = getYiData('主页', jkdata, d);
                 let t2 = new Date().getTime();
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
 
-            d = lists;
+            d = d.concat(lists);
         }catch(e){
             d.push({
-                title: '源接口异常了，请更换',
-                desc: jkdata.id + '>获取数据异常>' + e.message + ' 错误行#' + e.lineNumber,
+                title: '加载主页源异常了，请更换',
+                desc: jkdata.id + '>加载主页内容>' + e.message + ' 错误行#' + e.lineNumber,
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });

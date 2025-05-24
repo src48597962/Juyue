@@ -1,4 +1,4 @@
-function getYiData(jkdata, datatype, dd) {
+function getYiData(datatype, jkdata, dd) {
     addListener('onRefresh', $.toString(() => {
         clearMyVar('动态加载loading')
     }));

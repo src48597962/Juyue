@@ -247,6 +247,7 @@ function changeSource(sourcedata) {
     let sourceGroup = sourcedata.group || sourcedata.type;
     Juconfig[sourceGroup+'_SourceId'] = sourcedata.id;
     writeFile(cfgfile, JSON.stringify(Juconfig));
+    putMyVar(sourcedata.id, "1");//切源不二次提示
     refreshPage(false);
     return 'toast://主页源已设置为：' + sourcedata.id;
 }

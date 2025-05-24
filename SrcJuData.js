@@ -9,15 +9,11 @@ function getYiData(datatype, jkdata, dd) {
     eval(fetch(jkdata.url));
 
     let d = dd || [];
+    let page = MY_PAGE || 1;
     let 公共 = rule;
 
     try {
-        let page = MY_PAGE || 1;
-
-        let itemid = jkdata.id + "_" + datatype;
-        let loading;
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar('动态加载loading') != itemid) {
-            loading = 1;
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
             d.push({
                 title: "",
                 url: "hiker://empty",
@@ -28,16 +24,7 @@ function getYiData(datatype, jkdata, dd) {
                 }
             })
             d.push({
-                title: "",
-                url: "hiker://empty",
-                col_type: "text_1",
-                extra: {
-                    lineVisible: false,
-                    cls: "loading_gif"
-                }
-            })
-            d.push({
-                pic_url: "http://123.56.105.145/weisyr/img/Loading1.gif",
+                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
                 extra: {
@@ -46,7 +33,7 @@ function getYiData(datatype, jkdata, dd) {
             })
             setPreResult(d);
             d = [];
-            putMyVar('动态加载loading', itemid);
+            putMyVar(datatype+'动态加载loading', '1');
         }
 
         let 页码 = rule["页码"] || {};
@@ -204,9 +191,7 @@ function getYiData(datatype, jkdata, dd) {
             error = e.message;
             log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
         }
-        if (loading) {
-            deleteItemByCls("loading_gif");
-        }
+        deleteItemByCls("loading_gif");
 
         if (getData.length == 0 && page == 1) {
             d.push({

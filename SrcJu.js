@@ -213,8 +213,7 @@ function erji() {
 
     clearMyVar('二级加载扩展列表');
     let isload;//是否正确加载
-    let sauthor;
-    let detailsfile = "hiker://files/_cache/SrcJu_details.json";
+    let detailsfile = cachepath + "erdetails.json";
     let erjidetails = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     erjidetails.name = MY_PARAMS.name || erjidetails.name || "";
     let name = erjidetails.name.replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();
@@ -1027,44 +1026,10 @@ function erji() {
             }
         }
         putMyVar('是否取缓存文件','1');//判断是否取本地缓存文件,软件打开初次在线取
-    } else {
-        if(!detailload){
-            pic = MY_PARAMS.img || "";
-            pic = pic&&pic.indexOf("@Referer=") == -1 ? pic + "@Referer=" : pic;
-            d.push({
-                title: "\n搜索接口源结果如下",
-                desc: "\n\n选择一个源观看吧👇",
-                pic_url: pic,
-                url: pic,
-                col_type: 'movie_1_vertical_pic_blur',
-                extra: {
-                    gradient: true,
-                    id: "detailid"
-                }
-            });
-        }
-        d.push({
-            title: "",
-            url: 'hiker://empty',
-            col_type: 'text_center_1',
-            extra: {
-                id: "Julistloading",
-                lineVisible: false
-            }
-        });
-        setResult(d);
-        
-        if(!getMyVar('SrcJu_sousuoTest') && !getMyVar("SrcJu_调试模式") && !oldMY_PARAMS.sousuo){
-            if(getMyVar('加载异常自动换源')=="1"){
-                showLoading('搜源中,请稍后.');
-                search(name,"erji",false,sgroup,stype);
-            }else{
-                toast('下拉刷新看看');
-            }
-        }
     }
     clearMyVar('换源变更列表id');
 }
+
 //搜索页面
 function sousuo() {
     let name = MY_URL.split('##')[1];

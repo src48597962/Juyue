@@ -223,7 +223,7 @@ function getYiData(datatype, jkdata, dd) {
 }
 // 获取二级数据
 function getErData(jkdata, url) {
-    eval(fetch(jkdata.url));
+    eval(fetch(jkdata.url)||jkdata.extstr||"let rule = {}");
 
     let 公共 = rule;
     let error = "";
@@ -236,8 +236,12 @@ function getErData(jkdata, url) {
                 error = '执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber;
             }
         }
-        eval("let 二级获取 = " + rule['二级'])
-        details = 二级获取(url);
+        if(rule['二级']){
+            eval("let 二级获取 = " + rule['二级'])
+            details = 二级获取(url);
+        }else{
+            error = "找不到rule内容";
+        }
     } catch (e) {
         error = '执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber;
     }

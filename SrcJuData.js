@@ -240,7 +240,7 @@ function getErData(jkdata, url) {
             eval("let 二级获取 = " + rule['二级'])
             details = 二级获取(url);
         }else{
-            error = "找不到rule内容";
+            error = "rule不存在二级方法";
         }
     } catch (e) {
         error = '执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber;

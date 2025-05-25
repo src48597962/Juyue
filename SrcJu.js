@@ -274,6 +274,7 @@ function erji() {
                 } catch (e) {
                     log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
+                erLoadData.author = rule['作者'];
                 let t2 = new Date().getTime();
                 log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
@@ -926,7 +927,7 @@ function erji() {
             putMyVar('二级加载扩展列表','1');
         }
         d.push({
-            title: "‘‘’’<small><font color=#f20c00>当前数据源：" + sname + (rule["作者"]?", 作者：" + rule["作者"]:"") + "</font></small>",
+            title: "‘‘’’<small><font color=#f20c00>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small>",
             url: 'hiker://empty',
             col_type: 'text_center_1',
             extra: {
@@ -936,7 +937,7 @@ function erji() {
         });
         setResult(d);
         if(!getMyVar(sname+"_"+name)){
-            toast('当前数据源：' + sname + (rule["作者"]?", 作者：" + rule["作者"]:""));
+            toast('当前数据源：' + sname + (erLoadData.author?", 作者：" + erLoadData.author:""));
         }
         putMyVar(sname+"_"+name, "1");
         //更换收藏封面

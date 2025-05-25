@@ -10,7 +10,6 @@ function getYiData(datatype, jkdata, dd) {
     let rule = getRule(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
-    let 公共 = rule;
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -182,9 +181,9 @@ function getYiData(datatype, jkdata, dd) {
         let error = "";
         let getData = [];
         try {
-            if (公共['预处理']) {
+            if (rule['预处理']) {
                 try {
-                    公共['预处理']();
+                    rule['预处理']();
                 } catch (e) {
                     log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
@@ -223,14 +222,13 @@ function getYiData(datatype, jkdata, dd) {
 // 获取二级数据
 function getErData(jkdata, url) {
     let rule = getRule(jkdata);
-    let 公共 = rule;
     let error = "";
     let details = {};
     
     try {
-        if (公共['预处理']) {
+        if (rule['预处理']) {
             try {
-                公共['预处理']();
+                rule['预处理']();
             } catch (e) {
                 error = '执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber;
             }

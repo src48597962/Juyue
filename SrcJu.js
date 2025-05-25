@@ -267,7 +267,7 @@ function erji() {
                     }
                     if(rule['二级']){
                         eval("let 二级获取 = " + rule['二级'])
-                        erLoadData = 二级获取(url);
+                        erLoadData = 二级获取(surl);
                     }else{
                         log("rule不存在二级方法");
                     }

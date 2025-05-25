@@ -253,7 +253,12 @@ function erji() {
             if(detailsmark){
                 details = detailsmark;
             }else{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
+                log('开始获取二级数据');
+                let t1 = new Date().getTime();
                 details = getErData(jkdata, surl);
+                let t2 = new Date().getTime();
+                log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
             
             pic = details.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";

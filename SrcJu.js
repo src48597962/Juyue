@@ -204,7 +204,6 @@ function erji() {
         clearMyVar('二级简介打开标识');
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
-        clearMyVar('加载异常自动换源');
         if(getMyVar('从书架进二级')){
             clearMyVar('从书架进二级');
             refreshPage(false);
@@ -222,6 +221,7 @@ function erji() {
     let jkdata = erjiextra.data;//接口数据
     let surl = erjiextra.url;//二级请求url
     let sname = jkdata.name;//二级源名称
+    let stype = jkdata.type;
     let sgroup = jkdata.group || jkdata.type;//二级源所在分组
     let sid = jkdata.id;//二级源id
     let smark = getMark(surl, sid);//足迹记录
@@ -237,7 +237,7 @@ function erji() {
         if (sid&&surl) {
             MY_URL = surl;
             let detailsmark;
-            if(getMyVar('是否取缓存文件') && getMyVar('一级源接口信息') && !getMyVar("SrcJu_调试模式")){
+            if(getMyVar('是否取缓存文件') && !getMyVar("SrcJu_调试模式")){
                 let detailsdata = fetch(detailsfile);
                 if (detailsdata != "") {
                     try{
@@ -253,13 +253,7 @@ function erji() {
             if(detailsmark){
                 details = detailsmark;
             }else{
-                try{
-                    eval("let 二级获取 = " + parse['二级'])
-                    details = 二级获取(surl);
-                }catch(e){
-                    details = {};
-                    log("二级获取数据错误>"+e.message);
-                }
+                details = getErData(jkdata, surl);
             }
             
             pic = details.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
@@ -873,12 +867,7 @@ function erji() {
             if(列表.length>0 || getMyVar('SrcJu_sousuoTest')){
                 isload = 1;
             }else if(列表.length==0){
-                if(!getMyVar('加载异常自动换源')){
-                    putMyVar('加载异常自动换源','1');
-                    refreshPage(false);
-                }else{
-                    toast("选集列表为空，请更换其他源");
-                }
+                toast("选集列表为空，请更换其他源");
             }
         }
     } catch (e) {
@@ -930,11 +919,11 @@ function erji() {
         //二级详情简介临时信息
         storage0.putMyVar('二级详情临时对象',erjidetails);
         //二级源浏览记录保存
-        let erjidata = { name: name, sname: sname, surl: surl, stype: stype, lineid: lineid, pageid: pageid };
-        setMark(erjidata);
+        let erjiMarkdata = { sid: jkdata.id, surl: surl, lineid: lineid, pageid: pageid };
+        setMark(erjiMarkdata);
         //当前二级详情数据保存
         if(!getMyVar("SrcJu_调试模式")){
-            details.sname = sname;
+            details.sid = jkdata.id;
             details.surl = surl;
             details.pageid = pageid;
             writeFile(detailsfile, $.stringify(details));
@@ -955,11 +944,8 @@ function erji() {
         }
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
-            if ((surl && oldMY_PARAMS.surl!=surl) || !oldMY_PARAMS.sourcedata) {
-                delete sourcedata2['parse']
-                erjiextra.name = erjiextra.name || name;
-                erjiextra.sourcedata = sourcedata2;
-                delete erjiextra.sousuo;//正常加载的清除返回搜索标识，用于下次加载异常时自动搜源
+            if ((surl && oldMY_PARAMS.surl!=surl) || !oldMY_PARAMS.data.extstr) {
+                erjiextra.data.extstr = fetch(erjiextra.data.url);
                 setPageParams(erjiextra);
             }
         }
@@ -1205,9 +1191,6 @@ function search(keyword, mode, sdata, group, type) {
                             extra.sname = objdata.name;
                             extra.pageTitle = extra.pageTitle || extra.name;
                             extra.surl = item.url && !keepurl.test(item.url) ? item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#readTheme#|#autoPage#|#noLoading#|#/g, "") : "";
-                            if(/sousuo/.test(objmode)){
-                                extra.sousuo = 1;
-                            }
                             item.extra = extra;
                             item.url = /sousuo/.test(objmode) ? (keepurl.test(item.url) || item.url=='hiker://empty')?item.url:$("hiker://empty?type="+objdata.type+"#immersiveTheme##autoCache#").rule(() => {
                                 require(config.聚阅);
@@ -1333,15 +1316,14 @@ function getMark(surl, sid) {
 }
 //保存本地足迹记录
 function setMark(data) {
-    let markfile = "hiker://files/rules/Src/Ju/mark.json";
+    let marklist = [];
+    let markfile = rulepath + "mark.json";
     let markdata = fetch(markfile);
     if (markdata != "") {
-        eval("var marklist=" + markdata + ";");
-    } else {
-        var marklist = [];
+        eval("marklist=" + markdata + ";");
     }
     let mark = marklist.filter(it => {
-        return it.name == data.name && it.stype == data.stype;
+        return it.surl==surl && it.sid==sid;
     })
     if (mark.length > 0) {
         let index = marklist.indexOf(mark[0]);

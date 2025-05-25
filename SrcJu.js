@@ -363,7 +363,7 @@ function erji() {
             }
             stype = details.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
-            let 解析 = parse['解析'] || function (url,公共,参数) {
+            let 解析 = details['解析'] || function (url,公共,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
                 return SrcParseS.聚阅(url, (stype=="听书"||stype=="音频")?1:0);
@@ -877,7 +877,7 @@ function erji() {
         }
     } catch (e) {
         toast('有异常，看日志');
-        log(sname + '>加载详情失败>' + e.message);
+        log(sname + '>加载详情失败>' + e.message + ' 错误行#' + e.lineNumber);
     }
 
     if (isload) {
@@ -933,6 +933,7 @@ function erji() {
             details.pageid = pageid;
             writeFile(detailsfile, $.stringify(details));
         }
+        /*
         //收藏更新最新章节
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((sname,surl,最新,公共,参数) => {
@@ -947,6 +948,7 @@ function erji() {
                 }
             }, sname, surl, parse['最新'], 公共, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
         }
+        */
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((surl && oldMY_PARAMS.surl!=surl) || !oldMY_PARAMS.data.extstr) {

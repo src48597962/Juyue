@@ -32,6 +32,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     }
     
     olddatalist.forEach(it=>{
+        it.public = decodeURIComponent(it.public.replace(/公共/g, 'rule'));
+        it.parse = decodeURIComponent(it.parse.replace(/公共/g, 'rule'));
+        it.erparse = decodeURIComponent(it.erparse.replace(/公共/g, 'rule'));
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));

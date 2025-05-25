@@ -494,12 +494,10 @@ function erji() {
                             "parseCode": download,
                             "ruleName": sname + " (聚阅)",
                             "type": itype,
-                            /*
                             "decode": rule["imgdec"]?$.type(rule["imgdec"])=="function"?$.toString((imgdec)=>{
                                 let imgDecrypt = imgdec;
                                 return imgDecrypt();
                             },rule["imgdec"]):rule["imgdec"]:""
-                            */
                         }
                     }
                 })
@@ -641,7 +639,7 @@ function erji() {
                                     return 'hiker://empty'
                                 },partpage)
                             }else if(input=="分页阀值"){
-                                return $(partpage.partnum||"100","选集数量超过多少才分页").input((partpage) => {
+                                return $(partpage.partnum||"100","执行分页的选集数量下限").input((partpage) => {
                                     partpage.partnum = parseInt(input);
                                     storage0.setItem('partpage',partpage);
                                     refreshPage(false);

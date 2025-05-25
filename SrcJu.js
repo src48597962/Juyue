@@ -238,7 +238,7 @@ function erji() {
         if (sid&&surl) {
             MY_URL = surl;
             let erdataCache;
-            if(getMyVar('是否取缓存文件') && !getMyVar("SrcJu_调试模式")){
+            if(!getMyVar("SrcJu_调试模式")){
                 let cacheData = fetch(erCacheFile);
                 if (cacheData != "") {
                     try{
@@ -936,10 +936,7 @@ function erji() {
             }
         });
         setResult(d);
-        if(!getMyVar(sname+"_"+name)){
-            toast('当前数据源：' + sname + (erLoadData.author?", 作者：" + erLoadData.author:""));
-        }
-        putMyVar(sname+"_"+name, "1");
+
         //更换收藏封面
         if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
             setPagePicUrl(erTempData.img);
@@ -949,7 +946,7 @@ function erji() {
         //二级源浏览记录保存
         let erjiMarkdata = { sid: jkdata.id, surl: surl, lineid: lineid, pageid: pageid };
         setMark(erjiMarkdata);
-        //当前二级详情数据保存
+        //当前二级数据保存到缓存文件，避免二级重复请深圳市
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
             erLoadData.surl = surl;
@@ -979,7 +976,6 @@ function erji() {
                 setPageParams(erjiextra);
             }
         }
-        putMyVar('是否取缓存文件','1');//判断是否取本地缓存文件,软件打开初次在线取
     }
     clearMyVar('换源变更列表id');
 }

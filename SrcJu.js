@@ -213,10 +213,10 @@ function erji() {
     clearMyVar('二级加载扩展列表');
 
     let name = MY_PARAMS.name.replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();
-    let detailsfile = cachepath + "erdetails.json";//二级加载完后的临时数据文件
+    let erCacheFile = cachepath + "erdataCache.json";//二级加载完后的临时数据文件
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
 
-    let erjidetails = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
+    let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS;//二级换源时临时extra数据
     let jkdata = erjiextra.data;//接口数据
     let surl = erjiextra.url;//二级请求url
@@ -229,53 +229,70 @@ function erji() {
     let pageid = smark.pageid || 0;//分页索引id
     
     let d = [];
+    let erLoadData = {};
     let isload;//是否正确加载
-    let details;
     let pic;
+    let rule = {};
     
     try {
         if (sid&&surl) {
             MY_URL = surl;
-            let detailsmark;
+            let erdataCache;
             if(getMyVar('是否取缓存文件') && !getMyVar("SrcJu_调试模式")){
-                let detailsdata = fetch(detailsfile);
-                if (detailsdata != "") {
+                let cacheData = fetch(erCacheFile);
+                if (cacheData != "") {
                     try{
-                        eval("let detailsjson=" + detailsdata + ";");
-                        if(detailsjson.sid==sid && detailsjson.surl==surl){
-                            detailsmark = detailsjson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快
+                        eval("let cacheJson=" + cacheData + ";");
+                        if(cacheJson.sid==sid && cacheJson.surl==surl){
+                            erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快
                         }
                     }catch(e){ }
                 }
             }
             //方便换源时二级代码中使用MY_PARAMS
             MY_PARAMS = erjiextra;
-            if(detailsmark){
-                details = detailsmark;
+            if(erdataCache){
+                erLoadData = erdataCache;
             }else{
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取二级数据');
                 let t1 = new Date().getTime();
-                details = getErData(jkdata, surl);
+                rule = getRule(jkdata);
+                try {
+                    if (rule['预处理']) {
+                        try {
+                            rule['预处理']();
+                        } catch (e) {
+                            log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                        }
+                    }
+                    if(rule['二级']){
+                        eval("let 二级获取 = " + rule['二级'])
+                        erLoadData = 二级获取(url);
+                    }else{
+                        log("rule不存在二级方法");
+                    }
+                } catch (e) {
+                    log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                }
                 let t2 = new Date().getTime();
                 log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
             
-            pic = details.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
+            pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
             pic = pic&&pic.indexOf("@Referer=") == -1 ? pic + "@Referer=" : pic;
             erjiextra.img = pic;
-            erjidetails.img = erjiextra.img || erjidetails.img;
-            erjidetails.detail1 = details.detail1 || erjidetails.detail1;
-            erjidetails.detail2 =  details.detail2 || erjidetails.detail2;
-            erjidetails.desc = details.desc || erjidetails.desc;
-            let detailextra = details.detailextra || {};
+            erTempData.img = erjiextra.img || erTempData.img;
+            erTempData.detail1 = erLoadData.detail1 || erTempData.detail1;
+            erTempData.detail2 =  erLoadData.detail2 || erTempData.detail2;
+            erTempData.desc = erLoadData.desc || erTempData.desc;
+            let detailextra = erLoadData.detailextra || {};
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             d.push({
-                title: erjidetails.detail1 || "",
-                desc: erjidetails.detail2 || "",
-                pic_url: erjidetails.img,
-                url: details.detailurl || (/^http/.test(surl)?surl+'#noRecordHistory##noHistory#':erjidetails.img),
+                title: erTempData.detail1 || "",
+                desc: erTempData.detail2 || "",
+                pic_url: erTempData.img,
+                url: erLoadData.detailurl || (/^http/.test(surl)?surl+'#noRecordHistory##noHistory#':erTempData.img),
                 col_type: 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
@@ -286,31 +303,31 @@ function erji() {
             let 线路s = ["线路"];
             let 列表s = [[]];
             try{
-                线路s = details.line?details.line:["线路"];
-                列表s = details.line?details.list:[details.list];
+                线路s = erLoadData.line?erLoadData.line:["线路"];
+                列表s = erLoadData.line?erLoadData.list:[erLoadData.list];
                 if(线路s.length != 列表s.length){
                     log(sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
                 }
             }catch(e){
                 log(sname+">线路或列表返回数据有误>"+e.message);
             }
-            if(details.listparse){//选集列表需要动态解析获取
-                let 线路选集 = details.listparse(lineid,线路s[lineid]) || [];
+            if(erLoadData.listparse){//选集列表需要动态解析获取
+                let 线路选集 = erLoadData.listparse(lineid,线路s[lineid]) || [];
                 if(线路选集.length>0){
                     列表s[lineid] = 线路选集;
                 }
             }
-            if(details.page && details.pageparse){//网站分页显示列表的，需要动态解析获取
+            if(erLoadData.page && erLoadData.pageparse){//网站分页显示列表的，需要动态解析获取
                 try{
-                    if((detailsmark && pageid != details.pageid) || (!detailsmark && pageid>0)){
-                        let 分页s = details.page;
+                    if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
+                        let 分页s = erLoadData.page;
                         if(pageid > 分页s.length){
                             pageid = 0;
                         }
-                        let 分页选集 = details.pageparse(分页s[pageid].url);
+                        let 分页选集 = erLoadData.pageparse(分页s[pageid].url);
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
-                            details.list = details.line?列表s:分页选集;
+                            erLoadData.list = erLoadData.line?列表s:分页选集;
                         }
                     }
                 }catch(e){
@@ -361,10 +378,10 @@ function erji() {
             if (getMyVar(sname + 'sort') == '1') {
                 列表.reverse();
             }
-            stype = details.type || stype;
+            stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             /*
-            let 解析 = details['解析'] || function (url,公共,参数) {
+            let 解析 = rule['解析'] || function (url,公共,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
                 return SrcParseS.聚阅(url, (stype=="听书"||stype=="音频")?1:0);
@@ -386,7 +403,7 @@ function erji() {
                 eval("let 解析2 = " + 解析);
                 let 标识 = 参数.标识;
                 return 解析2(input,公共,参数);
-            }, 解析, 公共, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
+            }, 解析, rule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
             let lazy = '';
             let download = '';
@@ -419,7 +436,7 @@ function erji() {
                         }]);
                     }
                     return "hiker://empty";
-                }, erjidetails.desc||""),
+                }, erTempData.desc||""),
                 pic_url: "http://123.56.105.145/tubiao/messy/32.svg",
                 col_type: 'icon_small_3',
                 extra: {
@@ -477,10 +494,10 @@ function erji() {
                             "ruleName": sname + " (聚阅)",
                             "type": itype,
                             /*
-                            "decode": 公共["imgdec"]?$.type(公共["imgdec"])=="function"?$.toString((imgdec)=>{
+                            "decode": rule["imgdec"]?$.type(rule["imgdec"])=="function"?$.toString((imgdec)=>{
                                 let imgDecrypt = imgdec;
                                 return imgDecrypt();
-                            },公共["imgdec"]):公共["imgdec"]:""
+                            },rule["imgdec"]):rule["imgdec"]:""
                             */
                         }
                     }
@@ -546,8 +563,8 @@ function erji() {
             });
             let line_col_type = getItem('SrcJuLine_col_type', 'scroll_button');
             let addmoreitems = 0;
-            if(getItem('extenditems','1')=="1" && details.moreitems && $.type(details.moreitems)=='array'){
-                let moreitems = details.moreitems;
+            if(getItem('extenditems','1')=="1" && erLoadData.moreitems && $.type(erLoadData.moreitems)=='array'){
+                let moreitems = erLoadData.moreitems;
                 if(moreitems.length>0){
                     moreitems.forEach(item => {
                         if(item.url!=surl){
@@ -722,8 +739,8 @@ function erji() {
             }
             //分页定义
             let partpage = storage0.getItem('partpage') || {};
-            if(details.page && details.pageparse){//原网站有分页，不执行自定义分页
-                let 分页s = details.page
+            if(erLoadData.page && erLoadData.pageparse){//原网站有分页，不执行自定义分页
+                let 分页s = erLoadData.page
                 let 分页链接 = [];
                 let 分页名 = [];
                 分页s.forEach((it,i)=>{
@@ -845,7 +862,7 @@ function erji() {
 
             let list_col_type = getItem('SrcJuList_col_type', 'text_2');//列表样式
             for(let i=0; i<列表.length; i++) {
-                let extra = Object.assign({}, details["extra"] || {});//二级返回数据中的extra设为默认
+                let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
                 try{
                     extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
                 }catch(e){}
@@ -860,9 +877,9 @@ function erji() {
                 if(list_col_type.indexOf("_left")>-1){
                     extra.textAlign = 'left';
                 }
-                if (stype=="小说" || details["rule"] || details["novel"] || 列表[i].rule) {
+                if (stype=="小说" || erLoadData["rule"] || erLoadData["novel"] || 列表[i].rule) {
                     extra.url = 列表[i].url;
-                    lazy = lazy.replace("@lazyRule=.",((stype=="小说"||details["novel"])?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input.split("##")[1]`,`MY_PARAMS.url || ""`);
+                    lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData["novel"])?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input.split("##")[1]`,`MY_PARAMS.url || ""`);
                 }
                 d.push({
                     title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,
@@ -886,8 +903,8 @@ function erji() {
     }
 
     if (isload) {
-        if(getItem('extenditems','1')=="1" && details.extenditems && $.type(details.extenditems)=='array'){
-            let extenditems = details.extenditems;
+        if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
+            let extenditems = erLoadData.extenditems;
             if(extenditems.length>0){
                 d.push({
                     col_type: "blank_block",
@@ -909,7 +926,7 @@ function erji() {
             putMyVar('二级加载扩展列表','1');
         }
         d.push({
-            title: "‘‘’’<small><font color=#f20c00>当前数据源：" + sname + (sauthor?", 作者：" + sauthor:"") + "</font></small>",
+            title: "‘‘’’<small><font color=#f20c00>当前数据源：" + sname + (rule["作者"]?", 作者：" + rule["作者"]:"") + "</font></small>",
             url: 'hiker://empty',
             col_type: 'text_center_1',
             extra: {
@@ -919,24 +936,24 @@ function erji() {
         });
         setResult(d);
         if(!getMyVar(sname+"_"+name)){
-            toast('当前数据源：' + sname + (sauthor?", 作者：" + sauthor:""));
+            toast('当前数据源：' + sname + (rule["作者"]?", 作者：" + rule["作者"]:""));
         }
         putMyVar(sname+"_"+name, "1");
         //更换收藏封面
-        if(erjidetails.img && oldMY_PARAMS.img!=erjidetails.img){
-            setPagePicUrl(erjidetails.img);
+        if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
+            setPagePicUrl(erTempData.img);
         }
         //二级详情简介临时信息
-        storage0.putMyVar('二级详情临时对象',erjidetails);
+        storage0.putMyVar('二级详情临时对象',erTempData);
         //二级源浏览记录保存
         let erjiMarkdata = { sid: jkdata.id, surl: surl, lineid: lineid, pageid: pageid };
         setMark(erjiMarkdata);
         //当前二级详情数据保存
         if(!getMyVar("SrcJu_调试模式")){
-            details.sid = jkdata.id;
-            details.surl = surl;
-            details.pageid = pageid;
-            writeFile(detailsfile, $.stringify(details));
+            erLoadData.sid = jkdata.id;
+            erLoadData.surl = surl;
+            erLoadData.pageid = pageid;
+            writeFile(erCacheFile, $.stringify(erLoadData));
         }
         /*
         //收藏更新最新章节

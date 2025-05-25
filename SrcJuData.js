@@ -7,8 +7,7 @@ function getYiData(datatype, jkdata, dd) {
         clearMyVar(datatype+'动态加载loading')
     },datatype));
 
-    eval(fetch(jkdata.url));
-
+    let rule = getRule();
     let d = dd || [];
     let page = MY_PAGE || 1;
     let 公共 = rule;
@@ -223,11 +222,11 @@ function getYiData(datatype, jkdata, dd) {
 }
 // 获取二级数据
 function getErData(jkdata, url) {
-    eval(fetch(jkdata.url)||jkdata.extstr||"let rule = {}");
-
+    let rule = getRule();
     let 公共 = rule;
     let error = "";
     let details = {};
+    
     try {
         if (公共['预处理']) {
             try {

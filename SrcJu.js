@@ -1352,7 +1352,7 @@ function setMark(data) {
         eval("marklist=" + markdata + ";");
     }
     let mark = marklist.filter(it => {
-        return it.surl==surl && it.sid==sid;
+        return it.surl==data.surl && it.sid==data.sid;
     })
     if (mark.length > 0) {
         let index = marklist.indexOf(mark[0]);

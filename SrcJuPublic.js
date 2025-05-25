@@ -358,6 +358,14 @@ function rulePage(datatype, ispage) {
         getYiData(datatype);
     }, datatype)
 }
+//获取接口rule内容
+function getRule(jkdata, key) {
+    eval(fetch(jkdata.url)||jkdata.extstr||"let rule = {}");
+    if(key){
+        return rule[key];
+    }
+    return rule;
+}
 //重定义打印日志，只允许调试模式下打印
 var xlog = log;
 log = function (msg) {

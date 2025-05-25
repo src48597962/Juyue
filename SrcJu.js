@@ -363,6 +363,7 @@ function erji() {
             }
             stype = details.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
+            /*
             let 解析 = details['解析'] || function (url,公共,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
@@ -386,7 +387,9 @@ function erji() {
                 let 标识 = 参数.标识;
                 return 解析2(input,公共,参数);
             }, 解析, 公共, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
-
+            */
+            let lazy = '';
+            let download = '';
             d.push({
                 title: "详情简介",
                 url: $("#noLoading#").lazyRule((desc) => {

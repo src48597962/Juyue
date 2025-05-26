@@ -406,9 +406,19 @@ function erji() {
                 return 解析2(input,objRule,参数);
             }, 解析, objRule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
+            let dataObj = {
+                data: jkdata
+            }
             let lazy = $("").lazyRule((dataObj) => {
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                return SrcParseS.聚影(input, dataObj);
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
+                let objRule = getObjRule(dataObj.data);
+                if(objRule.解析){
+                    eval("let 解析2 = " + objRule.解析);
+                    return 解析2(input);
+                }else{
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                    return SrcParseS.聚阅(input, dataObj);
+                }
             }, dataObj);
             let download = '';
             d.push({

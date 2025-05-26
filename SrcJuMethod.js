@@ -1,19 +1,44 @@
+//重定义打印日志，只允许调试模式下打印
+var xlog = log;
+log = function (msg) {
+    if (getMyVar("SrcJu_调试模式") || getItem("SrcJu_接口日志")) {
+        xlog(msg);
+    }
+}
+//打开指定类型的新页面
+function rulePage(datatype, ispage) {
+    return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
+        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+        getYiData(datatype);
+    }, datatype)
+}
+//获取接口对象规则内容
+function getObjRule(jkdata, key) {
+    eval(fetch(jkdata.url)||jkdata.extstr||"let objRule = {}");
+    if(key){
+        return objRule[key];
+    }
+    return objRule;
+}
 //修正按钮元素
-function toerji(item,info) {
-    info = info || storage0.getMyVar('一级源接口信息');
-    if(item.url && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty'){
-        let extra = item.extra || {};
-        extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
-        extra.img = extra.img || item.pic_url || item.img;
-        extra.stype = info.type;
-        extra.pageTitle = extra.pageTitle || extra.name;
-        extra.surl = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
-        extra.sname = info.name;
-        item.url = $("hiker://empty?type="+info.type+"#immersiveTheme##autoCache#").rule(() => {
-            require(config.聚阅);
-            erji();
-        })
-        item.extra = extra;
+function toerji(item, jkdata) {
+    try{
+        jkdata = jkdata || storage0.getMyVar('一级源接口信息');
+        if(item.url && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty'){
+            let extra = item.extra || {};
+            extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
+            extra.img = extra.img || item.pic_url || item.img;
+            extra.pageTitle = extra.pageTitle || extra.name;
+            extra.url = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+            extra.data = jkdata;
+            item.url = $("hiker://empty?type="+jkdata.type+"#immersiveTheme##autoCache#").rule(() => {
+                require(config.聚阅);
+                erji();
+            })
+            item.extra = extra;
+        }
+    }catch(e){
+        log("一级元素转二级失败>" + e.message + " 错误行#" + e.lineNumber)
     }
     return item;
 }
@@ -22,40 +47,7 @@ function jianfan(str,x) {
     require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcSimple.js');
     return PYStr(str,x);
 }
-//写接口数据临时缓存
-function cacheData(jkdata){
-    let fileid = jkdata.type + '_'+ jkdata.name;
-    let cachefile = `hiker://files/_cache/${fileid}.json`;
-    if (!fileExist(cachefile)) {
-        writeFile(cachefile,JSON.stringify(jkdata));
-    }
-}
-//接口管理多选方法
-function duoselect(datas){
-    let datalist = [];
-    if($.type(datas)=="array"){
-        datalist = datas;
-    }else if($.type(datas)=="object"){
-        datalist.push(datas);
-    }
-    let duoselect = storage0.getMyVar('SrcJu_duoselect')?storage0.getMyVar('SrcJu_duoselect'):[];
-    datalist.forEach(data=>{
-        let id = data.type+"_"+data.name;
-        if(!duoselect.some(item => item.name == data.name && item.type==data.type)){
-            duoselect.push(data);
-            updateItem(id, {title:'<font color=#3CB371>'+data.name + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "")});
-        }else{
-            for(var i = 0; i < duoselect.length; i++) {
-                if(duoselect[i].type+"_"+duoselect[i].name == id) {
-                    duoselect.splice(i, 1);
-                    break;
-                }
-            }
-            updateItem(id, {title:(data.stop?`<font color=#f20c00>`:"") + data.name + (data.parse ? " [主页源]" : "") + (data.erparse ? " [搜索源]" : "") + (data.stop?`</font>`:"")});
-        }
-    })
-    storage0.putMyVar('SrcJu_duoselect',duoselect);
-}
+
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     let id = 'juyue';
@@ -107,7 +99,7 @@ function banner(start, arr, data, cfg){
             require(obj.method);
             updateItem('bar', toerji(item,obj.info));
         } catch (e) {
-            log(e.message)
+            log("幻灯片处理异常>" + e.message + " 错误行#" + e.lineNumber)
             unRegisterTask('juyue')
         }
         putMyVar('banneri', i);

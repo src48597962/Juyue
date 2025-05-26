@@ -1,15 +1,24 @@
-//重定义打印日志，只允许调试模式下打印
+
+/*//重定义打印日志，只允许调试模式下打印
 var xlog = log;
 log = function (msg) {
     if (getMyVar("SrcJu_调试模式") || getItem("SrcJu_接口日志")) {
         xlog(msg);
     }
 }
+// 重定义打印日志
+if (getItem('规则日志打印','0') != "1") {
+    log = function () {
+        return;
+    };
+}
+*/
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-        getYiData(datatype);
+        let jkdata = storage0.getMyVar('一级源接口信息');
+        getYiData(datatype, jkdata);
     }, datatype)
 }
 //获取接口对象规则内容

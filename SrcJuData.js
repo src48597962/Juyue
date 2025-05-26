@@ -7,6 +7,7 @@ function getYiData(datatype, jkdata, dd) {
         clearMyVar(datatype+'动态加载loading')
     },datatype));
 
+    jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     let objRule = getObjRule(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;

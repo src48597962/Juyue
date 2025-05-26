@@ -382,31 +382,34 @@ function erji() {
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             /*
-            let 解析 = rule['解析'] || function (url,公共,参数) {
+            let 解析 = rule['解析'] || function (url,rule,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
-                return SrcParseS.聚阅(url, (stype=="听书"||stype=="音频")?1:0);
+                return SrcParseS.聚阅(url, stype=="音频"?1:0);
             };
             let lazy = $("").lazyRule((解析,参数) => {
                 let url = input.split("##")[1];
-                let 公共 = {};
+                let rule = {};
                 try{
-                    公共 = $.require('jiekou'+(/聚阅/.test(参数.规则名)?'':'?rule=聚阅')).公共(参数.标识);
+                    rule = $.require('jiekou?rule=聚阅').rule(参数.标识);
                 }catch(e){
                     //toast('未找到聚阅规则子页面');
                 }
                 let 标识 = 参数.标识;
                 eval("let 解析2 = " + 解析);
-                return 解析2(url,公共,参数);
+                return 解析2(url,rule,参数);
             }, 解析, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             
-            let download = $.toString((解析,公共,参数) => {
+            let download = $.toString((解析,rule,参数) => {
                 eval("let 解析2 = " + 解析);
                 let 标识 = 参数.标识;
-                return 解析2(input,公共,参数);
+                return 解析2(input,rule,参数);
             }, 解析, rule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
-            let lazy = '';
+            let lazy = $("").lazyRule((dataObj) => {
+                require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                return SrcParseS.聚影(input, dataObj);
+            }, dataObj);
             let download = '';
             d.push({
                 title: "详情简介",
@@ -882,7 +885,7 @@ function erji() {
                 }
                 d.push({
                     title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,
-                    url: "hiker://empty##" + 列表[i].url + lazy,
+                    url: 列表[i].url + lazy,
                     desc: 列表[i].desc,
                     img: 列表[i].img,
                     col_type: 列表[i].col_type || list_col_type.replace("_left",""),
@@ -954,17 +957,17 @@ function erji() {
         /*
         //收藏更新最新章节
         if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((sname,surl,最新,公共,参数) => {
+            setLastChapterRule('js:' + $.toString((sname,surl,最新,rule,参数) => {
                 let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(surl)');
                 eval("let 最新2 = " + 最新str);
                 let 标识 = 参数.标识;
                 try{
-                    let zx = 最新2(surl,公共) || "";
+                    let zx = 最新2(surl,rule) || "";
                     setResult(sname + " | " + (zx||""));
                 }catch(e){
-                    最新2(surl,公共);
+                    最新2(surl,rule);
                 }
-            }, sname, surl, parse['最新'], 公共, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
+            }, sname, surl, parse['最新'], rule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
         }
         */
         //切换源时更新收藏数据，以及分享时附带接口

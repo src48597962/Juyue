@@ -12,7 +12,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
     function objectToJsCode(obj) {
-        let jsCode = `let rule = {`;
+        let jsCode = `let JuRule = {`;
 
         for (let key in obj) {
             if (typeof obj[key] === 'function') {
@@ -362,12 +362,12 @@ function rulePage(datatype, ispage) {
     }, datatype)
 }
 //获取接口rule内容
-function getRule(jkdata, key) {
-    eval(fetch(jkdata.url)||jkdata.extstr||"let rule = {}");
+function getJuRule(jkdata, key) {
+    eval(fetch(jkdata.url)||jkdata.extstr||"let JuRule = {}");
     if(key){
-        return rule[key];
+        return JuRule[key];
     }
-    return rule;
+    return JuRule;
 }
 //重定义打印日志，只允许调试模式下打印
 var xlog = log;

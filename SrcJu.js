@@ -413,8 +413,8 @@ function erji() {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 let objRule = getObjRule(dataObj.data);
                 if(objRule.解析){
-                    eval("let 解析2 = " + objRule.解析);
-                    return 解析2(input);
+                    eval("let parse = " + objRule.解析);
+                    return parse(input);
                 }else{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                     return SrcParseS.聚阅(input, dataObj);

@@ -12,7 +12,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
     function objectToJsCode(obj) {
-        let jsCode = `{`;
+        let jsCode = `let objRule = {`;
 
         for (let key in obj) {
             if (typeof obj[key] === 'function') {
@@ -30,42 +30,11 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return jsCode;
     }
-    function deUnicode(str) {
-	    // 先处理 \u 开头的Unicode转义（4位或6位十六进制）
-        str = str.replace(/\\u([\da-fA-F]{4})|\\u\{([\da-fA-F]{1,6})\}/g, (match, hex4, hex6) => {
-            try {
-                const hex = hex4 || hex6;
-                const codePoint = parseInt(hex, 16);
-                // 检查是否是有效的Unicode码点
-                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
-                    return String.fromCodePoint(codePoint);
-                }
-            } catch (e) {
-                // 解析失败，保留原字符
-            }
-            return match;
-        });
-
-            // 再处理 &# 开头的HTML实体（十进制或十六进制）
-        str = str.replace(/&#(\d+);?|&#x([\da-fA-F]+);?/gi, (match, dec, hex) => {
-            try {
-                const codePoint = dec ? parseInt(dec, 10) : parseInt(hex, 16);
-                // 检查是否是有效的Unicode码点
-                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
-                    return String.fromCodePoint(codePoint);
-                }
-            } catch (e) {
-                // 解析失败，保留原字符
-            }
-            return match;
-        });
-
-        return str;
-    }
+    
     olddatalist.forEach(it=>{
-        it.public = deUnicode((it.public||"").replace(/公共/g, 'objRule'));
-        it.parse = deUnicode((it.parse||"").replace(/公共/g, 'objRule'));
-        it.erparse = deUnicode((it.erparse||"").replace(/公共/g, 'objRule'));
+        it.public = (it.public||"").replace(/公共/g, 'objRule');
+        it.parse = (it.parse||"").replace(/公共/g, 'objRule');
+        it.erparse = (it.erparse||"").replace(/公共/g, 'objRule');
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
@@ -394,7 +363,7 @@ function rulePage(datatype, ispage) {
 }
 //获取接口对象规则内容
 function getObjRule(jkdata, key) {
-    eval("let objRule = " + (fetch(jkdata.url)||jkdata.extstr||"{}"));
+    eval(fetch(jkdata.url)||jkdata.extstr||"let objRule = {}");
     if(key){
         return objRule[key];
     }

@@ -30,11 +30,42 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return jsCode;
     }
-    
+    function deUnicode(str) {
+	    // 先处理 \u 开头的Unicode转义（4位或6位十六进制）
+        str = str.replace(/\\u([\da-fA-F]{4})|\\u\{([\da-fA-F]{1,6})\}/g, (match, hex4, hex6) => {
+            try {
+                const hex = hex4 || hex6;
+                const codePoint = parseInt(hex, 16);
+                // 检查是否是有效的Unicode码点
+                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
+                    return String.fromCodePoint(codePoint);
+                }
+            } catch (e) {
+                // 解析失败，保留原字符
+            }
+            return match;
+        });
+
+            // 再处理 &# 开头的HTML实体（十进制或十六进制）
+        str = str.replace(/&#(\d+);?|&#x([\da-fA-F]+);?/gi, (match, dec, hex) => {
+            try {
+                const codePoint = dec ? parseInt(dec, 10) : parseInt(hex, 16);
+                // 检查是否是有效的Unicode码点
+                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
+                    return String.fromCodePoint(codePoint);
+                }
+            } catch (e) {
+                // 解析失败，保留原字符
+            }
+            return match;
+        });
+
+        return str;
+    }
     olddatalist.forEach(it=>{
-        it.public = decodeURIComponent((it.public||"").replace(/公共/g, 'rule'));
-        it.parse = decodeURIComponent((it.parse||"").replace(/公共/g, 'rule'));
-        it.erparse = decodeURIComponent((it.erparse||"").replace(/公共/g, 'rule'));
+        it.public = deUnicode((it.public||"").replace(/公共/g, 'objRule'));
+        it.parse = deUnicode((it.parse||"").replace(/公共/g, 'objRule'));
+        it.erparse = deUnicode((it.erparse||"").replace(/公共/g, 'objRule'));
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));

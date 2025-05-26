@@ -7,7 +7,7 @@ function getYiData(datatype, jkdata, dd) {
         clearMyVar(datatype+'动态加载loading')
     },datatype));
 
-    let rule = getRule(jkdata);
+    let objRule = getObjRule(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
 
@@ -35,21 +35,21 @@ function getYiData(datatype, jkdata, dd) {
             putMyVar(datatype+'动态加载loading', '1');
         }
 
-        let 页码 = rule["页码"] || {};
+        let 页码 = objRule["页码"] || {};
         if(!页码[datatype] && page>1){
             return [];
         }
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
-                toast(jkdata.id + (rule["作者"] ? "，作者：" + rule["作者"] : ""));
+                toast(jkdata.id + (objRule["作者"] ? "，作者：" + objRule["作者"] : ""));
                 putMyVar(jkdata.id, "1");
             }
-            let 转换 = rule["转换"] || {};
+            let 转换 = objRule["转换"] || {};
             let z1 = 转换["排行"] || "排行";
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
-            if(rule[z1] && rule[z2] && rule[z3]){
-                if(rule[z1]){
+            if(objRule[z1] && objRule[z2] && objRule[z3]){
+                if(objRule[z1]){
                     d.push({
                         title: z1,
                         url: rulePage(z1,页码[z1]),
@@ -57,7 +57,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: 'icon_small_3'
                     })
                 }
-                if(rule[z2]){
+                if(objRule[z2]){
                     d.push({
                         title: z2,
                         url: rulePage(z2,页码[z2]),
@@ -65,7 +65,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: 'icon_small_3'
                     })
                 }
-                if(rule[z3]){
+                if(objRule[z3]){
                     d.push({
                         title: z3,
                         url: rulePage(z3,页码[z3]),
@@ -75,8 +75,8 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        let 执行str = rule[datatype].toString();
-        let obj = rule.四大金刚 || {};
+        let 执行str = objRule[datatype].toString();
+        let obj = objRule.四大金刚 || {};
         if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');
@@ -181,9 +181,9 @@ function getYiData(datatype, jkdata, dd) {
         let error = "";
         let getData = [];
         try {
-            if (rule['预处理']) {
+            if (objRule['预处理']) {
                 try {
-                    rule['预处理']();
+                    objRule['预处理']();
                 } catch (e) {
                     log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
@@ -218,32 +218,4 @@ function getYiData(datatype, jkdata, dd) {
     }
 
     return d;
-}
-// 获取二级数据
-function getErData(jkdata, url) {
-    let rule = getRule(jkdata);
-    let error = "";
-    let details = {};
-    
-    try {
-        if (rule['预处理']) {
-            try {
-                rule['预处理']();
-            } catch (e) {
-                error = '执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber;
-            }
-        }
-        if(rule['二级']){
-            eval("let 二级获取 = " + rule['二级'])
-            details = 二级获取(url);
-        }else{
-            error = "rule不存在二级方法";
-        }
-    } catch (e) {
-        error = '执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber;
-    }
-    if(error){
-        details.error = error;
-    }
-    return details;
 }

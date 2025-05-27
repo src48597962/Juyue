@@ -445,9 +445,9 @@ function jiekouapi(data, look) {
                 return "toast://文件不存在，无法查看";
             }
         }):$.toString(() => {
-            let tml = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/ruleTemplate.js');
-            writeFile('hiker://files/_cache/Juyue/ruleTemplate.txt', tml);
-            return `editFile://hiker://files/_cache/Juyue/ruleTemplate.txt@js=putMyVar("apiruleurl",input);`;
+            let tmpl = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/objCodeTmpl.js');
+            writeFile('hiker://files/_cache/Juyue/objCodeTmpl.txt', tmpl);
+            return `editFile://hiker://files/_cache/Juyue/objCodeTmpl.txt@js=putMyVar("apiruleurl",input);`;
         }),
         extra: {
             titleVisible: true,
@@ -558,7 +558,7 @@ function jiekouapi(data, look) {
                     if (!oldid && index > -1) {
                         return "toast://已存在-" + newid;
                     } else {
-                        if(newapi.url=='hiker://files/_cache/Juyue/ruleTemplate.txt'){
+                        if(newapi.url=='hiker://files/_cache/Juyue/objCodeTmpl.txt'){
                             if(fetch(newapi.url)){
                                 writeFile(jkfilespath + newapi + '.txt', fetch(newapi.url));
                                 newapi.url = jkfilespath + newapi + '.txt';

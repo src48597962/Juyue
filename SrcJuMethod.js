@@ -243,7 +243,7 @@ function rulePage(datatype, ispage) {
     }, datatype)
 }
 //获取接口对象规则内容
-function getObjRule(jkdata, key) {
+function getObjCode(jkdata, key) {
     eval(fetch(jkdata.url)||jkdata.extstr||"let objCode = {}");
     if(key){
         return objCode[key];

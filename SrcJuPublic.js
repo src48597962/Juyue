@@ -168,7 +168,7 @@ function dataHandle(data, input) {
     })
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
-    clearMyVar('duoSelectLists');
+    clearMyVar('duodatalist');
     return input + '：已处理' + waitlist.length + '个';
 }
 // 文字上色
@@ -188,7 +188,7 @@ function duoselect(data){
         waitlist = data;
     }
 
-    let selectlist = storage0.getMyVar('duoSelectLists') || [];
+    let selectlist = storage0.getMyVar('duodatalist') || [];
     waitlist.forEach(data=>{
         if(!selectlist.some(item => data.id==item.id)){
             selectlist.push(data);
@@ -199,7 +199,7 @@ function duoselect(data){
             updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
         }
     })
-    storage0.putMyVar('duoSelectLists',selectlist);
+    storage0.putMyVar('duodatalist',selectlist);
 }
 
 //删除统一入口
@@ -222,7 +222,7 @@ function deleteData(data){
 
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
-    clearMyVar('duoSelectLists');
+    clearMyVar('duodatalist');
 }
 //执行切换源接口
 function changeSource(sourcedata) {

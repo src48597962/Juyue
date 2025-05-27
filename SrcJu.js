@@ -174,7 +174,6 @@ function yiji(testSource) {
                     }
                 });
             }else{
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuData.js');
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
                 lists = getYiData('主页', jkdata, d);

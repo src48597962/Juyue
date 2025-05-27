@@ -12,7 +12,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
     function objectToJsCode(obj) {
-        let jsCode = `let objRule = {`;
+        let jsCode = `let objCode = {`;
 
         for (let key in obj) {
             if (typeof obj[key] === 'function') {
@@ -32,9 +32,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     }
     
     olddatalist.forEach(it=>{
-        it.public = (it.public||"").replace(/公共/g, 'objRule');
-        it.parse = (it.parse||"").replace(/公共/g, 'objRule');
-        it.erparse = (it.erparse||"").replace(/公共/g, 'objRule');
+        it.public = (it.public||"").replace(/公共/g, 'objCode');
+        it.parse = (it.parse||"").replace(/公共/g, 'objCode');
+        it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));

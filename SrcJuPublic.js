@@ -249,6 +249,7 @@ function changeSource(sourcedata) {
         refreshX5WebView('about:blank');
     } catch (e) { }
     let sourceGroup = sourcedata.group || sourcedata.type;
+    Juconfig["homeGroup"] = sourceGroup;
     Juconfig[sourceGroup+'_SourceId'] = sourcedata.id;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);

@@ -343,9 +343,8 @@ function jiekouapi(data, look) {
         clearMyVar('apiimg');
         clearMyVar('apitype');
         clearMyVar('apigroup');
-        clearMyVar('apiparse');
-        clearMyVar('apierparse');
-        clearMyVar('apipublic');
+        clearMyVar('apionlysearch');
+        clearMyVar('apiruleurl');
         clearMyVar('isload');
     }));
     if(data){
@@ -355,9 +354,8 @@ function jiekouapi(data, look) {
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
-            storage0.putMyVar('apiparse', data.parse);
-            storage0.putMyVar('apierparse', data.erparse ? data.erparse : "");
-            storage0.putMyVar('apipublic', data.public ? data.public : "");
+            putMyVar('apiversion', data.apionlysearch||"");
+            putMyVar('apiruleurl', data.apiruleurl||"");
             putMyVar('isload', '1');
         }
     }
@@ -435,57 +433,41 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '一级主页数据源',
-        col_type: 'input',
-        desc: "一级主页数据源, 可以留空",
+        title: '仅搜索源：'+ getMyVar('apionlysearch','否'),
+        col_type: 'text_1',
+        url: $().lazyRule(() => {
+            if(getMyVar('apionlysearch')){
+                clearMyVar('apionlysearch');
+            }else{
+                putMyVar('apionlysearch','1');
+            }
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
         extra: {
-            defaultValue: storage0.getMyVar('apiparse') || "",
-            titleVisible: false,
-            type: "textarea",
-            highlight: true,
-            height: 2,
-            onChange: $.toString(() => {
-                if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("apiparse", input)
-                }
-            })
+            //lineVisible: false
         }
     });
     d.push({
-        title: '二级搜索数据源',
+        title: data?'查看':'新建',
         col_type: 'input',
-        desc: "二级搜索数据源, 可以留空",
+        desc: "接口规则文件，不能为空",
+        url: data?$.toString(() => {
+            let file = getMyVar('apiruleurl','');
+            if(fileExist(file)){
+                return "editFile://" + apiurl;// + "@js=back();";
+            }else{
+                return "toast://文件不存在，无法查看";
+            }
+        }):$.toString((cachepath) => {
+            
+        }, cachepath),
         extra: {
-            defaultValue: storage0.getMyVar('apierparse') || "",
-            titleVisible: false,
-            type: "textarea",
-            highlight: true,
-            height: 2,
-            onChange: $.toString(() => {
-                if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("apierparse", input)
-                }
-            })
+            titleVisible: true,
+            defaultValue: getMyVar('apiruleurl',''),
+            onChange: 'putMyVar("apiruleurl",input);'
         }
     });
-    d.push({
-        title: '公共变量',
-        col_type: 'input',
-        desc: "公共变量, {}对象",
-        extra: {
-            defaultValue: storage0.getMyVar('apipublic') || "",
-            titleVisible: false,
-            type: "textarea",
-            highlight: true,
-            height: 2,
-            onChange: $.toString(() => {
-                if (/{|}/.test(input) || !input) {
-                    storage0.putMyVar("apipublic", input)
-                }
-            })
-        }
-    });
-
     if(!look){
         if(data){
             d.push({
@@ -508,9 +490,8 @@ function jiekouapi(data, look) {
                     clearMyVar('apiimg');
                     clearMyVar('apitype');
                     clearMyVar('apigroup');
-                    clearMyVar('apiparse');
+                    clearMyVar('apionlysearch');
                     clearMyVar('apierparse');
-                    clearMyVar('apipublic');
                     refreshPage(true);
                     return "toast://已清空";
                 })
@@ -526,7 +507,7 @@ function jiekouapi(data, look) {
                 if (!getMyVar('apitype')) {
                     return "toast://接口类型不能为空";
                 }
-                if (!getMyVar('apiparse') && !getMyVar('apierparse')) {
+                if (!getMyVar('apierparse')) {
                     return "toast://主页源数据和搜索源数据不能同时为空";
                 }
                 
@@ -536,9 +517,8 @@ function jiekouapi(data, look) {
                     let img = getMyVar('apiimg');
                     let type = getMyVar('apitype');
                     let group = getMyVar('apigroup');
-                    let parse = getMyVar('apiparse');
+                    let onlysearch = getMyVar('apionlysearch');
                     let erparse = getMyVar('apierparse');
-                    let public = getMyVar('apipublic');
                     let newid = type + '_' + name;
                     let newapi = {
                         id: newid,
@@ -552,14 +532,8 @@ function jiekouapi(data, look) {
                     if (img) {
                         newapi['img'] = img;
                     }
-                    if (parse) {
-                        try{
-                            eval("let yparse = " + parse);
-                        }catch(e){
-                            log('一级主页源代码异常>'+e.message);
-                            return "toast://一级主页源有错误，看日志"
-                        }
-                        newapi['parse'] = parse;
+                    if (onlysearch) {
+                        newapi['onlysearch'] = 1;
                     }
                     if (erparse) {
                         try{
@@ -569,15 +543,6 @@ function jiekouapi(data, look) {
                             return "toast://二级搜索源有错误，看日志"
                         }
                         newapi['erparse'] = erparse;
-                    }
-                    if (public) {
-                        try{
-                            eval("let gparse = " + public);
-                        }catch(e){
-                            log('√公共代码异常>'+e.message);
-                            return "toast://公共代码有错误，看日志"
-                        }
-                        newapi['public'] = public;
                     }
                     let datalist = [];
                     let sourcedata = fetch(jkfile);

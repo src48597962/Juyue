@@ -432,22 +432,7 @@ function jiekouapi(data, look) {
             })
         }
     });
-    d.push({
-        title: '仅搜索源：'+ getMyVar('apionlysearch','否'),
-        col_type: 'text_1',
-        url: $().lazyRule(() => {
-            if(getMyVar('apionlysearch')){
-                clearMyVar('apionlysearch');
-            }else{
-                putMyVar('apionlysearch','1');
-            }
-            refreshPage(false);
-            return 'hiker://empty';
-        }),
-        extra: {
-            //lineVisible: false
-        }
-    });
+    
     d.push({
         title: data?'查看':'新建',
         col_type: 'input',
@@ -468,6 +453,22 @@ function jiekouapi(data, look) {
             titleVisible: true,
             defaultValue: getMyVar('apiruleurl',''),
             onChange: 'putMyVar("apiruleurl",input);'
+        }
+    });
+    d.push({
+        title: '只有搜索：'+ getMyVar('apionlysearch','否'),
+        col_type: 'text_1',
+        url: $().lazyRule(() => {
+            if(getMyVar('apionlysearch')){
+                clearMyVar('apionlysearch');
+            }else{
+                putMyVar('apionlysearch','1');
+            }
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
+        extra: {
+            //lineVisible: false
         }
     });
     if(!look){

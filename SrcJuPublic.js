@@ -216,6 +216,9 @@ function deleteData(data){
     }
 
     dellist.forEach(it => {
+        if(it.url.includes(jkfilespath)){
+            deleteFile(it.url);
+        }
         let index = datalist.indexOf(datalist.filter(d => it.id==d.id)[0]);
         datalist.splice(index, 1);
     })

@@ -22,7 +22,7 @@ function getYiData(datatype, jkdata, dd) {
     },datatype));
 
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
-    let objRule = getObjRule(jkdata);
+    let objCode = getObjCode(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
 
@@ -50,21 +50,21 @@ function getYiData(datatype, jkdata, dd) {
             putMyVar(datatype+'动态加载loading', '1');
         }
 
-        let 页码 = objRule["页码"] || {};
+        let 页码 = objCode["页码"] || {};
         if(!页码[datatype] && page>1){
             return [];
         }
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
-                toast(jkdata.id + (objRule["作者"] ? "，作者：" + objRule["作者"] : ""));
+                toast(jkdata.id + (objCode["作者"] ? "，作者：" + objCode["作者"] : ""));
                 putMyVar(jkdata.id, "1");
             }
-            let 转换 = objRule["转换"] || {};
+            let 转换 = objCode["转换"] || {};
             let z1 = 转换["排行"] || "排行";
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
-            if(objRule[z1] && objRule[z2] && objRule[z3]){
-                if(objRule[z1]){
+            if(objCode[z1] && objCode[z2] && objCode[z3]){
+                if(objCode[z1]){
                     d.push({
                         title: z1,
                         url: rulePage(z1,页码[z1]),
@@ -72,7 +72,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: 'icon_small_3'
                     })
                 }
-                if(objRule[z2]){
+                if(objCode[z2]){
                     d.push({
                         title: z2,
                         url: rulePage(z2,页码[z2]),
@@ -80,7 +80,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: 'icon_small_3'
                     })
                 }
-                if(objRule[z3]){
+                if(objCode[z3]){
                     d.push({
                         title: z3,
                         url: rulePage(z3,页码[z3]),
@@ -90,8 +90,8 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        let 执行str = objRule[datatype].toString();
-        let obj = objRule.四大金刚 || {};
+        let 执行str = objCode[datatype].toString();
+        let obj = objCode.四大金刚 || {};
         if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');
@@ -196,9 +196,9 @@ function getYiData(datatype, jkdata, dd) {
         let error = "";
         let getData = [];
         try {
-            if (objRule['预处理']) {
+            if (objCode['预处理']) {
                 try {
-                    objRule['预处理']();
+                    objCode['预处理']();
                 } catch (e) {
                     log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
@@ -244,11 +244,11 @@ function rulePage(datatype, ispage) {
 }
 //获取接口对象规则内容
 function getObjRule(jkdata, key) {
-    eval(fetch(jkdata.url)||jkdata.extstr||"let objRule = {}");
+    eval(fetch(jkdata.url)||jkdata.extstr||"let objCode = {}");
     if(key){
-        return objRule[key];
+        return objCode[key];
     }
-    return objRule;
+    return objCode;
 }
 //修正按钮元素
 function toerji(item, jkdata) {

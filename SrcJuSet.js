@@ -3,7 +3,7 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 function SRCSet() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('duoSelectLists');
+        clearMyVar('duodatalist');
         clearMyVar("seacrhJiekou");
         clearMyVar('jkdatalist');
         clearMyVar('批量选择模式');
@@ -33,7 +33,7 @@ function SRCSet() {
                 let sm;
                 if(getMyVar('批量选择模式')){
                     clearMyVar('批量选择模式');
-                    clearMyVar('duoSelectLists');
+                    clearMyVar('duodatalist');
                     sm = "退出批量选择模式";
                 }else{
                     putMyVar('批量选择模式','1');
@@ -192,7 +192,7 @@ function SRCSet() {
         d.push({
             title: "删除所选",
             url: $('#noLoading#').lazyRule(() => {
-                let selectlist = storage0.getMyVar('duoSelectLists') || [];
+                let selectlist = storage0.getMyVar('duodatalist') || [];
                 if(selectlist.length==0){
                     return "toast://未选择";
                 }
@@ -208,7 +208,7 @@ function SRCSet() {
         d.push({
             title: "调整分组",
             url: $('#noLoading#').lazyRule(()=>{
-                    let selectlist = storage0.getMyVar('duoSelectLists') || [];
+                    let selectlist = storage0.getMyVar('duodatalist') || [];
                     if(selectlist.length>0){
                         return $("","选定的"+selectlist.length+"个接口新分组名").input((selectlist)=>{
                             input = input.trim();
@@ -231,7 +231,7 @@ function SRCSet() {
                                 }
                             })
                             writeFile(jkfile, JSON.stringify(datalist));
-                            clearMyVar('duoSelectLists');
+                            clearMyVar('duodatalist');
                             refreshPage(false);
                             return "toast://已批量调整接口分组";
                         }, selectlist)
@@ -244,7 +244,7 @@ function SRCSet() {
         d.push({
             title: "禁用所选",
             url: $('#noLoading#').lazyRule(() => {
-                let selectlist = storage0.getMyVar('duoSelectLists') || [];
+                let selectlist = storage0.getMyVar('duodatalist') || [];
                 if(selectlist.length==0){
                     return "toast://未选择";
                 }
@@ -260,7 +260,7 @@ function SRCSet() {
         d.push({
             title: "启用所选",
             url: $('#noLoading#').lazyRule(() => {
-                let selectlist = storage0.getMyVar('duoSelectLists') || [];
+                let selectlist = storage0.getMyVar('duodatalist') || [];
                 if(selectlist.length==0){
                     return "toast://未选择";
                 }
@@ -585,4 +585,144 @@ function jiekouapi(data, look) {
         });
     }
     setResult(d);
+}
+//资源分享
+function JYshare(input,data) {
+    let sharelist;
+    if(data){
+        sharelist = [];
+        sharelist.push(data);
+    }else{
+        let duoselect = storage0.getMyVar('duodatalist') || [];
+        if(duoselect.length>0){
+            sharelist = duoselect;
+        }else{
+            sharelist = storage0.getMyVar("jkdatalist", []);
+        }
+    }
+
+    for(let i=0;i<sharelist.length;i++){
+        let it = sharelist[i];
+        if(it.url.startsWith(jkfilespath) && (($.type(it.ext)=="string" && it.ext.startsWith("file")) || !it.ext)){
+            it.extstr = fetch(it.url) || fetch(it.ext.split("?")[0]);
+            if(!it.extstr){
+                log(it.name+">未获取到数据文件，剔除分享");
+                sharelist.splice(i,1);
+                i = i - 1;
+            }
+        }else if(!it.url.startsWith(jkfilespath) && it.url.startsWith("hiker")){
+            log(it.name+">私有路径的数据文件，剔除分享");
+            sharelist.splice(i,1);
+            i = i - 1;
+        }
+    }
+
+    if(sharelist.length==0){
+        return "toast://有效接口数为0，无法分享";
+    }
+
+    let sharetxt = gzip.zip(JSON.stringify(sharelist));
+    let sharetxtlength = sharetxt.length;
+    if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
+        return "toast://超出字符最大限制，建议用云6或文件分享";
+    }
+
+    if(input=='云口令文件'){
+        sm2 = sharelist.length==1?sharelist[0].name:sharelist.length;
+        let code = sm + '￥' + aesEncode('Juying2', sharetxt) + '￥云口令文件';
+        let sharefile = 'hiker://files/_cache/Juying2_'+sm2+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
+        writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚影");`);
+        if(fileExist(sharefile)){
+            return 'share://'+sharefile;
+        }else{
+            return 'toast://'+input+'分享生成失败';
+        }
+    }else{
+        showLoading('分享生成中，请稍后...');
+        sm2 = sharelist.length==1?sharelist[0].name:'共' + sharelist.length + '条';
+        let pasteurl = sharePaste(sharetxt, input);
+        hideLoading();
+        if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+            log('剪贴板地址>'+pasteurl);
+            let code = sm+'￥'+aesEncode('Juying2', pasteurl)+'￥' + sm2 + '('+input+')';
+            copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚影");`);
+            return "toast://聚影分享口令已生成";
+        }else{
+            log('分享失败>'+pasteurl);
+            return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+        }
+    }
+}
+//资源导入
+function JYimport(input) {
+    let cloudimport;
+    if(/^云口令：/.test(input)){
+        input = input.replace('云口令：','').trim();
+        cloudimport = 1;
+    }
+    let pasteurl;
+    let inputname;
+    let codelx = "share";
+    try{
+        pasteurl = aesDecode('Juying2', input.split('￥')[1]);
+        inputname = input.split('￥')[0];
+        if(inputname=="聚影资源码"){
+            codelx = "dingyue";
+            if(input.split('￥')[2] != "文件分享"){
+                pasteurl = '云6oooole/xxxxxx/' + pasteurl;
+            }
+            if(getMyVar('guanli')=="jk"){
+                inputname = "聚影接口";
+            }else if(getMyVar('guanli')=="jx"){
+                inputname = "聚影解析";
+            }
+        }
+    }catch(e){
+        return "toast://聚影：口令有误>"+e.message;
+    }
+    try{
+        if(inputname=="聚影接口"){
+            var sm = "聚影：接口";
+        }else if(inputname=="聚影解析"){
+            var sm = "聚影：解析";
+        }else{
+            return "toast://聚影：无法识别的口令";
+        }
+        let text;
+        if(/^http|^云/.test(pasteurl)){
+            showLoading('获取数据中，请稍后...');
+            text = parsePaste(pasteurl);
+            hideLoading();
+        }else{
+            text = pasteurl;
+        }
+        if(pasteurl&&!/^error/.test(text)){
+            let sharetxt = gzip.unzip(text);
+            let pastedata = JSON.parse(sharetxt);           
+            let urlnum = 0;
+            if(inputname=="聚影接口"){
+                if(codelx=="share"){
+                    var pastedatalist = pastedata;
+                }else if(codelx=="dingyue"){
+                    var pastedatalist = pastedata.接口;
+                }
+                urlnum = jiekousave(pastedatalist);
+            }else if(inputname=="聚影解析"){
+                if(codelx=="share"){
+                    var pastedatalist = pastedata;
+                }else if(codelx=="dingyue"){
+                    var pastedatalist = pastedata.解析;
+                }
+                urlnum = jiexisave(pastedatalist);
+            }
+            if(urlnum>0&&cloudimport!=1){
+                refreshPage(false);
+            }
+            return "toast://"+sm+"合计："+pastedatalist.length+"，保存："+urlnum;
+        }else{
+            return "toast://聚影：口令错误或已失效";
+        }
+    } catch (e) {
+        return "toast://聚影：无法识别的口令>"+e.message;
+    }
 }

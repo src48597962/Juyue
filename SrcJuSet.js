@@ -459,9 +459,11 @@ function jiekouapi(data, look) {
             }else{
                 return "toast://文件不存在，无法查看";
             }
-        }):$.toString((cachepath) => {
-            
-        }, cachepath),
+        }):$.toString(() => {
+            let tml = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/ruleTemplate.js');
+            writeFile('hiker://files/_cache/Juyue/ruleTemplate.txt', tml);
+            return `editFile://hiker://files/_cache/Juyue/ruleTemplate.txt@js=putMyVar("apiruleurl",input);`;
+        }),
         extra: {
             titleVisible: true,
             defaultValue: getMyVar('apiruleurl',''),
@@ -500,7 +502,7 @@ function jiekouapi(data, look) {
         d.push({
             title: '保存',
             col_type: 'text_3',
-            url: $().lazyRule((jkfile,oldid) => {
+            url: $().lazyRule((jkfilespath,jkfile,oldid) => {
                 if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
@@ -555,10 +557,19 @@ function jiekouapi(data, look) {
                     if (!oldid && index > -1) {
                         return "toast://已存在-" + newid;
                     } else {
+                        if(newapi.url=='hiker://files/_cache/Juyue/ruleTemplate.txt'){
+                            if(fetch(newapi.url)){
+                                writeFile(jkfilespath + newapi + '.txt', fetch(newapi.url));
+                                newapi.url = jkfilespath + newapi + '.txt';
+                            }else{
+                                return "toast://接口规则文件内容为空不能保存";
+                            }
+                        }
                         index = datalist.indexOf(datalist.filter(d =>  d.id==oldid)[0]);
                         if (oldid && index > -1) {
                             datalist.splice(index, 1);
                         }
+                        
                         datalist.push(newapi);
                         writeFile(jkfile, JSON.stringify(datalist));
                         clearMyVar('SrcJu_searchMark');
@@ -569,7 +580,7 @@ function jiekouapi(data, look) {
                 } catch (e) {
                     return "toast://接口数据异常>" + e.message + " 错误行#" + e.lineNumber; 
                 }
-            }, jkfile, data?data.id:"")
+            }, jkfilespath, jkfile, data?data.id:"")
         });
     }
     setResult(d);

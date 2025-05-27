@@ -1,5 +1,0 @@
-let objRule = {
-
-
-
-}

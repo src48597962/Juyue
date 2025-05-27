@@ -231,7 +231,7 @@ function erji() {
     let erLoadData = {};
     let isload;//是否正确加载
     let pic;
-    let objRule = {};
+    let objCode = {};
     
     try {
         if (sid&&surl) {
@@ -255,17 +255,17 @@ function erji() {
             }else{
                 log('开始获取二级数据');
                 let t1 = new Date().getTime();
-                objRule = getObjRule(jkdata);
+                objCode = getobjCode(jkdata);
                 try {
-                    if (objRule['预处理']) {
+                    if (objCode['预处理']) {
                         try {
-                            objRule['预处理']();
+                            objCode['预处理']();
                         } catch (e) {
                             log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                         }
                     }
-                    if(objRule['二级']){
-                        eval("let 二级获取 = " + objRule['二级'])
+                    if(objCode['二级']){
+                        eval("let 二级获取 = " + objCode['二级'])
                         erLoadData = 二级获取(surl);
                     }else{
                         log("rule不存在二级方法");
@@ -273,7 +273,7 @@ function erji() {
                 } catch (e) {
                     log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
-                erLoadData.author = objRule['作者'];
+                erLoadData.author = objCode['作者'];
                 let t2 = new Date().getTime();
                 log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
@@ -381,38 +381,38 @@ function erji() {
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             /*
-            let 解析 = objRule['解析'] || function (url,objRule,参数) {
+            let 解析 = objCode['解析'] || function (url,objCode,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
                 return SrcParseS.聚阅(url, stype=="音频"?1:0);
             };
             let lazy = $("").lazyRule((解析,参数) => {
                 let url = input.split("##")[1];
-                let objRule = {};
+                let objCode = {};
                 try{
-                    objRule = $.require('jiekou?rule=聚阅').objRule(参数.标识);
+                    objCode = $.require('jiekou?rule=聚阅').objCode(参数.标识);
                 }catch(e){
                     //toast('未找到聚阅规则子页面');
                 }
                 let 标识 = 参数.标识;
                 eval("let 解析2 = " + 解析);
-                return 解析2(url,objRule,参数);
+                return 解析2(url,objCode,参数);
             }, 解析, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             
-            let download = $.toString((解析,objRule,参数) => {
+            let download = $.toString((解析,objCode,参数) => {
                 eval("let 解析2 = " + 解析);
                 let 标识 = 参数.标识;
-                return 解析2(input,objRule,参数);
-            }, 解析, objRule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
+                return 解析2(input,objCode,参数);
+            }, 解析, objCode, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
             let dataObj = {
                 data: jkdata
             }
             let lazy = $("").lazyRule((dataObj) => {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-                let objRule = getObjRule(dataObj.data);
-                if(objRule.解析){
-                    eval("let parse = " + objRule.解析);
+                let objCode = getobjCode(dataObj.data);
+                if(objCode.解析){
+                    eval("let parse = " + objCode.解析);
                     return parse(input);
                 }else{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
@@ -506,10 +506,10 @@ function erji() {
                             "parseCode": download,
                             "ruleName": sname + " (聚阅)",
                             "type": itype,
-                            "decode": objRule["imgdec"]?$.type(objRule["imgdec"])=="function"?$.toString((imgdec)=>{
+                            "decode": objCode["imgdec"]?$.type(objCode["imgdec"])=="function"?$.toString((imgdec)=>{
                                 let imgDecrypt = imgdec;
                                 return imgDecrypt();
-                            },objRule["imgdec"]):objRule["imgdec"]:""
+                            },objCode["imgdec"]):objCode["imgdec"]:""
                         }
                     }
                 })
@@ -966,17 +966,17 @@ function erji() {
         /*
         //收藏更新最新章节
         if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((sname,surl,最新,objRule,参数) => {
+            setLastChapterRule('js:' + $.toString((sname,surl,最新,objCode,参数) => {
                 let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(surl)');
                 eval("let 最新2 = " + 最新str);
                 let 标识 = 参数.标识;
                 try{
-                    let zx = 最新2(surl,objRule) || "";
+                    let zx = 最新2(surl,objCode) || "";
                     setResult(sname + " | " + (zx||""));
                 }catch(e){
-                    最新2(surl,objRule);
+                    最新2(surl,objCode);
                 }
-            }, sname, surl, parse['最新'], objRule, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
+            }, sname, surl, parse['最新'], objCode, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
         }
         */
         //切换源时更新收藏数据，以及分享时附带接口

@@ -335,7 +335,7 @@ function SRCSet() {
     });
     setResult(d);
 }
-
+//接口新增/编辑入口
 function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('apiname');
@@ -494,7 +494,7 @@ function jiekouapi(data, look) {
                     clearMyVar('apitype');
                     clearMyVar('apigroup');
                     clearMyVar('apionlysearch');
-                    clearMyVar('apierparse');
+                    clearMyVar('apiruleurl');
                     refreshPage(true);
                     return "toast://已清空";
                 })
@@ -510,85 +510,164 @@ function jiekouapi(data, look) {
                 if (!getMyVar('apitype')) {
                     return "toast://接口类型不能为空";
                 }
-                if (!getMyVar('apierparse')) {
-                    return "toast://主页源数据和搜索源数据不能同时为空";
+                if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
+                    return "toast://接口规则文件不能为空";
                 }
+            
+                let name = getMyVar('apiname');
+                let ruleurl = getMyVar('apiruleurl');
+                let version = getMyVar('apiversion', '1');
+                let img = getMyVar('apiimg');
+                let type = getMyVar('apitype');
+                let group = getMyVar('apigroup');
+                let onlysearch = getMyVar('apionlysearch');
                 
-                try {
-                    let name = getMyVar('apiname');
-                    let version = getMyVar('apiversion', '1');
-                    let img = getMyVar('apiimg');
-                    let type = getMyVar('apitype');
-                    let group = getMyVar('apigroup');
-                    let onlysearch = getMyVar('apionlysearch');
-                    let erparse = getMyVar('apierparse');
-                    let newid = type + '_' + name;
-                    let newapi = {
-                        id: newid,
-                        name: name,
-                        version: version,
-                        type: type
-                    }
-                    if(group){
-                        newapi['group'] = group;
-                    }
-                    if (img) {
-                        newapi['img'] = img;
-                    }
-                    if (onlysearch) {
-                        newapi['onlysearch'] = 1;
-                    }
-                    if (erparse) {
-                        try{
-                            eval("let eparse = " + erparse);
-                        }catch(e){
-                            log('二级搜索源代码异常>'+e.message);
-                            return "toast://二级搜索源有错误，看日志"
+                let newid = type + '_' + name;
+                let newapi = {
+                    id: newid,
+                    name: name,
+                    version: version,
+                    type: type,
+                    url: ruleurl
+                }
+                if(group){
+                    newapi['group'] = group;
+                }
+                if(img){
+                    newapi['img'] = img;
+                }
+                if(onlysearch){
+                    newapi['onlysearch'] = 1;
+                }
+                if(oldid){
+                    newapi['oldid'] = oldid;
+                }
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+
+                let urls = [];
+                urls.push(newapi);
+                let jknum = jiekousave(urls);
+                if(jknum==-1){
+                    return 'toast://内容异常';
+                }else if(jknum==-2){
+                    return 'toast://已存在';
+                }else{
+                    clearMyVar('SrcJu_searchMark');
+                    back(true);
+                    return "toast://保存成功";
+                }
+
+                let datalist = [];
+                let sourcedata = fetch(jkfile);
+                if (sourcedata != "") {
+                    try {
+                        eval("datalist=" + sourcedata + ";");
+                    } catch (e) {}
+                }
+                let index = datalist.indexOf(datalist.filter(d => d.id==newid)[0]);
+                if (!oldid && index > -1) {
+                    return "toast://已存在-" + newid;
+                } else {
+                    if(newapi.url=='hiker://files/_cache/Juyue/objCodeTmpl.txt'){
+                        if(fetch(newapi.url)){
+                            writeFile(jkfilespath + newapi + '.txt', fetch(newapi.url));
+                            newapi.url = jkfilespath + newapi + '.txt';
+                        }else{
+                            return "toast://接口规则文件内容为空不能保存";
                         }
-                        newapi['erparse'] = erparse;
                     }
-                    let datalist = [];
-                    let sourcedata = fetch(jkfile);
-                    if (sourcedata != "") {
-                        try {
-                            eval("datalist=" + sourcedata + ";");
-                        } catch (e) {}
+                    index = datalist.indexOf(datalist.filter(d =>  d.id==oldid)[0]);
+                    if (oldid && index > -1) {
+                        datalist.splice(index, 1);
                     }
-                    let index = datalist.indexOf(datalist.filter(d => d.id==newid)[0]);
-                    if (!oldid && index > -1) {
-                        return "toast://已存在-" + newid;
-                    } else {
-                        if(newapi.url=='hiker://files/_cache/Juyue/objCodeTmpl.txt'){
-                            if(fetch(newapi.url)){
-                                writeFile(jkfilespath + newapi + '.txt', fetch(newapi.url));
-                                newapi.url = jkfilespath + newapi + '.txt';
-                            }else{
-                                return "toast://接口规则文件内容为空不能保存";
-                            }
-                        }
-                        index = datalist.indexOf(datalist.filter(d =>  d.id==oldid)[0]);
-                        if (oldid && index > -1) {
-                            datalist.splice(index, 1);
-                        }
-                        
-                        datalist.push(newapi);
-                        writeFile(jkfile, JSON.stringify(datalist));
-                        clearMyVar('SrcJu_searchMark');
-                        deleteFile('hiker://files/_cache/Juyue/'+newid+'.json');
-                        back(true);
-                        return "toast://已保存";
-                    }
-                } catch (e) {
-                    return "toast://接口数据异常>" + e.message + " 错误行#" + e.lineNumber; 
+                    
+                    datalist.push(newapi);
+                    writeFile(jkfile, JSON.stringify(datalist));
+                    clearMyVar('SrcJu_searchMark');
+                    back(true);
+                    return "toast://已保存";
                 }
             }, jkfilespath, jkfile, data?data.id:"")
         });
     }
     setResult(d);
 }
+//接口保存
+function jiekousave(urls, mode) {
+    if(urls.length==0){return 0;}
+    let num = 0;
+    try{
+        let datalist = [];
+        let sourcedata = fetch(jkfile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist=" + sourcedata+ ";");
+            }catch(e){}
+        }
+        if(mode==2){//全量模式时，先删除本地
+            for(let i=0;i<datalist.length;i++){
+                if(datalist[i].retain!=1){
+                    if(datalist[i].url.startsWith(jkfilespath)){
+                        deleteFile(datalist[i].url);
+                    }
+                    datalist.splice(i,1);
+                    i = i - 1;
+                }
+            }
+        }
+        let olddatanum = datalist.length;
+
+        urls.forEach(it=>{
+            function checkitem(item) {
+                return item.id==it.id;
+            }
+
+            if(it.oldid || mode==1){//覆盖已存在接口
+                for(let i=0;i<datalist.length;i++){
+                    if(datalist[i].id==it.id || datalist[i].id==it.oldid){
+                        datalist.splice(i,1);
+                        break;
+                    }
+                }
+            }else if(!mode && datalist.some(checkitem)){
+                return -2;//已存在
+            }
+            if(it.url.startsWith(cachepath)){//缓存的数据文件转到jiekou目录
+                if(fetch(it.url)){
+                    writeFile(jkfilespath + it.id + '.txt', fetch(it.url));
+                    it.url = jkfilespath + it.id + '.txt';
+                }else{
+                    log(it.id + '>接口规则文件为空');
+                    delete it.url;
+                }
+            }
+            if(!datalist.some(checkitem)&&it.name&&it.url&&it.type){
+                //if(!it.oldurl && olddatanum>0){
+                //    it.group = it.group || "新导入";
+                //}
+                
+                if(it.extstr){//带数据内容的保存到data目录
+                    writeFile(it.url, it.extstr);
+                    delete it['extstr'];
+                }
+                delete it['oldid'];
+
+                datalist.push(it);
+                num = num + 1;
+            }
+        })
+        //setJkSort(datalist, {fail: 0});
+        if(num>0){writeFile(jkfile, JSON.stringify(datalist));}
+    } catch (e) {
+        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
+        return -1;
+    }
+    return num;
+}
 //资源分享
 function JYshare(input,data) {
-    let sharelist;
+    let sharelist,sm,sm2;
+    let sm = '聚阅接口';
     if(data){
         sharelist = [];
         sharelist.push(data);
@@ -603,14 +682,14 @@ function JYshare(input,data) {
 
     for(let i=0;i<sharelist.length;i++){
         let it = sharelist[i];
-        if(it.url.startsWith(jkfilespath) && (($.type(it.ext)=="string" && it.ext.startsWith("file")) || !it.ext)){
-            it.extstr = fetch(it.url) || fetch(it.ext.split("?")[0]);
+        if(it.url.startsWith(jkfilespath)){
+            it.extstr = fetch(it.url);
             if(!it.extstr){
                 log(it.name+">未获取到数据文件，剔除分享");
                 sharelist.splice(i,1);
                 i = i - 1;
             }
-        }else if(!it.url.startsWith(jkfilespath) && it.url.startsWith("hiker")){
+        }else if(!it.url.startsWith(jkfilespath) && (it.url.startsWith("hiker")||it.url.startsWith("file"))){
             log(it.name+">私有路径的数据文件，剔除分享");
             sharelist.splice(i,1);
             i = i - 1;
@@ -629,9 +708,9 @@ function JYshare(input,data) {
 
     if(input=='云口令文件'){
         sm2 = sharelist.length==1?sharelist[0].name:sharelist.length;
-        let code = sm + '￥' + aesEncode('Juying2', sharetxt) + '￥云口令文件';
-        let sharefile = 'hiker://files/_cache/Juying2_'+sm2+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
-        writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚影");`);
+        let code = sm + '￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
+        let sharefile = 'hiker://files/_cache/Juyue_'+sm2+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
+        writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
         if(fileExist(sharefile)){
             return 'share://'+sharefile;
         }else{
@@ -644,8 +723,8 @@ function JYshare(input,data) {
         hideLoading();
         if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
             log('剪贴板地址>'+pasteurl);
-            let code = sm+'￥'+aesEncode('Juying2', pasteurl)+'￥' + sm2 + '('+input+')';
-            copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚影");`);
+            let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + '('+input+')';
+            copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             return "toast://聚影分享口令已生成";
         }else{
             log('分享失败>'+pasteurl);
@@ -660,33 +739,27 @@ function JYimport(input) {
         input = input.replace('云口令：','').trim();
         cloudimport = 1;
     }
-    let pasteurl;
-    let inputname;
+
+    let pasteurl,inputname,sm;
     let codelx = "share";
     try{
-        pasteurl = aesDecode('Juying2', input.split('￥')[1]);
+        pasteurl = aesDecode('Juyue', input.split('￥')[1]);
         inputname = input.split('￥')[0];
-        if(inputname=="聚影资源码"){
+        if(inputname=="聚阅资源码"){
             codelx = "dingyue";
             if(input.split('￥')[2] != "文件分享"){
                 pasteurl = '云6oooole/xxxxxx/' + pasteurl;
             }
-            if(getMyVar('guanli')=="jk"){
-                inputname = "聚影接口";
-            }else if(getMyVar('guanli')=="jx"){
-                inputname = "聚影解析";
-            }
+            inputname = "聚阅接口";
         }
     }catch(e){
-        return "toast://聚影：口令有误>"+e.message;
+        return "toast://聚阅：口令有误>"+e.message + " 错误行#" + e.lineNumber;
     }
     try{
-        if(inputname=="聚影接口"){
-            var sm = "聚影：接口";
-        }else if(inputname=="聚影解析"){
-            var sm = "聚影：解析";
+        if(inputname=="聚阅接口"){
+            sm = "聚阅：接口";
         }else{
-            return "toast://聚影：无法识别的口令";
+            return "toast://聚阅：无法识别的口令";
         }
         let text;
         if(/^http|^云/.test(pasteurl)){
@@ -700,29 +773,22 @@ function JYimport(input) {
             let sharetxt = gzip.unzip(text);
             let pastedata = JSON.parse(sharetxt);           
             let urlnum = 0;
-            if(inputname=="聚影接口"){
+            if(inputname=="聚阅接口"){
                 if(codelx=="share"){
                     var pastedatalist = pastedata;
                 }else if(codelx=="dingyue"){
                     var pastedatalist = pastedata.接口;
                 }
                 urlnum = jiekousave(pastedatalist);
-            }else if(inputname=="聚影解析"){
-                if(codelx=="share"){
-                    var pastedatalist = pastedata;
-                }else if(codelx=="dingyue"){
-                    var pastedatalist = pastedata.解析;
-                }
-                urlnum = jiexisave(pastedatalist);
             }
             if(urlnum>0&&cloudimport!=1){
                 refreshPage(false);
             }
             return "toast://"+sm+"合计："+pastedatalist.length+"，保存："+urlnum;
         }else{
-            return "toast://聚影：口令错误或已失效";
+            return "toast://聚阅：口令错误或已失效";
         }
     } catch (e) {
-        return "toast://聚影：无法识别的口令>"+e.message;
+        return "toast://聚阅：无法识别的口令>" + e.message + " 错误行#" + e.lineNumber;
     }
 }

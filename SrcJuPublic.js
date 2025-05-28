@@ -437,6 +437,7 @@ let gmParams = {
     zip: gzip.zip,
     unzip: gzip.unzip
 }
+/*
 if(!GM.get("gmParams")){
     log("写入全局对象变量gmParams");
     GM.put("gmParams", gmParams);
@@ -447,3 +448,4 @@ if(!GM.get("gmParams")){
     }
     log("当前依赖库>" + config.聚阅);
 }
+*/

@@ -65,7 +65,6 @@ function yiji(testSource) {
             }
         })
         */
-
         d.push({
             title: "收藏",
             url: "hiker://collection?rule="+MY_RULE.title,
@@ -79,7 +78,13 @@ function yiji(testSource) {
             col_type: 'icon_5'
         })
         d.push({
-            title: "搜索",
+            title: "预留",
+            url: "hiker://history?rule="+MY_RULE.title,
+            pic_url: "http://123.56.105.145/tubiao/more/213.png",
+            col_type: 'icon_5'
+        })
+        d.push({
+            title: "聚影",
             url: $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
                 require(config.依赖);
                 newsousuopage();
@@ -87,16 +92,21 @@ function yiji(testSource) {
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
             col_type: 'icon_5'
         })
-        
         d.push({
-            title: "管理",
-            url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
-                SRCSet();
+            title: "设置",
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["接口列表","管理中心"],1).select(()=>{
+                if(input=="本地接口管理"){
+                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                        setPageTitle('本地接口管理');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        SRCSet();
+                    })
+                }
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: 'icon_5'
+            col_type: "icon_5"
         })
+        
 
         let typemenubtn = getTypeNames("主页");
         let Color = '#3399cc';

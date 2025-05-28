@@ -354,7 +354,7 @@ function jiekouapi(data, look) {
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
-            putMyVar('apiversion', data.onlysearch||"");
+            putMyVar('apionlysearch', data.onlysearch||"");
             putMyVar('apiruleurl', data.url||"");
             putMyVar('isload', '1');
         }

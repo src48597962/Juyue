@@ -1070,7 +1070,7 @@ function sousuo() {
 }
 //搜索逻辑代码
 function search(name, sstype, jkdata) {
-    let page = sstype=="erji" ? 1 : (MY_PAGE || 1)
+    let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);

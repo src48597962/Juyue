@@ -1111,7 +1111,6 @@ function ocr(codeurl,headers) {
 }
 //获取搜索数据
 function getSsData(name, jkdata, page) {
-    page = page || MY_PAGE;
     let objCode = getObjCode(jkdata);
     let error = "";
     let getData = [];

@@ -300,7 +300,7 @@ function erji() {
             }else{
                 log('开始获取二级数据');
                 let t1 = new Date().getTime();
-                objCode = getobjCode(jkdata);
+                objCode = getObjCode(jkdata);
                 try {
                     if (objCode['预处理']) {
                         try {

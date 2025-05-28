@@ -19,7 +19,7 @@ function yiji(testSource) {
     let d = [];
     if(MY_PAGE==1){
         d.push({
-            title: "切换站源",
+            title: jkdata.name || "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();

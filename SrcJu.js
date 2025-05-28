@@ -70,13 +70,13 @@ function yiji(testSource) {
             title: "收藏",
             url: "hiker://collection?rule="+MY_RULE.title,
             pic_url: "http://123.56.105.145/tubiao/more/109.png",
-            col_type: 'icon_4'
+            col_type: 'icon_5'
         })
         d.push({
             title: "历史",
             url: "hiker://history?rule="+MY_RULE.title,
             pic_url: "http://123.56.105.145/tubiao/more/213.png",
-            col_type: 'icon_4'
+            col_type: 'icon_5'
         })
         d.push({
             title: "搜索",
@@ -85,7 +85,7 @@ function yiji(testSource) {
                 newsousuopage();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
-            col_type: 'icon_4'
+            col_type: 'icon_5'
         })
         
         d.push({
@@ -95,7 +95,7 @@ function yiji(testSource) {
                 SRCSet();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: 'icon_4'
+            col_type: 'icon_5'
         })
 
         let typemenubtn = getTypeNames("主页");

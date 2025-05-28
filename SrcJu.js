@@ -1091,6 +1091,9 @@ function search(name, sstype, jkdata) {
                 ssdata.push(it);
             }
         }else{
+            if(sstype=="yiji"){
+                it.extra.cls = "homesousuolist";
+            }
             ssdata.push(it);
         }
     })

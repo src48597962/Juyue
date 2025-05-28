@@ -1112,6 +1112,9 @@ function ocr(codeurl,headers) {
 //获取搜索数据
 function getSsData(name, jkdata, page) {
     page = page || 1;
+    if (typeof MY_PAGE == "undefined") {
+        var MY_PAGE = page;
+    }
     let objCode = getObjCode(jkdata);
     let error = "";
     let getData = [];

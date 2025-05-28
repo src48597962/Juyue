@@ -130,7 +130,7 @@ function yiji(testSource) {
         })
         
         let searchurl = $('').lazyRule((jkdata) => {
-            if(getItem('接口搜索方式','当前接口')=="当前接口"){
+            if(getItem('接口搜索方式','当前主页')=="当前接口"){
                 if(jkdata){
                     storage0.putMyVar('Src_Jy_搜索临时搜索数据', jkdata);
                     return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
@@ -160,7 +160,7 @@ function yiji(testSource) {
             }
         }, jkdata);
         
-        if(MY_NAME=="嗅觉浏览器"){
+        //if(MY_NAME=="嗅觉浏览器"){
             d.push({
                 title: "搜索",
                 url: $.toString((searchurl) => {
@@ -182,7 +182,7 @@ function yiji(testSource) {
                     })
                 }
             });
-        }
+        //}
         
         if(!jkdata.name){
             d.push({

@@ -667,7 +667,7 @@ function jiekousave(urls, mode) {
 //资源分享
 function JYshare(input,data) {
     let sharelist,sm,sm2;
-    let sm = '聚阅接口';
+    sm = '聚阅接口';
     if(data){
         sharelist = [];
         sharelist.push(data);

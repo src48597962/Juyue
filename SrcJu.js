@@ -131,7 +131,7 @@ function yiji(testSource) {
             }
             d.push(item);
         })
-
+        
         let searchurl = $('').lazyRule((jkdata) => {
             if(getItem('接口搜索方式','当前接口')=="当前接口"){
                 if(jkdata){
@@ -162,27 +162,31 @@ function yiji(testSource) {
                 return 'hiker://empty';
             }
         }, jkdata);
-        d.push({
-            title: "搜索",
-            url: $.toString((searchurl) => {
-                input = input.trim();
-                if(input == ''){
-                    return "hiker://empty"
-                }
-                return input + searchurl;
-            },searchurl),
-            desc: "搜你想要的...",
-            col_type: "input",
-            extra: {
-                id: 'homesousuoid',
-                titleVisible: true,
-                onChange: $.toString(() => {
-                    if(input==""){
-                        deleteItemByCls('homesousuolist');
+        
+        if(MY_NAME=="嗅觉浏览器"){
+            d.push({
+                title: "搜索",
+                url: $.toString((searchurl) => {
+                    input = input.trim();
+                    if(input == ''){
+                        return "hiker://empty"
                     }
-                })
-            }
-        });
+                    return input + searchurl;
+                },searchurl),
+                desc: "搜你想要的...",
+                col_type: "input",
+                extra: {
+                    id: 'homesousuoid',
+                    titleVisible: true,
+                    onChange: $.toString(() => {
+                        if(input==""){
+                            deleteItemByCls('homesousuolist');
+                        }
+                    })
+                }
+            });
+        }
+        
         if(!jkdata.name){
             d.push({
                 title: homeGroup + " 主页源不存在\n需先选择配置主页源",

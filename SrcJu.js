@@ -18,6 +18,7 @@ function yiji(testSource) {
 
     let d = [];
     if(MY_PAGE==1){
+        /*
         d.push({
             title: jkdata.name || "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -62,6 +63,39 @@ function yiji(testSource) {
             extra: {
                 longClick: []
             }
+        })
+        */
+
+        d.push({
+            title: "收藏",
+            url: "hiker://collection?rule="+MY_RULE.title,
+            pic_url: "http://123.56.105.145/tubiao/more/109.png",
+            col_type: 'icon_4'
+        })
+        d.push({
+            title: "历史",
+            url: "hiker://history?rule="+MY_RULE.title,
+            pic_url: "http://123.56.105.145/tubiao/more/213.png",
+            col_type: 'icon_4'
+        })
+        d.push({
+            title: "搜索",
+            url: $("hiker://empty#noRefresh##noRecordHistory##noHistory##fullTheme###fypage").rule(() => {
+                require(config.依赖);
+                newsousuopage();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/101.png",
+            col_type: 'icon_4'
+        })
+        
+        d.push({
+            title: "管理",
+            url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuSet.js');
+                SRCSet();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/129.png",
+            col_type: 'icon_4'
         })
 
         let typemenubtn = getTypeNames("主页");

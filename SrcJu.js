@@ -1124,6 +1124,7 @@ function erjisousuo(name,group,datas,sstype) {
 
         let task = function (obj) {
             try {
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 let lists = obj.search(obj.name, obj.type, obj.data);
                 return {result:lists, success:1};
             } catch (e) {

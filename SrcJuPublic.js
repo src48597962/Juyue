@@ -143,6 +143,38 @@ function getGroupNames() {
     })
     return gnames;
 }
+//获取搜索接口列表
+function getSearchLists(group) {
+    let datalist = getDatas('ss', 1);
+
+    let sort = {};
+    if(fetch(sortfile)){
+        eval("sort = " + fetch(sortfile));
+    }
+    datalist.forEach(it=>{
+        try{
+            let jksort = sort[it.id] || {};
+            it.sort = jksort.fail || 0;
+        }catch(e){
+            it.sort = 0;
+        }
+    })
+    datalist.sort((a, b) => {
+        return a.sort - b.sort
+    })
+
+    if(group){
+        return datalist.filter(it=>{
+            return group==(it.group||it.type);
+        });
+    }else{
+        let lockgroups = Juconfig["lockgroups"] || [];
+        datalist = datalist.filter(it=>{
+            return lockgroups.indexOf(it.group||it.type)==-1;
+        })
+        return datalist;
+    }
+}
 // 接口处理公共方法
 function dataHandle(data, input) {
     let sourcedata = fetch(jkfile);

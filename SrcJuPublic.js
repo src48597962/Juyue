@@ -32,6 +32,13 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     }
     
     olddatalist.forEach(it=>{
+        if(it.parse&&it.erparse){
+            it.ilk = 3;
+        }else if(it.parse){
+            it.ilk = 1;
+        }else if(it.erparse){
+            it.ilk = 2;
+        }
         it.public = (it.public||"").replace(/公共/g, 'objCode');
         it.parse = (it.parse||"").replace(/公共/g, 'objCode');
         it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');

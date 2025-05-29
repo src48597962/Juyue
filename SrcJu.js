@@ -1044,6 +1044,7 @@ function sousuo() {
         extra: {
             delegateOnlySearch: true,
             rules: $.toString((name) => {
+                log('进来了');
                 let ssdatalist = [];
                 if(storage0.getMyVar('SrcJu_搜索临时搜索数据')){
                     ssdatalist.push(storage0.getMyVar('SrcJu_搜索临时搜索数据'));

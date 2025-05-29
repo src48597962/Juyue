@@ -234,7 +234,47 @@ function getYiData(datatype, jkdata, dd) {
 
     return d;
 }
-
+//ocr数字验证码识别
+function ocr(codeurl,headers) {
+    headers= headers || {};
+    let img = convertBase64Image(codeurl,headers).replace('data:image/jpeg;base64,','');
+    let code = request('https://api-cf.nn.ci/ocr/b64/text', { body: img, method: 'POST', headers: {"Content-Type":"text/html"}});
+    code = code.replace(/o/g, '0').replace(/u/g, '0').replace(/I/g, '1').replace(/l/g, '1').replace(/g/g, '9');
+    if(code.includes("+")&&code.includes("=")){
+        code = eval(code.split("=")[0]);
+    }
+    log('识别验证码：'+code);
+    return code;
+}
+//获取搜索数据
+function getSsData(name, jkdata, page) {
+    page = page || 1;
+    let error = "";
+    let getData = [];
+    if (typeof MY_PAGE == "undefined") {
+        var MY_PAGE = page;
+    }
+    try {
+        let objCode = getObjCode(jkdata);
+        if (objCode['预处理']) {
+            objCode['预处理']();
+        }
+        let setResult = function (d){
+            return d;
+        }
+        if(objCode['搜索']){
+            eval("let 数据 = " + objCode['搜索'].toString());
+            getData = 数据(name) || [];
+        }
+    } catch (e) {
+        error = e.message;
+        log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+    }
+    return {
+        vodlists: getData,
+        error: error
+    };
+}
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {

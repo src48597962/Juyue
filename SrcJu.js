@@ -1049,8 +1049,8 @@ function search(name, sstype, jkdata) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
     getSsData(name, jkdata, page).vodlists.forEach(it => {
-        log(it);
         it = toerji(it, jkdata);
+        log(it);
         if(sstype=='erji'){
             it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
                 if(getMyVar('换源变更列表id')){

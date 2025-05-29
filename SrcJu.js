@@ -1050,8 +1050,8 @@ function search(name, sstype, jkdata) {
     let ssdata = [];
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
-        log(it);
         if(sstype=='erji'){
+            log(it);
             it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
                 if(getMyVar('换源变更列表id')){
                     return "toast://请勿重复点击，稍等...";

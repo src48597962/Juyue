@@ -1051,6 +1051,8 @@ function search(name, sstype, jkdata) {
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){
+            ssdata.push(it);
+            /*
             if(it.extra && it.extra.url){
                 log(it);
                 it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
@@ -1069,6 +1071,7 @@ function search(name, sstype, jkdata) {
                     ssdata.push(it);
                 }
             }
+            */
         }else if(sstype=="yiji"){
             it.extra.cls = "homesousuolist";
             ssdata.push(it);

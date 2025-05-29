@@ -1051,26 +1051,26 @@ function search(name, sstype, jkdata) {
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){
-            log(it);
-            it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
-                if(getMyVar('换源变更列表id')){
-                    return "toast://请勿重复点击，稍等...";
-                }else{
-                    putMyVar('换源变更列表id','1');
-                    storage0.putMyVar('二级附加临时对象', extra);
-                    refreshPage(false);
-                    return "toast://已切换源：" + extra.data.name;
+            if(it.extra && it.extra.url){
+                log(it);
+                it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
+                    if(getMyVar('换源变更列表id')){
+                        return "toast://请勿重复点击，稍等...";
+                    }else{
+                        putMyVar('换源变更列表id','1');
+                        storage0.putMyVar('二级附加临时对象', extra);
+                        refreshPage(false);
+                        return "toast://已切换源：" + extra.data.name;
+                    }
+                }, it.extra);
+                it.title = it.extra.data.name;
+                it.col_type = "avatar";
+                if(it.extra.name.toLowerCase()==name.toLowerCase()){
+                    ssdata.push(it);
                 }
-            }, it.extra);
-            it.title = it.extra.data.name;
-            it.col_type = "avatar";
-            if(it.extra.name.toLowerCase()==name.toLowerCase()){
-                ssdata.push(it);
             }
-        }else{
-            if(sstype=="yiji"){
-                it.extra.cls = "homesousuolist";
-            }
+        }else if(sstype=="yiji"){
+            it.extra.cls = "homesousuolist";
             ssdata.push(it);
         }
     })

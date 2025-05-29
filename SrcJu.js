@@ -1048,14 +1048,11 @@ function sousuo() {
 function search(name, sstype, jkdata) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
-    log(toerji.toString());
+
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){
-            ssdata.push(it);
-            /*
             if(it.extra && it.extra.url){
-                log(it);
                 it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
                     if(getMyVar('换源变更列表id')){
                         return "toast://请勿重复点击，稍等...";
@@ -1072,7 +1069,6 @@ function search(name, sstype, jkdata) {
                     ssdata.push(it);
                 }
             }
-            */
         }else if(sstype=="yiji"){
             it.extra.cls = "homesousuolist";
             ssdata.push(it);

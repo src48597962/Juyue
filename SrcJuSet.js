@@ -1,6 +1,6 @@
 ////本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-
+//本地接口管理
 function SRCSet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('duodatalist');
@@ -794,4 +794,294 @@ function JYimport(input) {
     } catch (e) {
         return "toast://聚阅：无法识别的口令>" + e.message + " 错误行#" + e.lineNumber;
     }
+}
+//管理中心
+function manageSet(){
+    addListener("onClose", $.toString(() => {
+        //refreshPage(false);
+    }));
+    setPageTitle("♥管理"+getMyVar('SrcJu_Version', ''));
+
+    let d = [];
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '依赖管理',
+        img: getIcon("管理-依赖.svg"),
+        col_type: 'avatar',
+        url: 'hiker://empty'
+    });
+    d.push({
+        title: 'github加速管理',
+        img: getIcon("管理-箭头.svg"),
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+            $.require('ghproxy').proxyPage();
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
+        title: '指定聚阅代码库',
+        img: getIcon("管理-箭头.svg"),
+        url: $(getItem('依赖', ''),"手工指定聚阅代码库地址").input(()=>{
+            return $("确定要指定聚阅代码库地址"+input).confirm((input)=>{
+                if(input && (!input.startsWith("http") || !input.endsWith("SrcJu.js"))){
+                    return "toast://输入有误"
+                }
+                input = input.trim();
+                setItem('依赖', input);
+                initConfig({
+                    依赖: input
+                })
+                deleteCache();
+                return "toast://已设置，返回主页刷新";
+            },input)
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '规则配置',
+        img: getIcon("管理-配置.svg"),
+        col_type: 'avatar',
+        url: 'toast://不清楚，可不动'
+    });
+    /*
+    d.push({
+        title: '资源码分享管理',
+        img: getIcon("管理-箭头.svg"),
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
+            shareResource();
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
+        title: '资源码订阅管理',
+        img: getIcon("管理-箭头.svg"),
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
+            subResource();
+        }),
+        col_type: 'text_icon'
+    });
+    */
+    d.push({
+        title: '规则日志打印',
+        img: getItem('规则日志打印')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        url: $("#noLoading#").lazyRule(() => {
+            if(getItem('规则日志打印')=="1"){
+                clearItem('规则日志打印');
+            }else{
+                setItem('规则日志打印','1');
+            }
+            refreshPage();
+            return 'hiker://empty';
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
+        title: '接口日志打印',
+        img: getItem('接口日志打印')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        url: $("#noLoading#").lazyRule(() => {
+            if(getItem('接口日志打印')=="1"){
+                clearItem('接口日志打印');
+            }else{
+                setItem('接口日志打印','1');
+            }
+            refreshPage();
+            return 'hiker://empty';
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '关于聚阅',
+        img: getIcon("聚阅.svg"),
+        col_type: 'avatar',
+        url: 'toast://哥就是帅'
+    });
+    d.push({
+        title: '主页显示点播',
+        img: getItem('主页显示点播')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        url: $("#noLoading#").lazyRule(() => {
+            if(getItem('主页显示点播')=="1"){
+                clearItem('主页显示点播');
+            }else{
+                setItem('主页显示点播','1');
+            }
+            refreshPage();
+            return 'toast://设置成功，返回主页刷新';
+        }),
+        col_type: 'text_icon'
+    });
+    let colors = [{
+        title: '绿意盎然',
+        icon: "#4EAF7C"
+    },{
+        title: '蓝田生玉',
+        icon: "#3498DB"
+    },{
+        title: '暗宝石绿',
+        icon: "#00CED1"
+    },{
+        title: '橙黄橘绿',
+        icon: "#F5AB34"
+    },{
+        title: '热情似火',
+        icon: "#D64440"
+    },{
+        title: '粉装玉琢',
+        icon: "#F0838D"
+    },{
+        title: '重斤球紫',
+        icon: "#9B59B5"
+    },{
+        title: '深卡其色',
+        icon: "#BDB76B"
+    },{
+        title: '亮天蓝色',
+        icon: "#87CEFA"
+    },{
+        title: '泥牛入海',
+        icon: "#BD7F45"
+    },{
+        title: '青出于黑',
+        icon: "#336F7A"
+    },{
+        title: "自定义色",
+        icon: getItem('自定义色', '1')
+    },{
+        title: "恢复初始",
+        icon: ""
+    }]
+    
+    colors.forEach(it=>{
+        if(getItem('主题颜色','') == it.icon){
+            it.title = it.title + '√';
+        }
+    })
+    d.push({
+        title: '主题颜色选择',
+        img: getIcon("管理-箭头.svg"),
+        url: $(colors, 3).select((colors) => {
+            if(input=="自定义色"){
+                return $(getItem('自定义色', ''), "输入自定义主题颜色代码").input(()=>{
+                    if(!input.startsWith('#')){
+                        return "toast://颜色代码错误，请以#开头";
+                    }
+                    setItem('主题颜色', input);
+                    setItem('自定义色', input);
+                    refreshPage(false);
+                    return "hiker://empty";
+                })
+            }else{
+                let color = colors.filter(d => d.title == input)[0].icon;
+                if(color){
+                    setItem('主题颜色', color);
+                }else{
+                    clearItem('主题颜色');
+                }
+                refreshPage();
+                return "hiker://empty";
+            } 
+        }, colors),
+        col_type: 'text_icon',
+        extra: {
+            longClick: [{
+                title: "主页大图标不变化",
+                js: $.toString(() => {
+                    return $("#noLoading#").lazyRule(() => {
+                        if(getItem('主页大图标不变化')=="1"){
+                            clearItem('主页大图标不变化');
+                        }else{
+                            setItem('主页大图标不变化','1');
+                        }
+                        return 'toast://切换成功，返回主页刷新';
+                    })
+                })
+            }]
+        }
+    });
+    d.push({
+        title: '查看更新日志',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: $("#noLoading#").lazyRule(() => {
+            eval(fetch(getItem("依赖","").replace(/[^/]*$/,'') + 'SrcTmplVersion.js'));
+            let updateRecords = newVersion.JYUpdateRecords || [];
+
+            const hikerPop = $.require(getItem("依赖","").replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+            hikerPop.updateRecordsBottom(updateRecords);
+            
+            return "hiker://empty";
+        })
+    });
+    d.push({
+        title: '检测版本更新',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: $("#noLoading#").lazyRule(() => {
+            if(!getItem("依赖","")){
+                return "toast://代码库获取异常，无法更新！";
+            }
+            if(!getItem("依赖","").startsWith("http")){
+                return "toast://非在线代码库，无法在线更新！";
+            }
+            try{
+                eval(request(getItem("依赖","").replace(/[^/]*$/,'') + 'SrcTmplVersion.js'))
+                let nowVersion = getItem('Version', getMyVar('SrcJu_Version', '0.1').replace('-V',''));
+                let nowtime = Date.now();
+                if (parseFloat(newVersion.SrcJuying) > parseFloat(nowVersion)) {
+                    confirm({
+                        title: '发现新版本，是否更新？', 
+                        content: '本地V'+nowVersion+' => 云端V'+newVersion.SrcJuying, 
+                        confirm: $.toString((nowtime,newVersion) => {
+                            setItem('Version', newVersion);
+                            setItem('VersionChecktime', nowtime+'time');
+                            deleteCache();
+                            putMyVar('SrcJu_Version', '-V'+newVersion);
+                            refreshPage();
+                        },nowtime, newVersion.SrcJuying),
+                        cancel:''
+                    })
+                }else{
+                    toast('已经为最新版本');
+                }
+            }catch(e){
+                toast('获取版本信息异常>'+e.message);
+            }
+            return "hiker://empty";
+        })
+    });
+    d.push({
+        title: '支持一下作者',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: config.聚影.replace(/[^/]*$/,'') + 'img/pay.jpg'
+    });
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '免责申明',
+        img: getIcon("管理-免责.svg"),
+        col_type: 'avatar',
+        url: 'hiker://empty'
+    })
+    d.push({
+        title: `<small>
+                1. 本小程序是一个空壳小程序，无任何内置资源。<br>
+                2. 本小程序开源<b>完全免费</b>，如果是付费购买的那你被骗了。<br>
+                3. 本小程序用于部分b源接口测试，并非所有接口都支持。<br>
+	            4. 本小程序仅用于个人学习研究，请于导入24小时内删除！<br>
+                <b>开始使用本规则即代表遵守规则条例</b><br>
+            </small>`,
+        col_type: 'rich_text'
+    });
+    setResult(d);
 }

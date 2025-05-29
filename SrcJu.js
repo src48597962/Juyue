@@ -594,7 +594,7 @@ function erji() {
                 if(moreitems.length>0){
                     moreitems.forEach(item => {
                         if(item.url!=surl){
-                            item = toerji(item,{type:stype,name:sname});
+                            item = toerji(item, jkdata);
                             item.extra = item.extra || {};
                             item.extra['back'] = 1;
                             item.extra['cls'] = "Juloadlist extendlist";
@@ -941,7 +941,7 @@ function erji() {
                 })
                 extenditems.forEach(item => {
                     if(item.url!=surl){
-                        item = toerji(item,{type:stype,name:sname});
+                        item = toerji(item, jkdata);
                         item.extra = item.extra || {};
                         item.extra['back'] = 1;
                         item.extra['cls'] = "Juloadlist extendlist";
@@ -1081,47 +1081,7 @@ function search(name, sstype, jkdata) {
 
     return ssdata;
 }
-//ocr数字验证码识别
-function ocr(codeurl,headers) {
-    headers= headers || {};
-    let img = convertBase64Image(codeurl,headers).replace('data:image/jpeg;base64,','');
-    let code = request('https://api-cf.nn.ci/ocr/b64/text', { body: img, method: 'POST', headers: {"Content-Type":"text/html"}});
-    code = code.replace(/o/g, '0').replace(/u/g, '0').replace(/I/g, '1').replace(/l/g, '1').replace(/g/g, '9');
-    if(code.includes("+")&&code.includes("=")){
-        code = eval(code.split("=")[0]);
-    }
-    log('识别验证码：'+code);
-    return code;
-}
-//获取搜索数据
-function getSsData(name, jkdata, page) {
-    page = page || 1;
-    let error = "";
-    let getData = [];
-    if (typeof MY_PAGE == "undefined") {
-        var MY_PAGE = page;
-    }
-    try {
-        let objCode = getObjCode(jkdata);
-        if (objCode['预处理']) {
-            objCode['预处理']();
-        }
-        let setResult = function (d){
-            return d;
-        }
-        if(objCode['搜索']){
-            eval("let 数据 = " + objCode['搜索'].toString());
-            getData = 数据(name) || [];
-        }
-    } catch (e) {
-        error = e.message;
-        log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-    }
-    return {
-        vodlists: getData,
-        error: error
-    };
-}
+
 //二级切源搜索
 function erjisousuo(name,group,datas,sstype) {
     sstype = sstype || "erji";

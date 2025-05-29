@@ -800,7 +800,7 @@ function manageSet(){
     addListener("onClose", $.toString(() => {
         //refreshPage(false);
     }));
-    setPageTitle("♥管理"+getMyVar('SrcJu_Version', ''));
+    setPageTitle("♥管理中心"+getMyVar('SrcJu_Version', ''));
 
     let d = [];
     d.push({

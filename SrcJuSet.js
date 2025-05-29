@@ -1062,7 +1062,7 @@ function manageSet(){
         title: '支持一下作者',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',
-        url: config.聚影.replace(/[^/]*$/,'') + 'img/pay.jpg'
+        url: config.聚阅.replace(/[^/]*$/,'') + 'img/pay.jpg'
     });
     d.push({
         col_type: "line_blank"

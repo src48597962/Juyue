@@ -1061,7 +1061,7 @@ function search(name, sstype, jkdata) {
                     return "toast://已切换源：" + extra.data.name;
                 }
             }, it.extra);
-            it.title = extra.data.name;
+            it.title = it.extra.data.name;
             it.col_type = "avatar";
             if(it.extra.name.toLowerCase()==name.toLowerCase()){
                 ssdata.push(it);

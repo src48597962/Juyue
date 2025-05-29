@@ -50,6 +50,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
         let newjkjson = Object.assign({}, public, parse, erparse);
+        it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;

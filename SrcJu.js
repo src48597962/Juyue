@@ -1063,6 +1063,7 @@ function search(name, sstype, jkdata) {
             }, it.extra);
             it.title = it.extra.data.name;
             it.col_type = "avatar";
+            log(it.extra.name);
             if(it.extra.name.toLowerCase()==name.toLowerCase()){
                 ssdata.push(it);
             }
@@ -1180,7 +1181,7 @@ function erjisousuo(name,group,datas,sstype) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
                     beidlist.push(id);
-                    log(taskResult);
+
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
                         return "break";
                     }else if(taskResult.success==1){

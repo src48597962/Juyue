@@ -1054,7 +1054,7 @@ function sousuo() {
                     ssdatalist = getSearchLists(group);
                     clearMyVar('SrcJu_搜索临时搜索分组');
                 }
-
+                log(ssdatalist);
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     judata.push({

@@ -1046,15 +1046,20 @@ function sousuo() {
             rules: $.toString((name) => {
                 log('进来了');
                 let ssdatalist = [];
-                if(storage0.getMyVar('SrcJu_搜索临时搜索数据')){
-                    ssdatalist.push(storage0.getMyVar('SrcJu_搜索临时搜索数据'));
-                    clearMyVar('SrcJu_搜索临时搜索数据');
-                }else{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let group = getMyVar('SrcJu_搜索临时搜索分组','');
-                    ssdatalist = getSearchLists(group);
-                    clearMyVar('SrcJu_搜索临时搜索分组');
+                try{
+                    if(storage0.getMyVar('SrcJu_搜索临时搜索数据')){
+                        ssdatalist.push(storage0.getMyVar('SrcJu_搜索临时搜索数据'));
+                        clearMyVar('SrcJu_搜索临时搜索数据');
+                    }else{
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        let group = getMyVar('SrcJu_搜索临时搜索分组','');
+                        ssdatalist = getSearchLists(group);
+                        clearMyVar('SrcJu_搜索临时搜索分组');
+                    }
+                }catch(e){
+                    log(e.message);
                 }
+                
                 log(ssdatalist);
                 let judata = [];
                 ssdatalist.forEach(it=>{

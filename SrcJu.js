@@ -455,7 +455,7 @@ function erji() {
             }
             let lazy = $("").lazyRule((dataObj) => {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-                let objCode = getobjCode(dataObj.data);
+                let objCode = getObjCode(dataObj.data);
                 if(objCode.解析){
                     eval("let parse = " + objCode.解析);
                     return parse(input);
@@ -1180,7 +1180,7 @@ function erjisousuo(name,group,datas,sstype) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
                     beidlist.push(id);
-
+                    log(taskResult);
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
                         return "break";
                     }else if(taskResult.success==1){

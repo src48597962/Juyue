@@ -1048,6 +1048,7 @@ function sousuo() {
 function search(name, sstype, jkdata) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
+    log(toerji.toString());
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){

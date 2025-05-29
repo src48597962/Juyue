@@ -343,7 +343,7 @@ function jiekouapi(data, look) {
         clearMyVar('apiimg');
         clearMyVar('apitype');
         clearMyVar('apigroup');
-        clearMyVar('apionlysearch');
+        clearMyVar('apiilk');
         clearMyVar('apiruleurl');
         clearMyVar('isload');
     }));
@@ -354,7 +354,7 @@ function jiekouapi(data, look) {
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
-            putMyVar('apionlysearch', data.onlysearch||"");
+            putMyVar('apiilk', data.ilk||"");
             putMyVar('apiruleurl', data.url||"");
             putMyVar('isload', '1');
         }
@@ -456,13 +456,15 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '只有搜索：'+ getMyVar('apionlysearch','否'),
+        title: '选择源种类：'+ getMyVar('apiilk',''),
         col_type: 'text_1',
-        url: $().lazyRule(() => {
-            if(getMyVar('apionlysearch')){
-                clearMyVar('apionlysearch');
+        url: $("完整源","主页源","搜索源", 2, "接口分组：").select(() => {
+            if(input=="主页源"){
+                putMyVar('apiilk','1');
+            }else if(input=="搜索源"){
+                putMyVar('apiilk','2');
             }else{
-                putMyVar('apionlysearch','1');
+                putMyVar('apiilk','3');
             }
             refreshPage(false);
             return 'hiker://empty';
@@ -493,7 +495,7 @@ function jiekouapi(data, look) {
                     clearMyVar('apiimg');
                     clearMyVar('apitype');
                     clearMyVar('apigroup');
-                    clearMyVar('apionlysearch');
+                    clearMyVar('apiilk');
                     clearMyVar('apiruleurl');
                     refreshPage(true);
                     return "toast://已清空";
@@ -508,10 +510,13 @@ function jiekouapi(data, look) {
                     return "toast://名称不能为空";
                 }
                 if (!getMyVar('apitype')) {
-                    return "toast://接口类型不能为空";
+                    return "toast://类型没有选择";
                 }
                 if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
-                    return "toast://接口规则文件不能为空";
+                    return "toast://规则文件不存在";
+                }
+                if (!getMyVar('apiilk')) {
+                    return "toast://源种类没有选择";
                 }
             
                 let name = getMyVar('apiname');
@@ -520,7 +525,7 @@ function jiekouapi(data, look) {
                 let img = getMyVar('apiimg');
                 let type = getMyVar('apitype');
                 let group = getMyVar('apigroup');
-                let onlysearch = getMyVar('apionlysearch');
+                let ilk = getMyVar('apiilk');
                 
                 let newid = type + '_' + name;
                 let newapi = {
@@ -528,16 +533,14 @@ function jiekouapi(data, look) {
                     name: name,
                     version: version,
                     type: type,
-                    url: ruleurl
+                    url: ruleurl,
+                    ilk: ilk
                 }
                 if(group){
                     newapi['group'] = group;
                 }
                 if(img){
                     newapi['img'] = img;
-                }
-                if(onlysearch){
-                    newapi['onlysearch'] = 1;
                 }
                 if(oldid){
                     newapi['oldid'] = oldid;

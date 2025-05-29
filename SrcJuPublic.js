@@ -33,11 +33,11 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     
     olddatalist.forEach(it=>{
         if(it.parse&&it.erparse){
-            it.ilk = 3;
+            it.ilk = '3';
         }else if(it.parse){
-            it.ilk = 1;
+            it.ilk = '1';
         }else if(it.erparse){
-            it.ilk = 2;
+            it.ilk = '2';
         }
         it.public = (it.public||"").replace(/公共/g, 'objCode');
         it.parse = (it.parse||"").replace(/公共/g, 'objCode');
@@ -87,7 +87,9 @@ function getDatas(lx, isyx) {
     }
      
     if (lx == "yi") {
-        datalist = datalist.filter(it => !it.onlysearch);
+        datalist = datalist.filter(it => it.ilk != "2");
+    } else if (lx == "er") {
+        datalist = datalist.filter(it => it.ilk != "1");
     }
     
     if (getItem("sourceListSort") == "接口名称") {
@@ -152,7 +154,7 @@ function getGroupNames() {
 }
 //获取搜索接口列表
 function getSearchLists(group) {
-    let datalist = getDatas('ss', 1);
+    let datalist = getDatas('er', 1);
 
     let sort = {};
     if(fetch(sortfile)){

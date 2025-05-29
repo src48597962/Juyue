@@ -1049,6 +1049,7 @@ function search(name, sstype, jkdata) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
     getSsData(name, jkdata, page).vodlists.forEach(it => {
+        log(it);
         it = toerji(it, jkdata);
         if(sstype=='erji'){
             it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
@@ -1063,7 +1064,6 @@ function search(name, sstype, jkdata) {
             }, it.extra);
             it.title = it.extra.data.name;
             it.col_type = "avatar";
-            log(it.extra.name);
             if(it.extra.name.toLowerCase()==name.toLowerCase()){
                 ssdata.push(it);
             }

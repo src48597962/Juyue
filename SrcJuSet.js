@@ -339,6 +339,7 @@ function SRCSet() {
 function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('apiname');
+        clearMyVar('apiauthor');
         clearMyVar('apiversion');
         clearMyVar('apiimg');
         clearMyVar('apitype');
@@ -350,6 +351,7 @@ function jiekouapi(data, look) {
     if(data){
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
+            putMyVar('apiauthor', data.author||"");
             putMyVar('apiversion', data.version||"1");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
@@ -371,6 +373,18 @@ function jiekouapi(data, look) {
             onChange: $.toString(() => {
                 putMyVar('apiname', input);
             })
+        }
+    });
+    d.push({
+        title: '源接口作者：'+ getMyVar('apiauthor',''),
+        col_type: 'text_1',
+        url: $(getMyVar('apiauthor',''), "源接口作者").input(() => {
+            putMyVar('apiauthor',input);
+            refreshPage(false);
+            return 'toast://源接口作者已设置为：' + input;
+        }),
+        extra: {
+            //lineVisible: false
         }
     });
     d.push({
@@ -491,6 +505,7 @@ function jiekouapi(data, look) {
                 col_type:'text_3',
                 url:$("确定要清空上面填写的内容？").confirm(()=>{
                     clearMyVar('apiname');
+                    clearMyVar('apiauthor');
                     clearMyVar('apiversion');
                     clearMyVar('apiimg');
                     clearMyVar('apitype');
@@ -520,6 +535,7 @@ function jiekouapi(data, look) {
                 }
             
                 let name = getMyVar('apiname');
+                let author = getMyVar('apiauthor');
                 let ruleurl = getMyVar('apiruleurl');
                 let version = getMyVar('apiversion', '1');
                 let img = getMyVar('apiimg');
@@ -535,6 +551,9 @@ function jiekouapi(data, look) {
                     type: type,
                     url: ruleurl,
                     ilk: ilk
+                }
+                if(author){
+                    newapi['author'] = author;
                 }
                 if(group){
                     newapi['group'] = group;

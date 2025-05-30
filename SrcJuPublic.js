@@ -8,7 +8,9 @@ let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
-log($.type(Date.now()));
+log($.type(Date.now().toString()));
+log(Date.now().toString());
+log(Date.now().toString());
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 

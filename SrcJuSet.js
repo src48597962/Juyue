@@ -850,7 +850,7 @@ function manageSet(){
                 input = input.trim();
                 setItem('依赖', input);
                 initConfig({
-                    依赖: input
+                    聚阅: input
                 })
                 deleteCache();
                 return "toast://已设置，返回主页刷新";

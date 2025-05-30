@@ -4,16 +4,14 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
-    let jkdata = {};
-    try {
+    let jkdata = storage0.getMyVar('一级源接口信息') || {};
+    if(!jkdata.name){
         let yxdatalist = getDatas('yi', 1);
         let index = yxdatalist.findIndex(d => d.id === homeSourceId);
         jkdata = yxdatalist[index] || {};
         if(jkdata.name){
             storage0.putMyVar('一级源接口信息', jkdata);
         }
-    } catch (e) {
-        log("一级源接口加载异常>" + e.message + ' 错误行#' + e.lineNumber);
     }
 
     let d = [];

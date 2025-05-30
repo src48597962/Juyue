@@ -520,7 +520,7 @@ function jiekouapi(data, look) {
         d.push({
             title: '保存',
             col_type: 'text_3',
-            url: $().lazyRule((jkfilespath,jkfile,oldid) => {
+            url: $().lazyRule((oldid) => {
                 if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
@@ -543,9 +543,9 @@ function jiekouapi(data, look) {
                 let group = getMyVar('apigroup');
                 let ilk = getMyVar('apiilk');
                 
-                let newid = type + '_' + name;
+                let newid = Date.now().toString();
                 let newapi = {
-                    id: newid,
+                    id: oldid || newid,
                     name: name,
                     version: version,
                     type: type,
@@ -578,38 +578,7 @@ function jiekouapi(data, look) {
                     back(true);
                     return "toast://保存成功";
                 }
-
-                let datalist = [];
-                let sourcedata = fetch(jkfile);
-                if (sourcedata != "") {
-                    try {
-                        eval("datalist=" + sourcedata + ";");
-                    } catch (e) {}
-                }
-                let index = datalist.indexOf(datalist.filter(d => d.id==newid)[0]);
-                if (!oldid && index > -1) {
-                    return "toast://已存在-" + newid;
-                } else {
-                    if(newapi.url=='hiker://files/_cache/Juyue/objCodeTmpl.txt'){
-                        if(fetch(newapi.url)){
-                            writeFile(jkfilespath + newapi + '.txt', fetch(newapi.url));
-                            newapi.url = jkfilespath + newapi + '.txt';
-                        }else{
-                            return "toast://接口规则文件内容为空不能保存";
-                        }
-                    }
-                    index = datalist.indexOf(datalist.filter(d =>  d.id==oldid)[0]);
-                    if (oldid && index > -1) {
-                        datalist.splice(index, 1);
-                    }
-                    
-                    datalist.push(newapi);
-                    writeFile(jkfile, JSON.stringify(datalist));
-                    clearMyVar('SrcJu_searchMark');
-                    back(true);
-                    return "toast://已保存";
-                }
-            }, jkfilespath, jkfile, data?data.id:"")
+            }, data.id||"")
         });
     }
     setResult(d);
@@ -656,12 +625,15 @@ function jiekousave(urls, mode) {
             }
             if(it.url.startsWith(cachepath)){//缓存的数据文件转到jiekou目录
                 if(fetch(it.url)){
-                    writeFile(jkfilespath + it.id + '.txt', fetch(it.url));
-                    it.url = jkfilespath + it.id + '.txt';
+                    let newurl = jkfilespath + it.id + '.txt'
+                    writeFile(newurl, fetch(it.url));
+                    it.url = newurl;
                 }else{
-                    log(it.id + '>接口规则文件为空');
+                    log(it.name + '>接口规则文件为空');
                     delete it.url;
                 }
+            }else if(it.extstr){//带数据内容的保存到data目录
+                writeFile(it.url, it.extstr);
             }
             if(!datalist.some(checkitem)&&it.name&&it.url&&it.type){
                 //if(!it.oldurl && olddatanum>0){
@@ -880,7 +852,7 @@ function importConfirm(jsfile) {
                                 }
                             })
                             writeFile(cfgfile, JSON.stringify(Juconfig));
-	                            log("更新同步订阅资源完成；新增接口："+jknum+"，解析："+jxnum+"，直播"+tvnum+"，云盘："+ypnum+"，ghproxy："+ghnum);
+	                            log("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
                             back(false);
                             return "toast://更新同步文件资源完成；";
                         })
@@ -934,7 +906,7 @@ function importConfirm(jsfile) {
         }
         let newdatas = [];
         importdatas.forEach(it=>{
-            if(!datalist.some(v=>v.url==it.url)){
+            if(!datalist.some(v=>v.id==it.id)){
                 newdatas.push(it);
             }
         })
@@ -987,7 +959,7 @@ function importConfirm(jsfile) {
         });
 
         importdatas.forEach(it=>{
-            let isnew = newdatas.some(v=>v.url==it.url);
+            let isnew = newdatas.some(v=>v.id==it.id);
             let datamenu = ["确定导入", "修改名称"];
             if(lx=="jk"){
                 datamenu.push("设定分组");
@@ -1005,7 +977,7 @@ function importConfirm(jsfile) {
 
                     if (input == "确定导入") {
                         return $("如本地存在则将覆盖，确认？").confirm((lx,data)=>{
-                            let dataurl = data.url;
+                            let dataid = data.id;
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                             let datas = [];
                             datas.push(data);
@@ -1020,7 +992,7 @@ function importConfirm(jsfile) {
                             if(importlist.length==1){
                                 back(false);
                             }else{
-                                let index2 = importlist.indexOf(importlist.filter(d => d.url==dataurl)[0]);
+                                let index2 = importlist.findIndex(item => item.id === dataid);
                                 importlist.splice(index2, 1);
                                 storage0.putMyVar('importConfirm', importlist);
                                 deleteItem(dataurl);
@@ -1032,22 +1004,22 @@ function importConfirm(jsfile) {
                             if(!input.trim()){
                                 return "toast://不能为空";
                             }
-                            let dataurl = data.url;
+                            let dataid = data.id;
                             let importlist = storage0.getMyVar('importConfirm', []);
-                            let index = importlist.indexOf(importlist.filter(d => d.url==dataurl)[0]);
+                            let index = importlist.findIndex(item => item.id === dataid);
                             importlist[index].name = input;
                             storage0.putMyVar('importConfirm', importlist);
                             refreshPage(false);
                             return "toast://已修改名称";
                         }, data);
                     }else if (input == "设定分组") {
-                        let dataurl = data.url;
+                        let dataid = data.id;
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let groupNames = getGroupNames();
                         groupNames.unshift("清除");
-                        return $(groupNames, 2, "选择分组").select((dataurl) => {
+                        return $(groupNames, 2, "选择分组").select((dataid) => {
                             let importlist = storage0.getMyVar('importConfirm', []);
-                            let index = importlist.indexOf(importlist.filter(d => d.url==dataurl)[0]);
+                            let index = importlist.findIndex(item => item.id === dataid);
                             if(input=="清除"){
                                 delete importlist[index].group;
                             }else{
@@ -1056,7 +1028,7 @@ function importConfirm(jsfile) {
                             storage0.putMyVar('importConfirm', importlist);
                             refreshPage(false);
                             return 'toast://已设置分组';
-                        },dataurl)
+                        },dataid)
                     }else if (input == "接口测试") {
                         return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                             setPageTitle(data.name+"-接口测试");
@@ -1073,10 +1045,10 @@ function importConfirm(jsfile) {
                             if(importlist.length==1){
                                 back(false);
                             }else{
-                                let index2 = importlist.indexOf(importlist.filter(d => d.url==data.url)[0]);
+                                let index2 = importlist.findIndex(item => item.id === data.id);
                                 importlist.splice(index2, 1);
                                 storage0.putMyVar('importConfirm', importlist);
-                                deleteItem(data.url);
+                                deleteItem(data.id);
                             }
                             return "toast://已删除";
                         }, data)
@@ -1085,7 +1057,7 @@ function importConfirm(jsfile) {
                 img: getIcon("管理-箭头.svg"),
                 col_type: "text_icon",
                 extra: {
-                    id: it.url
+                    id: it.id
                 }
             });
         })

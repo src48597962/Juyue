@@ -232,11 +232,11 @@ function yiji(testSource) {
         }catch(e){
             d.push({
                 title: '加载主页源异常了，请更换',
-                desc: jkdata.id + '>加载主页内容>' + e.message + ' 错误行#' + e.lineNumber,
+                desc: jkdata.name + '>加载主页内容>' + e.message + ' 错误行#' + e.lineNumber,
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });
-            log(jkdata.id+'>调用一级数据异常>' + e.message + ' 错误行#' + e.lineNumber);
+            log(jkdata.name+'>调用一级数据异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
     }
     setResult(d);

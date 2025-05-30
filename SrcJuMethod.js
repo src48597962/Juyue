@@ -56,7 +56,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
-                toast(jkdata.id + (objCode["作者"] ? "，作者：" + objCode["作者"] : ""));
+                toast(jkdata.name + (objCode["作者"] ? "，作者：" + objCode["作者"] : ""));
                 putMyVar(jkdata.id, "1");
             }
             let 转换 = objCode["转换"] || {};

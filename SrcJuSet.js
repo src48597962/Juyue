@@ -1102,6 +1102,7 @@ function manageSet(){
                 initConfig({
                     聚阅: input
                 })
+                setPublicItem('聚阅', input);
                 deleteCache();
                 return "toast://已设置，返回主页刷新";
             },input)

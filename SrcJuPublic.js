@@ -56,7 +56,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
         it.id = Date.now().toString();
-        it.url = jkfilespath + it.id + '.txt';
+        it.url = jkfilespath + it.type + "_" + it.name + '.txt';
         delete it.updatetime;
         delete it.public;
         delete it.parse;
@@ -65,7 +65,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
 
         writeFile(it.url, objectToJsCode(newjkjson));
-        java.lang.Thread.sleep(1);
+        java.lang.Thread.sleep(10);
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
     clearMyVar('newjkjson');

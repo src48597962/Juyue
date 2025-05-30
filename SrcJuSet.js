@@ -319,7 +319,7 @@ function SRCSet() {
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + (data.ilk=="1" ? "  [主页源]" : data.ilk=="2" ? "  [搜索源]" : "  [完整源]"),
+            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + (it.ilk=="1" ? "  [主页源]" : it.ilk=="2" ? "  [搜索源]" : "  [完整源]"),
             img: it.img || "http://123.56.105.145/tubiao/ke/31.png",
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {

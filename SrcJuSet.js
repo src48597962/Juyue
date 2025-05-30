@@ -876,32 +876,6 @@ function importConfirm(jsfile) {
                                     }else if(option=="接口"){
                                         let jkdatalist = pastedata.接口||[];
                                         jknum = jiekousave(jkdatalist, 1);
-                                    }else if(option=="解析"){
-                                        let jxdatalist = pastedata.解析||[];
-                                        jxnum = jiexisave(jxdatalist, 1);
-                                    }else if(option=="云盘"){
-                                        let ypdatalist = pastedata.云盘||[];
-                                        ypnum = yundisksave(ypdatalist, 1);
-                                    }else if(option=="直播"){
-                                        let livefilepath = globalMap0.getVar('Src_Jy_gmParams').rulepath + "liveconfig.json";
-                                        let liveconfig = pastedata.直播;
-                                        let livefile = fetch(livefilepath);
-                                        if(livefile){
-                                            try{
-                                                let olddata = JSON.parse(livefile).data;
-                                                let newdata = liveconfig.data;
-                                                newdata.forEach(tv=>{
-                                                    if(!olddata.some(item => tv.url==item.url)){
-                                                        olddata.push(tv);
-                                                        tvnum++;
-                                                    }
-                                                })
-                                                liveconfig.data = olddata;
-                                                writeFile(livefilepath, JSON.stringify(liveconfig));
-                                            }catch(e){
-                                                //log("增量导入直播失败>"+e.message);
-                                            }
-                                        }
                                     }
                                 }
                             })

@@ -56,7 +56,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
         it.id = Date.now().toString();
-        it.url = jkfilespath + it.type + "_" + it.name + '.txt';
+        it.url = jkfilespath + it.id + '.txt';
         delete it.updatetime;
         delete it.public;
         delete it.parse;

@@ -8,9 +8,7 @@ let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
-log($.type(Date.now().toString()));
-log(Date.now().toString());
-log(Date.now().toString());
+
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
@@ -57,7 +55,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.type = it.type=="听书"?"音频":it.type;
         it.group = it.type=="影视"?"影视":it.group;
         it.type = it.type=="影视"?"视频":it.type;
-        it.id = it.type + "_" + it.name;
+        it.id = Date.now().toString();
         it.url = jkfilespath + it.id + '.txt';
         delete it.updatetime;
         delete it.public;
@@ -67,7 +65,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
 
         writeFile(it.url, objectToJsCode(newjkjson));
-        
+        java.lang.Thread.sleep(1);
     })
     writeFile(jkfile, JSON.stringify(olddatalist));
     clearMyVar('newjkjson');

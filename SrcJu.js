@@ -63,16 +63,7 @@ function yiji(testSource) {
             }
         })
         */
-        d.push({
-            title: "测试",
-            url: $().lazyRule(() => {
-                log("123");
-                log($.type(toerji));
-                return "hiker://empty";
-            }),
-            pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: "icon_5"
-        })
+
         d.push({
             title: "管理",
             url: $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {

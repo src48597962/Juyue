@@ -223,5 +223,5 @@ require(codePath + 'SrcJuMethod.js');
 $.exports = {
     GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
     GM: new GlobalVar(GlobalMap, RuleGlobalMapKey),
-    log: log
+    //log: log
 }

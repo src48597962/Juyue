@@ -1,5 +1,11 @@
 // 重定义打印日志
+let xlog = log;
 if (getItem('规则日志打印') != "1") {
+    xlog = function () {
+        return;
+    };
+}
+if (getItem('接口日志打印') != "1") {
     log = function () {
         return;
     };
@@ -198,7 +204,7 @@ function getYiData(datatype, jkdata, dd) {
             getData = 数据() || [];
         } catch (e) {
             error = e.message;
-            log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+            xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
 
@@ -217,7 +223,7 @@ function getYiData(datatype, jkdata, dd) {
         d = d.concat(getData);
     } catch (e) {
         toast(datatype + "代码报错，更换主页源或联系接口作者修复");
-        log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+        xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
 
     return d;
@@ -231,7 +237,7 @@ function ocr(codeurl,headers) {
     if(code.includes("+")&&code.includes("=")){
         code = eval(code.split("=")[0]);
     }
-    log('识别验证码：'+code);
+    xlog('识别验证码：'+code);
     return code;
 }
 //获取搜索数据
@@ -256,7 +262,7 @@ function getSsData(name, jkdata, page) {
         }
     } catch (e) {
         error = e.message;
-        log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
     return {
         vodlists: getData,
@@ -296,7 +302,7 @@ function toerji(item, jkdata) {
             item.extra = extra;
         }
     }catch(e){
-        log("一级元素转二级失败>" + e.message + " 错误行#" + e.lineNumber)
+        xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
     }
     return item;
 }
@@ -334,14 +340,11 @@ function banner(start, arr, data, cfg){
     let rnum = Math.floor(Math.random() * data.length);
     let item = data[rnum];
     putMyVar('rnum', rnum);
-    let time = 5000;
-    let col_type='pic_1_card';
-    let desc='';
-    if (cfg != undefined) {
-        time = cfg.time ? cfg.time : time;
-        col_type=cfg.col_type?cfg.col_type:col_type;
-        desc=cfg.desc?cfg.desc:desc;
-    }
+    cfg = cfg || {};
+    let time = cfg.time || 5000;
+    let col_type = cfg.col_type || 'pic_1_card';
+    let desc = cfg.desc || '';
+
     arr.push({
         col_type: col_type,
         img: item.img,
@@ -349,39 +352,33 @@ function banner(start, arr, data, cfg){
         title: item.title,
         url: item.url,
         extra: {
-            id: 'bar',
+            id: 'bar'
         }
     })
     if (start == false || getMyVar('benstart', 'true') == 'false') {
-        unRegisterTask(id)
-        return
+        unRegisterTask(id);
+        return;
     }
-    let obj = {
-        data: data,
-        method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: storage0.getMyVar('一级源接口信息')
-    };
-    registerTask(id, time, $.toString((obj) => {
-        var data = obj.data;
+
+    registerTask(id, time, $.toString((data) => {
         var rum = getMyVar('rnum');
         var i = Number(getMyVar('banneri', '0'));
         if (rum != '') {
-            i = Number(rum) + 1
-            clearMyVar('rnum')
+            i = Number(rum) + 1;
+            clearMyVar('rnum');
         } else {
             i = i + 1;
         }
         if (i > data.length - 1) {
-            i = 0
+            i = 0;
         }
         var item = data[i];
         try {
-            require(obj.method);
-            updateItem('bar', toerji(item,obj.info));
+            updateItem('bar', toerji(item));
         } catch (e) {
-            log("幻灯片处理异常>" + e.message + " 错误行#" + e.lineNumber)
-            unRegisterTask('juyue')
+            xlog("幻灯片处理异常>" + e.message);
+            unRegisterTask('juyue');
         }
         putMyVar('banneri', i);
-    }, obj))
+    }, data))
 }

@@ -337,7 +337,7 @@ function selectSource(selectType) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源>" + (homeSourceId||"无"),
+        title: "当前源>" + (items[index].name||"无"),
         noAutoDismiss: false,
         position: index,
         toPosition: index,

@@ -1,17 +1,9 @@
-/*//重定义打印日志，只允许调试模式下打印
-var xlog = log;
-log = function (msg) {
-    if (getMyVar("SrcJu_调试模式") || getItem("SrcJu_接口日志")) {
-        xlog(msg);
-    }
-}
 // 重定义打印日志
-if (getItem('规则日志打印','0') != "1") {
+if (getItem('规则日志打印','1') == "0") {
     log = function () {
         return;
     };
 }
-*/
 // 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
     addListener('onRefresh', $.toString((datatype) => {

@@ -1,11 +1,11 @@
 // 重定义打印日志
-let xlog = log;
-if (getItem('规则日志打印') != "1") {
-    xlog = function () {
+let slog = log;
+if (getItem('接口日志打印') != "1") {
+    slog = function () {
         return;
     };
 }
-if (getItem('接口日志打印') != "1") {
+if (getItem('规则日志打印') != "1") {
     log = function () {
         return;
     };
@@ -204,7 +204,7 @@ function getYiData(datatype, jkdata, dd) {
             getData = 数据() || [];
         } catch (e) {
             error = e.message;
-            xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+            log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
 
@@ -223,7 +223,7 @@ function getYiData(datatype, jkdata, dd) {
         d = d.concat(getData);
     } catch (e) {
         toast(datatype + "代码报错，更换主页源或联系接口作者修复");
-        xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+        log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
 
     return d;
@@ -237,7 +237,7 @@ function ocr(codeurl,headers) {
     if(code.includes("+")&&code.includes("=")){
         code = eval(code.split("=")[0]);
     }
-    xlog('识别验证码：'+code);
+    log('识别验证码：'+code);
     return code;
 }
 //获取搜索数据
@@ -262,7 +262,7 @@ function getSsData(name, jkdata, page) {
         }
     } catch (e) {
         error = e.message;
-        xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
     return {
         vodlists: getData,
@@ -278,7 +278,9 @@ function rulePage(datatype, ispage) {
 }
 //获取接口对象规则内容
 function getObjCode(jkdata, key) {
-    eval(fetch(jkdata.url)||jkdata.extstr||"let objCode = {}");
+    let jkstr = fetch(jkdata.url)||jkdata.extstr;
+
+    eval(jkstr.replace('log(','slog(')||"let objCode = {}");
     if(key){
         return objCode[key];
     }
@@ -302,7 +304,7 @@ function toerji(item, jkdata) {
             item.extra = extra;
         }
     }catch(e){
-        xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
+        log("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
     }
     return item;
 }
@@ -376,7 +378,7 @@ function banner(start, arr, data, cfg){
         try {
             updateItem('bar', toerji(item));
         } catch (e) {
-            xlog("幻灯片处理异常>" + e.message);
+            log("幻灯片处理异常>" + e.message);
             unRegisterTask('juyue');
         }
         putMyVar('banneri', i);

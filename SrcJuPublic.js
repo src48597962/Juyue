@@ -6,7 +6,7 @@ let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
 let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
-let codepath = (config.聚阅||getPublicItem('聚阅','https://raw.gitcode.com/src48597962/juyue/raw/master/SrcJu.js')).replace(/[^/]*$/,'');
+let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
 
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){

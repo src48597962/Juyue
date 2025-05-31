@@ -222,7 +222,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         d = d.concat(getData);
     } catch (e) {
-        toast(datatype + "代码报错，更换主页源或联系接口作者修复");
+        toast(datatype + "代码报错，更换主页源或联系源作者修复");
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
 

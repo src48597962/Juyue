@@ -67,6 +67,7 @@ function yiji(testSource) {
             title: "测试",
             url: $().lazyRule(() => {
                 log("123");
+                log($.type(toerji));
                 return "hiker://empty";
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",

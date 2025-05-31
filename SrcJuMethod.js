@@ -189,11 +189,7 @@ function getYiData(datatype, jkdata, dd) {
         let getData = [];
         try {
             if (objCode['预处理']) {
-                try {
-                    objCode['预处理']();
-                } catch (e) {
-                    log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-                }
+                objCode['预处理']();
             }
             let setResult = function (d){
                 return d;

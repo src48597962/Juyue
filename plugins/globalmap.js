@@ -218,7 +218,10 @@ if (RuleGlobalMapKey === AppGlobalMapKey) {
     }
     RuleGlobalMapKey = RuleGlobalMapKey + randomKey;
 }
+const codePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/") + 1);
+require(codePath + 'SrcJuMethod.js');
 $.exports = {
     GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
-    GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
+    GM: new GlobalVar(GlobalMap, RuleGlobalMapKey),
+    log: log
 }

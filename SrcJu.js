@@ -87,7 +87,7 @@ function yiji(testSource) {
             col_type: 'icon_5'
         })
         d.push({
-            title: "聚影",
+            title: "预留",
             url: "hiker://home@聚影",
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
             col_type: 'icon_5'

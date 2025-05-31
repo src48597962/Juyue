@@ -222,6 +222,5 @@ const codePath = module.modulePath.replace('plugins/globalmap.js','');
 require(codePath + 'SrcJuMethod.js');
 $.exports = {
     GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
-    GM: new GlobalVar(GlobalMap, RuleGlobalMapKey),
-    //log: log
+    GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
 }

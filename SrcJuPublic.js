@@ -491,8 +491,8 @@ function getIcon(icon, nochange) {
     },color))
 }
 // 补充一些公用方法
-require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-
+//require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
+/*
 // 全局对象变量gmParams
 let gmParams = {
     libspath: libspath,
@@ -505,7 +505,7 @@ let gmParams = {
     zip: gzip.zip,
     unzip: gzip.unzip
 }
-/*
+
 if(!GM.get("gmParams")){
     log("写入全局对象变量gmParams");
     GM.put("gmParams", gmParams);

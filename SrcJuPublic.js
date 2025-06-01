@@ -294,9 +294,9 @@ function changeSource(sourcedata) {
                 clearMyVar(it);
             }
         })
+        GM.clearAll();
     } catch (e) {
         log("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
-        toast('软件版本过低，请升级软件');
     }
     try {
         refreshX5WebView('about:blank');

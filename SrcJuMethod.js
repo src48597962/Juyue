@@ -275,7 +275,6 @@ function getSsData(name, jkdata, page) {
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
-        //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
         getYiData(datatype);
     }, datatype)
 }

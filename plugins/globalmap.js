@@ -218,9 +218,11 @@ if (RuleGlobalMapKey === AppGlobalMapKey) {
     }
     RuleGlobalMapKey = RuleGlobalMapKey + randomKey;
 }
-const codePath = module.modulePath.replace('plugins/globalmap.js','');
-require(getItem('依赖','').replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-$.exports = {
-    GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
-    GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
+if(/\/src48597962\/|\/mybb520\//.test(module.modulePath)){
+    const codePath = module.modulePath.replace('plugins/globalmap.js','');
+    require(codePath + 'SrcJuMethod.js');
+    $.exports = {
+        GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
+        GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
+    }
 }

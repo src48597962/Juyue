@@ -62,8 +62,7 @@ function yiji(testSource) {
                 longClick: []
             }
         })
-        //*/
-/*
+
         d.push({
             title: "管理",
             url: $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
@@ -106,7 +105,7 @@ function yiji(testSource) {
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
             col_type: "icon_5"
         })
-        */
+        
         let searchurl = $('').lazyRule((jkdata) => {
             if(getItem('接口搜索方式','当前主页')=="当前接口"){
                 if(jkdata){

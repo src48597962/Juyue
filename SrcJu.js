@@ -161,7 +161,7 @@ function yiji(testSource) {
                 }
             });
         //}
-
+        /*
         let typemenubtn = getTypeNames("主页");
         let Color = '#3399cc';
         typemenubtn.forEach((it) =>{
@@ -186,7 +186,7 @@ function yiji(testSource) {
             d.push(item);
         })
         
-        
+        */
         
         if(!jkdata.name){
             d.push({

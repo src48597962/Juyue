@@ -333,11 +333,11 @@ function selectSource(selectType) {
     let index = index_items.index;
     let items = index_items.items;
     let spen = 3;
-    log(items[index]);
+
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源>" + (items[index].name||"无"),
+        title: "当前源>" + (items[index].title||"无"),
         noAutoDismiss: false,
         position: index,
         toPosition: index,

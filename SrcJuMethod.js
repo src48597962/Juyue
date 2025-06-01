@@ -197,9 +197,6 @@ function getYiData(datatype, jkdata, dd) {
             if (objCode['预处理']) {
                 objCode['预处理']();
             }
-            let setResult = function (d){
-                return d;
-            }
             eval("let 数据 = " + 执行str);
             getData = 数据() || [];
         } catch (e) {

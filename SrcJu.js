@@ -16,7 +16,7 @@ function yiji(testSource) {
 
     let d = [];
     if(MY_PAGE==1){
-        ///*
+        /*
         d.push({
             title: jkdata.name || "切换站源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -62,48 +62,55 @@ function yiji(testSource) {
                 longClick: []
             }
         })
-
+*/
         d.push({
-            title: "管理",
-            url: $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                setPageTitle('管理中心');
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                manageSet();
+            title: jkdata.name || "切源",
+            url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                return selectSource();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: "icon_5"
+            col_type: "icon_small_4"
         })
         d.push({
             title: "收藏",
             url: "hiker://collection?rule="+MY_RULE.title,
             pic_url: "http://123.56.105.145/tubiao/more/109.png",
-            col_type: 'icon_5'
+            col_type: 'icon_small_4'
         })
         d.push({
             title: "历史",
             url: "hiker://history?rule="+MY_RULE.title,
             pic_url: "http://123.56.105.145/tubiao/more/213.png",
-            col_type: 'icon_5'
+            col_type: 'icon_small_4'
         })
+        /*
         d.push({
             title: "预留",
             url: "hiker://home@聚影",
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
             col_type: 'icon_5'
         })
+        */
         d.push({
             title: "设置",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["接口列表"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["接口列表","管理中心"],1).select(()=>{
                 if(input=="接口列表"){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
                     })
+                }else if(input=="管理中心"){
+                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                        setPageTitle('管理中心');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        manageSet();
+                    })
                 }
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: "icon_5"
+            col_type: "icon_small_4"
         })
         
         let searchurl = $('').lazyRule((jkdata) => {

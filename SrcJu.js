@@ -907,7 +907,7 @@ function erji() {
                 }
                 if (stype=="小说" || erLoadData.rule || erLoadData.novel || 列表[i].rule) {
                     extra.url = 列表[i].url;
-                    lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input.split("##")[1]`,`MY_PARAMS.url || ""`);
+                    lazy = "hiker://empty##" + lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
                 }
                 d.push({
                     title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,

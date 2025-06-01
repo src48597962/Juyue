@@ -290,7 +290,7 @@ function changeSource(sourcedata) {
     try {
         let listMyVar = listMyVarKeys();
         listMyVar.forEach(it => {
-            if (!/^SrcJu_|initConfig|gmParams/.test(it)) {
+            if (!/^SrcJu_|initConfig/.test(it)) {
                 clearMyVar(it);
             }
         })
@@ -490,30 +490,13 @@ function getIcon(icon, nochange) {
         }
     },color))
 }
-// 补充一些公用方法
-//require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
-/*
-// 全局对象变量gmParams
-let gmParams = {
-    libspath: libspath,
-    rulepath: rulepath,
-    codepath: codepath,
-    cachepath: cachepath,
-    jkfilespath: jkfilespath,
-    jkfile: jkfile,
-    cfgfile: cfgfile,
-    zip: gzip.zip,
-    unzip: gzip.unzip
-}
-
-if(!GM.get("gmParams")){
-    log("写入全局对象变量gmParams");
-    GM.put("gmParams", gmParams);
+// 检测依赖
+if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){
         initConfig({
             聚阅: getPublicItem('聚阅','')
         });
     }
     log("当前依赖库>" + config.聚阅);
+    putVar('SrcJu_config', '1');
 }
-*/

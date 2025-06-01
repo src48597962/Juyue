@@ -466,7 +466,7 @@ function jiekouapi(data, look) {
         extra: {
             titleVisible: true,
             defaultValue: getMyVar('apiruleurl',''),
-            onChange: 'putMyVar("apiruleurl",input);'
+            onChange: data?'toast("不能修改文件地址");':'putMyVar("apiruleurl",input);'
         }
     });
     d.push({

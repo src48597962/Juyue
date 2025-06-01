@@ -197,8 +197,16 @@ function getYiData(datatype, jkdata, dd) {
             if (objCode['预处理']) {
                 objCode['预处理']();
             }
-            eval("let 数据 = " + 执行str);
-            getData = 数据() || [];
+            if(datatype=='主页'){
+                let setResult = function (d){
+                    return d;
+                }
+                eval("let 数据 = " + 执行str);
+                getData = 数据() || [];
+            }else{
+                eval("let 数据 = " + 执行str);
+                getData = 数据() || [];
+            }
         } catch (e) {
             error = e.message;
             log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
@@ -269,7 +277,7 @@ function getSsData(name, jkdata, page) {
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
-        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
+        //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
         getYiData(datatype);
     }, datatype)
 }

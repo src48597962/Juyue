@@ -197,16 +197,11 @@ function getYiData(datatype, jkdata, dd) {
             if (objCode['预处理']) {
                 objCode['预处理']();
             }
-            if(datatype=='主页'){
-                let setResult = function (d){
-                    return d;
-                }
-                eval("let 数据 = " + 执行str);
-                getData = 数据() || [];
-            }else{
-                eval("let 数据 = " + 执行str);
-                getData = 数据() || [];
+            let setResult = function (d){
+                return d;
             }
+            eval("let 数据 = " + 执行str);
+            getData = 数据() || [];
         } catch (e) {
             error = e.message;
             log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
@@ -230,8 +225,11 @@ function getYiData(datatype, jkdata, dd) {
         toast(datatype + "代码报错，更换主页源或联系源作者修复");
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
-
-    return d;
+    if(datatype=='主页'){
+        return d;
+    }else{
+        setResult(d);
+    }
 }
 //ocr数字验证码识别
 function ocr(codeurl,headers) {

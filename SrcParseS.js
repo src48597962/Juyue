@@ -1,9 +1,4 @@
-function JYLazy(vipUrl) {
-    if (/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)) {
-        require(config.依赖.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/','/master/') + 'SrcJyAliDisk.js');
-        aliShareUrl(vipUrl)
-    }
-}
+//本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 function exeWebRule(webObj, music, js) {
     let head = webObj.head || {};
     let webUrl = webObj.webUrl;
@@ -48,8 +43,14 @@ function exeWebRule(webObj, music, js) {
     })
 }
 var SrcParseS = {
-    聚阅: function (vipUrl, music) {
-        if(/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)) {
+    聚阅: function (vipUrl, dataObj) {
+        if(/\.mp4|\.m3u8/.test(vipUrl)){
+            log("直链视频地址，直接播放"); 
+            return vipUrl + '#isVideo=true#';
+        }else if(/\.mp3|\.m4a/.test(vipUrl)){
+            log("直链音乐地址，直接播放"); 
+            return vipUrl + '#isMusic=true##checkMetadata=false#';
+        }else if(/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)) {
             return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
                 initConfig({
                     聚影: 'https://raw.gitcode.com/src48597962/juying/raw/master/'
@@ -59,11 +60,15 @@ var SrcParseS = {
             },vipUrl);
         }else if(/pan\.quark\.cn|drive\.uc\.cn/.test(vipUrl)) {
             return "hiker://page/quarkList?rule=Quark.简&realurl=" + encodeURIComponent(vipUrl) + "&sharePwd=";
+        }else if(vipUrl.includes('pan.baidu.com')) {
+            putVar('urlBaidu', vipUrl);
+            return "hiker://page/list?rule=百度网盘&realurl=" + vipUrl;
         }else{
             let webObj = {
                 webUrl: vipUrl
             }
-            return exeWebRule(webObj, music?1:0) || "toast://解析失败";
+            dataObj = dataObj || {};
+            return exeWebRule(webObj, dataObj.type=="音频"?1:0) || (dataObj.type=="视频"?"video://"+vipUrl:"toast://解析失败");
         }
     }
 }

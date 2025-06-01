@@ -107,15 +107,13 @@ function yiji(testSource) {
         })
         
         let searchurl = $('').lazyRule((jkdata) => {
-            if(getItem('接口搜索方式','当前主页')=="当前接口"){
-                if(jkdata){
-                    storage0.putMyVar('Src_Jy_搜索临时搜索数据', jkdata);
-                    return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-                }else{
-                    return 'toast://未找到接口数据'
-                }
+            if(!jkdata.name){
+                return 'toast://未找到接口数据';
+            }else if(getItem('接口搜索方式','当前主页')=="当前接口"){
+                storage0.putMyVar('SrcJu_搜索临时搜索数据', jkdata);
+                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式')=="分组接口"){
-                putMyVar('Src_Jy_搜索临时搜索分组', jkdata.group||jkdata.type);
+                putMyVar('SrcJu_搜索临时搜索分组', jkdata.group||jkdata.type);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式')=="代理聚搜"){
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;

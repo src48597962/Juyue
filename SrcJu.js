@@ -457,7 +457,6 @@ function erji() {
                 data: jkdata
             }
             let lazy = $("").lazyRule((dataObj) => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 let objCode = getObjCode(dataObj.data);
                 if(objCode.解析){
                     eval("let parse = " + objCode.解析);
@@ -1123,7 +1122,6 @@ function erjisousuo(name,group,datas,sstype) {
 
         let task = function (obj) {
             try {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuMethod.js');
                 let lists = obj.search(obj.name, obj.type, obj.data);
                 return {result:lists, success:1};
             } catch (e) {

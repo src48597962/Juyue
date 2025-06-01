@@ -5,7 +5,8 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 //一级
 function yiji(testSource) {
     let jkdata = storage0.getMyVar('一级源接口信息') || {};
-    if(!jkdata.name){
+    if(!jkdata.name || !fetch(jkdata.url)){
+        clearMyVar('一级源接口信息');
         let yxdatalist = getDatas('yi', 1);
         let index = yxdatalist.findIndex(d => d.id === homeSourceId);
         jkdata = yxdatalist[index] || {};

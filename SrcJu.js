@@ -69,7 +69,7 @@ function yiji(testSource) {
                 if(!data.url){
                     return "toast://当前源无效，无法分享";
                 }
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                 return JYshare(getItem("sharePaste",""), data);
             },jkdata)
         }];

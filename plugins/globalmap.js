@@ -218,12 +218,5 @@ if (RuleGlobalMapKey === AppGlobalMapKey) {
     }
     RuleGlobalMapKey = RuleGlobalMapKey + randomKey;
 }
-if(/\/src48597962\/|\/mybb520\//.test(module.modulePath)){
-    const codePath = module.modulePath.replace('plugins/globalmap.js','');
-    require(codePath + 'SrcJuMethod.js');
-    $.exports = {
-        GA: new GlobalVar(GlobalMap, AppGlobalMapKey),
-        GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
-    }
-}
+
 evalPrivateJS('1pwAV+1UDZlilFId1iEopjhzo47Ugn2c4NpxB9qiXEvyudUDfhkhBrBV6CNSWUXXXPSou+xg2GNqNk7FxZ8jr2BpIdUZAPvKZtsBxN+8Ev9SOG34qre37jG6NkkZKggy9BLChQ5FGZjg2AqenTfxHbXYTaRtW+wMdpo/rRblMSOoY5PjLGxmgSlBVx13QqZ+mj7EBX6EXgFi562eU9WmP4tWmsD31xCqvlIXbX6W3zzB7mM2P4xpSxnrbS80vzE+c+8WQr7dAh1VsohVva5OhtarXAl1E4RGjttD/TW3BAISl0jN1amAU79oP1W2mnNdcLzpAn49CzwIRktqDf4DBR+kmGtV4wTspt0IcBmP8BuMsZJRhvaml+oo8beWuTpc1+/AjZ6/+r/MWFk2DXNauR/jvzmf+Pgq043vrn7QYGs=')

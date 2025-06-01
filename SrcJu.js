@@ -62,7 +62,35 @@ function yiji(testSource) {
                 longClick: []
             }
         })
-*/
+*/      
+        let longClick = [{
+            title: "分享当前源",
+            js: $.toString((data) => {
+                if(!data.url){
+                    return "toast://当前源无效，无法分享";
+                }
+                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                return JYshare(getItem("sharePaste",""), data);
+            },jkdata)
+        }];
+        if(!testSource){
+            longClick.push({
+                title: "编辑当前源",
+                js: $.toString((data) => {
+                    return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        return jiekouapi(data);
+                    }, data)
+                },jkdata)
+            },{
+                title: "删除当前源",
+                js: $.toString(() => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    deleteData('jk', jkdata);
+                    return "toast://已处理";
+                })
+            })
+        }
         d.push({
             title: jkdata.name || "切源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -70,7 +98,10 @@ function yiji(testSource) {
                 return selectSource();
             }),
             pic_url: "http://123.56.105.145/tubiao/more/129.png",
-            col_type: "icon_small_4"
+            col_type: "icon_small_4",
+            extra: {
+                longClick: longClick
+            }
         })
         d.push({
             title: "收藏",
@@ -94,18 +125,28 @@ function yiji(testSource) {
         */
         d.push({
             title: "设置",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["接口列表","管理中心"],1).select(()=>{
-                if(input=="接口列表"){
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","程序管理中心"],1).select(()=>{
+                if(input=="本地接口管理"){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
                     })
-                }else if(input=="管理中心"){
+                }else if(input=="程序管理中心"){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('管理中心');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         manageSet();
+                    })
+                }else if(input=="显示快速分组"||input=="关闭快速分组"){
+                    return $("#noLoading#").lazyRule(() => {
+                        if(getItem('显示快速分组')=="1"){
+                            clearItem('显示快速分组');
+                        }else{
+                            setItem('显示快速分组','1');
+                        }
+                        refreshPage();
+                        return 'hiker://empty';
                     })
                 }
             }),
@@ -165,32 +206,31 @@ function yiji(testSource) {
                 }
             });
         //}
-        /*
-        let typemenubtn = getTypeNames("主页");
-        let Color = '#3399cc';
-        typemenubtn.forEach((it) =>{
-            let item = {
-                title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-                url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    return selectSource(input);
-                }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
-                    Juconfig["homeGroup"] = input;
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                    refreshPage(false);
-                    return 'toast://主页源分类分组已切换为：' + input;
-                }, cfgfile, Juconfig ,it),
-                col_type: "scroll_button"
-            }
-            if(homeGroup==it){
-                item.extra = {
-                    backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
+        if(getItem('显示快速分组')=="1"){
+            let typemenubtn = getTypeNames("主页");
+            let Color = '#3399cc';
+            typemenubtn.forEach((it) =>{
+                let item = {
+                    title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+                    url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        return selectSource(input);
+                    }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
+                        Juconfig["homeGroup"] = input;
+                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        refreshPage(false);
+                        return 'toast://主页源分类分组已切换为：' + input;
+                    }, cfgfile, Juconfig ,it),
+                    col_type: "scroll_button"
                 }
-            }
-            d.push(item);
-        })
-        
-        */
+                if(homeGroup==it){
+                    item.extra = {
+                        backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
+                    }
+                }
+                d.push(item);
+            })
+        }
         
         if(!jkdata.name){
             d.push({

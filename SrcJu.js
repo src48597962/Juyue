@@ -454,18 +454,14 @@ function erji() {
             }, 解析, objCode, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
             let dataObj = {
-                data: jkdata
+                data: jkdata,
+                type: stype
             }
-            let lazy = $("").lazyRule((dataObj) => {
-                let objCode = getObjCode(dataObj.data);
-                if(objCode.解析){
-                    eval("let parse = " + objCode.解析);
-                    return parse(input);
-                }else{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                    return SrcParseS.聚阅(input, dataObj);
-                }
+            let lazy = objCode.解析 || $("").lazyRule((dataObj) => {
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                return SrcParseS.聚阅(input, dataObj);
             }, dataObj);
+
             let download = '';
             d.push({
                 title: "详情简介",
@@ -896,11 +892,12 @@ function erji() {
                 }catch(e){}
                 extra.id = name + "_选集_" + (pageid?pageid+"_":"") + i;
                 extra.cls = "Juloadlist playlist";
-                if(stype=="听书"||stype=="影视"||stype=="音乐"){
+                if(stype=="视频"||stype=="音频"||stype=="聚合"){
                     extra.jsLoadingInject = true;
                     if(!extra.blockRules){
-                        extra.blockRules = ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com', '51.la'];
+                        extra.blockRules = ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com'];
                     }
+                    extra.videoExcludeRules = ['m3u8.js','?url='];
                 }
                 if(list_col_type.indexOf("_left")>-1){
                     extra.textAlign = 'left';

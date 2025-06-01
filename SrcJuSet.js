@@ -289,7 +289,7 @@ function SRCSet() {
             },base64Encode(JSON.stringify(it))):$(selectmenu, 2).select((data) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "分享") {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                     return JYshare(getItem("sharePaste",""), data);
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {

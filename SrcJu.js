@@ -84,11 +84,11 @@ function yiji(testSource) {
                 },jkdata)
             },{
                 title: "删除当前源",
-                js: $.toString(() => {
+                js: $.toString((data) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    deleteData('jk', jkdata);
+                    deleteData(data);
                     return "toast://已处理";
-                })
+                }, jkdata)
             })
         }
         d.push({

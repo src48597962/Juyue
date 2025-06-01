@@ -107,31 +107,6 @@ function yiji(testSource) {
             col_type: "icon_5"
         })
         
-
-        let typemenubtn = getTypeNames("主页");
-        let Color = '#3399cc';
-        typemenubtn.forEach((it) =>{
-            let item = {
-                title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-                url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    return selectSource(input);
-                }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
-                    Juconfig["homeGroup"] = input;
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                    refreshPage(false);
-                    return 'toast://主页源分类分组已切换为：' + input;
-                }, cfgfile, Juconfig ,it),
-                col_type: "scroll_button"
-            }
-            if(homeGroup==it){
-                item.extra = {
-                    backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
-                }
-            }
-            d.push(item);
-        })
-        
         let searchurl = $('').lazyRule((jkdata) => {
             if(getItem('接口搜索方式','当前主页')=="当前接口"){
                 if(jkdata){
@@ -186,6 +161,32 @@ function yiji(testSource) {
                 }
             });
         //}
+
+        let typemenubtn = getTypeNames("主页");
+        let Color = '#3399cc';
+        typemenubtn.forEach((it) =>{
+            let item = {
+                title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+                url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    return selectSource(input);
+                }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
+                    Juconfig["homeGroup"] = input;
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    refreshPage(false);
+                    return 'toast://主页源分类分组已切换为：' + input;
+                }, cfgfile, Juconfig ,it),
+                col_type: "scroll_button"
+            }
+            if(homeGroup==it){
+                item.extra = {
+                    backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
+                }
+            }
+            d.push(item);
+        })
+        
+        
         
         if(!jkdata.name){
             d.push({

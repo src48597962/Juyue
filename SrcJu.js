@@ -131,7 +131,7 @@ function yiji(testSource) {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
                     })
-                }else if(MY_INDEX==2){
+                }else if(MY_INDEX==3){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('管理中心');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
@@ -147,7 +147,7 @@ function yiji(testSource) {
                         refreshPage();
                         return 'hiker://empty';
                     })
-                }else if(MY_INDEX==3){
+                }else if(MY_INDEX==2){
                     let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口"]:["主页界面","页面聚合"]).map(v=>{
                         return v==getItem("接口搜索方式","主页界面")?`‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`:v+'  ';
                     });

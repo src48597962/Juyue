@@ -90,9 +90,8 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         let public = parseFunctionString(it.public || '{}');
         let parse = parseFunctionString(it.parse || '{}');
         let erparse = parseFunctionString(it.erparse || '{}');
-        log($.type(public));
-        log($.type(parse));
-        log($.type(erparse));
+        storage0.putMyVar('parse', parse);
+        log(getMyVar('parse'));
         let newjkjson = Object.assign({}, public, parse, erparse);
         storage0.putMyVar('newjkjson', newjkjson);
         log(getMyVar('newjkjson'));

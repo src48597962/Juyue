@@ -290,7 +290,7 @@ function changeSource(sourcedata) {
     try {
         let listMyVar = listMyVarKeys();
         listMyVar.forEach(it => {
-            if (!/^SrcJu_|initConfig/.test(it)) {
+            if (!/^SrcJu_|initConfig|proxyUrl/.test(it)) {
                 clearMyVar(it);
             }
         })

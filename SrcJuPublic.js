@@ -106,7 +106,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
             return restoreFunctions(obj);
         } catch (e) {
-            console.error('解析失败:', e);
+            log('解析失败:', e.message);
             return {};
         }
     }

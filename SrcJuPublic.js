@@ -43,9 +43,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.public = (it.public||"").replace(/公共/g, 'objCode');
         it.parse = (it.parse||"").replace(/公共/g, 'objCode');
         it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
-        eval("let public = " + (it.public || '{}'));
-        eval("let parse = " + (it.parse || '{}'));
-        eval("let erparse = " + (it.erparse || '{}'));
+        eval('(' + "let public = " + (it.public || '{}') + ')');
+        eval('(' + "let parse = " + (it.parse || '{}') + ')');
+        eval('(' + "let erparse = " + (it.erparse || '{}') + ')');
         if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }

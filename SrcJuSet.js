@@ -472,7 +472,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '选择源种类：'+ getMyVar('apiilk',''),
         col_type: 'text_1',
-        url: $(["完整源","主页源","搜索源"], 3, "接口分组：").select(() => {
+        url: $(["完整源","主页源","搜索源"], 3, "选择源种类：").select(() => {
             if(input=="主页源"){
                 putMyVar('apiilk','1');
             }else if(input=="搜索源"){

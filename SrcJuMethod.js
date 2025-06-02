@@ -67,24 +67,35 @@ function getYiData(datatype, jkdata, dd) {
                 sourcemenu.push({
                     title: z1,
                     url: rulePage(z1,页码[z1]),
-                    col_type: 'text_3'
+                    col_type: 'text_3',
+                    extra: {
+                        cls: "sourcemenu"
+                    }
                 })
             }
             if(objCode[z2]){
                 sourcemenu.push({
                     title: z2,
                     url: rulePage(z2,页码[z2]),
-                    col_type: 'text_3'
+                    col_type: 'text_3',
+                    extra: {
+                        cls: "sourcemenu"
+                    }
                 })
             }
             if(objCode[z3]){
                 sourcemenu.push({
                     title: z3,
                     url: rulePage(z3,页码[z3]),
-                    col_type: 'text_3'
+                    col_type: 'text_3',
+                    extra: {
+                        cls: "sourcemenu"
+                    }
                 })
             }
-            storage0.putMyVar("sourcemenu", sourcemenu);
+            if(sourcemenu.length>0){
+                storage0.putMyVar("sourcemenu", sourcemenu);
+            }
         }
         let 执行str = objCode[datatype].toString();
         let obj = objCode.四大金刚 || {};

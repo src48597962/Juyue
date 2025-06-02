@@ -78,8 +78,8 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.erparse;
         //storage0.putMyVar('newjkjson', newjkjson);
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-
-        writeFile(it.url, objectToJsCode(newjkjson));
+        writeFile(it.url, $.stringify(newjkjson));
+        //writeFile(it.url, objectToJsCode(newjkjson));
         java.lang.Thread.sleep(10);
     })
     writeFile(jkfile, JSON.stringify(olddatalist));

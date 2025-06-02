@@ -283,7 +283,6 @@ function getSsData(name, jkdata, page) {
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage) {
-    ispage = ispage || objCode.页码[datatype];
     return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
         getYiData(datatype);
     }, datatype)

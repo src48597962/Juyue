@@ -52,40 +52,36 @@ function getYiData(datatype, jkdata, dd) {
         if(!页码[datatype] && page>1){
             return [];
         }
+        let sourcemenu = [];
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
                 toast(jkdata.name + (objCode["作者"] ? "，作者：" + objCode["作者"] : ""));
                 putMyVar(jkdata.id, "1");
             }
             let 转换 = objCode["转换"] || {};
-            let z1 = 转换["排行"] || "排行";
-            let z2 = 转换["分类"] || "分类";
-            let z3 = 转换["更新"] || "更新";
-            if(objCode[z1] && objCode[z2] && objCode[z3]){
-                if(objCode[z1]){
-                    d.push({
-                        title: z1,
-                        url: rulePage(z1,页码[z1]),
-                        pic_url: "http://123.56.105.145/tubiao/more/229.png",
-                        col_type: 'icon_small_3'
-                    })
-                }
-                if(objCode[z2]){
-                    d.push({
-                        title: z2,
-                        url: rulePage(z2,页码[z2]),
-                        pic_url: "http://123.56.105.145/tubiao/more/287.png",
-                        col_type: 'icon_small_3'
-                    })
-                }
-                if(objCode[z3]){
-                    d.push({
-                        title: z3,
-                        url: rulePage(z3,页码[z3]),
-                        pic_url: "http://123.56.105.145/tubiao/more/288.png",
-                        col_type: 'icon_small_3'
-                    })
-                }
+            let z1 = 转换["排行"];
+            let z2 = 转换["分类"];
+            let z3 = 转换["更新"];
+            if(objCode[z1]){
+                sourcemenu.push({
+                    title: z1,
+                    url: rulePage(z1,页码[z1]),
+                    col_type: 'text_3'
+                })
+            }
+            if(objCode[z2]){
+                sourcemenu.push({
+                    title: z2,
+                    url: rulePage(z2,页码[z2]),
+                    col_type: 'text_3'
+                })
+            }
+            if(objCode[z3]){
+                sourcemenu.push({
+                    title: z3,
+                    url: rulePage(z3,页码[z3]),
+                    col_type: 'text_3'
+                })
             }
         }
         let 执行str = objCode[datatype].toString();
@@ -226,6 +222,14 @@ function getYiData(datatype, jkdata, dd) {
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
     if(datatype=='主页'){
+        if(sourcemenu.length>0){
+            updateItem("sourcemenu", {
+                url: $("#noLoading#").lazyRule((sourcemenu)=>{
+                    addItemBefore("sourcemenuload", sourcemenu);
+                    return "hiker://empty";
+                }, sourcemenu)
+            })
+        }
         return d;
     }else{
         setResult(d);

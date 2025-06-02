@@ -76,20 +76,22 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         java.lang.Thread.sleep(10);
     })
     */
-    function parseObjectWithFunction(str) {
+    function parseObjectWithFunctions(str) {
         try {
-            return new Function('return ' + str)();
+            const fn = new Function('return ' + str);
+            return fn();
         } catch (e) {
             console.error('解析失败:', e);
             return null;
         }
     }
 
+
     olddatalist.splice(0,1).forEach(it=>{
 
-        let public = parseObjectWithFunction(it.public || '{}');
-        let parse = parseObjectWithFunction(it.parse || '{}');
-        let erparse = parseObjectWithFunction(it.erparse || '{}');
+        let public = parseObjectWithFunctions(it.public || '{}');
+        let parse = parseObjectWithFunctions(it.parse || '{}');
+        let erparse = parseObjectWithFunctions(it.erparse || '{}');
         storage0.putMyVar('parse', parse);
         log(getMyVar('parse'));
         let newjkjson = Object.assign({}, public, parse, erparse);

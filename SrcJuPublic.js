@@ -32,7 +32,11 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         return jsCode;
     }
 
-
+    function decodeUnicodeEscapes(str) {
+        return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
+            return String.fromCharCode(parseInt(p1, 16));
+        });
+    }
 
     olddatalist.forEach(it=>{
 
@@ -54,9 +58,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
         */
-        eval("let public = " + (it.public || '{}'));
-        eval("let parse = " + (it.parse || '{}'));
-        eval("let erparse = " + (it.erparse || '{}'));
+        eval("let public = " + decodeUnicodeEscapes(it.public || '{}'));
+        eval("let parse = " + decodeUnicodeEscapes(it.parse || '{}'));
+        eval("let erparse = " + decodeUnicodeEscapes(it.erparse || '{}'));
         let newjkjson = Object.assign({}, public, parse, erparse);
         it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;

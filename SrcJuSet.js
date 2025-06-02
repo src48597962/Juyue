@@ -578,7 +578,7 @@ function jiekouapi(data, look) {
                     back(true);
                     return "toast://保存成功";
                 }
-            }, data.id||"")
+            }, (data?data.id:"")||"")
         });
     }
     setResult(d);

@@ -76,42 +76,14 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         java.lang.Thread.sleep(10);
     })
     */
-    function parseFunctionString(str) {
-            // 1. 预处理函数定义
-            const funcPattern = /(["']?)function\s*\(([^)]*)\)\s*\{([^]*?)\}\1/g;
-            const funcReplacer = (match, quote, args, body) => {
-                return `__func__:function(${args}){${body}}`;
-            };
-
-            // 2. 标记所有函数
-            let processed = str.replace(funcPattern, funcReplacer);
-
-            // 3. 解析为对象
-            const obj = JSON.parse(processed);
-
-            // 4. 恢复函数
-            function restoreFunctions(obj) {
-                for (let key in obj) {
-                    if (typeof obj[key] === 'object' && obj[key] !== null) {
-                        restoreFunctions(obj[key]);
-                    } else if (typeof obj[key] === 'string' && obj[key].startsWith('__func__:')) {
-                        // 使用 Function 构造函数重建函数
-                        const funcStr = obj[key].replace('__func__:', '');
-                        obj[key] = new Function('return ' + funcStr)();
-                    }
-                }
-                return obj;
-            }
-
-            return restoreFunctions(obj);
-    }
+    
 
 
     olddatalist.splice(0,1).forEach(it=>{
+        let public = eval('(' + (it.public || '{}') + ')');
+        let parse = eval('(' + (it.parse || '{}') + ')');
+        let erparse = eval('(' + (it.erparse || '{}') + ')');
 
-        let public = parseFunctionString(it.public || '{}');
-        let parse = parseFunctionString(it.parse || '{}');
-        let erparse = parseFunctionString(it.erparse || '{}');
         storage0.putMyVar('parse', parse);
         log(getMyVar('parse'));
         let newjkjson = Object.assign({}, public, parse, erparse);

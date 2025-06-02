@@ -23,7 +23,6 @@ function getYiData(datatype, jkdata, dd) {
     let objCode = getObjCode(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
-    let sourcemenu = [];
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -63,6 +62,7 @@ function getYiData(datatype, jkdata, dd) {
             let z1 = 转换["排行"];
             let z2 = 转换["分类"];
             let z3 = 转换["更新"];
+            let sourcemenu = [];
             if(objCode[z1]){
                 sourcemenu.push({
                     title: z1,
@@ -84,6 +84,7 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_3'
                 })
             }
+            storage0.putMyVar("sourcemenu", sourcemenu);
         }
         let 执行str = objCode[datatype].toString();
         let obj = objCode.四大金刚 || {};
@@ -223,14 +224,6 @@ function getYiData(datatype, jkdata, dd) {
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
     if(datatype=='主页'){
-        if(sourcemenu.length>0){
-            updateItem("sourcemenu", {
-                url: $("#noLoading#").lazyRule((sourcemenu)=>{
-                    addItemBefore("sourcemenuload", sourcemenu);
-                    return "hiker://empty";
-                }, sourcemenu)
-            })
-        }
         return d;
     }else{
         setResult(d);

@@ -975,13 +975,15 @@ function erji() {
                 if(list_col_type.indexOf("_left")>-1){
                     extra.textAlign = 'left';
                 }
+                let isrule;
                 if (stype=="小说" || erLoadData.rule || erLoadData.novel || 列表[i].rule) {
+                    isrule = 1;
                     extra.url = 列表[i].url;
-                    lazy = "hiker://empty##" + lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
+                    lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
                 }
                 d.push({
                     title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,
-                    url: 列表[i].url + lazy,
+                    url: (isrule?"hiker://empty##":"") + 列表[i].url + lazy,
                     desc: 列表[i].desc,
                     img: 列表[i].img,
                     col_type: 列表[i].col_type || list_col_type.replace("_left",""),

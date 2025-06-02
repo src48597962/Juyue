@@ -78,13 +78,12 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     })
     */
     olddatalist.splice(0,1).forEach(it=>{
-        if(it.parse&&it.erparse){
-            it.ilk = '3';
-        }else if(it.parse){
-            it.ilk = '1';
-        }else if(it.erparse){
-            it.ilk = '2';
-        }
+        storage0.putMyVar('public', it.public);
+        log(storage0.getMyVar('public'));
+        storage0.putMyVar('parse', it.parse);
+        log(storage0.getMyVar('parse'));
+        storage0.putMyVar('erparse', it.erparse);
+        log(storage0.getMyVar('erparse'));
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));

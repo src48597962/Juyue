@@ -377,8 +377,8 @@ function banner(start, arr, data, cfg){
     }
     let obj = {
         data: data,
-        method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: storage0.getMyVar('一级源接口信息')
+        //method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
+        //info: storage0.getMyVar('一级源接口信息')
     };
     registerTask(id, time, $.toString((obj) => {
         var data = obj.data;
@@ -395,8 +395,8 @@ function banner(start, arr, data, cfg){
         }
         var item = data[i];
         try {
-            require(obj.method);
-            updateItem('bar', toerji(item,obj.info));
+            //require(obj.method);
+            updateItem('bar', toerji(item, obj.info));
         } catch (e) {
             log(e.message)
             unRegisterTask('juyue')

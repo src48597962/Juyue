@@ -109,6 +109,7 @@ function yiji(testSource) {
             url: $("#noLoading#").lazyRule(()=>{
                 let sourcemenu = storage0.getMyVar("sourcemenu") || [];
                 if(sourcemenu.length>0){
+                    deleteItemByCls("sourcemenu");
                     addItemBefore("sourcemenuload", sourcemenu);
                     return "hiker://empty";
                 }else{

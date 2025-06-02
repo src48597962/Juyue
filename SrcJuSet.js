@@ -73,7 +73,7 @@ function SRCSet() {
             if(input.indexOf('@import=js:')>-1){
                 input = input.split('@import=js:')[0].replace('云口令：','').trim();
             }
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJySet.js');
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return JYimport(input);
         }),
         img: "http://123.56.105.145/tubiao/more/43.png",

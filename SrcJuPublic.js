@@ -31,7 +31,17 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return jsCode;
     }
-    
+    function objNoUnicode (obj) {
+        obj = obj || {};
+        // 处理 Unicode 字符串
+        Object.keys(obj).forEach(key => {
+            if (typeof obj[key] === 'string') {
+                obj[key] = obj[key].replace(/\\u[\dA-F]{4}/gi,
+                    match => String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16)));
+            }
+        });
+        return obj;
+    };
     olddatalist.forEach(it=>{
         if(it.parse&&it.erparse){
             it.ilk = '3';
@@ -43,13 +53,14 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.public = (it.public||"").replace(/公共/g, 'objCode');
         it.parse = (it.parse||"").replace(/公共/g, 'objCode');
         it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
-        eval('(' + "let public = " + (it.public || '{}') + ')');
-        eval('(' + "let parse = " + (it.parse || '{}') + ')');
-        eval('(' + "let erparse = " + (it.erparse || '{}') + ')');
+        eval("let public = " + (it.public || '{}'));
+        eval("let parse = " + (it.parse || '{}'));
+        eval("let erparse = " + (it.erparse || '{}'));
         if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
-        let newjkjson = Object.assign({}, public, parse, erparse);
+        
+        let newjkjson = objNoUnicode(Object.assign({}, public, parse, erparse));
         it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;
         it.type = it.type=="听书"?"音频":it.type;

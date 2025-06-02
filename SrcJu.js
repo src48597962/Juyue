@@ -370,6 +370,7 @@ function erji() {
                 log('开始获取二级数据');
                 let t1 = new Date().getTime();
                 objCode = getObjCode(jkdata);
+                let parse = objCode;//兼容老的接口
                 try {
                     if (objCode['预处理']) {
                         try {

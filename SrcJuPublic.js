@@ -77,12 +77,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     })
     */
     function parseFunctionString(str) {
-        const sanitized = str
-            .replace(/(\w+):/g, '"\$1":');   // 为键添加引号
-
         try {
-            const funcWrapper = new Function(`return ${sanitized}`);
-            return funcWrapper();
+            // 使用eval解析字符串（仅限可信数据源！）
+            return eval(`(${str})`);
         } catch (e) {
             console.error('解析失败:', e);
             return {};
@@ -93,7 +90,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         let public = parseFunctionString(it.public || '{}');
         let parse = parseFunctionString(it.parse || '{}');
         let erparse = parseFunctionString(it.erparse || '{}');
-
+        log($.type(public));
+        log($.type(parse));
+        log($.type(erparse));
         let newjkjson = Object.assign({}, public, parse, erparse);
         storage0.putMyVar('newjkjson', newjkjson);
         log(getMyVar('newjkjson'));

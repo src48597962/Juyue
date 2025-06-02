@@ -72,8 +72,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.erparse;
         //storage0.putMyVar('newjkjson', newjkjson);
         //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        writeFile(it.url, $.stringify(newjkjson));
-        //writeFile(it.url, objectToJsCode(newjkjson));
+        writeFile(it.url, objectToJsCode(newjkjson));
         java.lang.Thread.sleep(10);
     })
     */
@@ -87,9 +86,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
-        let newjkjson = $.assign({}, public, parse, erparse);
+        let newjkjson = Object.assign({}, public, parse, erparse);
         storage0.putMyVar('newjkjson', newjkjson);
-        log(storage0.getMyVar('newjkjson'));
+        log(getMyVar('newjkjson'));
 
         
     })

@@ -37,7 +37,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             return String.fromCharCode(parseInt(p1, 16));
         });
     }
-
+/*
     olddatalist.forEach(it=>{
 
         if(it.parse&&it.erparse){
@@ -47,7 +47,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        /*
+
         it.public = (it.public||"").replace(/公共/g, 'objCode');
         it.parse = (it.parse||"").replace(/公共/g, 'objCode');
         it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
@@ -57,10 +57,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
-        */
-        eval("let public = " + decodeUnicodeEscapes(it.public || '{}'));
-        eval("let parse = " + decodeUnicodeEscapes(it.parse || '{}'));
-        eval("let erparse = " + decodeUnicodeEscapes(it.erparse || '{}'));
+
         let newjkjson = Object.assign({}, public, parse, erparse);
         it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;
@@ -79,7 +76,22 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         //writeFile(it.url, objectToJsCode(newjkjson));
         java.lang.Thread.sleep(10);
     })
-    writeFile(jkfile, JSON.stringify(olddatalist));
+    */
+    olddatalist.splice(0,1).forEach(it=>{
+        if(it.parse&&it.erparse){
+            it.ilk = '3';
+        }else if(it.parse){
+            it.ilk = '1';
+        }else if(it.erparse){
+            it.ilk = '2';
+        }
+        log($.type(it));
+        log($.type(it.public));
+        log($.type(it.parse));
+        log($.type(it.erparse));
+        
+    })
+    //writeFile(jkfile, JSON.stringify(olddatalist));
     clearMyVar('newjkjson');
 }
 

@@ -85,10 +85,14 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        log($.type(it));
-        log($.type(it.public));
-        log($.type(it.parse));
-        log($.type(it.erparse));
+        let public = JSON.parse(it.public);
+        let parse = JSON.parse(it.public);
+        let erparse = JSON.parse(it.public);
+    
+        log(public.toString());
+        log(parse.toString());
+        log(erparse.toString());
+
         
     })
     //writeFile(jkfile, JSON.stringify(olddatalist));

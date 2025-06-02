@@ -77,7 +77,6 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     })
     */
     function parseFunctionString(str) {
-        try {
             // 1. 预处理函数定义
             const funcPattern = /(["']?)function\s*\(([^)]*)\)\s*\{([^]*?)\}\1/g;
             const funcReplacer = (match, quote, args, body) => {
@@ -105,10 +104,6 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             }
 
             return restoreFunctions(obj);
-        } catch (e) {
-            log('解析失败:', e.message);
-            return {};
-        }
     }
 
 

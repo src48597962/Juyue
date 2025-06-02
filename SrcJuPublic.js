@@ -78,18 +78,60 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     */
     
 
+    function serialize(obj) {
+        let str = 'const mergedObj = {\n';
 
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                let value = obj[key];
+                let valStr;
+
+                if (typeof value === 'function') {
+                    // 函数直接保留原样
+                    valStr = value.toString();
+                } else {
+                    // 其他值用 JSON.stringify 美化
+                    valStr = JSON.stringify(value, null, 2);
+                }
+
+                str += `  ${JSON.stringify(key)}: ${valStr},\n`;
+            }
+        }
+
+        str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
+        str += '};\n\n// 导出对象\nwindow.mergedObj = mergedObj;\n';
+
+        return str;
+    }
     olddatalist.splice(0,1).forEach(it=>{
+        if(it.parse&&it.erparse){
+            it.ilk = '3';
+        }else if(it.parse){
+            it.ilk = '1';
+        }else if(it.erparse){
+            it.ilk = '2';
+        }
         let public = eval('(' + (it.public || '{}') + ')');
         let parse = eval('(' + (it.parse || '{}') + ')');
         let erparse = eval('(' + (it.erparse || '{}') + ')');
-        log($.type(parse.主页));
-        storage0.putMyVar('parse', parse);
-        log(getMyVar('parse'));
-        //let newjkjson = Object.assign({}, public, parse, erparse);
-        //storage0.putMyVar('newjkjson', newjkjson);
-        //log(getMyVar('newjkjson'));
+        let newjkjson = Object.assign({}, public, parse, erparse);
+        if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
+            erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
+        }
 
+        it.author = erparse['作者'];
+        it.group = it.type=="听书"?"听书":it.group;
+        it.type = it.type=="听书"?"音频":it.type;
+        it.group = it.type=="影视"?"影视":it.group;
+        it.type = it.type=="影视"?"视频":it.type;
+        it.id = Date.now().toString();
+        it.url = jkfilespath + it.id + '.txt';
+        delete it.updatetime;
+        delete it.public;
+        delete it.parse;
+        delete it.erparse;
+        writeFile(it.url, serialize(newjkjson));
+        java.lang.Thread.sleep(10);
         
     })
     //writeFile(jkfile, JSON.stringify(olddatalist));

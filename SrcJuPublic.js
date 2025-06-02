@@ -35,13 +35,6 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
 
     olddatalist.forEach(it=>{
-        let parsedObj = (it, (key, value) => {
-            // 检查是否是函数的字符串形式
-            if (typeof value === 'string' && value.startsWith('function')) {
-                return eval(`(${value})`); // 将字符串转换为函数
-            }
-            return value;
-        });
 
         if(it.parse&&it.erparse){
             it.ilk = '3';
@@ -61,9 +54,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
         */
-        let public = parsedObj.public || {};
-        let parse = parsedObj.parse || {};
-        let erparse = parsedObj.erparse || {};
+        let public = it.public || {};
+        let parse = it.parse || {};
+        let erparse = it.erparse || {};
         let newjkjson = Object.assign({}, public, parse, erparse);
         it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;

@@ -59,9 +59,9 @@ function getYiData(datatype, jkdata, dd) {
                 putMyVar(jkdata.id, "1");
             }
             let 转换 = objCode["转换"] || {};
-            let z1 = 转换["排行"];
-            let z2 = 转换["分类"];
-            let z3 = 转换["更新"];
+            let z1 = 转换["排行"] || "排行";
+            let z2 = 转换["分类"] || "分类";
+            let z3 = 转换["更新"] || "更新";
             let sourcemenu = [];
             if(objCode[z1]){
                 sourcemenu.push({

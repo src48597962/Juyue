@@ -85,9 +85,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        let public = JSON.parse(it.public);
-        let parse = JSON.parse(it.public);
-        let erparse = JSON.parse(it.public);
+        eval("let public = " + (it.public || '{}'));
+        eval("let parse = " + (it.parse || '{}'));
+        eval("let erparse = " + (it.erparse || '{}'));
     
         log(public.toString());
         log(parse.toString());

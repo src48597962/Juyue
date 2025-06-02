@@ -89,9 +89,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
     
-        log(public.toString());
-        log(parse.toString());
-        log(erparse.toString());
+        log(String(public));
+        log(String(parse));
+        log(String(erparse));
 
         
     })

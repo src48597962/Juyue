@@ -106,7 +106,15 @@ function yiji(testSource) {
         })
         d.push({
             title: "分类",
-            url: "toast://作者没有写",
+            url: $("#noLoading#").lazyRule(()=>{
+                let sourcemenu = storage0.getMyVar("sourcemenu") || [];
+                if(sourcemenu.length>0){
+                    addItemBefore("sourcemenuload", sourcemenu);
+                    return "hiker://empty";
+                }else{
+                    return "toast://作者没有写"
+                }
+            }),
             pic_url: "http://123.56.105.145/tubiao/more/287.png",
             col_type: 'icon_small_4',
             extra: {

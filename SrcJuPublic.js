@@ -92,7 +92,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
             // 4. 恢复函数
             function restoreFunctions(obj) {
-                for (const key in obj) {
+                for (let key in obj) {
                     if (typeof obj[key] === 'object' && obj[key] !== null) {
                         restoreFunctions(obj[key]);
                     } else if (typeof obj[key] === 'string' && obj[key].startsWith('__func__:')) {

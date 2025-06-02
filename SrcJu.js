@@ -523,9 +523,16 @@ function erji() {
                 data: jkdata,
                 type: stype
             }
-            let lazy = objCode.解析 || $("").lazyRule((dataObj) => {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                return SrcParseS.聚阅(input, dataObj);
+            let lazy = $("").lazyRule((dataObj) => {
+                let url = input;
+                let objCode = getObjCode(dataObj.data);
+                if(objCode.解析){
+                    eval("let 解析2 = " + objCode.解析);
+                    return 解析2(url, objCode);
+                }else{
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                    return SrcParseS.聚阅(url, dataObj);
+                }
             }, dataObj);
 
             let download = '';

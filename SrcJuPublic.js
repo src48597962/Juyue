@@ -80,6 +80,7 @@ if (Jucfg != "") {
 let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
 let homeSourceId = Juconfig[homeGroup + "_SourceId"] || "";
+let sourcename = (storage0.getMyVar('一级源接口信息')||{}).name || "";
 
 //获取接口列表数据
 function getDatas(lx, isyx) {

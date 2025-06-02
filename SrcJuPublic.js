@@ -88,7 +88,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
                 if (typeof value === 'function') {
                     // 函数直接保留原样
-                    valStr = value.toString();
+                    valStr = decodeUnicodeEscapes(value.toString());
                 } else {
                     // 其他值用 JSON.stringify 美化
                     valStr = JSON.stringify(value, null, 2);
@@ -99,7 +99,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }
 
         str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
-        str += '};\n\n// 导出对象\nwindow.mergedObj = mergedObj;\n';
+        str += '};';
 
         return str;
     }

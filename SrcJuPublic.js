@@ -35,7 +35,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
 
     olddatalist.forEach(it=>{
-        let parsedObj = JSON.parse(it, (key, value) => {
+        let parsedObj = (it, (key, value) => {
             // 检查是否是函数的字符串形式
             if (typeof value === 'string' && value.startsWith('function')) {
                 return eval(`(${value})`); // 将字符串转换为函数

@@ -353,11 +353,14 @@ function banner(start, arr, data, cfg){
     let rnum = Math.floor(Math.random() * data.length);
     let item = data[rnum];
     putMyVar('rnum', rnum);
-    cfg = cfg || {};
-    let time = cfg.time || 5000;
-    let col_type = cfg.col_type || 'pic_1_card';
-    let desc = cfg.desc || '';
-
+    let time = 5000;
+    let col_type='pic_1_card';
+    let desc='';
+    if (cfg != undefined) {
+        time = cfg.time ? cfg.time : time;
+        col_type=cfg.col_type?cfg.col_type:col_type;
+        desc=cfg.desc?cfg.desc:desc;
+    }
     arr.push({
         col_type: col_type,
         img: item.img,
@@ -365,33 +368,39 @@ function banner(start, arr, data, cfg){
         title: item.title,
         url: item.url,
         extra: {
-            id: 'bar'
+            id: 'bar',
         }
     })
     if (start == false || getMyVar('benstart', 'true') == 'false') {
-        unRegisterTask(id);
-        return;
+        unRegisterTask(id)
+        return
     }
-
-    registerTask(id, time, $.toString((data) => {
+    let obj = {
+        data: data,
+        method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
+        info: storage0.getMyVar('一级源接口信息')
+    };
+    registerTask(id, time, $.toString((obj) => {
+        var data = obj.data;
         var rum = getMyVar('rnum');
         var i = Number(getMyVar('banneri', '0'));
         if (rum != '') {
-            i = Number(rum) + 1;
-            clearMyVar('rnum');
+            i = Number(rum) + 1
+            clearMyVar('rnum')
         } else {
             i = i + 1;
         }
         if (i > data.length - 1) {
-            i = 0;
+            i = 0
         }
         var item = data[i];
         try {
-            updateItem('bar', toerji(item));
+            require(obj.method);
+            updateItem('bar', toerji(item,obj.info));
         } catch (e) {
-            log("幻灯片处理异常>" + e.message);
-            unRegisterTask('juyue');
+            log(e.message)
+            unRegisterTask('juyue')
         }
         putMyVar('banneri', i);
-    }, data))
+    }, obj))
 }

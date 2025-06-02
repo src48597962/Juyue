@@ -98,48 +98,46 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();
             }),
-            pic_url: "http://123.56.105.145/tubiao/more/129.png",
+            pic_url: "http://123.56.105.145/tubiao/more/213.png",
             col_type: "icon_small_4",
             extra: {
                 longClick: longClick
             }
         })
         d.push({
-            title: "收藏",
-            url: "hiker://collection?rule="+MY_RULE.title,
-            pic_url: "http://123.56.105.145/tubiao/more/109.png",
-            col_type: 'icon_small_4'
+            title: "分类",
+            url: "toast://作者没有写",
+            pic_url: "http://123.56.105.145/tubiao/more/287.png",
+            col_type: 'icon_small_4',
+            extra: {
+                id: "sourcemenu"
+            }
         })
         d.push({
-            title: "历史",
-            url: "hiker://history?rule="+MY_RULE.title,
-            pic_url: "http://123.56.105.145/tubiao/more/213.png",
+            title: "书架",
+            url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
+                require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
+                bookCase();
+            }),
+            pic_url: "http://123.56.105.145/tubiao/more/286.png",
             col_type: 'icon_small_4'
         })
-        /*
-        d.push({
-            title: "预留",
-            url: "hiker://home@聚影",
-            pic_url: "http://123.56.105.145/tubiao/more/101.png",
-            col_type: 'icon_5'
-        })
-        */
         d.push({
             title: "设置",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","程序管理中心"],1).select(()=>{
-                if(input=="本地接口管理"){
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","搜索:"+getItem('接口搜索方式','主页界面'),"程序管理中心"],1).select(()=>{
+                if(MY_INDEX==0){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
                     })
-                }else if(input=="程序管理中心"){
+                }else if(MY_INDEX==2){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('管理中心');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         manageSet();
                     })
-                }else if(input=="显示快速分组"||input=="关闭快速分组"){
+                }else if(MY_INDEX==1){
                     return $("#noLoading#").lazyRule(() => {
                         if(getItem('显示快速分组')=="1"){
                             clearItem('显示快速分组');
@@ -148,6 +146,16 @@ function yiji(testSource) {
                         }
                         refreshPage();
                         return 'hiker://empty';
+                    })
+                }else if(MY_INDEX==3){
+                    let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口"]:["主页界面","页面聚合"]).map(v=>{
+                        return v==getItem("接口搜索方式","主页界面")?`‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`:v+'  ';
+                    });
+                    return $(searchModeS,1).select(()=>{
+                        input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
+                        setItem("接口搜索方式",input);
+                        refreshPage();
+                        return "toast://搜索方式设置为："+input;
                     })
                 }
             }),
@@ -158,20 +166,18 @@ function yiji(testSource) {
         let searchurl = $('').lazyRule((jkdata) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
-            }else if(getItem('接口搜索方式','当前主页')=="当前接口"){
+            }else if(getItem('接口搜索方式','主页界面')=="当前接口"){
                 storage0.putMyVar('SrcJu_搜索临时搜索数据', jkdata);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式')=="分组接口"){
                 putMyVar('SrcJu_搜索临时搜索分组', jkdata.group||jkdata.type);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(getItem('接口搜索方式')=="代理聚搜"){
-                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(getItem('接口搜索方式')=="聚合搜索"){
-                return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input) => {
-                    require(config.聚影);
-                    newSearch(input);
-                },input);
-            }else{
+            }else if(getItem('接口搜索方式')=="页面聚合"){
+                return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
+                    require(config.聚阅);
+                    newSearch(input, group);
+                }, input, jkdata.group||jkdata.type);
+            }else{//当前主页
                 require(config.聚阅); 
                 let d = search(input, 'yiji' , jkdata);
                 if(d.length>0){
@@ -184,29 +190,28 @@ function yiji(testSource) {
             }
         }, jkdata);
         
-        //if(MY_NAME=="嗅觉浏览器"){
-            d.push({
-                title: "搜索",
-                url: $.toString((searchurl) => {
-                    input = input.trim();
-                    if(input == ''){
-                        return "hiker://empty"
-                    }
-                    return input + searchurl;
-                },searchurl),
-                desc: "搜你想要的...",
-                col_type: "input",
-                extra: {
-                    id: 'homesousuoid',
-                    titleVisible: true,
-                    onChange: $.toString(() => {
-                        if(input==""){
-                            deleteItemByCls('homesousuolist');
-                        }
-                    })
+        d.push({
+            title: "搜索",
+            url: $.toString((searchurl) => {
+                input = input.trim();
+                if(input == ''){
+                    return "hiker://empty"
                 }
-            });
-        //}
+                return input + searchurl;
+            },searchurl),
+            desc: "搜你想要的...",
+            col_type: "input",
+            extra: {
+                id: 'homesousuoid',
+                titleVisible: true,
+                onChange: $.toString(() => {
+                    if(input==""){
+                        deleteItemByCls('homesousuolist');
+                    }
+                })
+            }
+        });
+
         if(getItem('显示快速分组')=="1"){
             let typemenubtn = getTypeNames("主页");
             let Color = '#3399cc';
@@ -232,7 +237,13 @@ function yiji(testSource) {
                 d.push(item);
             })
         }
-        
+        d.push({
+            col_type: "blank_block",
+            extra: {
+                id: "sourcemenuload"
+            }
+        })
+
         if(!jkdata.name){
             d.push({
                 title: homeGroup + " 主页源不存在\n需先选择配置主页源",

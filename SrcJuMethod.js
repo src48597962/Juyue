@@ -23,6 +23,7 @@ function getYiData(datatype, jkdata, dd) {
     let objCode = getObjCode(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
+    let sourcemenu = [];
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -52,7 +53,7 @@ function getYiData(datatype, jkdata, dd) {
         if(!页码[datatype] && page>1){
             return [];
         }
-        let sourcemenu = [];
+        
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
                 toast(jkdata.name + (objCode["作者"] ? "，作者：" + objCode["作者"] : ""));

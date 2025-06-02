@@ -353,18 +353,15 @@ function banner(start, arr, data, cfg){
     let rnum = Math.floor(Math.random() * data.length);
     let item = data[rnum];
     putMyVar('rnum', rnum);
-    let time = 5000;
-    let col_type='pic_1_card';
-    let desc='';
-    if (cfg != undefined) {
-        time = cfg.time ? cfg.time : time;
-        col_type=cfg.col_type?cfg.col_type:col_type;
-        desc=cfg.desc?cfg.desc:desc;
-    }
+    cfg = cfg  || {};
+    let time = cfg.time || 5000;
+    let col_type = cfg.col_type || 'pic_1_card';
+    let desc = cfg.desc || '';
+
     arr.push({
         col_type: col_type,
         img: item.img,
-        desc:desc,
+        desc: desc,
         title: item.title,
         url: item.url,
         extra: {
@@ -377,8 +374,8 @@ function banner(start, arr, data, cfg){
     }
     let obj = {
         data: data,
-        //method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        //info: storage0.getMyVar('一级源接口信息')
+        method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
+        info: storage0.getMyVar('一级源接口信息')
     };
     registerTask(id, time, $.toString((obj) => {
         var data = obj.data;
@@ -395,7 +392,7 @@ function banner(start, arr, data, cfg){
         }
         var item = data[i];
         try {
-            //require(obj.method);
+            require(obj.method);
             updateItem('bar', toerji(item, obj.info));
         } catch (e) {
             log(e.message)

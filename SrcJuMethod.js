@@ -21,6 +21,7 @@ function getYiData(datatype, jkdata, dd) {
 
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     let objCode = getObjCode(jkdata);
+    let parse = objCode;//兼容老的接口
     let d = dd || [];
     let page = MY_PAGE || 1;
 
@@ -262,6 +263,7 @@ function getSsData(name, jkdata, page) {
     }
     try {
         let objCode = getObjCode(jkdata);
+        let parse = objCode;//兼容老的接口
         if (objCode['预处理']) {
             objCode['预处理']();
         }

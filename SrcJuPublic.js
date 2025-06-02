@@ -31,21 +31,18 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return jsCode;
     }
-    function unicodeToChinese(str) {
-        str = str || "";
-        if (str.includes('\\u')) {
-            return str.replace(/\\u([\dA-Fa-f]{4})/g, function (match, p1) {
-                return String.fromCharCode(parseInt(p1, 16));
-            });
-        }
-        if (/^[\dA-Fa-f]{4}(\s+[\dA-Fa-f]{4})*$/.test(str)) {
-            return str.split(/\s+/).map(function (code) {
-                return String.fromCharCode(parseInt(code, 16));
-            }).join('');
-        }
-        return str;
-    }
+
+
+
     olddatalist.forEach(it=>{
+        let parsedObj = JSON.parse(it, (key, value) => {
+            // 检查是否是函数的字符串形式
+            if (typeof value === 'string' && value.startsWith('function')) {
+                return eval(`(${value})`); // 将字符串转换为函数
+            }
+            return value;
+        });
+
         if(it.parse&&it.erparse){
             it.ilk = '3';
         }else if(it.parse){
@@ -53,16 +50,20 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        it.public = unicodeToChinese(it.public).replace(/公共/g, 'objCode');
-        it.parse = unicodeToChinese(it.parse).replace(/公共/g, 'objCode');
-        it.erparse = unicodeToChinese(it.erparse).replace(/公共/g, 'objCode');
+        /*
+        it.public = (it.public||"").replace(/公共/g, 'objCode');
+        it.parse = (it.parse||"").replace(/公共/g, 'objCode');
+        it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
         eval("let public = " + (it.public || '{}'));
         eval("let parse = " + (it.parse || '{}'));
         eval("let erparse = " + (it.erparse || '{}'));
         if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
         }
-        
+        */
+        let public = parsedObj.public || {};
+        let parse = parsedObj.parse || {};
+        let erparse = parsedObj.erparse || {};
         let newjkjson = Object.assign({}, public, parse, erparse);
         it.author = erparse['作者'];
         it.group = it.type=="听书"?"听书":it.group;

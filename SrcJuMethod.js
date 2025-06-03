@@ -1,11 +1,11 @@
 // 重定义打印日志
-let slog = log;
-if (getItem('接口日志打印') != "1") {
-    slog = function () {
+let xlog = log;
+if (getItem('规则日志打印','1') == "0") {
+    xlog = function () {
         return;
     };
 }
-if (getItem('规则日志打印') != "1") {
+if (getItem('接口日志打印') != "1") {
     log = function () {
         return;
     };
@@ -229,12 +229,12 @@ function getYiData(datatype, jkdata, dd) {
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });
-            log(jkdata.name+'>接口获取数据异常>' + e.message + ' 错误行#' + e.lineNumber);
+            xlog(jkdata.name+'>接口获取数据异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
     } catch (e) {
         toast(datatype + "执行获取代码报错，请查看日志");
-        log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+        xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
     setResult(d);
     if(datatype=="主页"){
@@ -252,7 +252,7 @@ function ocr(codeurl,headers) {
     if(code.includes("+")&&code.includes("=")){
         code = eval(code.split("=")[0]);
     }
-    log('识别验证码：'+code);
+    xlog('识别验证码：'+code);
     return code;
 }
 //获取搜索数据
@@ -277,7 +277,7 @@ function getSsData(name, jkdata, page) {
         }
     } catch (e) {
         error = e.message;
-        log('执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        xlog('执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
     return {
         vodlists: getData,
@@ -293,7 +293,6 @@ function rulePage(datatype, ispage) {
 //获取接口对象规则内容
 function getObjCode(jkdata, key) {
     let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
-    eval(jkstr.replace('log(','slog('));
     parse['页码'] = parse['页码'] || {};
     if(key){
         return parse[key];
@@ -318,7 +317,7 @@ function toerji(item, jkdata) {
             item.extra = extra;
         }
     }catch(e){
-        log("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
+        xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
     }
     return item;
 }
@@ -378,7 +377,8 @@ function banner(start, arr, data, cfg){
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: storage0.getMyVar('一级源接口信息')
+        info: storage0.getMyVar('一级源接口信息'),
+        xlog: xlog
     };
     registerTask(id, time, $.toString((obj) => {
         var data = obj.data;
@@ -398,8 +398,8 @@ function banner(start, arr, data, cfg){
             require(obj.method);
             updateItem('bar', toerji(item, obj.info));
         } catch (e) {
-            log(e.message)
-            unRegisterTask('juyue')
+            obj.xlog("幻灯片更新异常>" + e.message);
+            unRegisterTask('juyue');
         }
         putMyVar('banneri', i);
     }, obj))

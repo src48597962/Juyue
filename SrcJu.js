@@ -1340,7 +1340,7 @@ function setMark(data) {
 
 //版本检测
 function Version() {
-    var nowVersion = getItem('Version', "0.1");//现在版本 
+    var nowVersion = getItem('Version', "0");//现在版本 
     var nowtime = Date.now();
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
     if (getMyVar('SrcJu_CodeVersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {

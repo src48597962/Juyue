@@ -113,7 +113,7 @@ function yiji(testSource) {
             url: $(searchModeS,2).select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
-                if(input=='显示联想词'||input=='记忆搜索词'){
+                if(input=='搜索建议词'||input=='记忆搜索词'){
                     if(getItem(input,"")=='1'){
                         clearItem(input);
                         return "toast://已取消" + input;

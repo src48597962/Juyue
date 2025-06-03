@@ -102,7 +102,7 @@ function yiji(testSource) {
         function modeSelect(v) {
             return `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`;
         }
-        let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口"]:["主页界面","页面聚合"]).map(v=>{
+        let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"]).map(v=>{
             return v==getItem("接口搜索方式","主页界面")?modeSelect(v):v+'  ';
         });
         searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
@@ -110,7 +110,7 @@ function yiji(testSource) {
 
         d.push({
             title: "搜索",
-            url: $(searchModeS,2).select(()=>{
+            url: $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -121,6 +121,8 @@ function yiji(testSource) {
                         setItem(input, "1");
                         return "toast://已设置" + input;
                     }
+                }else if(input=='页面聚合'){
+                    return "toast://还没写";
                 }else{
                     setItem("接口搜索方式",input);
                     refreshPage();

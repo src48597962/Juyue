@@ -298,8 +298,6 @@ function yiji(testSource) {
     //加载主页内容
     if(jkdata.name){
         try{
-            let lists = [];
-
             let lockgroups = Juconfig["lockgroups"] || [];
             if((lockgroups.indexOf(homeGroup)>-1 || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('已验证指纹')!='1'){
                 const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
@@ -316,23 +314,17 @@ function yiji(testSource) {
             }else{
                 log('开始获取一级数据');
                 let t1 = new Date().getTime();
-                lists = getYiData('主页', jkdata, d);
+                getYiData('主页', jkdata, d);
                 let t2 = new Date().getTime();
                 log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
-
-            d = lists;
         }catch(e){
-            d.push({
-                title: '加载主页源异常了，请更换',
-                desc: jkdata.name + '>加载主页内容>' + e.message + ' 错误行#' + e.lineNumber,
-                url: 'hiker://empty',
-                col_type: 'text_center_1'
-            });
-            log(jkdata.name+'>调用一级数据异常>' + e.message + ' 错误行#' + e.lineNumber);
+            log(jkdata.name+'>加载主页异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
     }
-    setResult(d);
+
+    //主页加载后
+    
 }
 
 //二级+源搜索

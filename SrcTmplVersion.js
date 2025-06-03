@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V0.2",
         records: [
-            "优化：去除接口索引的版本号设定"
+            "优化：去除接口索引的版本号设定",
+            "新增：小程序版本和代码版本升级检测"
         ]
     },{
         title: "2025/06/02 V0.1",

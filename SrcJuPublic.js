@@ -53,7 +53,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             it.ilk = '2';
         }
         it.public = (it.public||"{}").replace(/公共/g, 'parse');
-        it.parse = (it.parse||"{}").replace(/公共/g, 'parse');
+        it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace('searchMain(', '//searchMain(');
         it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
         eval("let public = " + it.public);
         eval("let parse = " + it.parse);

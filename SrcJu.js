@@ -99,16 +99,33 @@ function yiji(testSource) {
                 id: "sourcemenu"
             }
         })
+        function modeSelect(v) {
+            return `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`;
+        }
         let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口"]:["主页界面","页面聚合"]).map(v=>{
-            return v==getItem("接口搜索方式","主页界面")?`‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`:v+'  ';
+            return v==getItem("接口搜索方式","主页界面")?modeSelect(v):v+'  ';
         });
+        searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
+        searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
+
         d.push({
             title: "搜索",
-            url: $(searchModeS,1).select(()=>{
+            url: $(searchModeS,2).select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
-                setItem("接口搜索方式",input);
-                refreshPage();
-                return "toast://搜索方式设置为："+input;
+
+                if(input=='显示联想词'||input=='记忆搜索词'){
+                    if(getItem(input,"")=='1'){
+                        clearItem(input);
+                        return "toast://已取消" + input;
+                    }else{
+                        setItem(input, "1");
+                        return "toast://已设置" + input;
+                    }
+                }else{
+                    setItem("接口搜索方式",input);
+                    refreshPage();
+                    return "toast://搜索方式设置为："+input;
+                }
             }),
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
             col_type: 'icon_5'
@@ -191,7 +208,7 @@ function yiji(testSource) {
         }, jkdata);
         
         d.push({
-            title: "搜索",
+            title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 input = input.trim();
                 if(input == ''){
@@ -204,9 +221,12 @@ function yiji(testSource) {
             extra: {
                 id: 'homesousuoid',
                 titleVisible: true,
+                defaultValue: getItem("记忆搜索词","")=='1'?getVar("keyword", ""):"",
                 onChange: $.toString(() => {
                     if(input==""){
                         deleteItemByCls('homesousuolist');
+                    }else if(getItem("记忆搜索词","")=='1'){
+                        putVar("keyword", input);
                     }
                 })
             }

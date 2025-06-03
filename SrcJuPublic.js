@@ -113,7 +113,53 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return str;
     }
+    function formatValue(value, indent = 2, currentIndent = 0) {
+        const space = ' '.repeat(indent);
+        if (value === null) {
+            return 'null';
+        }
+        if (Array.isArray(value)) {
+            if (value.length === 0) return '[]';
+            const items = value.map(item => ' '.repeat(indent) + formatValue(item, indent, currentIndent + indent)).join(',\n');
+            return '[\n' + items + '\n' + ' '.repeat(currentIndent) + ']';
+        }
+        if (typeof value === 'object') {
+            const keys = Object.keys(value);
+            if (keys.length === 0) return '{}';
+            const properties = keys.map(key => {
+                const valStr = formatValue(value[key], indent, currentIndent + indent);
+                return ' '.repeat(indent) + `"${key}": ${valStr}`;
+            }).join(',\n');
+            return '{\n' + properties + '\n' + ' '.repeat(currentIndent) + '}';
+        }
+        if (typeof value === 'function') {
+            return value.toString();
+        }
+        if (typeof value === 'string') {
+            return JSON.stringify(value);
+        }
+        return String(value);
+    }
 
+    function serialize(obj) {
+        let str = 'const mergedObj = {\n';
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                let value = obj[key];
+                let valStr;
+                if (typeof value === 'function') {
+                    valStr = deUnicode(value.toString());
+                } else {
+                    valStr = formatValue(value);
+                }
+                str += ` "${key}": ${valStr},\n`;
+            }
+        }
+        str = str.replace(/,\n$/, '\n');
+        str += '};';
+        return str;
+    }
+    /*
     function serialize(obj) {
         let str = 'const mergedObj = {\n';
 
@@ -139,6 +185,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return str;
     }
+    */
     olddatalist.splice(0,1).forEach(it=>{
         if(it.parse&&it.erparse){
             it.ilk = '3';

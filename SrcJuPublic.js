@@ -18,7 +18,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         });
     }
     
-    function serialize(obj) {
+    function objconvertjs(obj) {
         let str = 'const mergedObj = {\n';
 
         for (let key in obj) {
@@ -44,7 +44,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         return str;
     }
  
-    olddatalist.splice(0,1).forEach(it=>{
+    olddatalist.forEach(it=>{
         if(it.parse&&it.erparse){
             it.ilk = '3';
         }else if(it.parse){
@@ -52,9 +52,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        it.public = (it.public||"{}").replace(/公共/g, 'objCode');
-        it.parse = (it.parse||"{}").replace(/公共/g, 'objCode');
-        it.erparse = (it.erparse||"{}").replace(/公共/g, 'objCode');
+        it.public = (it.public||"{}").replace(/公共/g, 'parse');
+        it.parse = (it.parse||"{}").replace(/公共/g, 'parse');
+        it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
         eval("let public = " + it.public);
         eval("let parse = " + it.parse);
         eval("let erparse = " + it.erparse);
@@ -74,10 +74,10 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.public;
         delete it.parse;
         delete it.erparse;
-        writeFile(it.url, serialize(newjkjson));
+        writeFile(it.url, objconvertjs(newjkjson));
         java.lang.Thread.sleep(10);
     })
-    //writeFile(jkfile, JSON.stringify(olddatalist));
+    writeFile(jkfile, JSON.stringify(olddatalist));
 }
 
 let Juconfig = {};

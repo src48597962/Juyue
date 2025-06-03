@@ -4,6 +4,30 @@ require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 
 //一级
 function yiji(testSource) {
+    if(MY_RULE.title=="聚阅✓"){
+        toast("此小程序已停用，请重新导入聚阅");
+    }
+    if(getMyVar('SrcJu_RuleVersionCheck', '0') == '0'){
+        let programversion = 0;
+        try{
+            programversion = $.require("config").version || MY_RULE.version || 0;
+        }catch(e){}
+        if(programversion<1){
+            confirm({
+                title: "温馨提示",
+                content: "发现小程序新版本",
+                confirm: $.toString(() => {
+                    return fetch(config.聚阅.replace(/[^/]*$/,'') + "聚阅.hiker");
+                }),
+                cancel: $.toString(() => {
+                    return "toast://不升级小程序，功能不全或有异常"
+                })
+            });
+        }
+        Version();
+        putMyVar('SrcJu_RuleVersionCheck', '1');
+    }
+
     let jkdata = storage0.getMyVar('一级源接口信息') || {};
     if(!jkdata.name || !fetch(jkdata.url)){
         clearMyVar('一级源接口信息');
@@ -1318,27 +1342,26 @@ function Version() {
     var nowVersion = getItem('Version', "0.1");//现在版本 
     var nowtime = Date.now();
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
-    if (getMyVar('SrcJu_versionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
+    if (getMyVar('SrcJu_CodeVersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
         try {
-            eval(request(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcTmplVersion.js'))
+            eval(request(config.聚阅.replace(/[^/]*$/,'') + 'SrcTmplVersion.js'))
             if (parseFloat(newVersion.SrcJu) > parseFloat(nowVersion)) {
                 confirm({
                     title: '发现新版本，是否更新？',
-                    content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.SrcJudesc[newVersion.SrcJu],
+                    content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.hint,
                     confirm: $.toString((nowtime,newVersion) => {
                         setItem('Version', newVersion);
                         setItem('VersionChecktime', nowtime + 'time');
                         deleteCache();
-                        delete config.聚阅;
                         refreshPage();
                     }, nowtime, newVersion.SrcJu),
                     cancel: ''
                 })
-                log('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.SrcJudesc[newVersion.SrcJu]);
+                log('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.hint);
             }
             putMyVar('SrcJu_Version', '-V' + newVersion.SrcJu);
         } catch (e) { }
-        putMyVar('SrcJu_versionCheck', '1');
+        putMyVar('SrcJu_CodeVersionCheck', '1');
     } else {
         putMyVar('SrcJu_Version', '-V' + nowVersion);
     }

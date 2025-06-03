@@ -369,7 +369,7 @@ function erji() {
     let erLoadData = {};
     let isload;//是否正确加载
     let pic;
-    let objCode = {};
+    let parse = {};
     
     try {
         if (sid&&surl) {
@@ -393,18 +393,17 @@ function erji() {
             }else{
                 log('开始获取二级数据');
                 let t1 = new Date().getTime();
-                objCode = getObjCode(jkdata);
-                let parse = objCode;//兼容老的接口
+                parse = getObjCode(jkdata);
                 try {
-                    if (objCode['预处理']) {
+                    if (parse['预处理']) {
                         try {
-                            objCode['预处理']();
+                            parse['预处理']();
                         } catch (e) {
                             log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                         }
                     }
-                    if(objCode['二级']){
-                        eval("let 二级获取 = " + objCode['二级'])
+                    if(parse['二级']){
+                        eval("let 二级获取 = " + parse['二级'])
                         erLoadData = 二级获取(surl);
                     }else{
                         log("rule不存在二级方法");
@@ -412,7 +411,7 @@ function erji() {
                 } catch (e) {
                     log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
-                erLoadData.author = objCode['作者'];
+                erLoadData.author = parse['作者'];
                 let t2 = new Date().getTime();
                 log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
@@ -520,29 +519,29 @@ function erji() {
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             /*
-            let 解析 = objCode['解析'] || function (url,objCode,参数) {
+            let 解析 = parse['解析'] || function (url,parse,参数) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                 let stype = 参数.stype;
                 return SrcParseS.聚阅(url, stype=="音频"?1:0);
             };
             let lazy = $("").lazyRule((解析,参数) => {
                 let url = input.split("##")[1];
-                let objCode = {};
+                let parse = {};
                 try{
-                    objCode = $.require('jiekou?rule=聚阅').objCode(参数.标识);
+                    parse = $.require('jiekou?rule=聚阅').parse(参数.标识);
                 }catch(e){
                     //toast('未找到聚阅规则子页面');
                 }
                 let 标识 = 参数.标识;
                 eval("let 解析2 = " + 解析);
-                return 解析2(url,objCode,参数);
+                return 解析2(url,parse,参数);
             }, 解析, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             
-            let download = $.toString((解析,objCode,参数) => {
+            let download = $.toString((解析,parse,参数) => {
                 eval("let 解析2 = " + 解析);
                 let 标识 = 参数.标识;
-                return 解析2(input,objCode,参数);
-            }, 解析, objCode, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
+                return 解析2(input,parse,参数);
+            }, 解析, parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
             */
             let dataObj = {
                 data: jkdata,
@@ -550,10 +549,10 @@ function erji() {
             }
             let lazy = $("").lazyRule((dataObj) => {
                 let url = input;
-                let objCode = getObjCode(dataObj.data);
-                if(objCode.解析){
-                    eval("let 解析2 = " + objCode.解析);
-                    return 解析2(url, objCode);
+                let parse = getObjCode(dataObj.data);
+                if(parse['解析']){
+                    eval("let 解析2 = " + parse['解析']);
+                    return 解析2(url, parse);
                 }else{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                     return SrcParseS.聚阅(url, dataObj);
@@ -647,10 +646,10 @@ function erji() {
                             "parseCode": download,
                             "ruleName": sname + " (聚阅)",
                             "type": itype,
-                            "decode": objCode["imgdec"]?$.type(objCode["imgdec"])=="function"?$.toString((imgdec)=>{
+                            "decode": parse["imgdec"]?$.type(parse["imgdec"])=="function"?$.toString((imgdec)=>{
                                 let imgDecrypt = imgdec;
                                 return imgDecrypt();
-                            },objCode["imgdec"]):objCode["imgdec"]:""
+                            },parse["imgdec"]):parse["imgdec"]:""
                         }
                     }
                 })
@@ -1080,17 +1079,17 @@ function erji() {
         /*
         //收藏更新最新章节
         if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((sname,surl,最新,objCode,参数) => {
+            setLastChapterRule('js:' + $.toString((sname,surl,最新,parse,参数) => {
                 let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(surl)');
                 eval("let 最新2 = " + 最新str);
                 let 标识 = 参数.标识;
                 try{
-                    let zx = 最新2(surl,objCode) || "";
+                    let zx = 最新2(surl,parse) || "";
                     setResult(sname + " | " + (zx||""));
                 }catch(e){
-                    最新2(surl,objCode);
+                    最新2(surl,parse);
                 }
-            }, sname, surl, parse['最新'], objCode, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
+            }, sname, surl, parse['最新'], parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
         }
         */
         //切换源时更新收藏数据，以及分享时附带接口

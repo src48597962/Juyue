@@ -200,9 +200,8 @@ function getYiData(datatype, jkdata, dd) {
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
         }
         
-        let error = "";
-        let getData = [];
         try {
+            let getData = [];
             if (parse['预处理']) {
                 parse['预处理']();
             }
@@ -211,33 +210,37 @@ function getYiData(datatype, jkdata, dd) {
             }
             eval("let 数据 = " + 执行str);
             getData = 数据() || [];
+            if (getData.length == 0 && page == 1) {
+                d.push({
+                    title: "未获取到数据",
+                    url: "hiker://empty",
+                    col_type: "text_center_1",
+                })
+            } else if (getData.length > 0) {
+                getData.forEach(item => {
+                    item = toerji(item, jkdata);
+                })
+            }
+            d = d.concat(getData);
         } catch (e) {
-            error = e.message;
-            log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+            d.push({
+                title: jkdata.name + '>加载' + datatype + '异常',
+                desc: e.message + ' 错误行#' + e.lineNumber,
+                url: 'hiker://empty',
+                col_type: 'text_center_1'
+            });
+            log(jkdata.name+'>接口获取数据异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
-
-        if (getData.length == 0 && page == 1) {
-            d.push({
-                title: "未获取到数据",
-                desc: error,
-                url: "hiker://empty",
-                col_type: "text_center_1",
-            })
-        } else if (getData.length > 0) {
-            getData.forEach(item => {
-                item = toerji(item, jkdata);
-            })
-        }
-        d = d.concat(getData);
     } catch (e) {
-        toast(datatype + "代码报错，更换主页源或联系源作者修复");
+        toast(datatype + "执行获取代码报错，请查看日志");
         log("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
-    if(datatype=='主页'){
-        return d;
-    }else{
-        setResult(d);
+    setResult(d);
+    if(datatype=="主页"){
+        if(!parse['搜索'] && parse['search']){
+            deleteItem('homesousuoid');
+        }
     }
 }
 //ocr数字验证码识别

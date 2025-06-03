@@ -340,7 +340,6 @@ function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('apiname');
         clearMyVar('apiauthor');
-        clearMyVar('apiversion');
         clearMyVar('apiimg');
         clearMyVar('apitype');
         clearMyVar('apigroup');
@@ -352,7 +351,6 @@ function jiekouapi(data, look) {
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
             putMyVar('apiauthor', data.author||"");
-            putMyVar('apiversion', data.version||"1");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
@@ -382,18 +380,6 @@ function jiekouapi(data, look) {
             putMyVar('apiauthor',input);
             refreshPage(false);
             return 'toast://源接口作者已设置为：' + input;
-        }),
-        extra: {
-            //lineVisible: false
-        }
-    });
-    d.push({
-        title: '接口版本号：'+ getMyVar('apiversion',''),
-        col_type: 'text_1',
-        url: $(getMyVar('apiversion',''), "接口版本号").input(() => {
-            putMyVar('apiversion',input);
-            refreshPage(false);
-            return 'toast://接口版本号已设置为：' + input;
         }),
         extra: {
             //lineVisible: false
@@ -506,7 +492,6 @@ function jiekouapi(data, look) {
                 url:$("确定要清空上面填写的内容？").confirm(()=>{
                     clearMyVar('apiname');
                     clearMyVar('apiauthor');
-                    clearMyVar('apiversion');
                     clearMyVar('apiimg');
                     clearMyVar('apitype');
                     clearMyVar('apigroup');
@@ -537,7 +522,6 @@ function jiekouapi(data, look) {
                 let name = getMyVar('apiname');
                 let author = getMyVar('apiauthor');
                 let ruleurl = getMyVar('apiruleurl');
-                let version = getMyVar('apiversion', '1');
                 let img = getMyVar('apiimg');
                 let type = getMyVar('apitype');
                 let group = getMyVar('apigroup');
@@ -547,7 +531,6 @@ function jiekouapi(data, look) {
                 let newapi = {
                     id: oldid || newid,
                     name: name,
-                    version: version,
                     type: type,
                     url: ruleurl,
                     ilk: ilk

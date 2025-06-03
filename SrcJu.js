@@ -301,14 +301,14 @@ function yiji(testSource) {
                     }
                 });
             }else{
-                log('开始获取一级数据');
+                xlog('开始获取一级数据');
                 let t1 = new Date().getTime();
                 getYiData('主页', jkdata, d);
                 let t2 = new Date().getTime();
-                log('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
+                xlog('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
         }catch(e){
-            log(jkdata.name+'>加载主页异常>' + e.message + ' 错误行#' + e.lineNumber);
+            xlog(jkdata.name+'>加载主页异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
     }
 
@@ -374,7 +374,7 @@ function erji() {
             if(erdataCache){
                 erLoadData = erdataCache;
             }else{
-                log('开始获取二级数据');
+                xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata);
                 try {
@@ -382,21 +382,21 @@ function erji() {
                         try {
                             parse['预处理']();
                         } catch (e) {
-                            log('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                            xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                         }
                     }
                     if(parse['二级']){
                         eval("let 二级获取 = " + parse['二级'])
                         erLoadData = 二级获取(surl);
                     }else{
-                        log("rule不存在二级方法");
+                        xlog("rule不存在二级方法");
                     }
                 } catch (e) {
-                    log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                    xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
                 erLoadData.author = parse['作者'];
                 let t2 = new Date().getTime();
-                log('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
+                xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
             
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
@@ -427,10 +427,10 @@ function erji() {
                 线路s = erLoadData.line?erLoadData.line:["线路"];
                 列表s = erLoadData.line?erLoadData.list:[erLoadData.list];
                 if(线路s.length != 列表s.length){
-                    log(sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
+                    xlog(sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
                 }
             }catch(e){
-                log(sname+">线路或列表返回数据有误>"+e.message);
+                xlog(sname+">线路或列表返回数据有误>"+e.message);
             }
             if(erLoadData.listparse){//选集列表需要动态解析获取
                 let 线路选集 = erLoadData.listparse(lineid,线路s[lineid]) || [];
@@ -452,7 +452,7 @@ function erji() {
                         }
                     }
                 }catch(e){
-                    log(sname+'分页选集处理失败>'+e.message);
+                    xlog(sname+'分页选集处理失败>'+e.message);
                 }
             }
             
@@ -493,7 +493,7 @@ function erji() {
                 try{
                     列表 = checkAndReverseArray(列表);
                 }catch(e){
-                    //log('强制修正选集顺序失败>'+e.message)
+                    //xlog('强制修正选集顺序失败>'+e.message)
                 }
             }
             if (getMyVar(sname + 'sort') == '1') {
@@ -1006,7 +1006,7 @@ function erji() {
         }
     } catch (e) {
         toast('有异常，看日志');
-        log(sname + '>加载详情失败>' + e.message + ' 错误行#' + e.lineNumber);
+        xlog(sname + '>加载详情失败>' + e.message + ' 错误行#' + e.lineNumber);
     }
 
     if (isload) {
@@ -1109,7 +1109,7 @@ function sousuo() {
                         clearMyVar('SrcJu_搜索临时搜索分组');
                     }
                 }catch(e){
-                    //log(e.message);
+                    //xlog(e.message);
                 }
 
                 let judata = [];
@@ -1204,7 +1204,7 @@ function erjisousuo(name,group,datas,sstype) {
                 let lists = obj.search(obj.name, obj.type, obj.data);
                 return {result:lists, success:1};
             } catch (e) {
-                log(obj.data.name + '>搜索失败>' + e.message);
+                xlog(obj.data.name + '>搜索失败>' + e.message);
                 return {result:[], success:0};
             }
         }
@@ -1339,7 +1339,7 @@ function Version() {
                     }, nowtime, newVersion.SrcJu),
                     cancel: ''
                 })
-                log('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.hint);
+                xlog('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.hint);
             }
             putMyVar('SrcJu_Version', '-V' + newVersion.SrcJu);
         } catch (e) { }

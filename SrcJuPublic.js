@@ -53,7 +53,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
             it.ilk = '2';
         }
         it.public = (it.public||"{}").replace(/公共/g, 'parse');
-        it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace('searchMain(', '//searchMain(');
+        it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace('searchMain(', '//searchMain(').replace(/, stype: "听书"/g, '').replace(/sname: sourcename,/g, '');
         it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
         eval("let public = " + it.public);
         eval("let parse = " + it.parse);
@@ -307,7 +307,7 @@ function changeSource(sourcedata) {
         })
         GM.clearAll();
     } catch (e) {
-        log("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
+        xlog("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
     }
     try {
         refreshX5WebView('about:blank');
@@ -357,7 +357,7 @@ function selectSource(selectType) {
             hint: "源关键字",
             title: "ok",
             onChange(s, manage) {
-                //log("onChange:"+s);
+                //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                 let flist = getitems(tmpList).items;
@@ -366,7 +366,7 @@ function selectSource(selectType) {
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
                 //toast(s);
-                //log(manage.iconList);
+                //xlog(manage.iconList);
             },
             titleVisible: false
         }),
@@ -509,6 +509,6 @@ if(!getVar('SrcJu_config')){
             聚阅: getPublicItem('聚阅','')
         });
     }
-    log("当前依赖库>" + config.聚阅);
+    xlog("当前依赖库>" + config.聚阅);
     putVar('SrcJu_config', '1');
 }

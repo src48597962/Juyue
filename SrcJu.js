@@ -111,8 +111,7 @@ function yiji(testSource) {
                 return "toast://搜索方式设置为："+input;
             }),
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
-            col_type: 'icon_5',
-            extra: sousuoextra
+            col_type: 'icon_5'
         })
         d.push({
             title: "书架",

@@ -1289,17 +1289,17 @@ function manageSet(){
                 eval(request(getItem("依赖","").replace(/[^/]*$/,'') + 'SrcTmplVersion.js'))
                 let nowVersion = getItem('Version', getMyVar('SrcJu_Version', '0.1').replace('-V',''));
                 let nowtime = Date.now();
-                if (parseFloat(newVersion.SrcJuying) > parseFloat(nowVersion)) {
+                if (parseFloat(newVersion.SrcJu) > parseFloat(nowVersion)) {
                     confirm({
                         title: '发现新版本，是否更新？', 
-                        content: '本地V'+nowVersion+' => 云端V'+newVersion.SrcJuying, 
+                        content: '本地V'+nowVersion+' => 云端V'+newVersion.SrcJu, 
                         confirm: $.toString((nowtime,newVersion) => {
                             setItem('Version', newVersion);
                             setItem('VersionChecktime', nowtime+'time');
                             deleteCache();
                             putMyVar('SrcJu_Version', '-V'+newVersion);
                             refreshPage();
-                        },nowtime, newVersion.SrcJuying),
+                        },nowtime, newVersion.SrcJu),
                         cancel:''
                     })
                 }else{

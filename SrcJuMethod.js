@@ -265,19 +265,19 @@ function getSsData(name, jkdata, page) {
     }
     try {
         let parse = getObjCode(jkdata);
-        if (parse['预处理']) {
-            parse['预处理']();
-        }
-        let setResult = function (d){
-            return d;
-        }
         if(parse['搜索']){
+            if (parse['预处理']) {
+                parse['预处理']();
+            }
+            let setResult = function (d){
+                return d;
+            }
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据(name) || [];
         }
     } catch (e) {
         error = e.message;
-        log('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        log('执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
     return {
         vodlists: getData,

@@ -113,7 +113,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return str;
     }
-    function formatValue(value, indent = 2, currentIndent = 0) {
+    function formatValue(value, indent, currentIndent) {
         const space = ' '.repeat(indent);
         if (value === null) {
             return 'null';
@@ -150,7 +150,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
                 if (typeof value === 'function') {
                     valStr = deUnicode(value.toString());
                 } else {
-                    valStr = formatValue(value);
+                    valStr = formatValue(value, 0, 2);
                 }
                 str += ` "${key}": ${valStr},\n`;
             }

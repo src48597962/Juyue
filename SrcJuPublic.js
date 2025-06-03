@@ -88,8 +88,9 @@ if (Jucfg != "") {
 
 let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
-let homeSourceId = Juconfig[homeGroup + "_SourceId"] || "";
-let sourcename = (storage0.getMyVar('一级源接口信息')||{}).name || "";
+let homeSource = Juconfig[homeGroup + "_Source"] || {};
+let homeSourceId = homeSource.id || "";
+let sourcename = homeSource.name || "";
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -313,7 +314,7 @@ function changeSource(sourcedata) {
     } catch (e) { }
     let sourceGroup = sourcedata.group || sourcedata.type;
     Juconfig["homeGroup"] = sourceGroup;
-    Juconfig[sourceGroup+'_SourceId'] = sourcedata.id;
+    Juconfig[sourceGroup+'_Source'] = {id: sourcedata.id, name: sourcedata.name}
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
     return 'hiker://empty';

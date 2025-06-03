@@ -254,12 +254,14 @@ function yiji(testSource) {
                     url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return selectSource(input);
-                    }, it):$('#noLoading#').lazyRule((cfgfile,Juconfig,input) => {
+                    }, it):$('#noLoading#').lazyRule((input) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         Juconfig["homeGroup"] = input;
                         writeFile(cfgfile, JSON.stringify(Juconfig));
+                        clearMyVar('一级源接口信息');
                         refreshPage(false);
                         return 'toast://主页源分类分组已切换为：' + input;
-                    }, cfgfile, Juconfig ,it),
+                    }, it),
                     col_type: "scroll_button"
                 }
                 if(homeGroup==it){

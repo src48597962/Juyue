@@ -12,154 +12,12 @@ let gzip = $.require(codepath + "plugins/gzip.js");
 if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
-    function objectToJsCode(obj) {
-        let jsCode = `let objCode = {`;
-
-        for (let key in obj) {
-            if (typeof obj[key] === 'function') {
-                // 处理函数
-                jsCode += `  ${key}: ${obj[key].toString()},`;
-            } else {
-                // 处理普通属性
-                jsCode += `  ${key}: ${JSON.stringify(obj[key])},`;
-            }
-        }
-
-        // 移除最后一个逗号
-        jsCode = jsCode.replace(/,$/, '');
-        jsCode += '};\n';
-
-        return jsCode;
-    }
-
     function decodeUnicodeEscapes(str) {
         return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
             return String.fromCharCode(parseInt(p1, 16));
         });
     }
-/*
-    olddatalist.forEach(it=>{
-
-        if(it.parse&&it.erparse){
-            it.ilk = '3';
-        }else if(it.parse){
-            it.ilk = '1';
-        }else if(it.erparse){
-            it.ilk = '2';
-        }
-
-        it.public = (it.public||"").replace(/公共/g, 'objCode');
-        it.parse = (it.parse||"").replace(/公共/g, 'objCode');
-        it.erparse = (it.erparse||"").replace(/公共/g, 'objCode');
-        eval("let public = " + (it.public || '{}'));
-        eval("let parse = " + (it.parse || '{}'));
-        eval("let erparse = " + (it.erparse || '{}'));
-        if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
-            erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
-        }
-
-        let newjkjson = Object.assign({}, public, parse, erparse);
-        it.author = erparse['作者'];
-        it.group = it.type=="听书"?"听书":it.group;
-        it.type = it.type=="听书"?"音频":it.type;
-        it.group = it.type=="影视"?"影视":it.group;
-        it.type = it.type=="影视"?"视频":it.type;
-        it.id = Date.now().toString();
-        it.url = jkfilespath + it.id + '.txt';
-        delete it.updatetime;
-        delete it.public;
-        delete it.parse;
-        delete it.erparse;
-        //storage0.putMyVar('newjkjson', newjkjson);
-        //writeFile(newjkurl, $.stringify(newjkjson, null, 2));
-        writeFile(it.url, objectToJsCode(newjkjson));
-        java.lang.Thread.sleep(10);
-    })
-    */
-    /**
-     * 解码包含 &#十进制; 和 \u十六进制 的字符串
-     * @param {string} str 需要解码的字符串
-     * @returns {string} 解码后的字符串
-     */
-    function deUnicode(str) {
-        // 先处理 \u 开头的Unicode转义（4位或6位十六进制）
-        str = str.replace(/\\u([\da-fA-F]{4})|\\u\{([\da-fA-F]{1,6})\}/g, (match, hex4, hex6) => {
-            try {
-                const hex = hex4 || hex6;
-                const codePoint = parseInt(hex, 16);
-                // 检查是否是有效的Unicode码点
-                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
-                    return String.fromCodePoint(codePoint);
-                }
-            } catch (e) {
-                // 解析失败，保留原字符
-            }
-            return match;
-        });
-
-        // 再处理 &# 开头的HTML实体（十进制或十六进制）
-        str = str.replace(/&#(\d+);?|&#x([\da-fA-F]+);?/gi, (match, dec, hex) => {
-            try {
-                const codePoint = dec ? parseInt(dec, 10) : parseInt(hex, 16);
-                // 检查是否是有效的Unicode码点
-                if (codePoint >= 0 && codePoint <= 0x10FFFF) {
-                    return String.fromCodePoint(codePoint);
-                }
-            } catch (e) {
-                // 解析失败，保留原字符
-            }
-            return match;
-        });
-
-        return str;
-    }
-    function formatValue(value, indent, currentIndent) {
-        const space = ' '.repeat(indent);
-        if (value === null) {
-            return 'null';
-        }
-        if (Array.isArray(value)) {
-            if (value.length === 0) return '[]';
-            const items = value.map(item => ' '.repeat(indent) + formatValue(item, indent, currentIndent + indent)).join(',\n');
-            return '[\n' + items + '\n' + ' '.repeat(currentIndent) + ']';
-        }
-        if (typeof value === 'object') {
-            const keys = Object.keys(value);
-            if (keys.length === 0) return '{}';
-            const properties = keys.map(key => {
-                const valStr = formatValue(value[key], indent, currentIndent + indent);
-                return ' '.repeat(indent) + `"${key}": ${valStr}`;
-            }).join(',\n');
-            return '{\n' + properties + '\n' + ' '.repeat(currentIndent) + '}';
-        }
-        if (typeof value === 'function') {
-            return value.toString();
-        }
-        if (typeof value === 'string') {
-            return JSON.stringify(value);
-        }
-        return String(value);
-    }
-
-    function serialize(obj) {
-        let str = 'const mergedObj = {\n';
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                let value = obj[key];
-                let valStr;
-                if (typeof value === 'function') {
-                    valStr = deUnicode(value.toString());
-                } else {
-                    valStr = formatValue(value, 0, 2);
-                }
-                str += ` "${key}": ${valStr},\n`;
-            }
-        }
-        str = str.replace(/,\n$/, '\n');
-        str += '};';
-        return str;
-    }
-    /*
+    
     function serialize(obj) {
         let str = 'const mergedObj = {\n';
 
@@ -170,7 +28,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
                 if (typeof value === 'function') {
                     // 函数直接保留原样
-                    valStr = deUnicode(value.toString());
+                    valStr = decodeUnicodeEscapes(value.toString());
                 } else {
                     // 其他值用 JSON.stringify 美化
                     valStr = JSON.stringify(value, null, 2);
@@ -185,7 +43,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
 
         return str;
     }
-    */
+ 
     olddatalist.splice(0,1).forEach(it=>{
         if(it.parse&&it.erparse){
             it.ilk = '3';
@@ -194,9 +52,12 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         }else if(it.erparse){
             it.ilk = '2';
         }
-        let public = eval('(' + (it.public || '{}') + ')');
-        let parse = eval('(' + (it.parse || '{}') + ')');
-        let erparse = eval('(' + (it.erparse || '{}') + ')');
+        it.public = (it.public||"{}").replace(/公共/g, 'objCode');
+        it.parse = (it.parse||"{}").replace(/公共/g, 'objCode');
+        it.erparse = (it.erparse||"{}").replace(/公共/g, 'objCode');
+        eval("let public = " + it.public);
+        eval("let parse = " + it.parse);
+        eval("let erparse = " + it.erparse);
         let newjkjson = Object.assign({}, public, parse, erparse);
         if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
             erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
@@ -215,10 +76,8 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         delete it.erparse;
         writeFile(it.url, serialize(newjkjson));
         java.lang.Thread.sleep(10);
-        
     })
     //writeFile(jkfile, JSON.stringify(olddatalist));
-    clearMyVar('newjkjson');
 }
 
 let Juconfig = {};

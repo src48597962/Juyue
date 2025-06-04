@@ -55,6 +55,9 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.public = (it.public||"{}").replace(/公共/g, 'parse');
         it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace(/searchMain:/g,'searchAAMain:').replace(/\.searchMain/g,'.searchAAMain').replace(/searchMain.*?\);/g,'').replace(/\.searchAAMain/g,'.searchMain').replace(/searchAAMain:/g,'searchMain:').replace(/, stype: "听书"/g, '').replace(/sname: sourcename,/g, '');
         it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
+        it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
+        it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
+        it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
         eval("let public = " + it.public);
         eval("let parse = " + it.parse);
         eval("let erparse = " + it.erparse);

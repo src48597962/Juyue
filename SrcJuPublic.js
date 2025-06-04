@@ -387,7 +387,7 @@ function selectSource(selectType) {
                     }
                 });
             },
-            titleVisible: false
+            titleVisible: true
         }),
         longClick(s, i) {
             /*

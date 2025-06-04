@@ -1158,7 +1158,7 @@ function search(name, sstype, jkdata) {
             ssdata.push(it);
         }
     })
-
+    xlog(jkdata.name + '>' + ssdata.length);
     return ssdata;
 }
 

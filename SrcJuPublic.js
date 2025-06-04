@@ -58,13 +58,13 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
         it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
         it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'sourcename');
-        if(it.parse.includes('标识')){
+        if(it.name.includes('路漫漫')){
             xlog(it.parse);
         }
-        if(it.erparse.includes('标识')){
+        if(it.name.includes('路漫漫')){
             xlog(it.erparse);
         }
-        if(it.public.includes('标识')){
+        if(it.name.includes('路漫漫')){
             xlog(it.public);
         }
         eval("let public = " + it.public);

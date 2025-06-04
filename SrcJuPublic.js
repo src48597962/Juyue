@@ -380,8 +380,7 @@ function selectSource(selectType) {
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");
                         
-                        sourceList = getGroupLists(sourceList, s);
-                        tmpList = sourceList;
+                        tmpList = getGroupLists(sourceList, s);
                         let flist = getitems(tmpList).items;
                         manage.change(flist);
                     }

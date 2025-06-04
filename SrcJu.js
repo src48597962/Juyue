@@ -1,7 +1,7 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 //空壳小程序，接口分为主页源和搜索源
 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-xlog('111');
+
 //一级
 function yiji(testSource) {
     if(MY_RULE.title=="聚阅✓"){
@@ -283,7 +283,7 @@ function yiji(testSource) {
             })
         }
     }
-    
+    xlog('111');
     //加载主页内容
     if(jkdata.name){
         try{
@@ -303,6 +303,7 @@ function yiji(testSource) {
             }else{
                 xlog('开始获取一级数据');
                 let t1 = new Date().getTime();
+                xlog('111');
                 getYiData('主页', jkdata, d);
                 let t2 = new Date().getTime();
                 xlog('获取一级数据完成，耗时：' + (t2-t1) + 'ms');

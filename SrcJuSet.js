@@ -142,7 +142,7 @@ function SRCSet() {
         }
     });
 
-    let groupNames = getJiekouGroups(datalist);
+    let groupNames = getJkGroups(datalist);
     groupNames.unshift("全部");
     let color = "#6dc9ff";
     groupNames.forEach(it =>{

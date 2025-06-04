@@ -376,6 +376,7 @@ function erji() {
             if(erdataCache){
                 erLoadData = erdataCache;
             }else{
+                storage0.putMyVar('二级源接口信息', jkdata);
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata);

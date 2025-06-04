@@ -19,7 +19,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
     }
     
     function objconvertjs(obj) {
-        let str = 'const parse = {\n';
+        let str = 'let parse = {\n';
 
         for (let key in obj) {
             if (obj.hasOwnProperty(key)) {

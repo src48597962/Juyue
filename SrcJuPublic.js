@@ -356,7 +356,7 @@ function selectSource(selectType) {
         noAutoDismiss: false,
         position: index,
         toPosition: index,
-        extraInputBox: new hikerPop.ResExtraInputBox({
+        extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
             hint: "源关键字筛选，右边切换分组",
             title: selectType||"全部",
             onChange(s, manage) {
@@ -388,7 +388,7 @@ function selectSource(selectType) {
                 });
             },
             titleVisible: true
-        }),
+        })),
         longClick(s, i) {
             /*
             showSelectOptions({

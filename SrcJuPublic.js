@@ -139,7 +139,7 @@ function getGroupLists(datas, k) {
     return datas;
 }
 //获取接口分组名arry
-function getJiekouGroups(datas) {
+function getJkGroups(datas) {
     let groupNams = [];
     datas.forEach(it => {
         let group = it.group||it.type;
@@ -155,7 +155,7 @@ function getTypeNames(s) {
     if (s == "搜索页") {
         snames = ["漫画", "小说", "听书", "影视", "聚合"];
     } else if (s == "主页") {
-        snames = getJiekouGroups(getDatas('yi', 1));
+        snames = getJkGroups(getDatas('yi', 1));
     } else {
         snames = runTypes;
     }
@@ -352,12 +352,12 @@ function selectSource(selectType) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源>" + (hometitle||"无"),
+        title: "当前源:" + (hometitle||"无") + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,
         extraInputBox: new hikerPop.ResExtraInputBox({
-            hint: "源关键字",
+            hint: "源关键字筛选，右边切换分组",
             title: "ok",
             onChange(s, manage) {
                 //xlog("onChange:"+s);
@@ -368,8 +368,35 @@ function selectSource(selectType) {
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
-                //toast(s);
-                //xlog(manage.iconList);
+                let groupnames = getJkGroups(sourceList);
+                let tags = getJkTags(sourceAllList);
+                let selects = ['全部'].concat(groupnames).concat(tags);
+                //inputBox.setHint("提示");
+                hikerPop.selectCenter({
+                    options: selects, 
+                    columns: 3, 
+                    title: "切换源分组/TAG快速筛选", 
+                    //position: groupnames.indexOf(sourceName),
+                    click(s) {
+                        if(s.startsWith('[')){
+                            inputBox.setDefaultValue(s);
+                        }else{
+                            inputBox.setTitle(s);
+                            inputBox.setDefaultValue("");
+                            Juconfig["sourceListGroup"] = s;
+                            writeFile(cfgfile, JSON.stringify(Juconfig));
+                            
+                            sourceList = getGroupLists(sourceAllList, s);
+                            tmpList = sourceList;
+                            names = getnames(tmpList).names;
+                            manage.list.length = 0;
+                            names.forEach(x => {
+                                manage.list.push(x);
+                            });
+                            manage.change();
+                        }
+                    }
+                });
             },
             titleVisible: false
         }),

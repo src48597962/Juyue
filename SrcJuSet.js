@@ -445,9 +445,10 @@ function jiekouapi(data, look) {
                 return "toast://文件不存在，无法查看";
             }
         }):$.toString(() => {
-            let tmpl = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/objCodeTmpl.js');
-            writeFile('hiker://files/_cache/Juyue/objCodeTmpl.txt', tmpl);
-            return `editFile://hiker://files/_cache/Juyue/objCodeTmpl.txt@js=putMyVar("apiruleurl",input);refreshPage(false);`;
+            let tmpl = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js');
+            let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
+            writeFile(codeTmpl, tmpl);
+            return `editFile://` + codeTmpl + `@js=putMyVar("apiruleurl",`+codeTmpl+`);refreshPage(false);`;
         }),
         extra: {
             titleVisible: true,

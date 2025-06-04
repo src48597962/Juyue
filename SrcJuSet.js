@@ -565,6 +565,55 @@ function jiekouapi(data, look) {
             }, (data?data.id:"")||"")
         });
     }
+    d.push({
+        title:'测试',
+        col_type:'text_3',
+        url: $('#noLoading#').lazyRule((data)=>{
+            if(!data){
+                if (!getMyVar('apiname')) {
+                    return "toast://名称不能为空";
+                }
+                if (!getMyVar('apitype')) {
+                    return "toast://类型没有选择";
+                }
+                if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
+                    return "toast://规则文件不存在";
+                }
+
+                let name = getMyVar('apiname');
+                let author = getMyVar('apiauthor');
+                let ruleurl = getMyVar('apiruleurl');
+                let img = getMyVar('apiimg');
+                let type = getMyVar('apitype');
+                let group = getMyVar('apigroup');
+                let ilk = getMyVar('apiilk');
+                
+                let newid = Date.now().toString();
+                let newapi = {
+                    id: newid,
+                    name: name,
+                    type: type,
+                    url: ruleurl,
+                    ilk: ilk
+                }
+                if(author){
+                    newapi['author'] = author;
+                }
+                if(group){
+                    newapi['group'] = group;
+                }
+                if(img){
+                    newapi['img'] = img;
+                }
+                data = newapi;
+            }
+            return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                setPageTitle(data.name+"-接口测试");
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                yiji(data);
+            }, data);
+        }, data)
+    }); 
     setResult(d);
 }
 //接口保存

@@ -10,27 +10,24 @@ function readData(fileid){
     }
 }
 let 一级 = function(fileid) {
-    let info = storage0.getMyVar('一级源接口信息') || {};
-    let 标识 = info.type + "_" + info.name;
-    fileid = fileid || 标识;
-    return readData(fileid, 1)
+    let jkdata = storage0.getMyVar('一级源接口信息') || {};
+    fileid = fileid || jkdata.id;
+    return readData(fileid)
 }
 let 二级 = function(fileid) {
-    let info = storage0.getMyVar('二级源接口信息') || {};
-    let 标识 = info.type + "_" + info.name;
-    fileid = fileid || 标识;
-    return readData(fileid, 2)
+    let jkdata = storage0.getMyVar('二级源接口信息') || {};
+    fileid = fileid || jkdata.id;
+    return readData(fileid)
 }
-let 公共 = function(fileid) {
-    let info = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
-    let 标识 = info.type + "_" + info.name;
-    fileid = fileid || 标识;
-    return readData(fileid, 3)
+let parse = function(fileid) {
+    let jkdata = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
+    fileid = fileid || jkdata.id;
+    return readData(fileid)
 }
-let 属性 = function(fileid, parse, attribut) {
+let 属性 = function(fileid, parse, key) {
     let 接口;
     eval("接口 = " + parse);
-    return 接口(fileid)[attribut];
+    return 接口(fileid)[key];
 };
 
 function 图片解密(key, iv, kiType, mode) {
@@ -90,19 +87,18 @@ function 图片解密2(key, iv, kiType, mode, base64Dec) {
 let exports = {
     "一级": 一级,
     "二级": 二级,
-    "公共": 公共,
     "属性": 属性,
+    "parse": parse,
     "imageDecrypt": 图片解密,
     "imgDec": 图片解密2
 }
 try{
     let exportskeys = Object.keys(exports);
-    let getexp = 公共() || {};
+    let getexp = parse() || {};
     let arr = getexp.exports || [];
     arr.forEach(it => {
         if(!exportskeys.includes(it.key)){
-            let parse = eval('('+it.type+'())');
-            exports[it.key] = parse[it.key];
+            exports[it.key] = getexp[it.key];
         }
     })
 }catch(e){}

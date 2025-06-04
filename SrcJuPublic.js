@@ -358,7 +358,7 @@ function selectSource(selectType) {
         toPosition: index,
         extraInputBox: new hikerPop.ResExtraInputBox({
             hint: "源关键字筛选，右边切换分组",
-            title: "ok",
+            title: selectType||"全部",
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
@@ -368,33 +368,22 @@ function selectSource(selectType) {
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
-                let groupnames = getJkGroups(sourceList);
-                let tags = getJkTags(sourceAllList);
-                let selects = ['全部'].concat(groupnames).concat(tags);
+                let groupNames = getJkGroups(sourceList);
+                let selects = ['全部'].concat(groupNames);
                 //inputBox.setHint("提示");
                 hikerPop.selectCenter({
                     options: selects, 
                     columns: 3, 
-                    title: "切换源分组/TAG快速筛选", 
-                    //position: groupnames.indexOf(sourceName),
+                    title: "切换源分组", 
+                    //position: groupNames.indexOf(sourceName),
                     click(s) {
-                        if(s.startsWith('[')){
-                            inputBox.setDefaultValue(s);
-                        }else{
-                            inputBox.setTitle(s);
-                            inputBox.setDefaultValue("");
-                            Juconfig["sourceListGroup"] = s;
-                            writeFile(cfgfile, JSON.stringify(Juconfig));
-                            
-                            sourceList = getGroupLists(sourceAllList, s);
-                            tmpList = sourceList;
-                            names = getnames(tmpList).names;
-                            manage.list.length = 0;
-                            names.forEach(x => {
-                                manage.list.push(x);
-                            });
-                            manage.change();
-                        }
+                        inputBox.setTitle(s);
+                        inputBox.setDefaultValue("");
+                        
+                        sourceList = getGroupLists(sourceList, s);
+                        tmpList = sourceList;
+                        let flist = getitems(tmpList).items;
+                        manage.change(flist);
                     }
                 });
             },

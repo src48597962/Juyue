@@ -447,7 +447,7 @@ function jiekouapi(data, look) {
         }):$.toString(() => {
             let tmpl = fetch(config.聚阅.replace(/[^/]*$/,'') + 'plugins/objCodeTmpl.js');
             writeFile('hiker://files/_cache/Juyue/objCodeTmpl.txt', tmpl);
-            return `editFile://hiker://files/_cache/Juyue/objCodeTmpl.txt@js=putMyVar("apiruleurl",input);`;
+            return `editFile://hiker://files/_cache/Juyue/objCodeTmpl.txt@js=putMyVar("apiruleurl",input);refreshPage(false);`;
         }),
         extra: {
             titleVisible: true,

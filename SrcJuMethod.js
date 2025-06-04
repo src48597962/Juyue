@@ -13,10 +13,12 @@ if (getItem('接口日志打印') != "1") {
 // 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
     addListener('onRefresh', $.toString((datatype) => {
-        clearMyVar(datatype+'动态加载loading')
+        clearMyVar(datatype+'动态加载loading');
     },datatype));
     addListener('onClose', $.toString((datatype) => {
-        clearMyVar(datatype+'动态加载loading')
+        try{
+            clearMyVar(datatype+'动态加载loading');
+        }catch(e){}
     },datatype));
 
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');

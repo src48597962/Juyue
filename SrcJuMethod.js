@@ -239,7 +239,7 @@ function getYiData(datatype, jkdata, dd) {
     }
     setResult(d);
     if(datatype=="主页"){
-        if(!parse['搜索'] && parse['search']){
+        if(!parse['搜索']){
             deleteItem('homesousuoid');
         }
     }

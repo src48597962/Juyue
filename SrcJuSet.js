@@ -612,7 +612,7 @@ function jiekousave(urls, mode) {
                     writeFile(newurl, fetch(it.url));
                     it.url = newurl;
                 }else{
-                    log(it.name + '>接口规则文件为空');
+                    xlog(it.name + '>接口规则文件为空');
                     delete it.url;
                 }
             }else if(it.extstr){//带数据内容的保存到data目录
@@ -636,7 +636,7 @@ function jiekousave(urls, mode) {
         //setJkSort(datalist, {fail: 0});
         if(num>0){writeFile(jkfile, JSON.stringify(datalist));}
     } catch (e) {
-        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
+        xlog("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
         return -1;
     }
     return num;
@@ -662,12 +662,12 @@ function JYshare(input,data) {
         if(it.url.startsWith(jkfilespath)){
             it.extstr = fetch(it.url);
             if(!it.extstr){
-                log(it.name+">未获取到数据文件，剔除分享");
+                xlog(it.name+">未获取到数据文件，剔除分享");
                 sharelist.splice(i,1);
                 i = i - 1;
             }
         }else if(!it.url.startsWith(jkfilespath) && (it.url.startsWith("hiker")||it.url.startsWith("file"))){
-            log(it.name+">私有路径的数据文件，剔除分享");
+            xlog(it.name+">私有路径的数据文件，剔除分享");
             sharelist.splice(i,1);
             i = i - 1;
         }
@@ -699,12 +699,12 @@ function JYshare(input,data) {
         let pasteurl = sharePaste(sharetxt, input);
         hideLoading();
         if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
-            log('剪贴板地址>'+pasteurl);
+            xlog('剪贴板地址>'+pasteurl);
             let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + '('+input+')';
             copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             return "toast://聚影分享口令已生成";
         }else{
-            log('分享失败>'+pasteurl);
+            xlog('分享失败>'+pasteurl);
             return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
         }
     }
@@ -804,7 +804,7 @@ function importConfirm(jsfile) {
                     options: fruit, 
                     checkedIndexs: Array.from(fruit.keys()), 
                     onChoice(i, isChecked) {
-                        //log(i + ":" + isChecked);
+                        //xlog(i + ":" + isChecked);
                     }, 
                     rightTitle: "确认导入", 
                     rightClick(options, checked) {
@@ -835,7 +835,7 @@ function importConfirm(jsfile) {
                                 }
                             })
                             writeFile(cfgfile, JSON.stringify(Juconfig));
-	                            log("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
+	                            xlog("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
                             back(false);
                             return "toast://更新同步文件资源完成；";
                         })
@@ -1123,12 +1123,12 @@ function manageSet(){
     */
     d.push({
         title: '规则日志打印',
-        img: getItem('规则日志打印')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        img: getItem('规则日志打印','1')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
         url: $("#noLoading#").lazyRule(() => {
-            if(getItem('规则日志打印')=="1"){
+            if(getItem('规则日志打印')=="0"){
                 clearItem('规则日志打印');
             }else{
-                setItem('规则日志打印','1');
+                setItem('规则日志打印','0');
             }
             refreshPage();
             return 'hiker://empty';

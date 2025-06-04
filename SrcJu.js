@@ -28,8 +28,8 @@ function yiji(testSource) {
         putMyVar('SrcJu_RuleVersionCheck', '1');
     }
 
-    let jkdata = storage0.getMyVar('一级源接口信息') || {};
-    if(!jkdata.name || !fetch(jkdata.url)){
+    let jkdata = testSource || storage0.getMyVar('一级源接口信息') || {};
+    if((!jkdata.name || !fetch(jkdata.url)) && !testSource){
         clearMyVar('一级源接口信息');
         let yxdatalist = getDatas('yi', 1);
         let index = yxdatalist.findIndex(d => d.id === homeSourceId);
@@ -234,7 +234,7 @@ function yiji(testSource) {
             }
         });
 
-        if(getItem('显示快速分组')=="1"){
+        if(getItem('显示快速分组')=="1" && !testSource){
             let typemenubtn = getTypeNames("主页");
             let Color = '#3399cc';
             typemenubtn.forEach((it) =>{

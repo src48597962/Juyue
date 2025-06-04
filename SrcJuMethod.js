@@ -293,6 +293,7 @@ function rulePage(datatype, ispage) {
 //获取接口对象规则内容
 function getObjCode(jkdata, key) {
     let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
+    eval(jkstr);
     parse['页码'] = parse['页码'] || {};
     if(key){
         return parse[key];

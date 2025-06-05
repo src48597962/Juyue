@@ -82,7 +82,7 @@ function yiji(testSource) {
             }
         })
         d.push({
-            title: "分类",
+            title: "频道",
             url: $("#noLoading#").lazyRule(()=>{
                 let sourcemenu = storage0.getMyVar("sourcemenu") || [];
                 if(sourcemenu.length>0){
@@ -133,7 +133,7 @@ function yiji(testSource) {
             col_type: 'icon_5'
         })
         d.push({
-            title: "书架",
+            title: "收藏",
             url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
                 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
                 bookCase();

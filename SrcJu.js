@@ -338,14 +338,15 @@ function erji() {
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
     let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据
-    let name = erjiextra.name.replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源关键字
+    let name = (erjiextra.name||"").replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源关键字
     let jkdata = erjiextra.data;//接口数据
-    let surl = erjiextra.url;//二级请求url
     let sname = jkdata.name;//二级源名称
     let stype = jkdata.type;
     let sgroup = jkdata.group || jkdata.type;//二级源所在分组
     let sid = jkdata.id;//二级源id
-    let smark = getMark(surl, sid);//足迹记录
+    MY_URL = erjiextra.url;//二级请求url
+
+    let smark = getMark(MY_URL, sid);//足迹记录
     let lineid = smark.lineid || 0;//线路索引id
     let pageid = smark.pageid || 0;//分页索引id
     
@@ -356,15 +357,14 @@ function erji() {
     let parse = {};
     
     try {
-        if (sid&&surl) {
-            MY_URL = surl;
+        if (sid&&MY_URL) {
             let erdataCache;
             if(!getMyVar("SrcJu_调试模式")){
                 let cacheData = fetch(erCacheFile);
                 if (cacheData != "") {
                     try{
                         eval("let cacheJson=" + cacheData + ";");
-                        if(cacheJson.sid==sid && cacheJson.surl==surl){
+                        if(cacheJson.sid==sid && cacheJson.url==MY_URL){
                             erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快
                         }
                     }catch(e){ }
@@ -389,14 +389,14 @@ function erji() {
                     }
                     if(parse['二级']){
                         eval("let 二级获取 = " + parse['二级'])
-                        erLoadData = 二级获取(surl);
+                        erLoadData = 二级获取(MY_URL);
                     }else{
                         xlog("rule不存在二级方法");
                     }
                 } catch (e) {
                     xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
-                erLoadData.author = parse['作者'];
+                erLoadData.author = jkdata.author || parse['作者'];
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
@@ -415,13 +415,13 @@ function erji() {
                 title: erTempData.detail1 || "",
                 desc: erTempData.detail2 || "",
                 pic_url: erTempData.img,
-                url: erLoadData.detailurl || (/^http/.test(surl)?surl+'#noRecordHistory##noHistory#':erTempData.img),
+                url: erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
                 col_type: 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
 
-            lineid = parseInt(getMyVar("SrcJu_"+surl+"_line", lineid.toString()));
-            pageid = parseInt(getMyVar("SrcJu_"+surl+"_page", pageid.toString()));
+            lineid = parseInt(getMyVar("SrcJu_"+MY_URL+"_line", lineid.toString()));
+            pageid = parseInt(getMyVar("SrcJu_"+MY_URL+"_page", pageid.toString()));
 
             let 线路s = ["线路"];
             let 列表s = [[]];
@@ -673,10 +673,10 @@ function erji() {
                 let moreitems = erLoadData.moreitems;
                 if(moreitems.length>0){
                     moreitems.forEach(item => {
-                        if(item.url!=surl){
+                        if(item.url!=MY_URL){
                             item = toerji(item, jkdata);
                             item.extra = item.extra || {};
-                            item.extra['back'] = 1;
+                            //item.extra['back'] = 1;
                             item.extra['cls'] = "Juloadlist extendlist";
                             d.push(item);
                             addmoreitems = 1;
@@ -835,7 +835,7 @@ function erji() {
                                 refreshPage(false);
                             }
                             return 'hiker://empty'
-                        }, "SrcJu_"+surl+"_line", lineid, i),
+                        }, "SrcJu_"+MY_URL+"_line", lineid, i),
                         col_type: line_col_type,
                         extra: {
                             cls: "Juloadlist"
@@ -856,7 +856,7 @@ function erji() {
                                 refreshPage(false);
                             }
                             return 'hiker://empty'
-                        }, "SrcJu_"+surl+"_page", pageid, i)
+                        }, "SrcJu_"+MY_URL+"_page", pageid, i)
                     )
                     分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+it.title:it.title)
                 })
@@ -923,7 +923,7 @@ function erji() {
                                     refreshPage(false);
                                 }
                                 return 'hiker://empty'
-                            }, "SrcJu_"+surl+"_page", pageid, i)
+                            }, "SrcJu_"+MY_URL+"_page", pageid, i)
                         )
                         let start = i * 每页数量 + 1;
                         let end = i * 每页数量 + it.length;
@@ -1023,10 +1023,10 @@ function erji() {
                     }
                 })
                 extenditems.forEach(item => {
-                    if(item.url!=surl){
+                    if(item.url!=MY_URL){
                         item = toerji(item, jkdata);
                         item.extra = item.extra || {};
-                        item.extra['back'] = 1;
+                        //item.extra['back'] = 1;
                         item.extra['cls'] = "Juloadlist extendlist";
                         d.push(item)
                     }
@@ -1052,34 +1052,35 @@ function erji() {
         //二级详情简介临时信息
         storage0.putMyVar('二级详情临时对象',erTempData);
         //二级源浏览记录保存
-        let erjiMarkdata = { sid: jkdata.id, surl: surl, lineid: lineid, pageid: pageid };
+        let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
         setMark(erjiMarkdata);
         //当前二级数据保存到缓存文件，避免二级重复请深圳市
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
-            erLoadData.surl = surl;
-            erLoadData.pageid = pageid;
+            erLoadData.url = MY_URL;
+            erLoadData.lineid = lineid;//好像没用到，先放着吧
+            erLoadData.pageid = pageid;//好像没用到，先放着吧
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
-        /*
         //收藏更新最新章节
+        /*
         if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((sname,surl,最新,parse,参数) => {
-                let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(surl)');
+            setLastChapterRule('js:' + $.toString((sname,url,最新,parse,参数) => {
+                let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
                 let 标识 = 参数.标识;
                 try{
-                    let zx = 最新2(surl,parse) || "";
+                    let zx = 最新2(url,parse) || "";
                     setResult(sname + " | " + (zx||""));
                 }catch(e){
-                    最新2(surl,parse);
+                    最新2(url,parse);
                 }
-            }, sname, surl, parse['最新'], parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
+            }, sname, MY_URL, parse['最新'], parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
         }
         */
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
-            if ((surl && oldMY_PARAMS.surl!=surl) || !oldMY_PARAMS.data.extstr) {
+            if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
                 erjiextra.data.extstr = fetch(erjiextra.data.url);
                 setPageParams(erjiextra);
             }
@@ -1283,7 +1284,7 @@ function erjisousuo(name,group,datas,sstype) {
 }
 
 //取本地足迹记录
-function getMark(surl, sid) {
+function getMark(url, sid) {
     let marklist = [];
     let markfile = rulepath + "mark.json";
     let markdata = fetch(markfile);
@@ -1291,7 +1292,7 @@ function getMark(surl, sid) {
         eval("marklist=" + markdata + ";");
     }
     let mark = marklist.filter(it => {
-        return it.surl==surl && it.sid==sid;
+        return it.url==url && it.sid==sid;
     })
     if (mark.length > 0) {
         return mark[0];
@@ -1308,7 +1309,7 @@ function setMark(data) {
         eval("marklist=" + markdata + ";");
     }
     let mark = marklist.filter(it => {
-        return it.surl==data.surl && it.sid==data.sid;
+        return it.url==data.url && it.sid==data.sid;
     })
     if (mark.length > 0) {
         let index = marklist.indexOf(mark[0]);

@@ -203,7 +203,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         
         try {
-            let sourcename = jkdata.name;
+            eval("let sourcename = " + jkdata.name);
             let getData = [];
             if (parse['预处理']) {
                 parse['预处理']();
@@ -212,7 +212,6 @@ function getYiData(datatype, jkdata, dd) {
                 return d;
             }
             eval("let 数据 = " + 执行str);
-            log(sourcename);
             getData = 数据() || [];
             if (getData.length == 0 && page == 1) {
                 d.push({
@@ -233,7 +232,7 @@ function getYiData(datatype, jkdata, dd) {
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });
-            xlog(jkdata.name+'>接口获取数据异常>' + e.message + ' 错误行#' + e.lineNumber);
+            xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
     } catch (e) {

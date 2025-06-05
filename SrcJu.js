@@ -1065,10 +1065,10 @@ function erji() {
         //收藏更新最新章节
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
+                let parse = $.require("jiekou?rule=聚阅").parse();
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
                 let 标识 = jkdata.id;
-                let parse = $.require("jiekou?rule=聚阅").parse();
                 try{
                     let zx = 最新2(url,parse) || "";
                     setResult(jkdata.name + " | " + (zx||""));

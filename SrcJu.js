@@ -1063,21 +1063,20 @@ function erji() {
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节
-        /*
         if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((sname,url,最新,parse,参数) => {
-                let 最新str = 最新.toString().replace('setResult','return ').replace('getResCode()','request(url)');
+            setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
+                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
-                let 标识 = 参数.标识;
+                let 标识 = jkdata.id;
+                let parse = $.require("jiekou?rule=聚阅").parse();
                 try{
                     let zx = 最新2(url,parse) || "";
-                    setResult(sname + " | " + (zx||""));
+                    setResult(jkdata.name + " | " + (zx||""));
                 }catch(e){
                     最新2(url,parse);
                 }
-            }, sname, MY_URL, parse['最新'], parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识}))
+            }, MY_URL, jkdata, {}))
         }
-        */
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {

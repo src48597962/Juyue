@@ -25,7 +25,6 @@ function getYiData(datatype, jkdata, dd) {
     let parse = getObjCode(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
-    let sourcename = jkdata.name;
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -204,6 +203,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         
         try {
+            let sourcename = jkdata.name;
             let getData = [];
             if (parse['预处理']) {
                 parse['预处理']();

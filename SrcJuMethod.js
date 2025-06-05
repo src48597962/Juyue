@@ -203,16 +203,20 @@ function getYiData(datatype, jkdata, dd) {
         }
         
         try {
-            eval("let sourcename = " + jkdata.name.toString());
+            //eval("let sourcename = " + jkdata.name.toString());
             let getData = [];
             if (parse['预处理']) {
                 parse['预处理']();
             }
+            xlog("111");
             let setResult = function (d){
                 return d;
             }
+            xlog("222");
             eval("let 数据 = " + 执行str);
+            xlog("333");
             getData = 数据() || [];
+            xlog("444");
             if (getData.length == 0 && page == 1) {
                 d.push({
                     title: "未获取到数据",

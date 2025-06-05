@@ -208,15 +208,14 @@ function getYiData(datatype, jkdata, dd) {
             if (parse['预处理']) {
                 parse['预处理']();
             }
-            xlog("111");
             let setResult = function (d){
                 return d;
             }
-            xlog("222");
+            let sourcename = "11111";
+            var aaa = "22222";
             eval("let 数据 = " + 执行str);
-            xlog("333");
             getData = 数据() || [];
-            xlog("444");
+
             if (getData.length == 0 && page == 1) {
                 d.push({
                     title: "未获取到数据",

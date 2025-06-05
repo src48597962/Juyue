@@ -75,7 +75,7 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();
             }),
-            pic_url: "http://123.56.105.145/tubiao/more/213.png",
+            pic_url: "http://123.56.105.145/tubiao/more/157.png",
             col_type: "icon_5",
             extra: {
                 longClick: longClick
@@ -133,7 +133,7 @@ function yiji(testSource) {
             col_type: 'icon_5'
         })
         d.push({
-            title: "收藏",
+            title: "拾光",
             url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
                 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
                 bookCase();

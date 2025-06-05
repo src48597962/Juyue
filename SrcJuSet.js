@@ -434,7 +434,7 @@ function jiekouapi(data, look) {
     });
     
     d.push({
-        title: data?'查看':'新建',
+        title: data||getMyVar('apiruleurl')?'查看':'新建',
         col_type: 'input',
         desc: "接口规则文件，不能为空",
         url: data?$.toString(() => {

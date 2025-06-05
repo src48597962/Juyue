@@ -203,7 +203,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         
         try {
-            eval("let sourcename = " + jkdata.name);
+            eval("let sourcename = " + jkdata.name.toString());
             let getData = [];
             if (parse['预处理']) {
                 parse['预处理']();

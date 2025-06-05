@@ -95,7 +95,12 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            if(sourcemenu.length>0){
+            if(sourcemenu.length==1){
+                updateItem("sourcemenu", {
+                    title: sourcemenu[0].title,
+                    url: sourcemenu[0].url
+                })
+            }else if(sourcemenu.length>1){
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }

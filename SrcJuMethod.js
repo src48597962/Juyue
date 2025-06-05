@@ -212,6 +212,7 @@ function getYiData(datatype, jkdata, dd) {
                 return d;
             }
             eval("let 数据 = " + 执行str);
+            log(sourcename);
             getData = 数据() || [];
             if (getData.length == 0 && page == 1) {
                 d.push({

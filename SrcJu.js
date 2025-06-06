@@ -143,18 +143,12 @@ function yiji(testSource) {
         })
         d.push({
             title: "管理",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","搜索:"+getItem('接口搜索方式','主页界面'),"程序管理中心"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","程序管理中心"],1).select(()=>{
                 if(MY_INDEX==0){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                         SRCSet();
-                    })
-                }else if(MY_INDEX==3){
-                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                        setPageTitle('管理中心');
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                        manageSet();
                     })
                 }else if(MY_INDEX==1){
                     return $("#noLoading#").lazyRule(() => {
@@ -167,14 +161,10 @@ function yiji(testSource) {
                         return 'hiker://empty';
                     })
                 }else if(MY_INDEX==2){
-                    let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口"]:["主页界面","页面聚合"]).map(v=>{
-                        return v==getItem("接口搜索方式","主页界面")?`‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`:v+'  ';
-                    });
-                    return $(searchModeS,1).select(()=>{
-                        input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
-                        setItem("接口搜索方式",input);
-                        refreshPage();
-                        return "toast://搜索方式设置为："+input;
+                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                        setPageTitle('管理中心');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        manageSet();
                     })
                 }
             }),

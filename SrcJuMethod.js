@@ -211,14 +211,14 @@ function getYiData(datatype, jkdata, dd) {
             let sourcename = jkdata.name;
             let getData = [];
             if (parse['预处理']) {
-                parse['预处理']();
+                parse['预处理'].call(parse);
             }
             let setResult = function (d){
                 return d;
             }
             
             eval("let 数据 = " + 执行str);
-            getData = 数据() || [];
+            getData = 数据.call(parse) || [];
 
             if (getData.length == 0 && page == 1) {
                 d.push({

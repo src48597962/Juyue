@@ -25,6 +25,7 @@ function getYiData(datatype, jkdata, dd) {
     let parse = getObjCode(jkdata);
     let d = dd || [];
     let page = MY_PAGE || 1;
+    let sourcemenu = [];
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -64,7 +65,6 @@ function getYiData(datatype, jkdata, dd) {
             let z1 = 转换["排行"] || "排行";
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
-            let sourcemenu = [];
             if(parse[z1]){
                 sourcemenu.push({
                     title: z1,
@@ -95,17 +95,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            if(sourcemenu.length==0){
-                updateItem("sourcemenu", {
-                    title: "历史",
-                    url: "hiker://history?rule="+MY_RULE.title
-                })
-            }else if(sourcemenu.length==1){
-                updateItem("sourcemenu", {
-                    title: sourcemenu[0].title,
-                    url: sourcemenu[0].url
-                })
-            }else if(sourcemenu.length>1){
+            if(sourcemenu.length>1){
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }
@@ -255,6 +245,17 @@ function getYiData(datatype, jkdata, dd) {
     if(datatype=="主页"){
         if(!parse['搜索'] || parse['主页'].toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');
+        }
+        if(sourcemenu.length==0){
+            updateItem("sourcemenu", {
+                title: "历史",
+                url: "hiker://history?rule="+MY_RULE.title
+            })
+        }else if(sourcemenu.length==1){
+            updateItem("sourcemenu", {
+                title: sourcemenu[0].title,
+                url: sourcemenu[0].url
+            })
         }
     }
 }

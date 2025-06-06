@@ -9,26 +9,12 @@ function readData(fileid){
         return {};
     }
 }
-let 一级 = function(fileid) {
-    let jkdata = storage0.getMyVar('一级源接口信息') || {};
-    fileid = fileid || jkdata.id;
-    return readData(fileid)
-}
-let 二级 = function(fileid) {
-    let jkdata = storage0.getMyVar('二级源接口信息') || {};
-    fileid = fileid || jkdata.id;
-    return readData(fileid)
-}
+
 let parse = function(fileid) {
     let jkdata = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
     fileid = fileid || jkdata.id;
     return readData(fileid)
 }
-let 属性 = function(fileid, parse, key) {
-    let 接口;
-    eval("接口 = " + parse);
-    return 接口(fileid)[key];
-};
 
 function 图片解密(key, iv, kiType, mode) {
     const CryptoUtil = $.require("http://hiker.nokia.press/hikerule/rulelist.json?id=6805&auth=5e44e1a1-51f6-5825-97ae-4d381341bc00");
@@ -85,9 +71,6 @@ function 图片解密2(key, iv, kiType, mode, base64Dec) {
 }
 
 let exports = {
-    "一级": 一级,
-    "二级": 二级,
-    "属性": 属性,
     "parse": parse,
     "imageDecrypt": 图片解密,
     "imgDec": 图片解密2
@@ -97,8 +80,14 @@ try{
     let getexp = parse() || {};
     let arr = getexp.exports || [];
     arr.forEach(it => {
-        if(!exportskeys.includes(it.key)){
-            exports[it.key] = getexp[it.key];
+        if($.type(it)=="object"){
+            if(!exportskeys.includes(it.key)){
+                exports[it.key] = getexp[it.key];
+            }
+        }else if($.type(it)=="string"){
+            if(!exportskeys.includes(it)){
+                exports[it] = getexp[it];
+            }
         }
     })
 }catch(e){}

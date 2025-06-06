@@ -104,7 +104,7 @@ function getYiData(datatype, jkdata, dd) {
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }
-        let 执行str = parse[datatype].toString();
+        let 执行str = (parse[datatype]||"").toString();
         let obj = parse['四大金刚'] || {};
         if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');

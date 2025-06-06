@@ -295,7 +295,7 @@ function deleteData(data){
 //执行切换源接口
 function changeSource(sourcedata) {
     if (homeSourceId==sourcedata.id) {
-        return 'toast://主页源：' + homeSourceId;
+        return 'toast://主页源：' + sourcedata.name;
     }
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");

@@ -95,7 +95,12 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            if(sourcemenu.length==1){
+            if(sourcemenu.length==0){
+                updateItem("sourcemenu", {
+                    title: "历史",
+                    url: "hiker://history?rule="+MY_RULE.title
+                })
+            }else if(sourcemenu.length==1){
                 updateItem("sourcemenu", {
                     title: sourcemenu[0].title,
                     url: sourcemenu[0].url

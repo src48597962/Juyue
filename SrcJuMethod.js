@@ -277,13 +277,13 @@ function getSsData(name, jkdata, page) {
         let parse = getObjCode(jkdata);
         if(parse['搜索']){
             if (parse['预处理']) {
-                parse['预处理']();
+                parse['预处理'].call(parse);
             }
             let setResult = function (d){
                 return d;
             }
             eval("let 数据 = " + parse['搜索'].toString());
-            getData = 数据(name) || [];
+            getData = 数据.call(parse, name) || [];
         }
     } catch (e) {
         error = e.message;

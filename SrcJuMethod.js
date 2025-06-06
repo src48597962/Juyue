@@ -377,7 +377,7 @@ function banner(start, arr, data, cfg){
     putMyVar('rnum', rnum);
     cfg = cfg  || {};
     let time = cfg.time || 5000;
-    let col_type = cfg.col_type || 'pic_1_card';
+    let col_type = cfg.col_type || 'card_pic_1';
     let desc = cfg.desc || '';
 
     arr.push({

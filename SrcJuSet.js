@@ -440,7 +440,7 @@ function jiekouapi(data, look) {
         url: data?$.toString(() => {
             let file = getMyVar('apiruleurl','');
             if(fileExist(file)){
-                return "editFile://" + file;// + "@js=back();";
+                return "editFile://" + file + `@js=try{eval(input);back();}catch(e){toast("文件存在错误>"+e.message);}`;
             }else{
                 return "toast://文件不存在，无法查看";
             }

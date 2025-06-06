@@ -371,6 +371,7 @@ function jianfan(str,x) {
 
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
+    if(!data || data.length==0){return;}
     let id = 'juyue';
     let rnum = Math.floor(Math.random() * data.length);
     let item = data[rnum];

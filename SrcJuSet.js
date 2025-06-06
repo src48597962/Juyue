@@ -448,7 +448,7 @@ function jiekouapi(data, look) {
             let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
             let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
             writeFile(codeTmpl, tmpl);
-            return `editFile://` + codeTmpl + `@js=putMyVar("apiruleurl","hiker://files/_cache/Juyue/parseCodeTmpl.txt");refreshPage(false);`;
+            return `editFile://` + codeTmpl + `@js=try{let tmplfile = "hiker://files/_cache/Juyue/parseCodeTmpl.txt";eval(tmplfile);putMyVar("apiruleurl",tmplfile);refreshPage(false);}catch(e){toast("文件存在错误>"+e.message);}`;
         }),
         extra: {
             titleVisible: true,

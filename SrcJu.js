@@ -382,14 +382,14 @@ function erji() {
                 try {
                     if (parse['预处理']) {
                         try {
-                            parse['预处理']();
+                            parse['预处理'].call(parse);
                         } catch (e) {
                             xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                         }
                     }
                     if(parse['二级']){
                         eval("let 二级获取 = " + parse['二级'])
-                        erLoadData = 二级获取(MY_URL);
+                        erLoadData = 二级获取.call(parse, MY_URL);
                     }else{
                         xlog("rule不存在二级方法");
                     }
@@ -537,7 +537,7 @@ function erji() {
                 let parse = getObjCode(dataObj.data);
                 if(parse['解析']){
                     eval("let 解析2 = " + parse['解析']);
-                    return 解析2(url, parse);
+                    return 解析2.call(parse, url);
                 }else{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                     return SrcParseS.聚阅(url, dataObj);
@@ -1068,12 +1068,11 @@ function erji() {
                 let parse = $.require("jiekou?rule=聚阅").parse();
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
-                let 标识 = jkdata.id;
                 try{
-                    let zx = 最新2(url,parse) || "";
+                    let zx = 最新2.call(parse, url) || "";
                     setResult(jkdata.name + " | " + (zx||""));
                 }catch(e){
-                    最新2(url,parse);
+                    最新2.call(parse, url);
                 }
             }, MY_URL, jkdata, {}))
         }

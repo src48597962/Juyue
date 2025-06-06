@@ -302,13 +302,19 @@ function rulePage(datatype, ispage) {
 }
 //获取接口对象规则内容
 function getObjCode(jkdata, key) {
-    let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
-    eval(jkstr);
-    parse['页码'] = parse['页码'] || {};
-    if(key){
-        return parse[key];
+    try{
+        let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
+        eval(jkstr);
+        parse['页码'] = parse['页码'] || {};
+        if(key){
+            return parse[key];
+        }
+        return parse;
+    }catch(e){
+        toast("接口url文件加载异常");
+        xlog("接口url文件加载异常>" + e.message + " 错误行#" + e.lineNumber);
+        return {};
     }
-    return parse;
 }
 //修正按钮元素
 function toerji(item, jkdata) {

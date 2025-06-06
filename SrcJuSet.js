@@ -440,7 +440,7 @@ function jiekouapi(data, look) {
         url: data?$.toString(() => {
             let file = getMyVar('apiruleurl','');
             if(fileExist(file)){
-                return "editFile://" + file + `@js=try{eval(input);back();}catch(e){toast("文件存在错误>"+e.message);}`;
+                return "editFile://" + file + `@js=try{eval(fetch(input));back();}catch(e){toast("文件存在错误>"+e.message);}`;
             }else{
                 return "toast://文件不存在，无法查看";
             }
@@ -448,7 +448,7 @@ function jiekouapi(data, look) {
             let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
             let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
             writeFile(codeTmpl, tmpl);
-            return `editFile://` + codeTmpl + `@js=try{let tmplfile = "hiker://files/_cache/Juyue/parseCodeTmpl.txt";eval(tmplfile);putMyVar("apiruleurl",tmplfile);refreshPage(false);}catch(e){toast("文件存在错误>"+e.message);}`;
+            return `editFile://` + codeTmpl + `@js=try{let tmplfile = "hiker://files/_cache/Juyue/parseCodeTmpl.txt";eval(fetch(tmplfile));putMyVar("apiruleurl",tmplfile);refreshPage(false);}catch(e){toast("文件存在错误>"+e.message);}`;
         }),
         extra: {
             titleVisible: true,

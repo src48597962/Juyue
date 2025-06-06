@@ -1208,20 +1208,6 @@ function manageSet(){
         col_type: 'avatar',
         url: 'toast://哥就是帅'
     });
-    d.push({
-        title: '主页显示点播',
-        img: getItem('主页显示点播')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
-        url: $("#noLoading#").lazyRule(() => {
-            if(getItem('主页显示点播')=="1"){
-                clearItem('主页显示点播');
-            }else{
-                setItem('主页显示点播','1');
-            }
-            refreshPage();
-            return 'toast://设置成功，返回主页刷新';
-        }),
-        col_type: 'text_icon'
-    });
     let colors = [{
         title: '绿意盎然',
         icon: "#4EAF7C"

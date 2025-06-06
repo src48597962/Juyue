@@ -328,7 +328,7 @@ function toerji(item, jkdata) {
             extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
             extra.img = extra.img || item.pic_url || item.img;
             extra.pageTitle = extra.pageTitle || extra.name;
-            extra.url = item.url.replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+            extra.url = item.url.toString().replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
             extra.data = jkdata;
             item.url = $("hiker://empty?type="+jkdata.type+"#immersiveTheme##autoCache#").rule(() => {
                 require(config.聚阅);

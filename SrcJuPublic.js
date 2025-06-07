@@ -91,12 +91,13 @@ if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
 
-if(!getMyVar('SrcJu_临时删除')){
+if(!getMyVar('SrcJu_临时删除') || Juconfig['bookCase_col_type']){
     Object.keys(Juconfig).forEach(it=>{
         if(it.includes('_Source')){
             delete Juconfig[it];
         }
     })
+    delete Juconfig['bookCase_col_type'];
     putMyVar('SrcJu_临时删除', '1');
     writeFile(cfgfile, JSON.stringify(Juconfig));
 }

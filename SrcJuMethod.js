@@ -213,11 +213,11 @@ function getYiData(datatype, jkdata, dd) {
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
-            let originalSetResult = setResult;
-            setResult = function(d) { return d; };
+            let ddd;
+            setResult = function(d) { ddd = d; };
             eval("let 数据 = " + 执行str);
-            getData = 数据() || [];//.call(parse) || [];
-            setResult = originalSetResult;
+            getData = 数据.call(parse) || [];
+            xlog(ddd);
             xlog(getData);
             if (getData.length == 0 && page == 1) {
                 d.push({

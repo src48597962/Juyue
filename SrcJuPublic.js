@@ -154,14 +154,20 @@ function getGroupLists(datas, k) {
 }
 //获取接口分组名arry
 function getJkGroups(datas) {
-    let groupNams = runTypes;//[];
+    let groupNams = [];
     datas.forEach(it => {
-        let group = it.group;//||it.type;
-        if (groupNams.indexOf(group)==-1){
+        let group = (it.group || "").trim();//||it.type;
+        if (group && groupNams.indexOf(group)==-1){
             groupNams.push(group);
         }
     })
-    return groupNams;
+    groupNams.sort((a, b) =>
+        a.localeCompare(b, 'zh-CN', {
+            sensitivity: 'accent', // 忽略大小写但区分音调
+            ignorePunctuation: true // 忽略标点符号
+        })
+    );
+    return runTypes.concat(groupNams);
 }
 //获取不同场景分组分类名称数组
 function getTypeNames(s) {

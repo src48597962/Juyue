@@ -172,6 +172,33 @@ function yiji(testSource) {
             col_type: "icon_5"
         })
         
+        if(getItem('显示快速分组')=="1" && !testSource){
+            let typemenubtn = getTypeNames("主页");
+            let Color = '#3399cc';
+            typemenubtn.forEach((it) =>{
+                let item = {
+                    title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+                    url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        return selectSource(input);
+                    }, it):$('#noLoading#').lazyRule((input) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        Juconfig["homeGroup"] = input;
+                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        clearMyVar('一级源接口信息');
+                        refreshPage(false);
+                        return 'toast://主页源分类分组已切换为：' + input;
+                    }, it),
+                    col_type: "scroll_button"
+                }
+                if(homeGroup==it){
+                    item.extra = {
+                        backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
+                    }
+                }
+                d.push(item);
+            })
+        }
         let searchurl = $('').lazyRule((jkdata) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
@@ -224,33 +251,6 @@ function yiji(testSource) {
             }
         });
 
-        if(getItem('显示快速分组')=="1" && !testSource){
-            let typemenubtn = getTypeNames("主页");
-            let Color = '#3399cc';
-            typemenubtn.forEach((it) =>{
-                let item = {
-                    title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-                    url: homeGroup==it?$('#noLoading#').lazyRule((input) => {
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        return selectSource(input);
-                    }, it):$('#noLoading#').lazyRule((input) => {
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        Juconfig["homeGroup"] = input;
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
-                        clearMyVar('一级源接口信息');
-                        refreshPage(false);
-                        return 'toast://主页源分类分组已切换为：' + input;
-                    }, it),
-                    col_type: "scroll_button"
-                }
-                if(homeGroup==it){
-                    item.extra = {
-                        backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
-                    }
-                }
-                d.push(item);
-            })
-        }
         d.push({
             col_type: "blank_block",
             extra: {

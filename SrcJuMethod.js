@@ -99,9 +99,14 @@ function getYiData(datatype, jkdata, dd) {
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }
+
+        if(parse['host']){
+            MY_URL = parse['host'];
+        }
+        
         let 执行str = (parse[datatype]||"").toString();
-        let obj = parse['四大金刚'] || {};
-        if (obj.url && obj.type == datatype) {//四大金刚获取分类数据
+        let obj = parse['静态分类'] || {};
+        if (obj.url && obj.type == datatype) {//海阔定义分类方法获取分类数据
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');
             let area_name = (obj.area_name || "").split('&').filter(item => item != '');

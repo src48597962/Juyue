@@ -215,7 +215,7 @@ function getYiData(datatype, jkdata, dd) {
             }
 
             //eval(`let setResult = function(d) { return d; };`);
-            eval("let 数据 = " + 执行str);
+            //eval("let 数据 = " + 执行str);
             const 数据 = new Function('parse', `
                 // 临时定义 setResult，仅在此函数内有效
                 let setResult = function(d) { return d; };

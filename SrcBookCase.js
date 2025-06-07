@@ -1,15 +1,6 @@
 function bookCase() {
-    let publicfile;
-    try{
-        publicfile = config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-    }catch(e){
-        let cfgfile = "hiker://files/rules/Src/Ju/config.json";
-        if (fileExist(cfgfile)) {
-            eval("let Juconfig=" + fetch(cfgfile) + ";");
-            publicfile = Juconfig["依赖"].match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js';
-        }
-    }
-    require(publicfile);
+    require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
+
     let Julist = [];
     let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
     collection.forEach(it => {
@@ -31,16 +22,15 @@ function bookCase() {
     });
     d.push({
         title: ' 切换样式',
-        url: $('#noLoading#').lazyRule((cfgfile, Juconfig) => {
-            if(Juconfig["bookCase_col_type"]=="movie_1_vertical_pic"){
-                Juconfig["bookCase_col_type"] = "movie_3_marquee";
+        url: $('#noLoading#').lazyRule(() => {
+            if(getItem("bookCase_col_type")=="movie_3_marquee"){
+                clearItem("bookCase_col_type");
             }else{
-                Juconfig["bookCase_col_type"] = "movie_1_vertical_pic";
+                setItem("bookCase_col_type", "movie_3_marquee");
             }
-            writeFile(cfgfile, JSON.stringify(Juconfig));
             refreshPage(false);
             return 'hiker://empty';
-        }, cfgfile, Juconfig),
+        }),
         img: "http://123.56.105.145/tubiao/messy/85.svg",
         col_type: "icon_2"
     });
@@ -62,7 +52,7 @@ function bookCase() {
             col_type: 'scroll_button'
         })
     })
-
+    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     Julist.forEach(it => {
         try{
             let params = JSON.parse(it.params);
@@ -74,17 +64,16 @@ function bookCase() {
                 let extraData = it.extraData?JSON.parse(it.extraData):{};
                 let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                 let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
-                let col = Juconfig["bookCase_col_type"] || 'movie_1_vertical_pic';
                 d.push({
-                    title: col=='movie_1_vertical_pic'?name + "\n\n‘‘’’<small>💠 "+stype+" | "+(sname||"")+"</small>":name,
+                    title: col_type=='movie_1_vertical_pic'?name + "\n\n‘‘’’<small>💠 "+stype+" | "+(sname||"")+"</small>":name,
                     pic_url: it.picUrl,
-                    desc: col=='movie_1_vertical_pic'?"🕓 "+mask+"\n\n🔘 "+last:last,
+                    desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask+"\n\n🔘 "+last:last,
                     url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
                         require(config.聚阅);
                         erji();
                         putMyVar('从书架进二级','1');
                     }),
-                    col_type: col,
+                    col_type: col_type,
                     extra: {
                         pageTitle: name,
                         name: name,

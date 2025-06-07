@@ -214,9 +214,15 @@ function getYiData(datatype, jkdata, dd) {
                 parse['预处理'].call(parse);
             }
 
-            eval(`let setResult = function(d) { return d; };`);
+            //eval(`let setResult = function(d) { return d; };`);
             eval("let 数据 = " + 执行str);
-            getData = 数据.call(parse) || [];
+            const 数据 = new Function('parse', `
+                // 临时定义 setResult，仅在此函数内有效
+                let setResult = function(d) { return d; };
+                // 执行目标代码
+                return (${执行str}).call(parse);
+            `)(parse);
+            getData = 数据() || [];//.call(parse) || [];
             xlog(getData);
             if (getData.length == 0 && page == 1) {
                 d.push({

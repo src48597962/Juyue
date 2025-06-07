@@ -213,25 +213,11 @@ function getYiData(datatype, jkdata, dd) {
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
-
-            //eval(`let setResult = function(d) { return d; };`);
-            //eval("let 数据 = " + 执行str);
-            /*
-            const 数据 = new Function('parse', `
-                // 临时定义 setResult，仅在此函数内有效
-                let setResult = function(d) { return d; };
-                // 执行目标代码
-                return (${执行str}).call(parse);
-            `)(parse);
+            let originalSetResult = setResult;
+            setResult = function(d) { return d; };
+            eval("let 数据 = " + 执行str);
             getData = 数据() || [];//.call(parse) || [];
-            */
-            getData = (function () {
-                // 临时定义 setResult，仅在此闭包内有效
-                let setResult = function (d) { return d; };
-                // 执行目标代码
-                eval("let 数据 = " + 执行str);
-                return 数据.call(parse) || [];
-            })();
+            setResult = originalSetResult;
             xlog(getData);
             if (getData.length == 0 && page == 1) {
                 d.push({

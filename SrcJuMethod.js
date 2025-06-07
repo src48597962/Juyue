@@ -213,10 +213,8 @@ function getYiData(datatype, jkdata, dd) {
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
-            let setResult = function (d){
-                return d;
-            }
-            
+
+            eval(`let setResult = function (d){return d;}`)
             eval("let 数据 = " + 执行str);
             getData = 数据.call(parse) || [];
 

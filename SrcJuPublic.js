@@ -58,6 +58,7 @@ if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
         it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
         it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
+        it.parse = it.parse.replace('四大金刚', '静态分类');
 
         eval("let public = " + it.public);
         eval("let parse = " + it.parse);

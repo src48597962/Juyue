@@ -91,9 +91,19 @@ if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
 
-let runTypes = ["漫画", "小说", "图集", "视频", "音频", "聚合", "其它"];
+if(!getMyVar('SrcJu_临时删除')){
+    Object.keys(Juconfig).forEach(it=>{
+        if(it.includes('_Source')){
+            delete Juconfig[it];
+        }
+    })
+    putMyVar('SrcJu_临时删除', '1');
+}
+
+let runTypes = ["漫画", "视频", "音频", "小说", "图集", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
-let homeSource = Juconfig[homeGroup + "_Source"] || {};
+let homeSourceS = Juconfig["homeSourceS"] || {};
+let homeSource = homeSourceS[homeGroup] || {};
 let homeSourceId = homeSource.id || "";
 let sourcename = homeSource.name || "";
 
@@ -134,17 +144,17 @@ function getDatas(lx, isyx) {
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
     datas = datas.filter(it=>{
-        let group = it.group||it.type;
-        return !k || (k==group);
+        //let group = it.group||it.type;
+        return !k || k==it.type || (it.group&&k==it.group);//(k==group);
     })
 
     return datas;
 }
 //获取接口分组名arry
 function getJkGroups(datas) {
-    let groupNams = [];
+    let groupNams = runTypes;//[];
     datas.forEach(it => {
-        let group = it.group||it.type;
+        let group = it.group;//||it.type;
         if (groupNams.indexOf(group)==-1){
             groupNams.push(group);
         }
@@ -319,7 +329,8 @@ function changeSource(sourcedata) {
     } catch (e) { }
     let sourceGroup = sourcedata.group || sourcedata.type;
     Juconfig["homeGroup"] = sourceGroup;
-    Juconfig[sourceGroup+'_Source'] = {id: sourcedata.id, name: sourcedata.name}
+    homeSourceS[sourceGroup] = {id: sourcedata.id, name: sourcedata.name};
+    Juconfig['homeSourceS'] = homeSourceS;
     writeFile(cfgfile, JSON.stringify(Juconfig));
     refreshPage(false);
     return 'hiker://empty';

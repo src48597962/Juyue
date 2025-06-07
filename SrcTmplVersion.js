@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu":"0.2",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V0.3",
+        records: [
+            "优化：分组选择改为分类+分组模式"
+        ]
+    },{
         title: "2025/06/07 V0.2",
         records: [
             "优化：去除接口索引的版本号设定",

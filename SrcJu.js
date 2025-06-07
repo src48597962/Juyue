@@ -493,31 +493,6 @@ function erji() {
             }
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
-            /*
-            let 解析 = parse['解析'] || function (url,parse,参数) {
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                let stype = 参数.stype;
-                return SrcParseS.聚阅(url, stype=="音频"?1:0);
-            };
-            let lazy = $("").lazyRule((解析,参数) => {
-                let url = input.split("##")[1];
-                let parse = {};
-                try{
-                    parse = $.require('jiekou?rule=聚阅').parse(参数.标识);
-                }catch(e){
-                    //toast('未找到聚阅规则子页面');
-                }
-                let 标识 = 参数.标识;
-                eval("let 解析2 = " + 解析);
-                return 解析2(url,parse,参数);
-            }, 解析, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
-            
-            let download = $.toString((解析,parse,参数) => {
-                eval("let 解析2 = " + 解析);
-                let 标识 = 参数.标识;
-                return 解析2(input,parse,参数);
-            }, 解析, parse, {"规则名": MY_RULE._title || MY_RULE.title, "标识": 标识, stype:stype});
-            */
             let dataObj = {
                 data: jkdata,
                 type: stype
@@ -533,8 +508,16 @@ function erji() {
                     return SrcParseS.聚阅(url, dataObj);
                 }
             }, dataObj);
+            let download = $.toString((jkdata) => {
+                let parse = $.require("jiekou?rule=聚阅").parse(jkdata.id);
+                if(parse['解析']){
+                    eval("let 解析2 = " + parse['解析']);
+                    return 解析2.call(parse, input);
+                }else{
+                    return "toast://没找到解析方法";
+                }
+            }, jkdata);
 
-            let download = '';
             d.push({
                 title: "详情简介",
                 url: $("#noLoading#").lazyRule((desc) => {
@@ -574,7 +557,7 @@ function erji() {
             let sskeyword = name.split('/')[0].trim();
             if(stype=="影视"){
                 d.push({
-                    title: "聚影搜索",
+                    title: "扩展搜索",
                     url: JySearch(sskeyword, getItem("juyingSeachType")),
                     pic_url: 'http://123.56.105.145/tubiao/messy/25.svg',
                     col_type: 'icon_small_3',

@@ -98,6 +98,7 @@ if(!getMyVar('SrcJu_临时删除')){
         }
     })
     putMyVar('SrcJu_临时删除', '1');
+    writeFile(cfgfile, JSON.stringify(Juconfig));
 }
 
 let runTypes = ["漫画", "视频", "音频", "小说", "图集", "聚合", "其它"];

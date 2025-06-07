@@ -213,15 +213,14 @@ function getYiData(datatype, jkdata, dd) {
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
-            let ddd;
-            let setResult = function(d) { ddd = d; };
+            let resultd;
+            let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + 执行str);
             getData = 数据.call(parse) || [];
-            xlog(ddd);
-            if(ddd&&getData.length==0){
-                getData = ddd;
+            if(resultd&&getData.length==0){
+                getData = resultd;
             }
-            xlog(getData);
+
             if (getData.length == 0 && page == 1) {
                 d.push({
                     title: "未获取到数据",
@@ -292,11 +291,13 @@ function getSsData(name, jkdata, page) {
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
-            let setResult = function (d){
-                return d;
-            }
+            let resultd;
+            let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name) || [];
+            if(resultd&&getData.length==0){
+                getData = resultd;
+            }
         }
     } catch (e) {
         error = e.message;

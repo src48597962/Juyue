@@ -217,7 +217,7 @@ function getYiData(datatype, jkdata, dd) {
             eval(`let setResult = function(d) { return d; };`);
             eval("let 数据 = " + 执行str);
             getData = 数据.call(parse) || [];
-
+            xlog(getData);
             if (getData.length == 0 && page == 1) {
                 d.push({
                     title: "未获取到数据",

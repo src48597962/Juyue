@@ -216,6 +216,7 @@ function getYiData(datatype, jkdata, dd) {
 
             //eval(`let setResult = function(d) { return d; };`);
             //eval("let 数据 = " + 执行str);
+            /*
             const 数据 = new Function('parse', `
                 // 临时定义 setResult，仅在此函数内有效
                 let setResult = function(d) { return d; };
@@ -223,6 +224,14 @@ function getYiData(datatype, jkdata, dd) {
                 return (${执行str}).call(parse);
             `)(parse);
             getData = 数据() || [];//.call(parse) || [];
+            */
+            getData = (function () {
+                // 临时定义 setResult，仅在此闭包内有效
+                let setResult = function (d) { return d; };
+                // 执行目标代码
+                eval("let 数据 = " + 执行str);
+                return 数据.call(parse) || [];
+            })();
             xlog(getData);
             if (getData.length == 0 && page == 1) {
                 d.push({

@@ -406,9 +406,14 @@ function jiekouapi(data, look) {
         url: $(groupNames,2,"接口分组：").select(() => {
             if(input=="自定义"){
                 return $("", "自定义搜索分组名称").input(() => {
-                    putMyVar('apigroup',input);
-                    refreshPage(false);
-                    return 'toast://接口分组已设置为：' + input;
+                    input = input.trim();
+                    if(input){
+                        putMyVar('apigroup',input);
+                        refreshPage(false);
+                        return 'toast://接口分组已设置为：' + input;
+                    }else{
+                        return 'toast://输入为空';
+                    }
                 })
             }else{
                 putMyVar('apigroup',input);

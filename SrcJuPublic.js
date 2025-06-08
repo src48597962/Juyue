@@ -335,7 +335,7 @@ function changeSource(sourcedata) {
     try {
         refreshX5WebView('about:blank');
     } catch (e) { }
-    let sourceGroup = sourcedata.group || sourcedata.type;
+    let sourceGroup = sourcedata.selectGroup || sourcedata.type;
     Juconfig["homeGroup"] = sourceGroup;
     homeSourceS[sourceGroup] = {id: sourcedata.id, name: sourcedata.name};
     Juconfig['homeSourceS'] = homeSourceS;
@@ -344,11 +344,11 @@ function changeSource(sourcedata) {
     return 'hiker://empty';
 }
 //封装选择主页源方法
-function selectSource(selectType) {
+function selectSource(selectGroup) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
-    if(selectType){
-        sourceList = getGroupLists(sourceList, selectType);
+    if(selectGroup){
+        sourceList = getGroupLists(sourceList, selectGroup);
     }
     let tmpList = sourceList;
     hikerPop.setUseStartActivity(false);
@@ -379,7 +379,7 @@ function selectSource(selectType) {
         toPosition: index,
         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
             hint: "源关键字筛选，右边切换分组",
-            title: selectType||"全部",
+            title: selectGroup||"全部",
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
@@ -398,6 +398,7 @@ function selectSource(selectType) {
                     title: "切换源分组", 
                     //position: groupNames.indexOf(sourceName),
                     click(s) {
+                        selectGroup = s;
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");
                         
@@ -425,6 +426,7 @@ function selectSource(selectType) {
             pop.dismiss();
 
             let sourcedata = JSON.parse(item.data);
+            sourcedata['selectGroup'] = selectGroup;
             return changeSource(sourcedata);
         },
         menuClick(manage) {

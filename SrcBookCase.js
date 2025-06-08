@@ -55,8 +55,8 @@ function bookCase() {
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     Julist.forEach(it => {
         try{
-            xlog(JSON.parse(params.params));
             let params = JSON.parse(it.params);
+            xlog(JSON.parse(params.params));
             let stype = JSON.parse(params.params).data.type;
             if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                 let name = it.mTitle.indexOf(JSON.parse(params.params).name)>-1?JSON.parse(params.params).name:it.mTitle;

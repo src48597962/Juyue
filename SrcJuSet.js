@@ -749,7 +749,7 @@ function JYshare(input,data) {
     if(input=='云口令文件'){
         sm2 = sharelist.length==1?sharelist[0].name:sharelist.length;
         let code = sm + '￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
-        let sharefile = 'hiker://files/_cache/Juyue_'+sm2+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
+        let sharefile = 'hiker://files/_cache/【聚阅源】_'+sm2+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
         writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
         if(fileExist(sharefile)){
             return 'share://'+sharefile;
@@ -775,8 +775,8 @@ function JYshare(input,data) {
 //资源导入
 function JYimport(input) {
     let cloudimport;
-    if(/^云口令：/.test(input)){
-        input = input.replace('云口令：','').trim();
+    if(input.includes('云口令：')){
+        input = input.split('()@import=js:$.require("hiker://page/import?rule=聚阅");')[0].split('云口令：')[1];
         cloudimport = 1;
     }
 

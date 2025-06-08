@@ -56,12 +56,12 @@ function bookCase() {
     Julist.forEach(it => {
         try{
             let params = JSON.parse(it.params);
-            xlog(JSON.parse(params.params));
             let stype = JSON.parse(params.params).data.type;
             if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
-                let name = it.mTitle.indexOf(JSON.parse(params.params).name)>-1?JSON.parse(params.params).name:it.mTitle;
-                let sname = JSON.parse(params.params).data.name;
-                let surl = JSON.parse(params.params).url;
+                let extra = JSON.parse(params.params);
+                extra['cls'] = "caselist";
+                let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
+                let sname = extra.data.name;
                 let extraData = it.extraData?JSON.parse(it.extraData):{};
                 let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                 let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
@@ -75,15 +75,8 @@ function bookCase() {
                         putMyVar('从书架进二级','1');
                     }),
                     col_type: col_type,
-                    extra: {
-                        pageTitle: name,
-                        name: name,
-                        img: it.picUrl,
-                        data: JSON.parse(params.params).data,
-                        url: surl,
-                        lineVisible: false,
-                        cls: "caselist"
-                    }
+                    //lineVisible: false,
+                    extra: extra
                 })
             }
         }catch(e){

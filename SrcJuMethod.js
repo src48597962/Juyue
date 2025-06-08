@@ -65,6 +65,14 @@ function getYiData(datatype, jkdata, dd) {
             let z1 = 转换["排行"] || "排行";
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
+            let channel = [];
+            (parse["频道"] || [z1,z2,z3]).forEach(it=>{
+                if(parse[it]){
+                    channel.push(it);
+                }
+            })
+            xlog(channel);
+            
             if(parse[z1]){
                 sourcemenu.push({
                     title: z1,

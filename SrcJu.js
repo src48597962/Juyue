@@ -91,6 +91,7 @@ function yiji(testSource) {
             url: $("#noLoading#").lazyRule(()=>{
                 if(getMyVar('频道展开')){
                     deleteItemByCls("sourcemenu");
+                    clearMyVar('频道展开');
                     return "hiker://empty";
                 }else{
                     let sourcemenu = storage0.getMyVar("sourcemenu") || [];

@@ -462,9 +462,12 @@ function jiekouapi(data, look) {
         }
     });
     let ilks = ["主页源","搜索源","完整源"];
-
+    let ilkindex = -1;
+    if(getMyVar('apiilk')){
+        ilkindex = parseInt(getMyVar('apiilk')) -1;
+    }
     d.push({
-        title: '选择源种类：'+ (!getMyVar('apiilk')?ilks[getMyVar('apiilk')]:''),
+        title: '选择源种类：'+ (ilkindex>-1?ilks[ilkindex]:''),
         col_type: 'text_1',
         url: $(ilks, 3, "选择源种类：").select(() => {
             if(input=="主页源"){

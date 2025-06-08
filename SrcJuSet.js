@@ -461,10 +461,12 @@ function jiekouapi(data, look) {
             onChange: data?'toast("不能修改文件地址");':'putMyVar("apiruleurl",input);'
         }
     });
+    let ilks = ["主页源","搜索源","完整源"];
+
     d.push({
-        title: '选择源种类：'+ getMyVar('apiilk',''),
+        title: '选择源种类：'+ (!getMyVar('apiilk')?ilks[getMyVar('apiilk')]:''),
         col_type: 'text_1',
-        url: $(["完整源","主页源","搜索源"], 3, "选择源种类：").select(() => {
+        url: $(ilks, 3, "选择源种类：").select(() => {
             if(input=="主页源"){
                 putMyVar('apiilk','1');
             }else if(input=="搜索源"){

@@ -88,13 +88,18 @@ function yiji(testSource) {
         d.push({
             title: "频道",
             url: $("#noLoading#").lazyRule(()=>{
-                let sourcemenu = storage0.getMyVar("sourcemenu") || [];
-                if(sourcemenu.length>0){
+                let pdmenus = findItemsByCls("sourcemenu") || [];
+                if(pdmenus.length>0){
                     deleteItemByCls("sourcemenu");
-                    addItemBefore("sourcemenuload", sourcemenu);
                     return "hiker://empty";
                 }else{
-                    return "toast://作者没有写"
+                    let sourcemenu = storage0.getMyVar("sourcemenu") || [];
+                    if(sourcemenu.length>0){
+                        addItemBefore("sourcemenuload", sourcemenu);
+                        return "hiker://empty";
+                    }else{
+                        return "toast://作者没有写"
+                    }
                 }
             }),
             pic_url: "http://123.56.105.145/tubiao/more/287.png",
@@ -220,7 +225,9 @@ function yiji(testSource) {
                 }, input, jkdata.group||jkdata.type);
             }else{//当前主页
                 require(config.聚阅); 
+                showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
+                hideLoading();
                 if(d.length>0){
                     deleteItemByCls('homesousuolist');
                     addItemAfter('homesousuoid', d);
@@ -1132,6 +1139,7 @@ function search(name, sstype, jkdata) {
                 }
             }
         }else if(sstype=="yiji"){
+            it.extra = it.extra || {};
             it.extra.cls = "homesousuolist";
             ssdata.push(it);
         }else{

@@ -56,11 +56,11 @@ function bookCase() {
     Julist.forEach(it => {
         try{
             let params = JSON.parse(it.params);
-            let stype = JSON.parse(params.params).stype;
+            let stype = JSON.parse(params.params).data.type;
             if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                 let name = it.mTitle.indexOf(JSON.parse(params.params).name)>-1?JSON.parse(params.params).name:it.mTitle;
-                let sname = JSON.parse(params.params).sname;
-                let surl = JSON.parse(params.params).surl;
+                let sname = JSON.parse(params.params).data.name;
+                let surl = JSON.parse(params.params).url;
                 let extraData = it.extraData?JSON.parse(it.extraData):{};
                 let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                 let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
@@ -78,10 +78,8 @@ function bookCase() {
                         pageTitle: name,
                         name: name,
                         img: it.picUrl,
-                        sname: sname,
-                        surl: surl,
-                        stype: stype,
-                        sourcedata: JSON.parse(params.params).sourcedata,
+                        data: JSON.parse(params.params).data,
+                        url: surl,
                         lineVisible: false,
                         cls: "caselist"
                     }

@@ -569,6 +569,7 @@ function jiekouapi(data, look) {
                     return 'toast://已存在';
                 }else{
                     clearMyVar('SrcJu_searchMark');
+                    clearMyVar('一级源接口信息');
                     back(true);
                     return "toast://保存成功";
                 }

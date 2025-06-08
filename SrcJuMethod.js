@@ -66,6 +66,7 @@ function getYiData(datatype, jkdata, dd) {
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
             let channel = [];
+            xlog(parse["频道"]);
             (parse["频道"] || [z1,z2,z3]).forEach(it=>{
                 if(parse[it]){
                     channel.push(it);

@@ -647,6 +647,7 @@ function jiekousave(urls, mode) {
         let olddatanum = datalist.length;
 
         urls.forEach(it=>{
+            xlog(it);
             function checkitem(item) {
                 return item.id==it.id;
             }
@@ -661,31 +662,32 @@ function jiekousave(urls, mode) {
             }else if(!mode && datalist.some(checkitem)){
                 return -2;//已存在
             }
-            if(it.url.startsWith(cachepath)){//缓存的数据文件转到jiekou目录
-                if(fetch(it.url)){
-                    let newurl = jkfilespath + it.id + '.txt'
-                    writeFile(newurl, fetch(it.url));
-                    it.url = newurl;
-                }else{
-                    xlog(it.name + '>接口规则文件为空');
-                    delete it.url;
+            
+            if(!datalist.some(checkitem)){
+                if(it.url.startsWith(cachepath)){//缓存的数据文件转到jiekou目录
+                    if(fetch(it.url)){
+                        let newurl = jkfilespath + it.id + '.txt'
+                        writeFile(newurl, fetch(it.url));
+                        it.url = newurl;
+                    }else{
+                        xlog(it.name + '>接口规则文件为空');
+                        delete it.url;
+                    }
+                }else if(it.extstr){//带数据内容的保存到data目录
+                    writeFile(it.url, it.extstr);
+                    delete it['extstr'];
                 }
-            }else if(it.extstr){//带数据内容的保存到data目录
-                writeFile(it.url, it.extstr);
-            }
-            if(!datalist.some(checkitem)&&it.name&&it.url&&it.type){
+
                 //if(!it.oldurl && olddatanum>0){
                 //    it.group = it.group || "新导入";
                 //}
                 
-                if(it.extstr){//带数据内容的保存到data目录
-                    writeFile(it.url, it.extstr);
-                    delete it['extstr'];
-                }
                 delete it['oldid'];
 
-                datalist.push(it);
-                num = num + 1;
+                if(it.name&&it.url&&it.type){
+                    datalist.push(it);
+                    num = num + 1;
+                }
             }
         })
         //setJkSort(datalist, {fail: 0});

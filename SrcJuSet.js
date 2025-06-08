@@ -491,7 +491,7 @@ function jiekouapi(data, look) {
                 col_type:'text_3',
                 url: $("确定删除接口："+data.name).confirm((data)=>{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    deleteData('data');
+                    deleteData(data);
                     back(true);
                     return "toast://已删除";
                 }, data)

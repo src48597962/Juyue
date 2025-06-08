@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V0.3",
         records: [
-            "优化：分组选择改为分类+分组模式"
+            "优化：分组选择改为分类+分组模式",
+            "修复：分组切源和选择分组不匹配问题"
         ]
     },{
         title: "2025/06/07 V0.2",

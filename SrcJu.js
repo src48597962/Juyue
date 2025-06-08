@@ -1009,8 +1009,8 @@ function erji() {
             putMyVar('二级加载扩展列表','1');
         }
         d.push({
-            title: "‘‘’’<small><font color=#f20c00>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small>",
-            url: 'hiker://empty',
+            title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
+            url: 'toast://温馨提示：且用且珍惜！',
             col_type: 'text_center_1',
             extra: {
                 id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",

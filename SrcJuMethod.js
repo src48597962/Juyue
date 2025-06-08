@@ -66,44 +66,23 @@ function getYiData(datatype, jkdata, dd) {
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
             let channel = [];
-            xlog(parse["频道"]);
             (parse["频道"] || [z1,z2,z3]).forEach(it=>{
-                if(parse[it]){
+                if(it!="主页" && parse[it]){
                     channel.push(it);
                 }
             })
-            xlog(channel);
+            let col_type = channel.length>3?"scroll_button":"text_3";
+            channel.forEach(it=>{
+                sourcemenu.push({
+                    title: it,
+                    url: rulePage(it, 页码[it]),
+                    col_type: col_type,
+                    extra: {
+                        cls: "sourcemenu"
+                    }
+                })
+            })
             
-            if(parse[z1]){
-                sourcemenu.push({
-                    title: z1,
-                    url: rulePage(z1,页码[z1]),
-                    col_type: 'text_3',
-                    extra: {
-                        cls: "sourcemenu"
-                    }
-                })
-            }
-            if(parse[z2]){
-                sourcemenu.push({
-                    title: z2,
-                    url: rulePage(z2,页码[z2]),
-                    col_type: 'text_3',
-                    extra: {
-                        cls: "sourcemenu"
-                    }
-                })
-            }
-            if(parse[z3]){
-                sourcemenu.push({
-                    title: z3,
-                    url: rulePage(z3,页码[z3]),
-                    col_type: 'text_3',
-                    extra: {
-                        cls: "sourcemenu"
-                    }
-                })
-            }
             if(sourcemenu.length>1){
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }

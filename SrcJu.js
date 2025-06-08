@@ -47,8 +47,12 @@ function yiji(testSource) {
                 if(!data.url){
                     return "toast://当前源无效，无法分享";
                 }
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                return JYshare(getItem("sharePaste",""), data);
+                let pastes = getPastes();
+                pastes.push('云口令文件');
+                return $(pastes,2).select((data)=>{
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                    return JYshare(input, data);
+                }, data)
             },jkdata)
         }];
         if(!testSource){

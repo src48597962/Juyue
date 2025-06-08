@@ -776,7 +776,7 @@ function JYshare(input,data) {
 function JYimport(input) {
     let cloudimport;
     if(input.includes('云口令：')){
-        input = input.split('()@import=js:$.require("hiker://page/import?rule=聚阅");')[0].split('云口令：')[1];
+        input = input.split('云口令：')[1];
         cloudimport = 1;
     }
 

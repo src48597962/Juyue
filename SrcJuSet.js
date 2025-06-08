@@ -763,7 +763,7 @@ function JYshare(input,data) {
         hideLoading();
         if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
             xlog('剪贴板地址>'+pasteurl);
-            let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + '('+input+')';
+            let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + '('+(input||'自动选择')+')';
             copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             return "toast://聚影分享口令已生成";
         }else{
@@ -776,13 +776,14 @@ function JYshare(input,data) {
 function JYimport(input) {
     let cloudimport;
     if(input.includes('云口令：')){
-        input = input.split('云口令：')[1];
+        input = input.split('云口令：')[1].split('@import=js:')[0];
         cloudimport = 1;
     }
 
     let pasteurl,inputname,sm;
     let codelx = "share";
     try{
+        xlog(input);
         pasteurl = aesDecode('Juyue', input.split('￥')[1]);
         inputname = input.split('￥')[0];
         if(inputname=="聚阅资源码"){
@@ -795,6 +796,7 @@ function JYimport(input) {
     }catch(e){
         return "toast://聚阅：口令有误>"+e.message + " 错误行#" + e.lineNumber;
     }
+    xlog(inputname);
     try{
         if(inputname=="聚阅接口"){
             sm = "聚阅：接口";

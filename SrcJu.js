@@ -85,16 +85,17 @@ function yiji(testSource) {
                 longClick: longClick
             }
         })
+        clearMyVar('频道展开');
         d.push({
             title: "频道",
             url: $("#noLoading#").lazyRule(()=>{
-                let pdmenus = findItemsByCls("sourcemenu") || [];
-                if(pdmenus.length>0){
+                if(getMyVar('频道展开')){
                     deleteItemByCls("sourcemenu");
                     return "hiker://empty";
                 }else{
                     let sourcemenu = storage0.getMyVar("sourcemenu") || [];
                     if(sourcemenu.length>0){
+                        putMyVar('频道展开','1');
                         addItemBefore("sourcemenuload", sourcemenu);
                         return "hiker://empty";
                     }else{
@@ -209,7 +210,7 @@ function yiji(testSource) {
                 d.push(item);
             })
         }
-        let searchurl = $('').lazyRule((jkdata) => {
+        let searchurl = $('#noLoading#').lazyRule((jkdata) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
             }else if(getItem('接口搜索方式','主页界面')=="当前接口"){

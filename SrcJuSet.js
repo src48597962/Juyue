@@ -1014,6 +1014,7 @@ function importConfirm(jsfile) {
                 datamenu.push("设定分组");
                 datamenu.push("接口测试");
                 if(!it.url.startsWith('http')){
+                    datamenu.push("查看本地");
                     datamenu.push("查看文件");
                     //datamenu.push("删除文件");
                 }
@@ -1084,8 +1085,11 @@ function importConfirm(jsfile) {
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                             yiji(data);
                         },data)
+                    }else if (input == "查看本地") {
+                        return "editFile://" + data.url;
                     }else if (input == "查看文件") {
-                        return "editFile://" + data.ext;
+                        writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
+                        return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
                     }else if (input == "删除文件") {
                         return $("删除"+data.ext+"，确认？").confirm((data)=>{
                             deleteFile(data.ext);

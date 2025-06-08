@@ -60,6 +60,7 @@ function bookCase() {
             if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                 let extra = JSON.parse(params.params);
                 extra['cls'] = "caselist";
+                extra['lineVisible'] = false;
                 let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
                 let sname = extra.data.name;
                 let extraData = it.extraData?JSON.parse(it.extraData):{};
@@ -75,7 +76,6 @@ function bookCase() {
                         putMyVar('从书架进二级','1');
                     }),
                     col_type: col_type,
-                    //lineVisible: false,
                     extra: extra
                 })
             }

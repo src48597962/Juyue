@@ -188,7 +188,7 @@ function yiji(testSource) {
                         clearMyVar('一级源接口信息');
                         clearMyVar('主页动态加载loading');
                         refreshPage(false);
-                        return 'toast://主页源分类分组已切换为：' + input;
+                        return 'hiker://empty';
                     }, it),
                     col_type: "scroll_button"
                 }

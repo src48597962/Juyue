@@ -783,7 +783,6 @@ function JYimport(input) {
     let pasteurl,inputname,sm;
     let codelx = "share";
     try{
-        xlog(input);
         pasteurl = aesDecode('Juyue', input.split('￥')[1]);
         inputname = input.split('￥')[0];
         if(inputname=="聚阅资源码"){
@@ -796,7 +795,7 @@ function JYimport(input) {
     }catch(e){
         return "toast://聚阅：口令有误>"+e.message + " 错误行#" + e.lineNumber;
     }
-    xlog(inputname);
+
     try{
         if(inputname=="聚阅接口"){
             sm = "聚阅：接口";
@@ -847,7 +846,9 @@ function importConfirm(jsfile) {
     if(!jsfile){
         //云口令导入
         let input = fetch(importfile);
-        input = input.replace('云口令：','').trim();
+        if(input.includes('云口令：')){
+            input = input.split('云口令：')[1].split('@import=js:')[0];
+        }
         try{
             code = aesDecode('Juyue', input.split('￥')[1]);
             name = input.split('￥')[0];

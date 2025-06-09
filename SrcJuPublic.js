@@ -397,6 +397,7 @@ function selectSource(selectGroup) {
                 putMyVar("SrcJu_sourceListFilter", s);
                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                 let flist = getitems(tmpList).items;
+                xlog(flist.length);
                 manage.change(flist);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),

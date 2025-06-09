@@ -346,11 +346,14 @@ function changeSource(sourcedata) {
 //封装选择主页源方法
 function selectSource(selectGroup) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+    let sourceListGroup = getItem('sourceListGroup', '');
     let sourceList = getDatas("yi", true);
-    if(selectGroup){
-        sourceList = getGroupLists(sourceList, selectGroup);
-    }
     let tmpList = sourceList;
+    if(selectGroup){
+        tmpList = getGroupLists(sourceList, selectGroup);
+    }else if(sourceListGroup){
+        tmpList = getGroupLists(sourceList, sourceListGroup);
+    }
     hikerPop.setUseStartActivity(false);
 
     function getitems(list) {
@@ -379,7 +382,7 @@ function selectSource(selectGroup) {
         toPosition: index,
         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
             hint: "源关键字筛选，右边切换分组",
-            title: selectGroup||"全部",
+            title: selectGroup||sourceListGroup||"全部",
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
@@ -401,6 +404,7 @@ function selectSource(selectGroup) {
                         selectGroup = s;
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");
+                        setItem('sourceListGroup', s);
                         
                         tmpList = getGroupLists(sourceList, s);
                         let flist = getitems(tmpList).items;

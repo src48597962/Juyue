@@ -346,20 +346,27 @@ function changeSource(sourcedata) {
 //封装选择主页源方法
 function selectSource(selectGroup) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-    let sourceListGroup = getItem('sourceListGroup', '');
+    let sourceListGroup = getItem('sourceListGroup', '');//列表选择的分组
     let sourceList = getDatas("yi", true);
     let tmpList = sourceList;
     if(selectGroup){
-        tmpList = getGroupLists(sourceList, selectGroup);
+        tmpList = getGroupLists(sourceList, selectGroup);//快速分组所在分组源列表
     }else if(sourceListGroup){
-        tmpList = getGroupLists(sourceList, sourceListGroup);
+        tmpList = getGroupLists(sourceList, sourceListGroup);//列表选择的分组源列表
     }
+
     hikerPop.setUseStartActivity(false);
+
+    let listSourceId;
+    let listGroup = selectGroup || sourceListGroup || "";
+    if(listGroup){
+        listSourceId = (homeSourceS[listGroup] || {}).id || "";
+    }
 
     function getitems(list) {
         let index = -1;
         let items = list.map((v,i) => {
-            if(v.id==homeSourceId){
+            if(v.id==listSourceId){
                 index = i;
             }
             return {title:v.name, icon:v.img, data:v};
@@ -371,12 +378,12 @@ function selectSource(selectGroup) {
     let index = index_items.index;
     let items = index_items.items;
     let spen = 3;
-    let hometitle = index>-1?items[index].title:"";
+    let hometitle = index>-1?items[index].title:"无";
 
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前源:" + (hometitle||"无") + "  合计:" + items.length,
+        title: (listGroup||"主页源") + "源:" + hometitle + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,

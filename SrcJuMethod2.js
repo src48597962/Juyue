@@ -116,7 +116,7 @@ function compress(bmpOriginal, ratio) {
 }
 
 let exports = {
-    "parse": parse,
+    "parse": () => parse(),
     "imageDecrypt": (key, iv, kiType, mode) => 图片解密(input, key, iv, kiType, mode),
     "imgDec": (key, iv, kiType, mode, base64Dec) => 图片解密2(key, iv, kiType, mode, base64Dec),
     "compress": (ratio) => compress(input, ratio),

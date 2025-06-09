@@ -383,7 +383,7 @@ function selectSource(selectGroup) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: (listGroup||"主页源") + "源:" + hometitle + "  合计:" + items.length,
+        title: "主页源:" + hometitle + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,
@@ -408,6 +408,7 @@ function selectSource(selectGroup) {
                     title: "切换源分组", 
                     //position: groupNames.indexOf(sourceName),
                     click(s) {
+                        setTitle(s);
                         selectGroup = s;
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");

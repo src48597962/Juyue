@@ -9,80 +9,82 @@ let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
 
-if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-    let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
+function oldtonew() {
+    if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
+        let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
 
-    function decodeUnicodeEscapes(str) {
-        return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
-            return String.fromCharCode(parseInt(p1, 16));
-        });
-    }
-    
-    function objconvertjs(obj) {
-        let str = 'let parse = {\n';
+        function decodeUnicodeEscapes(str) {
+            return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
+                return String.fromCharCode(parseInt(p1, 16));
+            });
+        }
+        
+        function objconvertjs(obj) {
+            let str = 'let parse = {\n';
 
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                let value = obj[key];
-                let valStr;
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    let value = obj[key];
+                    let valStr;
 
-                if (typeof value === 'function') {
-                    // 函数直接保留原样
-                    valStr = decodeUnicodeEscapes(value.toString());
-                } else {
-                    // 其他值用 JSON.stringify 美化
-                    valStr = JSON.stringify(value, null, 2);
+                    if (typeof value === 'function') {
+                        // 函数直接保留原样
+                        valStr = decodeUnicodeEscapes(value.toString());
+                    } else {
+                        // 其他值用 JSON.stringify 美化
+                        valStr = JSON.stringify(value, null, 2);
+                    }
+
+                    str += `  ${JSON.stringify(key)}: ${valStr},\n`;
                 }
-
-                str += `  ${JSON.stringify(key)}: ${valStr},\n`;
             }
+
+            str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
+            str += '};';
+
+            return str;
         }
+    
+        olddatalist.forEach(it=>{
+            if(it.parse&&it.erparse){
+                it.ilk = '3';
+            }else if(it.parse){
+                it.ilk = '1';
+            }else if(it.erparse){
+                it.ilk = '2';
+            }
+            it.public = (it.public||"{}").replace(/公共/g, 'parse');
+            it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace(/searchMain:/g,'searchAAMain:').replace(/\.searchMain/g,'.searchAAMain').replace(/searchMain.*?\);/g,'').replace(/\.searchAAMain/g,'.searchMain').replace(/searchAAMain:/g,'searchMain:').replace(/, stype: "听书"/g, '').replace(/sname: sourcename,/g, '');
+            it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
+            it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
+            it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
+            it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
+            it.parse = it.parse.replace('四大金刚', '静态分类');
 
-        str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
-        str += '};';
+            eval("let public = " + it.public);
+            eval("let parse = " + it.parse);
+            eval("let erparse = " + it.erparse);
+            let newjkjson = Object.assign({}, public, parse, erparse);
+            if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
+                erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
+            }
 
-        return str;
+            it.author = erparse['作者'];
+            it.group = it.type=="听书"?"听书":it.group;
+            it.type = it.type=="听书"?"音频":it.type;
+            it.group = it.type=="影视"?"影视":it.group;
+            it.type = it.type=="影视"?"视频":it.type;
+            it.id = Date.now().toString();
+            it.url = jkfilespath + it.id + '.txt';
+            delete it.updatetime;
+            delete it.public;
+            delete it.parse;
+            delete it.erparse;
+            writeFile(it.url, objconvertjs(newjkjson));
+            java.lang.Thread.sleep(10);
+        })
+        writeFile(jkfile, JSON.stringify(olddatalist));
     }
- 
-    olddatalist.forEach(it=>{
-        if(it.parse&&it.erparse){
-            it.ilk = '3';
-        }else if(it.parse){
-            it.ilk = '1';
-        }else if(it.erparse){
-            it.ilk = '2';
-        }
-        it.public = (it.public||"{}").replace(/公共/g, 'parse');
-        it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace(/searchMain:/g,'searchAAMain:').replace(/\.searchMain/g,'.searchAAMain').replace(/searchMain.*?\);/g,'').replace(/\.searchAAMain/g,'.searchMain').replace(/searchAAMain:/g,'searchMain:').replace(/, stype: "听书"/g, '').replace(/sname: sourcename,/g, '');
-        it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
-        it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-        it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-        it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-        it.parse = it.parse.replace('四大金刚', '静态分类');
-
-        eval("let public = " + it.public);
-        eval("let parse = " + it.parse);
-        eval("let erparse = " + it.erparse);
-        let newjkjson = Object.assign({}, public, parse, erparse);
-        if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
-            erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
-        }
-
-        it.author = erparse['作者'];
-        it.group = it.type=="听书"?"听书":it.group;
-        it.type = it.type=="听书"?"音频":it.type;
-        it.group = it.type=="影视"?"影视":it.group;
-        it.type = it.type=="影视"?"视频":it.type;
-        it.id = Date.now().toString();
-        it.url = jkfilespath + it.id + '.txt';
-        delete it.updatetime;
-        delete it.public;
-        delete it.parse;
-        delete it.erparse;
-        writeFile(it.url, objconvertjs(newjkjson));
-        java.lang.Thread.sleep(10);
-    })
-    writeFile(jkfile, JSON.stringify(olddatalist));
 }
 
 let Juconfig = {};

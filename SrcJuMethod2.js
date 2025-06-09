@@ -97,28 +97,42 @@ function toGrayscale(bmpOriginal) {
     return outInput(bmpGrayscale);
 }
 
-function getOptions() {
-    let options = new BitmapFactory.Options();
-    options.inSampleSize = 2.5;
-    return options;
+// 获取原始图片的字节大小（用于计算压缩率）
+function getOriginalSize(inputStream) {
+    const buffer = java.io.ByteArrayOutputStream();
+    const buf = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 1024);
+    let bytesRead;
+    while ((bytesRead = inputStream.read(buf)) != -1) {
+        buffer.write(buf, 0, bytesRead);
+    }
+    const originalBytes = buffer.toByteArray();
+    inputStream.reset(); // 重置流，以便后续处理
+    return originalBytes.length;
 }
-function outInput(bitmap){
-    let baos = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 85, baos);
+
+// 按压缩率压缩（0.5 = 50%，0.3 = 30%...）
+function compress(input, ratio) {
+    if (!ratio || ratio <= 0 || ratio >= 1) {
+        ratio = 0.5;
+    }
+    // 1. 先解码原始图片
+    const options = new BitmapFactory.Options();
+    options.inSampleSize = 1; // 初始不缩放
+    const bitmap = BitmapFactory.decodeStream(input, null, options);
+    // 2. 计算目标质量（假设JPEG压缩率与质量线性相关，实际可能非线性）
+    let quality = Math.round(ratio * 100);
+    quality = Math.max(10, Math.min(100, quality)); // 限制在 10-100 之间
+    // 3. 压缩并返回
+    const baos = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
     return new ByteArrayInputStream(baos.toByteArray());
 }
-function compress(bmpOriginal) {
-    bmpOriginal = BitmapFactory.decodeStream(bmpOriginal, null, getOptions());
-    return outInput(bmpOriginal);
-}
-//$.exports.compress = () => compress(input);
-//$.exports.toGrayscale = () => toGrayscale(input);
 
 let exports = {
     "parse": parse,
     "imageDecrypt": 图片解密,
     "imgDec": 图片解密2,
-    "compress": () => compress(input),
+    "compress": (ratio) => compress(input, ratio),
     "toGrayscale": () => toGrayscale(input)
 }
 try{

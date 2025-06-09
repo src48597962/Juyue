@@ -408,7 +408,6 @@ function selectSource(selectGroup) {
                     title: "切换源分组", 
                     //position: groupNames.indexOf(sourceName),
                     click(s) {
-                        setTitle(s);
                         selectGroup = s;
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");

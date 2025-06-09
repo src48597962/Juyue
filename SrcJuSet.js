@@ -991,7 +991,7 @@ function importConfirm(jsfile) {
         });
         d.push({
             title: "全量导入",
-            url: $("覆盖本地已存在重新导入，确认？").confirm((lx)=>{
+            url: $("全部覆盖导入，确认？").confirm((lx)=>{
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                 let importlist = storage0.getMyVar('importConfirm', []);
                 if(lx=="jk"){
@@ -1022,11 +1022,11 @@ function importConfirm(jsfile) {
             
             d.push({
                 title: it.name + "  (" + it.type + ")" + (it.group?"  ["+it.group+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}",
-                url: $(datamenu, 2).select((lx, data) => {
+                url: $(datamenu, 2).select((lx, data, isnew) => {
                     data = JSON.parse(base64Decode(data));
 
                     if (input == "确定导入") {
-                        return $("如本地存在则将覆盖，确认？").confirm((lx,data)=>{
+                        function iConfirm(lx,data) {
                             let dataid = data.id;
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                             let datas = [];
@@ -1048,7 +1048,14 @@ function importConfirm(jsfile) {
                                 deleteItem(dataurl);
                             }
                             return "toast://导入"+(num<0?"失败":num);
-                        },lx,data);
+                        }
+                        if(isnew){
+                            return iConfirm(lx,data);
+                        }else{
+                            return $("导入将覆盖本地，确认？").confirm((lx,data,iConfirm)=>{
+                                return iConfirm(lx,data);
+                            },lx,data,iConfirm);
+                        }
                     }else if (input == "修改名称") {
                         return $(data.name, "请输入新名称").input((data)=>{
                             if(!input.trim()){
@@ -1106,7 +1113,7 @@ function importConfirm(jsfile) {
                             return "toast://已删除";
                         }, data)
                     }
-                }, lx, base64Encode(JSON.stringify(it))),
+                }, lx, base64Encode(JSON.stringify(it)), isnew),
                 img: getIcon("管理-箭头.svg"),
                 col_type: "text_icon",
                 extra: {

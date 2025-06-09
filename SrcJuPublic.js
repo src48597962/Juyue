@@ -367,7 +367,7 @@ function selectSource(selectGroup) {
         return {items:items, index:index};
     }
 
-    let index_items = getitems(sourceList);
+    let index_items = getitems(tmpList);
     let index = index_items.index;
     let items = index_items.items;
     let spen = 3;

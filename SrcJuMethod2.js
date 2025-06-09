@@ -115,6 +115,7 @@ function compress(input, ratio) {
     if (!ratio || ratio <= 0 || ratio >= 1) {
         ratio = 0.5;
     }
+    log(ratio);
     // 1. 先解码原始图片
     const options = new BitmapFactory.Options();
     options.inSampleSize = 1; // 初始不缩放

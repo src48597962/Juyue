@@ -763,7 +763,7 @@ function JYshare(input,data) {
         hideLoading();
         if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
             xlog('剪贴板地址>'+pasteurl);
-            let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + '('+(input||'自动选择')+')';
+            let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
             copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             return "toast://聚影分享口令已生成";
         }else{

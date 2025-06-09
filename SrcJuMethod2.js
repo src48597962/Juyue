@@ -69,11 +69,57 @@ function 图片解密2(key, iv, kiType, mode, base64Dec) {
         return;
     }
 }
+//压缩和灰度代码
+const ByteArrayOutputStream = java.io.ByteArrayOutputStream;
+const ByteArrayInputStream = java.io.ByteArrayInputStream;
+const Bitmap = android.graphics.Bitmap;
+const BitmapFactory = android.graphics.BitmapFactory;
+const Canvas = android.graphics.Canvas;
+const Color = android.graphics.Color;
+const ColorMatrix = android.graphics.ColorMatrix;
+const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
+const Paint = android.graphics.Paint;
+
+function toGrayscale(bmpOriginal) {
+    bmpOriginal = BitmapFactory.decodeStream(bmpOriginal, null, getOptions());
+    let width, height;
+    height = bmpOriginal.getHeight();
+    width = bmpOriginal.getWidth();
+
+    let bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+    let c = new Canvas(bmpGrayscale);
+    let paint = new Paint();
+    let cm = new ColorMatrix();
+    cm.setSaturation(0);
+    let f = new ColorMatrixColorFilter(cm);
+    paint.setColorFilter(f);
+    c.drawBitmap(bmpOriginal, 0, 0, paint);
+    return outInput(bmpGrayscale);
+}
+
+function getOptions() {
+    let options = new BitmapFactory.Options();
+    options.inSampleSize = 2.5;
+    return options;
+}
+function outInput(bitmap){
+    let baos = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 85, baos);
+    return new ByteArrayInputStream(baos.toByteArray());
+}
+function compress(bmpOriginal) {
+    bmpOriginal = BitmapFactory.decodeStream(bmpOriginal, null, getOptions());
+    return outInput(bmpOriginal);
+}
+//$.exports.compress = () => compress(input);
+//$.exports.toGrayscale = () => toGrayscale(input);
 
 let exports = {
     "parse": parse,
     "imageDecrypt": 图片解密,
-    "imgDec": 图片解密2
+    "imgDec": 图片解密2,
+    "compress": compress,
+    "toGrayscale": toGrayscale
 }
 try{
     let exportskeys = Object.keys(exports);

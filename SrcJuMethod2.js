@@ -118,8 +118,8 @@ let exports = {
     "parse": parse,
     "imageDecrypt": 图片解密,
     "imgDec": 图片解密2,
-    "compress": compress,
-    "toGrayscale": toGrayscale
+    "compress": () => compress(input),
+    "toGrayscale": () => toGrayscale(input)
 }
 try{
     let exportskeys = Object.keys(exports);

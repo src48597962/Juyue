@@ -78,7 +78,7 @@ function bitmapToInputStream(bitmap, quality) {
 function decodeBitmap(input, inSampleSize) {
     return BitmapFactory.decodeStream(input, null, getOptions(inSampleSize));
 }
-// 转为灰度图（支持百分比缩小）
+// 转为灰度图
 function toGrayscale(bmpOriginal, inSampleSize) {
     const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
@@ -88,15 +88,15 @@ function toGrayscale(bmpOriginal, inSampleSize) {
         const canvas = new Canvas(bmpGrayscale);
         const paint = new Paint();
         const cm = new ColorMatrix();
-        cm.setSaturation(0); // 设置饱和度为0（灰度）
+        cm.setSaturation(0);
         paint.setColorFilter(new ColorMatrixColorFilter(cm));
         canvas.drawBitmap(bitmap, 0, 0, paint);
         return bitmapToInputStream(bmpGrayscale);
     } finally {
-        bitmap.recycle(); // 回收原Bitmap
+        bitmap.recycle();
     }
 }
-// 压缩图片（第2个是缩小比例，第3个是质量比例）
+// 压缩图片
 function compress(bmpOriginal, inSampleSize, quality) {
     const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {

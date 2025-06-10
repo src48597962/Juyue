@@ -980,7 +980,7 @@ function erji() {
                 }
                 d.push({
                     title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,
-                    url: (isrule?"hiker://empty##":"") + 列表[i].url + lazy,
+                    url: 列表[i].url.includes('@lazyRule=.')? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
                     desc: 列表[i].desc,
                     img: 列表[i].img,
                     col_type: 列表[i].col_type || list_col_type.replace("_left",""),

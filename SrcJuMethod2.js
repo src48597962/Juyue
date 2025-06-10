@@ -55,6 +55,20 @@ const Canvas = android.graphics.Canvas;
 const ColorMatrix = android.graphics.ColorMatrix;
 const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
 const Paint = android.graphics.Paint;
+// 计算最接近的 inSampleSize（支持百分比输入）
+function calculateSampleSize(percent) {
+    percent = percent || 100;
+    if (percent >= 100) return 1; // 不缩小
+    if (percent <= 0) percent = 1; // 最小缩小比例
+    
+    // 计算最接近的 2 的幂次方
+    const scale = 100 / percent;
+    let inSampleSize = 1;
+    while (inSampleSize * 2 <= scale) {
+        inSampleSize *= 2;
+    }
+    return inSampleSize;
+}
 // 获取Bitmap解码选项（支持动态缩小比例）
 function getOptions(inSampleSize) {
     let options = new BitmapFactory.Options();
@@ -77,8 +91,9 @@ function bitmapToInputStream(bitmap, quality) {
 function decodeBitmap(input, inSampleSize) {
     return BitmapFactory.decodeStream(input, null, getOptions(inSampleSize));
 }
-// 转为灰度图（支持动态缩小）
-function toGrayscale(bmpOriginal, inSampleSize) {
+// 转为灰度图（支持百分比缩小）
+function toGrayscale(bmpOriginal, scalePercent) {
+    const inSampleSize = calculateSampleSize(scalePercent);
     const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
         const width = bitmap.getWidth();
@@ -95,8 +110,9 @@ function toGrayscale(bmpOriginal, inSampleSize) {
         bitmap.recycle(); // 回收原Bitmap
     }
 }
-// 压缩图片（参数顺序调整：第2个是缩小比例，第3个是质量）
-function compress(bmpOriginal, inSampleSize, quality) {
+// 压缩图片（第2个是缩小比例，第3个是质量比例）
+function compress(bmpOriginal, scalePercent, quality) {
+    const inSampleSize = calculateSampleSize(scalePercent);
     const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
         return bitmapToInputStream(bitmap, quality);
@@ -104,12 +120,11 @@ function compress(bmpOriginal, inSampleSize, quality) {
         bitmap.recycle();
     }
 }
-
 let exports = {
     "parse": parse,
     "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
-    "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
-    "toGrayscale": () => toGrayscale(input)
+    "compress": (scalePercent, quality) => compress(input, scalePercent, quality),
+    "toGrayscale": (scalePercent) => toGrayscale(input, scalePercent)
 }
 try{
     let exportskeys = Object.keys(exports);

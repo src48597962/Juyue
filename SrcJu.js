@@ -97,6 +97,7 @@ function yiji(testSource) {
                     let sourcemenu = storage0.getMyVar("sourcemenu") || [];
                     if(sourcemenu.length>0){
                         putMyVar('频道展开','1');
+                        deleteItemByCls("sourcemenu");
                         addItemBefore("sourcemenuload", sourcemenu);
                         return "hiker://empty";
                     }else{

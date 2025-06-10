@@ -278,9 +278,10 @@ function SRCSet() {
         let selectmenu,datatitle;
         selectmenu = ["分享","编辑", "删除", it.stop?"启用":"禁用", "置顶", "测试"];
         datatitle = getDataTitle(it);
+        let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
         d.push({
-            title: it.stop?colorTitle(datatitle, '#f20c00'):datatitle,
+            title: it.stop?colorTitle(datatitle, '#bfbfbf'):datatitle,
             url: getMyVar('批量选择模式')?$('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
@@ -320,7 +321,7 @@ function SRCSet() {
                 }
             }, base64Encode(JSON.stringify(it))),
             desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + (it.ilk=="1" ? "  [主页源]" : it.ilk=="2" ? "  [搜索源]" : "  [完整源]"),
-            img: it.img || "http://123.56.105.145/tubiao/ke/31.png",
+            img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {
                 id: it.id

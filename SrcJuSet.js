@@ -401,6 +401,7 @@ function jiekouapi(data, look) {
         addListener("onClose", $.toString(() => {
             clearMyVar('selectTag');
         }));
+        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
         var d = [];
         d.push({
             title: '选择源接口对应的自定义分组标签',

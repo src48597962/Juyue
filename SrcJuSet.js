@@ -397,25 +397,84 @@ function jiekouapi(data, look) {
             //lineVisible: false
         }
     });
-
-    let groupNames = getGroupNames();
-    groupNames.push("自定义");
+    function selectGroupPage(oldgroup){
+        addListener("onClose", $.toString(() => {
+            clearMyVar('selectTag');
+        }));
+        var d = [];
+        d.push({
+            title: '选择源接口对应的自定义分组标签',
+            col_type: "rich_text"
+        });
+        d.push({
+            col_type: "line"
+        });
+        d.push({
+            title: '标签',
+            col_type: 'input',
+            desc: '已选择分组标签',
+            extra: {
+                titleVisible: false,
+                defaultValue: getMyVar('selectTag', oldgroup),
+                onChange: 'putMyVar("selectTag",input.replace("，",""));'
+            }
+        });
+        d.push({
+            title: '选择对应的分组标签>',
+            col_type: "rich_text"
+        });
+        d.push({
+            col_type: "line_blank"
+        });
+        let groupNames = getGroupNames();
+        groupNames.forEach(it=>{
+            d.push({
+                title:getMyVar('selectTag',oldgroup).indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
+                col_type:'text_4',
+                url: $('#noLoading#').lazyRule((tag)=>{
+                        let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
+                        if(selectTag.indexOf(tag)==-1){
+                            selectTag.push(tag);
+                            var sm = '选择标签>'+tag;
+                        }else{
+                            function removeByValue(arr, val) {
+                                for(var i = 0; i < arr.length; i++) {
+                                    if(arr[i] == val) {
+                                    arr.splice(i, 1);
+                                    break;
+                                    }
+                                }
+                            }
+                            removeByValue(selectTag,tag);
+                            var sm = '删除标签>'+tag;
+                        }
+                        putMyVar('selectTag',selectTag.join(','));
+                        refreshPage(false);
+                        return 'toast://'+sm;
+                }, it)
+            })
+        })
+        d.push({
+            col_type: "line_blank"
+        });
+        d.push({
+            title:'选择好了，点此返回',
+            col_type:'text_center_1',
+            url: $('#noLoading#').lazyRule(()=>{
+                let selectTag = getMyVar('selectTag','');
+                putMyVar('apigroup', selectTag);
+                back(true);
+                return "hiker://empty";
+            })
+        });
+        setHomeResult(d);
+    }
     d.push({
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
-        url: $(groupNames,2,"接口分组：").select(() => {
-            if(input=="自定义"){
-                return $("", "自定义搜索分组名称").input(() => {
-                    input = input.trim();
-                    putMyVar('apigroup',input);
-                    refreshPage(false);
-                    return 'hiker://empty';
-                })
-            }else{
-                putMyVar('apigroup',input);
-                refreshPage(false);
-            }
-            return 'toast://接口分组已设置为：' + input;
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            selectGroupPage(getMyVar('apigroup',''));
         }),
         extra: {
             //lineVisible: false

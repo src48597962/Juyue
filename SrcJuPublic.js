@@ -148,20 +148,20 @@ function getDatas(lx, isyx) {
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
     datas = datas.filter(it=>{
-        //let group = it.group||it.type;
-        return !k || k==it.type || (it.group&&k==it.group);//(k==group);
+        return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
     })
 
     return datas;
 }
-//获取接口分组名arry
-function getJkGroups(datas) {
+//获取指定接口组的分组名arry
+function getJkGroups(datas, isgroup) {
     let groupNams = [];
     datas.forEach(it => {
-        let group = (it.group || "").trim();//||it.type;
-        if (group && groupNams.indexOf(group)==-1){
-            groupNams.push(group);
-        }
+        (it.group || "").split(',').forEach(group=>{
+            if (group && groupNams.indexOf(group)==-1){
+                groupNams.push(group);
+            }
+        })
     })
     groupNams.sort((a, b) =>
         a.localeCompare(b, 'zh-CN', {
@@ -169,9 +169,12 @@ function getJkGroups(datas) {
             ignorePunctuation: true // 忽略标点符号
         })
     );
+    if(isgroup){
+        return groupNams;
+    }
     return runTypes.concat(groupNams);
 }
-//获取不同场景分组分类名称数组
+//获取不同场景分组分类名称arry
 function getTypeNames(s) {
     let snames = [];
     if (s == "搜索页") {
@@ -183,15 +186,9 @@ function getTypeNames(s) {
     }
     return snames;
 }
-//获取分组名称数组
+//获取所有分组名称arry
 function getGroupNames() {
-    let gnames = [];
-    getDatas('all', true).forEach(it => {
-        if (it.group && gnames.indexOf(it.group) == -1) {
-            gnames.push(it.group);
-        }
-    })
-    return gnames;
+    return getJkGroups(getDatas('all', true), 1);
 }
 //获取搜索接口列表
 function getSearchLists(group) {
@@ -215,15 +212,19 @@ function getSearchLists(group) {
 
     if(group){
         return datalist.filter(it=>{
-            return group==(it.group||it.type);
+            return group==it.type || (it.group||"").split(',').indexOf(group)>-1;
         });
-    }else{
+    }
+    /*
+    else{
         let lockgroups = Juconfig["lockgroups"] || [];
         datalist = datalist.filter(it=>{
             return lockgroups.indexOf(it.group||it.type)==-1;
         })
         return datalist;
     }
+    */
+    return datalist;
 }
 // 接口处理公共方法
 function dataHandle(data, input) {

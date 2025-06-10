@@ -290,8 +290,17 @@ function SRCSet() {
             },base64Encode(JSON.stringify(it))):$(selectmenu, 2).select((data) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "分享") {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                    return JYshare(getItem("sharePaste",""), data);
+                    if(getItem("sharePaste","")==""){
+                        let pastes = getPastes();
+                        pastes.push('云口令文件');
+                        return $(pastes,2).select((data)=>{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            return JYshare(input, data);
+                        }, data)
+                    }else{
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        return JYshare(getItem("sharePaste",""), data);
+                    }
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');

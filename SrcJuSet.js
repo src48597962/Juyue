@@ -401,6 +401,7 @@ function jiekouapi(data, look) {
         addListener("onClose", $.toString(() => {
             clearMyVar('selectTag');
         }));
+        setPageTitle('选择分组标签');
         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
         var d = [];
         d.push({
@@ -417,7 +418,7 @@ function jiekouapi(data, look) {
             extra: {
                 titleVisible: false,
                 defaultValue: getMyVar('selectTag', oldgroup),
-                onChange: 'putMyVar("selectTag",input.replace("，",""));'
+                onChange: 'putMyVar("selectTag",input.replace("，","")); refreshPage();'
             }
         });
         d.push({

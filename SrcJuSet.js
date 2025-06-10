@@ -437,7 +437,6 @@ function jiekouapi(data, look) {
                         let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
                         if(selectTag.indexOf(tag)==-1){
                             selectTag.push(tag);
-                            var sm = '选择标签>'+tag;
                         }else{
                             function removeByValue(arr, val) {
                                 for(var i = 0; i < arr.length; i++) {
@@ -448,11 +447,10 @@ function jiekouapi(data, look) {
                                 }
                             }
                             removeByValue(selectTag,tag);
-                            var sm = '删除标签>'+tag;
                         }
                         putMyVar('selectTag',selectTag.join(','));
                         refreshPage(false);
-                        return 'toast://'+sm;
+                        return 'hiker://empty';
                 }, it)
             })
         })

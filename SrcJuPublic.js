@@ -155,24 +155,34 @@ function getGroupLists(datas, k) {
 }
 //获取指定接口组的分组名arry
 function getJkGroups(datas, isgroup) {
-    let groupNams = [];
+    let typeNames = [];
+    let groupNames = [];
     datas.forEach(it => {
         (it.group || "").split(',').forEach(group=>{
-            if (group && groupNams.indexOf(group)==-1){
-                groupNams.push(group);
+            if (group && groupNames.indexOf(group)==-1){
+                groupNames.push(group);
             }
         })
+        if (typeNames.indexOf(it.type)==-1){
+            typeNames.push(it.type);
+        }
     })
-    groupNams.sort((a, b) =>
+    groupNames.sort((a, b) =>
         a.localeCompare(b, 'zh-CN', {
             sensitivity: 'accent', // 忽略大小写但区分音调
             ignorePunctuation: true // 忽略标点符号
         })
     );
     if(isgroup){
-        return groupNams;
+        return groupNames;
     }
-    return runTypes.concat(groupNams);
+    let yxTypes = [];
+    runTypes.forEach(it=>{
+        if (yxTypes.indexOf(it)==-1 && typeNames.indexOf(it)>-1){
+            yxTypes.push(it);
+        }
+    })
+    return yxTypes.concat(groupNames);
 }
 //获取不同场景分组分类名称arry
 function getTypeNames(s) {

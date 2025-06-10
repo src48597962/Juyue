@@ -1020,67 +1020,58 @@ function importConfirm(jsfile) {
             url: "hiker://empty",
             col_type: 'text_center_1'
         });
-        if(importdatas.length>0 && oldnum==0){
-            d.push({
-                title: "确定导入",
-                url: $().lazyRule((lx)=>{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                    let importlist = storage0.getMyVar('importConfirm', []);
-                    let num;
-                    if(lx=="jk"){
-                        num = jiekousave(importlist, 0);
-                    }else{
-                        return "toast://类型异常";
-                    }
-                    clearMyVar('SrcJu_searchMark');
-                    back(false);
-                    return "toast://增量导入"+(num<0?"失败":num);
-                },lx),
-                img: getIcon("管理-增量导入.svg"),
-                col_type: 'icon_small_3'
-            });
-        }else{
-            d.push({
-                title: "增量导入",
-                url: $("跳过已存在，只导入新增，确认？").confirm((lx)=>{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                    let importlist = storage0.getMyVar('importConfirm', []);
-                    let num;
-                    if(lx=="jk"){
-                        num = jiekousave(importlist, 0);
-                    }else{
-                        return "toast://类型异常";
-                    }
-                    clearMyVar('SrcJu_searchMark');
-                    back(false);
-                    return "toast://增量导入"+(num<0?"失败":num);
-                },lx),
-                img: getIcon("管理-增量导入.svg"),
-                col_type: 'icon_small_3'
-            });
-            d.push({
-                title: "",
-                url: "hiker://empty",
-                col_type: 'icon_small_3'
-            });
-            d.push({
-                title: "全量导入",
-                url: $("全部覆盖导入，确认？").confirm((lx)=>{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                    let importlist = storage0.getMyVar('importConfirm', []);
-                    if(lx=="jk"){
-                        num = jiekousave(importlist, 1);
-                    }else{
-                        return "toast://类型异常";
-                    }
-                    clearMyVar('SrcJu_searchMark');
-                    back(false);
-                    return "toast://全量导入"+(num<0?"失败":num);
-                },lx),
-                img: getIcon("管理-全量导入.svg"),
-                col_type: 'icon_small_3'
-            });
-        }
+
+        d.push({
+            title: importdatas.length>0&&oldnum==0?"":"增量导入",
+            url: importdatas.length>0&&oldnum==0?"hiker://empty":$("跳过已存在，只导入新增，确认？").confirm((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                let num;
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 0);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://增量导入"+(num<0?"失败":num);
+            },lx),
+            img: getIcon("管理-增量导入.svg"),
+            col_type: 'icon_small_3'
+        });
+        d.push({
+            title: "",
+            url: "hiker://empty",
+            col_type: 'icon_small_3'
+        });
+        d.push({
+            title: "全量导入",
+            url: importdatas.length>0&&oldnum==0?$().lazyRule((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 1);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://全量导入"+(num<0?"失败":num);
+            },lx):$("全部覆盖导入，确认？").confirm((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 1);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://全量导入"+(num<0?"失败":num);
+            },lx),
+            img: getIcon("管理-全量导入.svg"),
+            col_type: 'icon_small_3'
+        });
         
         importdatas.forEach(it=>{
             let isnew = newdatas.some(v=>v.id==it.id);

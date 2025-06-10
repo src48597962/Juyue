@@ -71,7 +71,7 @@ function getYiData(datatype, jkdata, dd) {
                     channel.push(it);
                 }
             })
-            let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":"text_3";
+            let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
             channel.forEach(it=>{
                 sourcemenu.push({
                     title: it,

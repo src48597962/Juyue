@@ -211,20 +211,20 @@ function yiji(testSource) {
                 d.push(item);
             })
         }
-        let searchurl = $('#noLoading#').lazyRule((jkdata) => {
+        let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
             }else if(getItem('接口搜索方式','主页界面')=="当前接口"){
                 storage0.putMyVar('SrcJu_搜索临时搜索数据', jkdata);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式')=="分组接口"){
-                putMyVar('SrcJu_搜索临时搜索分组', jkdata.group||jkdata.type);
+                putMyVar('SrcJu_搜索临时搜索分组', homeGroup||jkdata.type);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式')=="页面聚合"){
                 return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
                     require(config.聚阅);
                     newSearch(input, group);
-                }, input, jkdata.group||jkdata.type);
+                }, input, homeGroup||jkdata.type);
             }else{//当前主页
                 require(config.聚阅); 
                 showLoading('搜索中');
@@ -238,7 +238,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }
-        }, jkdata);
+        }, jkdata, Juconfig['homeGroup']);
         
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',

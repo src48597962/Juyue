@@ -652,8 +652,13 @@ function erji() {
                 }
             })
             d.push({
-                col_type: "line_blank"
-            });
+                    col_type: "line"
+            })
+            for (let i = 0; i < 10; i++) {
+                d.push({
+                    col_type: "blank_block"
+                })
+            }
             let line_col_type = getItem('SrcJuLine_col_type', 'scroll_button');
             let addmoreitems = 0;
             if(getItem('extenditems','1')=="1" && erLoadData.moreitems && $.type(erLoadData.moreitems)=='array'){

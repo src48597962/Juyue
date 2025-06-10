@@ -325,7 +325,7 @@ function toerji(item, jkdata) {
         if(!jkdata.url){
             jkdata = storage0.getMyVar('一级源接口信息');
         }
-        if(item.url && item.url.includes('#notoerji#')){
+        if(item.url && item.url.toString().includes('#notoerji#')){
             item.url = item.url.replace('#notoerji#', '');
         }else if(item.url && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty'){
             let extra = item.extra || {};

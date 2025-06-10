@@ -16,30 +16,7 @@ let parse = function(fileid) {
     return readData(fileid)
 }
 
-function 图片解密(key, iv, kiType, mode) {
-    const CryptoUtil = $.require("http://hiker.nokia.press/hikerule/rulelist.json?id=6805&auth=5e44e1a1-51f6-5825-97ae-4d381341bc00");
-    let getData = (str, type) => {
-        switch (type) {
-            case "Hex":
-                return CryptoUtil.Data.parseHex(str);
-            case "Base64":
-                return CryptoUtil.Data.parseBase64(str);
-            case "UTF8":
-            default:
-                return CryptoUtil.Data.parseUTF8(str);
-        }
-    }
-    let keyData = getData(key, kiType),
-        ivData = getData(iv, kiType),
-        textData = CryptoUtil.Data.parseInputStream(input);
-    let encrypted = CryptoUtil.AES.decrypt(textData, keyData, {
-        mode: mode,
-        iv: ivData
-    });
-    return encrypted.toInputStream();
-}
-
-function 图片解密2(key, iv, kiType, mode, base64Dec) {
+function 图片解密(key, iv, kiType, mode, isBase64Dec) {
     try {
         if (input == null) throw new Error("");
         const CryptoUtil = $.require("hiker://assets/crypto-java.js");
@@ -57,7 +34,7 @@ function 图片解密2(key, iv, kiType, mode, base64Dec) {
         let keyData = getData(key, kiType);
         let ivData = getData(iv, kiType);
         let textData = CryptoUtil.Data.parseInputStream(input);
-        if(base64Dec){
+        if(isBase64Dec){
             textData = textData.base64Decode();
         }
         let encrypted = CryptoUtil.AES.decrypt(textData, keyData, {
@@ -117,8 +94,7 @@ function compress(bmpOriginal, ratio) {
 
 let exports = {
     "parse": parse,
-    "imageDecrypt": (key, iv, kiType, mode) => 图片解密(input, key, iv, kiType, mode),
-    "imgDec": (key, iv, kiType, mode, base64Dec) => 图片解密2(key, iv, kiType, mode, base64Dec),
+    "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(key, iv, kiType, mode, isBase64Dec),
     "compress": (ratio) => compress(input, ratio),
     "toGrayscale": () => toGrayscale(input)
 }

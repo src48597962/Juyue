@@ -283,7 +283,7 @@ function duoselect(data){
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'#f20c00'):getDataTitle(data)});
+            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'grey'):getDataTitle(data)});
         }
     })
     storage0.putMyVar('duodatalist',selectlist);

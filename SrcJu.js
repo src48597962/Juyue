@@ -1094,7 +1094,7 @@ function sousuo() {
                         clearMyVar('SrcJu_搜索临时搜索数据');
                     }else{
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        let group = getMyVar('SrcJu_搜索临时搜索分组','');
+                        let group = getMyVar('SrcJu_搜索临时搜索分组','') || homeGroup;
                         ssdatalist = getSearchLists(group);
                         clearMyVar('SrcJu_搜索临时搜索分组');
                     }

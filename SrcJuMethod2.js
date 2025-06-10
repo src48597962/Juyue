@@ -52,50 +52,63 @@ const ByteArrayInputStream = java.io.ByteArrayInputStream;
 const Bitmap = android.graphics.Bitmap;
 const BitmapFactory = android.graphics.BitmapFactory;
 const Canvas = android.graphics.Canvas;
-const Color = android.graphics.Color;
 const ColorMatrix = android.graphics.ColorMatrix;
 const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
 const Paint = android.graphics.Paint;
-
-function getOptions() {
+// 获取Bitmap解码选项（支持动态缩小比例）
+function getOptions(inSampleSize) {
     let options = new BitmapFactory.Options();
-    options.inSampleSize = 2;
+    options.inSampleSize = inSampleSize || 1; // 默认不缩小
+    options.inPreferredConfig = Bitmap.Config.ARGB_8888; // 使用高质量颜色模式
     return options;
 }
+// 将Bitmap转为InputStream（自动关闭流）
 function bitmapToInputStream(bitmap, quality) {
-    quality = quality || 85;
+    quality = quality || 85; // 默认质量85%
     const baos = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-    return new ByteArrayInputStream(baos.toByteArray());
+    try {
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+        return new ByteArrayInputStream(baos.toByteArray());
+    } finally {
+        baos.close(); // 确保流关闭
+    }
 }
-function decodeBitmap(input) {
-    return BitmapFactory.decodeStream(input, null, getOptions());
+// 解码输入流为Bitmap（支持动态缩小）
+function decodeBitmap(input, inSampleSize) {
+    return BitmapFactory.decodeStream(input, null, getOptions(inSampleSize));
 }
-function toGrayscale(bmpOriginal) {
-    const bitmap = decodeBitmap(bmpOriginal);
-    const width = bitmap.getWidth();
-    const height = bitmap.getHeight();
-    const bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-    const canvas = new Canvas(bmpGrayscale);
-    const paint = new Paint();
-    const cm = new ColorMatrix();
-    cm.setSaturation(0);
-    paint.setColorFilter(new ColorMatrixColorFilter(cm));
-    canvas.drawBitmap(bitmap, 0, 0, paint);
-    bitmap.recycle(); 
-    return bitmapToInputStream(bmpGrayscale);
+// 转为灰度图（支持动态缩小）
+function toGrayscale(bmpOriginal, inSampleSize) {
+    const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
+    try {
+        const width = bitmap.getWidth();
+        const height = bitmap.getHeight();
+        const bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        const canvas = new Canvas(bmpGrayscale);
+        const paint = new Paint();
+        const cm = new ColorMatrix();
+        cm.setSaturation(0); // 设置饱和度为0（灰度）
+        paint.setColorFilter(new ColorMatrixColorFilter(cm));
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        return bitmapToInputStream(bmpGrayscale);
+    } finally {
+        bitmap.recycle(); // 回收原Bitmap
+    }
 }
-function compress(bmpOriginal, ratio) {
-    const bitmap = decodeBitmap(bmpOriginal);
-    const result = bitmapToInputStream(bitmap, ratio);
-    bitmap.recycle();
-    return result;
+// 压缩图片（参数顺序调整：第2个是缩小比例，第3个是质量）
+function compress(bmpOriginal, inSampleSize, quality) {
+    const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
+    try {
+        return bitmapToInputStream(bitmap, quality);
+    } finally {
+        bitmap.recycle();
+    }
 }
 
 let exports = {
     "parse": parse,
-    "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(key, iv, kiType, mode, isBase64Dec),
-    "compress": (ratio) => compress(input, ratio),
+    "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
+    "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
     "toGrayscale": () => toGrayscale(input)
 }
 try{

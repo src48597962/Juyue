@@ -654,7 +654,7 @@ function erji() {
             d.push({
                     col_type: "line"
             })
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 6; i++) {
                 d.push({
                     col_type: "blank_block"
                 })

@@ -158,14 +158,14 @@ function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
     datas.forEach(it => {
-        (it.group || "").split(',').forEach(group=>{
-            if (group && groupNames.indexOf(group)==-1){
-                groupNames.push(group);
-            }
-        })
         if (typeNames.indexOf(it.type)==-1){
             typeNames.push(it.type);
         }
+        (it.group || "").split(',').forEach(group=>{
+            if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
+                groupNames.push(group);
+            }
+        })
     })
     groupNames.sort((a, b) =>
         a.localeCompare(b, 'zh-CN', {

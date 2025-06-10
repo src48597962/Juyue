@@ -472,10 +472,9 @@ function jiekouapi(data, look) {
     d.push({
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
-        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule((selectGroupPage) => {
             selectGroupPage(getMyVar('apigroup',''));
-        }),
+        },selectGroupPage),
         extra: {
             //lineVisible: false
         }

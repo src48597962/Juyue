@@ -428,7 +428,7 @@ function jiekouapi(data, look) {
             extra: {
                 titleVisible: false,
                 defaultValue: getMyVar('selectTag', oldgroup),
-                onChange: 'putMyVar("selectTag",input.replace("，","")); refreshPage();'
+                onChange: 'putMyVar("selectTag",input.replace("，",""));'
             }
         });
         d.push({

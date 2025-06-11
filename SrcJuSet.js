@@ -155,7 +155,7 @@ function SRCSet() {
                 }
                 return "hiker://empty";
             },it),
-            col_type: 'flex_botton',
+            col_type: 'flex_button',
             extra: {
                 backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + color.replace('#',''):""
             }

@@ -391,7 +391,7 @@ function selectSource(selectGroup) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "主页源:" + hometitle + "  合计:" + items.length,
+        title: hometitle + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,

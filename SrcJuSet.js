@@ -145,6 +145,7 @@ function SRCSet() {
     let groupNames = getJkGroups(datalist);
     groupNames.unshift("全部");
     let color = "#3399cc";
+    let groupColtype = getItem("groupColtype", "flex_button");
     groupNames.forEach(it =>{
         let obj = {
             title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #`+color+`">`+it+`</span></b>`:it,
@@ -155,7 +156,7 @@ function SRCSet() {
                 }
                 return "hiker://empty";
             },it),
-            col_type: 'flex_button',
+            col_type: groupColtype,
             extra: {
                 backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + color.replace('#',''):""
             }
@@ -163,7 +164,7 @@ function SRCSet() {
         
         if(it == "全部"){
             obj.extra.longClick = [{
-                title: "分组样式" + getItem("groupColtype", "flex_button"),
+                title: "分组样式:" + getItem("groupColtype", "flex_button"),
                 js: $.toString(() => {
                     return $(["flex_button","scroll_button"], 1).select(() => {
                         setItem("groupColtype", input);
@@ -171,7 +172,7 @@ function SRCSet() {
                     })
                 })
             },{
-                title: "列表排序：" + getItem("sourceListSort", "更新时间"),
+                title: "列表排序:" + getItem("sourceListSort", "更新时间"),
                 js: $.toString(() => {
                     return $(["更新时间","接口名称"], 1).select(() => {
                         setItem("sourceListSort", input);

@@ -27,9 +27,9 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $(["批量选择","查看禁用","清空所有"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看禁用":"查看全部","清空所有"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-            if(input=="批量选择"){
+            if(input=="批量选择" || input=="退出批量"){
                 let sm;
                 if(getMyVar('批量选择模式')){
                     clearMyVar('批量选择模式');
@@ -48,7 +48,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://已全部清空';
                 })
-            }else if(input=="查看禁用"){
+            }else if(input=="查看禁用"||input=="查看全部"){
                 let sm;
                 if(getMyVar('onlyStopJk')){
                     clearMyVar('onlyStopJk');
@@ -155,7 +155,7 @@ function SRCSet() {
                 }
                 return "hiker://empty";
             },it),
-            col_type: 'scroll_button',
+            col_type: 'flex_botton',
             extra: {
                 backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + color.replace('#',''):""
             }

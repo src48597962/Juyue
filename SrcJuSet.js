@@ -432,21 +432,14 @@ function jiekouapi(data, look) {
         });
         d.push({
             title: '清除',
-            url: $.toString(() => {
-                clearMyVar('selectTag');
-                refreshPage(false);
-                return 'hiker://empty';
-            }),
             col_type: 'input',
             desc: '已选择分组标签',
             extra: {
                 titleVisible: false,
                 defaultValue: getMyVar('selectTag', ''),
                 onChange: $.toString(() => {
-                    if(input==""){
-                        if(getMyVar('selectTag')){
-                            refreshPage(false);
-                        }
+                    if(input=="" && getMyVar('selectTag')){//有些手机会一直刷新，所以加上判断从有到无时再执行
+                        refreshPage(false);
                         clearMyVar('selectTag');
                     }
                 })

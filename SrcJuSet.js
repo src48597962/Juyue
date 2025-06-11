@@ -515,9 +515,11 @@ function jiekouapi(data, look) {
     d.push({
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
-        url: $('hiker://empty#noRecordHistory##noHistory#').rule((selectGroupPage) => {
+        url: $('#noLoading#').lazyRule((selectGroupPage)=>{
             putMyVar('selectTag', getMyVar('apigroup',''));
-            selectGroupPage();
+            return $('hiker://empty#noRecordHistory##noHistory#').rule((selectGroupPage) => {
+                selectGroupPage();
+            },selectGroupPage)
         },selectGroupPage),
         extra: {
             //lineVisible: false

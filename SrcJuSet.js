@@ -144,7 +144,7 @@ function SRCSet() {
 
     let groupNames = getJkGroups(datalist);
     groupNames.unshift("全部");
-    let color = "#6dc9ff";
+    let color = "#3399cc";
     groupNames.forEach(it =>{
         let obj = {
             title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #`+color+`">`+it+`</span></b>`:it,

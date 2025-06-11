@@ -444,6 +444,7 @@ function jiekouapi(data, look) {
                 defaultValue: getMyVar('selectTag', ''),
                 onChange: $.toString(() => {
                     if(input==""){
+                        xlog("刷新");
                         clearMyVar('selectTag');
                         refreshPage(false);
                     }

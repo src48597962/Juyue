@@ -47,15 +47,8 @@ function 图片解密(key, iv, kiType, mode, isBase64Dec) {
     }
 }
 //压缩和灰度代码
-let ByteArrayOutputStream = java.io.ByteArrayOutputStream;
-let ByteArrayInputStream = java.io.ByteArrayInputStream;
 let Bitmap = android.graphics.Bitmap;
 let BitmapFactory = android.graphics.BitmapFactory;
-let Canvas = android.graphics.Canvas;
-let ColorMatrix = android.graphics.ColorMatrix;
-let ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
-let Paint = android.graphics.Paint;
-
 // 获取Bitmap解码选项（支持动态缩小比例）
 function getOptions(inSampleSize) {
     let options = new BitmapFactory.Options();
@@ -66,6 +59,8 @@ function getOptions(inSampleSize) {
 // 将Bitmap转为InputStream（自动关闭流）
 function bitmapToInputStream(bitmap, quality) {
     quality = quality || 85; // 默认质量85%
+    let ByteArrayOutputStream = java.io.ByteArrayOutputStream;
+    let ByteArrayInputStream = java.io.ByteArrayInputStream;
     let baos = new ByteArrayOutputStream();
     try {
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
@@ -80,7 +75,11 @@ function decodeBitmap(input, inSampleSize) {
 }
 // 转为灰度图
 function toGrayscale(bmpOriginal, inSampleSize) {
-    const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
+    let Canvas = android.graphics.Canvas;
+    let ColorMatrix = android.graphics.ColorMatrix;
+    let ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
+    let Paint = android.graphics.Paint;
+    let bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
         let width = bitmap.getWidth();
         let height = bitmap.getHeight();

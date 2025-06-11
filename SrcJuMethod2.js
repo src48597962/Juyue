@@ -47,17 +47,10 @@ function 图片解密(key, iv, kiType, mode, isBase64Dec) {
     }
 }
 //压缩和灰度代码
-const ByteArrayOutputStream = java.io.ByteArrayOutputStream;
-const ByteArrayInputStream = java.io.ByteArrayInputStream;
-const Bitmap = android.graphics.Bitmap;
-const BitmapFactory = android.graphics.BitmapFactory;
-const Canvas = android.graphics.Canvas;
-const ColorMatrix = android.graphics.ColorMatrix;
-const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
-//const Paint = android.graphics.Paint;
-
 // 获取Bitmap解码选项（支持动态缩小比例）
 function getOptions(inSampleSize) {
+    const BitmapFactory = android.graphics.BitmapFactory;
+    const Bitmap = android.graphics.Bitmap;
     let options = new BitmapFactory.Options();
     options.inSampleSize = inSampleSize || 1; // 默认不缩小
     options.inPreferredConfig = Bitmap.Config.ARGB_8888; // 使用高质量颜色模式
@@ -65,6 +58,9 @@ function getOptions(inSampleSize) {
 }
 // 将Bitmap转为InputStream（自动关闭流）
 function bitmapToInputStream(bitmap, quality) {
+    const ByteArrayOutputStream = java.io.ByteArrayOutputStream;
+    const ByteArrayInputStream = java.io.ByteArrayInputStream;
+    const Bitmap = android.graphics.Bitmap;
     quality = quality || 85; // 默认质量85%
     const baos = new ByteArrayOutputStream();
     try {
@@ -76,12 +72,17 @@ function bitmapToInputStream(bitmap, quality) {
 }
 // 解码输入流为Bitmap（支持动态缩小）
 function decodeBitmap(input, inSampleSize) {
+    const BitmapFactory = android.graphics.BitmapFactory;
     return BitmapFactory.decodeStream(input, null, getOptions(inSampleSize));
 }
 // 转为灰度图
 function toGrayscale(bmpOriginal, inSampleSize) {
     const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
+        const ColorMatrix = android.graphics.ColorMatrix;
+        const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
+        const Canvas = android.graphics.Canvas;
+        const Paint = android.graphics.Paint;
         const width = bitmap.getWidth();
         const height = bitmap.getHeight();
         const bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

@@ -433,7 +433,12 @@ function jiekouapi(data, look) {
             extra: {
                 titleVisible: true,
                 defaultValue: getMyVar('selectTag', oldgroup),
-                onChange: ''
+                onChange: $.toString(() => {
+                    if(input==""){
+                        clearMyVar('selectTag');
+                        refreshPage(false);
+                    }
+                })
             }
         });
         d.push({

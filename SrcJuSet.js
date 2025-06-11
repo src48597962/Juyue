@@ -27,7 +27,7 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看禁用":"查看全部","清空所有"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;

@@ -422,13 +422,18 @@ function jiekouapi(data, look) {
             col_type: "line"
         });
         d.push({
-            title: '标签',
+            title: '清除',
+            url: $.toString(() => {
+                clearMyVar('selectTag');
+                refreshPage(false);
+                return 'hiker://empty';
+            }),
             col_type: 'input',
             desc: '已选择分组标签',
             extra: {
-                titleVisible: false,
+                titleVisible: true,
                 defaultValue: getMyVar('selectTag', oldgroup),
-                onChange: 'putMyVar("selectTag",input.replace("，",""));if(input==""){refreshPage(false);}'
+                onChange: ''
             }
         });
         d.push({
@@ -439,11 +444,25 @@ function jiekouapi(data, look) {
             col_type: "line_blank"
         });
         let groupNames = getGroupNames();
+        groupNames.push('自定义');
         groupNames.forEach(it=>{
             d.push({
-                title:getMyVar('selectTag',oldgroup).indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
+                title:getMyVar('selectTag', oldgroup).indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
                 col_type:'text_4',
-                url: $('#noLoading#').lazyRule((tag)=>{
+                url: it=="自定义"?$("", "自定义分组标签").input((runTypes)=>{
+                        input = input.trim();
+                        if(!input){
+                            return "hiker://empty";
+                        }
+                        let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
+                        if(selectTag.indexOf(input)>-1 || runTypes.indexOf(input)>-1){
+                            return "toast://不能重复录入";
+                        }
+                        selectTag.push(tag);
+                        putMyVar('selectTag',selectTag.join(','));
+                        refreshPage(false);
+                        return 'hiker://empty';
+                }, runTypes):$('#noLoading#').lazyRule((tag)=>{
                         let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
                         if(selectTag.indexOf(tag)==-1){
                             selectTag.push(tag);
@@ -456,7 +475,7 @@ function jiekouapi(data, look) {
                                     }
                                 }
                             }
-                            removeByValue(selectTag,tag);
+                            removeByValue(selectTag, tag);
                         }
                         putMyVar('selectTag',selectTag.join(','));
                         refreshPage(false);

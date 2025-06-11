@@ -54,7 +54,7 @@ const BitmapFactory = android.graphics.BitmapFactory;
 const Canvas = android.graphics.Canvas;
 const ColorMatrix = android.graphics.ColorMatrix;
 const ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
-const Paint = android.graphics.Paint;
+//const Paint = android.graphics.Paint;
 
 // 获取Bitmap解码选项（支持动态缩小比例）
 function getOptions(inSampleSize) {

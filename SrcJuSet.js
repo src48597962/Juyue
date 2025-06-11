@@ -407,7 +407,7 @@ function jiekouapi(data, look) {
             //lineVisible: false
         }
     });
-    function selectGroupPage(oldgroup){
+    function selectGroupPage(){
         addListener("onClose", $.toString(() => {
             clearMyVar('selectTag');
         }));
@@ -431,8 +431,8 @@ function jiekouapi(data, look) {
             col_type: 'input',
             desc: '已选择分组标签',
             extra: {
-                titleVisible: true,
-                defaultValue: getMyVar('selectTag', oldgroup),
+                titleVisible: false,
+                defaultValue: getMyVar('selectTag', ''),
                 onChange: $.toString(() => {
                     if(input==""){
                         clearMyVar('selectTag');
@@ -452,7 +452,7 @@ function jiekouapi(data, look) {
         groupNames.push('自定义');
         groupNames.forEach(it=>{
             d.push({
-                title:getMyVar('selectTag', oldgroup).indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
+                title:getMyVar('selectTag', '').indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
                 col_type:'text_4',
                 url: it=="自定义"?$("", "自定义分组标签").input((runTypes)=>{
                         input = input.trim();
@@ -507,7 +507,8 @@ function jiekouapi(data, look) {
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule((selectGroupPage) => {
-            selectGroupPage(getMyVar('apigroup',''));
+            putMyVar('selectTag', getMyVar('apigroup',''));
+            selectGroupPage();
         },selectGroupPage),
         extra: {
             //lineVisible: false

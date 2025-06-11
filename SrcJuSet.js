@@ -163,6 +163,14 @@ function SRCSet() {
         
         if(it == "全部"){
             obj.extra.longClick = [{
+                title: "分组样式" + getItem("groupColtype", "flex_button"),
+                js: $.toString(() => {
+                    return $(["flex_button","scroll_button"], 1).select(() => {
+                        setItem("groupColtype", input);
+                        refreshPage(false);
+                    })
+                })
+            },{
                 title: "列表排序：" + getItem("sourceListSort", "更新时间"),
                 js: $.toString(() => {
                     return $(["更新时间","接口名称"], 1).select(() => {

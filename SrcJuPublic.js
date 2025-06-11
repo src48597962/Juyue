@@ -356,30 +356,25 @@ function changeSource(sourcedata) {
     refreshPage(false);
     return 'hiker://empty';
 }
+clearItem('sourceListGroup');
 //封装选择主页源方法
 function selectSource(selectGroup) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-    let sourceListGroup = getItem('sourceListGroup', '');//列表选择的分组
     let sourceList = getDatas("yi", true);
     let tmpList = sourceList;
+    let changeGroup = getItem('显示快速分组','')?"全部":homeGroup;
     if(selectGroup){
         tmpList = getGroupLists(sourceList, selectGroup);//快速分组所在分组源列表
-    }else if(sourceListGroup){
-        tmpList = getGroupLists(sourceList, sourceListGroup);//列表选择的分组源列表
+    }else if(changeGroup != "全部"){
+        tmpList = getGroupLists(sourceList, changeGroup);//列表选择的分组源列表
     }
 
     hikerPop.setUseStartActivity(false);
 
-    let listSourceId;
-    let listGroup = selectGroup || sourceListGroup || "";
-    if(listGroup){
-        listSourceId = (homeSourceS[listGroup] || {}).id || "";
-    }
-
     function getitems(list) {
         let index = -1;
         let items = list.map((v,i) => {
-            if(v.id==listSourceId){
+            if(v.id==homeSourceId){
                 index = i;
             }
             return {title:v.name, icon:v.img, data:v};
@@ -402,7 +397,7 @@ function selectSource(selectGroup) {
         toPosition: index,
         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
             hint: "源关键字筛选，右边切换分组",
-            title: selectGroup||sourceListGroup||"全部",
+            title: selectGroup||changeGroup||"全部",
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
@@ -424,7 +419,6 @@ function selectSource(selectGroup) {
                         selectGroup = s;
                         inputBox.setTitle(s);
                         inputBox.setDefaultValue("");
-                        setItem('sourceListGroup', s);
                         
                         tmpList = getGroupLists(sourceList, s);
                         let flist = getitems(tmpList).items;

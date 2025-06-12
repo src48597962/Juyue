@@ -11,7 +11,7 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 // 静态分类调用生成方法
-function createClass(obj) {
+function createClass(d, obj) {
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');
             let area_name = (obj.area_name || "").split('&').filter(item => item != '');

@@ -1081,7 +1081,7 @@ function erji() {
                         delete parse[it];
                     })
                 }catch(e){}
-                erjiextra.data.extstr = 'let parse = ' + parse.toString();
+                erjiextra.data.extstr = parse;
                 setPageParams(erjiextra);
             }
         }

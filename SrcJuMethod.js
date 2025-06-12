@@ -26,7 +26,7 @@ function createClass(obj) {
             fyarea = isAll ? fyAll : getMyVar("fyarea_id", area_url.length > 0 ? area_url[0] : "");
             fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
             fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
-            if (page == 1) {
+            if (MY_PAGE == 1) {
                 class_url.forEach((it, i) => {
                     try {
                         d.push({

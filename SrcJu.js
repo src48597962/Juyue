@@ -383,7 +383,7 @@ function erji() {
                 storage0.putMyVar('二级源接口信息', jkdata);
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
-                parse = getObjCode(jkdata);
+                parse = getObjCode(jkdata, 'er');
                 try {
                     if (parse['预处理']) {
                         try {
@@ -514,7 +514,7 @@ function erji() {
             }
             let lazy = $("").lazyRule((dataObj) => {
                 let url = input;
-                let parse = getObjCode(dataObj.data);
+                let parse = getObjCode(dataObj.data, 'jx');
                 if(parse['解析']){
                     eval("let 解析2 = " + parse['解析']);
                     return 解析2.call(parse, url);
@@ -1074,13 +1074,6 @@ function erji() {
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
-                try{
-                    let arr = ['主页','分类','排序','更新','搜索'];
-                    let pindao = parse['频道'] || [];
-                    arr.concat(pindao).forEach(it=>{
-                        delete parse[it];
-                    })
-                }catch(e){}
                 function stringifyWithFunctions(obj) {
                     return JSON.stringify(obj, (key, value) => {
                         if (typeof value === 'function') {

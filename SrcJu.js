@@ -1074,7 +1074,14 @@ function erji() {
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
-                erjiextra.data.extstr = fetch(erjiextra.data.url);
+                try{
+                    let arr = ['主页','分类','排序','更新','搜索','二级'];
+                    let pindao = parse['频道'] || [];
+                    arr.concat(pindao).forEach(it=>{
+                        delete parse[it];
+                    })
+                }catch(e){}
+                erjiextra.data.extstr = parse.toString();
                 setPageParams(erjiextra);
             }
         }

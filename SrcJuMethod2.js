@@ -4,6 +4,13 @@ function readData(fileid){
     let filedata = fetch(file);
     if(filedata){
         eval(filedata);
+        try{
+            let arr = ['主页','分类','排序','更新','搜索','二级'];
+            let pindao = parse['频道'] || [];
+            arr.concat(pindao).forEach(it=>{
+                delete parse[it];
+            })
+        }catch(e){}
         return parse;
     }else{
         return {};
@@ -13,7 +20,7 @@ function readData(fileid){
 let parse = function(fileid) {
     let jkdata = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
     fileid = fileid || jkdata.id;
-    return readData(fileid)
+    return readData(fileid);
 }
 
 function 图片解密(key, iv, kiType, mode, isBase64Dec) {

@@ -10,91 +10,8 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
-// 获到一级数据(数据类型，接口数据，页面头元素)
-function getYiData(datatype, jkdata, dd) {
-    addListener('onRefresh', $.toString((datatype) => {
-        clearMyVar(datatype+'动态加载loading');
-    },datatype));
-    addListener('onClose', $.toString((datatype) => {
-        try{
-            clearMyVar(datatype+'动态加载loading');
-        }catch(e){}
-    },datatype));
-
-    jkdata = jkdata || storage0.getMyVar('一级源接口信息');
-    let parse = getObjCode(jkdata);
-    let d = dd || [];
-    let page = MY_PAGE || 1;
-    let sourcemenu = [];
-
-    try {
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
-            d.push({
-                title: "",
-                url: "hiker://empty",
-                col_type: "text_1",
-                extra: {
-                    lineVisible: false,
-                    cls: "loading_gif"
-                }
-            })
-            d.push({
-                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
-                col_type: "pic_1_center",
-                url: "hiker://empty",
-                extra: {
-                    cls: "loading_gif"
-                }
-            })
-            setPreResult(d);
-            d = [];
-            putMyVar(datatype+'动态加载loading', '1');
-        }
-
-        let 页码 = parse["页码"] || {};
-        if(!页码[datatype] && page>1){
-            return [];
-        }
-        
-        if(datatype==="主页"){
-            if(!getMyVar(jkdata.id)){
-                toast(jkdata.name + (parse["作者"] ? "，作者：" + parse["作者"] : ""));
-                putMyVar(jkdata.id, "1");
-            }
-            let 转换 = parse["转换"] || {};
-            let z1 = 转换["排行"] || "排行";
-            let z2 = 转换["分类"] || "分类";
-            let z3 = 转换["更新"] || "更新";
-            let channel = [];
-            (parse["频道"] || [z1,z2,z3]).forEach(it=>{
-                if(it!="主页" && parse[it]){
-                    channel.push(it);
-                }
-            })
-            let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
-            channel.forEach(it=>{
-                sourcemenu.push({
-                    title: it,
-                    url: rulePage(it, 页码[it]),
-                    col_type: col_type,
-                    extra: {
-                        cls: "sourcemenu"
-                    }
-                })
-            })
-            
-            if(sourcemenu.length>1){
-                storage0.putMyVar("sourcemenu", sourcemenu);
-            }
-        }
-
-        if(parse['host']){
-            MY_URL = parse['host'];
-        }
-        
-        let 执行str = (parse[datatype]||"").toString();
-        let obj = parse['静态分类'] || {};
-        if (obj.url && obj.type == datatype) {//海阔定义分类方法获取分类数据
+// 静态分类调用生成方法
+function createClass(obj) {
             let class_name = (obj.class_name || "").split('&').filter(item => item != '');
             let class_url = (obj.class_url || "").split('&').filter(item => item != '');
             let area_name = (obj.area_name || "").split('&').filter(item => item != '');
@@ -190,11 +107,100 @@ function getYiData(datatype, jkdata, dd) {
                 })
             }
 
-            let fypage = page;
+            let fypage = MY_PAGE;
             MY_URL = obj.url.replace('fyAll', fyAll).replace('fyclass', fyclass).replace('fyarea', fyarea).replace('fyyear', fyyear).replace('fysort', fysort).replace('fypage', fypage);
-            执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+    xlog('调用创建分类');
+}
+// 获到一级数据(数据类型，接口数据，页面头元素)
+function getYiData(datatype, jkdata, dd) {
+    addListener('onRefresh', $.toString((datatype) => {
+        clearMyVar(datatype+'动态加载loading');
+    },datatype));
+    addListener('onClose', $.toString((datatype) => {
+        try{
+            clearMyVar(datatype+'动态加载loading');
+        }catch(e){}
+    },datatype));
+
+    jkdata = jkdata || storage0.getMyVar('一级源接口信息');
+    let parse = getObjCode(jkdata);
+    let d = dd || [];
+    let page = MY_PAGE || 1;
+    let sourcemenu = [];
+
+    try {
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false,
+                    cls: "loading_gif"
+                }
+            })
+            d.push({
+                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+                col_type: "pic_1_center",
+                url: "hiker://empty",
+                extra: {
+                    cls: "loading_gif"
+                }
+            })
+            setPreResult(d);
+            d = [];
+            putMyVar(datatype+'动态加载loading', '1');
+        }
+
+        let 页码 = parse["页码"] || {};
+        if(!页码[datatype] && page>1){
+            return [];
         }
         
+        if(datatype==="主页"){
+            if(!getMyVar(jkdata.id)){
+                toast(jkdata.name + (parse["作者"] ? "，作者：" + parse["作者"] : ""));
+                putMyVar(jkdata.id, "1");
+            }
+            let 转换 = parse["转换"] || {};
+            let z1 = 转换["排行"] || "排行";
+            let z2 = 转换["分类"] || "分类";
+            let z3 = 转换["更新"] || "更新";
+            let channel = [];
+            (parse["频道"] || [z1,z2,z3]).forEach(it=>{
+                if(it!="主页" && parse[it]){
+                    channel.push(it);
+                }
+            })
+            let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
+            channel.forEach(it=>{
+                sourcemenu.push({
+                    title: it,
+                    url: rulePage(it, 页码[it]),
+                    col_type: col_type,
+                    extra: {
+                        cls: "sourcemenu"
+                    }
+                })
+            })
+            
+            if(sourcemenu.length>1){
+                storage0.putMyVar("sourcemenu", sourcemenu);
+            }
+        }
+
+        if(parse['host']){
+            MY_URL = parse['host'];
+        }
+        
+        let 执行str = (parse[datatype]||"").toString();
+        let obj = parse['静态分类'] || {};
+        xlog(MY_URL);
+        if (obj.url && obj.type == datatype) {//海阔定义分类方法获取分类数据
+            createClass(obj);
+        }
+        xlog(MY_URL);
+        执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
         try {
             let sourcename = jkdata.name;
             let getData = [];

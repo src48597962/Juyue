@@ -1081,7 +1081,15 @@ function erji() {
                         delete parse[it];
                     })
                 }catch(e){}
-                erjiextra.data.extstr = parse;
+                function stringifyWithFunctions(obj) {
+                    return JSON.stringify(obj, (key, value) => {
+                        if (typeof value === 'function') {
+                        return value.toString();
+                        }
+                        return value;
+                    }, 2);
+                }
+                erjiextra.data.extstr = 'let parse = ' + stringifyWithFunctions(parse);
                 setPageParams(erjiextra);
             }
         }

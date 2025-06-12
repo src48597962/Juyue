@@ -124,7 +124,7 @@ function getYiData(datatype, jkdata, dd) {
     },datatype));
 
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
-    let parse = getObjCode(jkdata);
+    let parse = getObjCode(jkdata, 'yi');
     let d = dd || [];
     let page = MY_PAGE || 1;
     let sourcemenu = [];

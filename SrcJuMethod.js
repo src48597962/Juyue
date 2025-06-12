@@ -197,7 +197,7 @@ function getYiData(datatype, jkdata, dd) {
         let obj = parse['静态分类'] || {};
         xlog(MY_URL);
         if (obj.url && obj.type == datatype) {//海阔定义分类方法获取分类数据
-            createClass(obj);
+            createClass(d, obj);
         }
         xlog(MY_URL);
         执行str = 执行str.replace('getResCode()', 'request(MY_URL)');

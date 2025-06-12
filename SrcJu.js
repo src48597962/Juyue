@@ -1075,7 +1075,7 @@ function erji() {
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
                 try{
-                    let arr = ['主页','分类','排序','更新','搜索','二级'];
+                    let arr = ['主页','分类','排序','更新','搜索'];
                     let pindao = parse['频道'] || [];
                     arr.concat(pindao).forEach(it=>{
                         delete parse[it];

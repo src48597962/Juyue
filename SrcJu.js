@@ -356,8 +356,9 @@ function erji() {
     let pageid = smark.pageid || 0;//分页索引id
 
     if(jkdata.extstr){
+        xlog($.type(jkdata.extstr));
         if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
-            writeFile(jkdata.url.replace('rules/Src','_cache'), 'let parse = ' + jkdata.extstr);
+            writeFile(jkdata.url.replace('rules/Src','_cache'), jkdata.extstr);
         }
         delete jkdata.extstr;
     }

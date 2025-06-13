@@ -343,6 +343,10 @@ function getObjCode(jkdata, key) {
                         delarr = ['主页','分类','排序','更新','二级','搜索','最新'];
                         delarr = delarr.concat(pdarr);
                         break;
+                    case 'zx':
+                        delarr = ['主页','分类','排序','更新','搜索','解析'];
+                        delarr = delarr.concat(pdarr);
+                        break;
                     default:
                     // 当没有匹配的case时执行
                 }

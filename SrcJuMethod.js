@@ -280,7 +280,7 @@ function getSsData(name, jkdata, page) {
         var MY_PAGE = page;
     }
     try {
-        let parse = getObjCode(jkdata);
+        let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
@@ -308,14 +308,48 @@ function rulePage(datatype, ispage) {
         getYiData(datatype);
     }, datatype)
 }
-//获取接口对象规则内容
+// 移除数组元素
+function removeByValue(arr, val) {
+    for(var i = 0; i < arr.length; i++) {
+        if(arr[i] == val) {
+        arr.splice(i, 1);
+        break;
+        }
+    }
+}
+// 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
         eval(jkstr);
         parse['页码'] = parse['页码'] || {};
         if(key){
-            return parse[key];
+            try{
+                let pdarr = parse['频道'] || [];
+                let delarr = [];
+                switch (key) {
+                    case 'yi':
+                        delarr = ['搜索','二级','最新','解析'];
+                        break;
+                    case 'er':
+                        delarr = ['主页','分类','排序','更新','搜索','解析'];
+                        delarr = delarr.concat(pdarr);
+                        break;
+                    case 'ss':
+                        delarr = ['主页','分类','排序','更新','二级','最新','解析'];
+                        delarr = delarr.concat(pdarr);
+                        break;
+                    case 'jx':
+                        delarr = ['主页','分类','排序','更新','二级','搜索','最新'];
+                        delarr = delarr.concat(pdarr);
+                        break;
+                    default:
+                    // 当没有匹配的case时执行
+                }
+                delarr.forEach(it=>{
+                    delete parse[it];
+                })
+            }catch(e){}
         }
         return parse;
     }catch(e){
@@ -324,7 +358,7 @@ function getObjCode(jkdata, key) {
         return {};
     }
 }
-//修正按钮元素
+// 修正按钮元素
 function toerji(item, jkdata) {
     try{
         jkdata = jkdata || storage0.getMyVar('一级源接口信息');

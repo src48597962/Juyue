@@ -354,6 +354,13 @@ function erji() {
     let smark = getMark(MY_URL, sid);//足迹记录
     let lineid = smark.lineid || 0;//线路索引id
     let pageid = smark.pageid || 0;//分页索引id
+
+    if(jkdata.extstr){
+        if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
+            writeFile(jkdata.url.replace('rules/Src','_cache'), 'let parse = ' + jkdata.extstr);
+        }
+        delete jkdata.extstr;
+    }
     
     let d = [];
     let erLoadData = {};

@@ -320,7 +320,7 @@ function removeByValue(arr, val) {
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
-        let jkstr = fetch(jkdata.url)||jkdata.extstr||"let parse = {}";
+        let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         eval(jkstr);
         parse['页码'] = parse['页码'] || {};
         if(key){

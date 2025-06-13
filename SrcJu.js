@@ -1060,7 +1060,8 @@ function erji() {
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
-                let parse = $.require("jiekou?rule=聚阅").parse(jkdata.id);
+                //let parse = $.require("jiekou?rule=聚阅").parse(jkdata.id);
+                let parse = getObjCode(jkdata, 'zx');
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
                 try{

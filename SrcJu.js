@@ -274,13 +274,34 @@ function yiji(testSource) {
                     }else if(input==" "){
                         let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
+                        if(recordlist.length>0){
+                            d.push({
+                                title: '🗑清空',
+                                url: $('#noLoading#').lazyRule(() => {
+                                    clearItem('searchrecord');
+                                    deleteItemByCls('homesousuolist');
+                                    return "toast://已清空";
+                                }),
+                                col_type: 'scroll_button'
+                            });
+                        }
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,
                                 url: item + searchurl,
                                 col_type: 'scroll_button',
                                 extra: {
-                                    cls: 'homesousuolist'
+                                    id: 'recordid_' + item,
+                                    cls: 'homesousuolist',
+                                    longClick: [{
+                                        title: "删除",
+                                        js: $.toString((item) => {
+                                            deleteItem(item);
+                                            let recordlist = storage0.getItem('searchrecord') || [];
+                                            recordlist = recordlist.filter((v) => v !== item);
+                                            storage0.setItem('searchrecord', recordlist);
+                                        }, item)
+                                    }]
                                 }
                             });
                         })

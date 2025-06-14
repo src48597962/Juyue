@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu":"0.3",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V0.4",
+        records: [
+            "新增：主页搜索框支持临时切换模式"
+        ]
+    },{
         title: "2025/06/13 V0.3",
         records: [
             "优化：切源列表支持记忆选择分组和完善",

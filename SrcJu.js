@@ -215,18 +215,7 @@ function yiji(testSource) {
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
-            }else if(getItem('接口搜索方式','主页界面')=="当前接口"){
-                storage0.putMyVar('SrcJu_搜索临时搜索数据', jkdata);
-                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(getItem('接口搜索方式')=="分组接口"){
-                putMyVar('SrcJu_搜索临时搜索分组', homeGroup||jkdata.type);
-                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(getItem('接口搜索方式')=="页面聚合"){
-                return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
-                    require(config.聚阅);
-                    newSearch(input, group);
-                }, input, homeGroup||jkdata.type);
-            }else{//当前主页
+            }else if(getItem('接口搜索方式','主页界面')=="主页界面"){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
@@ -238,6 +227,15 @@ function yiji(testSource) {
                     return 'toast://无结果';
                 }
                 return 'hiker://empty';
+            }else if(getItem('接口搜索方式')=="页面聚合"){
+                return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
+                    require(config.聚阅);
+                    newSearch(input, group);
+                }, input, homeGroup||jkdata.type);
+            }else{//分组接口/当前接口
+                storage0.putMyVar('搜索临时搜索数据', jkdata);
+                putMyVar('搜索临时搜索分组', homeGroup||jkdata.type);
+                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
         
@@ -245,11 +243,7 @@ function yiji(testSource) {
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 if(input.endsWith('  ')){
-                    if(getItem('接口搜索方式','主页界面')=="当前接口"){
-                        searchurl = searchurl.replace(`=="当前接口"`, `=="分组接口"`);
-                    }else if(getItem('接口搜索方式')=="分组接口"){
-                        searchurl = searchurl.replace(`=="分组接口"`, `=="当前接口"`);
-                    }
+                    putMyVar('接口搜索方式互换', '1');
                 }
                 input = input.trim();
                 if(input == ''){
@@ -1158,19 +1152,27 @@ function sousuo() {
             rules: $.toString((name) => {
                 let ssdatalist = [];
                 try{
-                    if(storage0.getMyVar('SrcJu_搜索临时搜索数据')){
-                        ssdatalist.push(storage0.getMyVar('SrcJu_搜索临时搜索数据'));
-                        clearMyVar('SrcJu_搜索临时搜索数据');
+                    if(getMyVar('接口搜索方式互换')){
+                        if(getItem('接口搜索方式','')=="当前接口"){
+                            clearMyVar('搜索临时搜索数据');
+                        }else{
+                            clearMyVar('搜索临时搜索分组');
+                        }
+                        clearMyVar('接口搜索方式互换');
+                    }
+                    if(storage0.getMyVar('搜索临时搜索数据')){
+                        ssdatalist.push(storage0.getMyVar('搜索临时搜索数据'));
+                        clearMyVar('搜索临时搜索数据');
                     }else{
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        let group = getMyVar('SrcJu_搜索临时搜索分组','') || homeGroup;
+                        let group = getMyVar('搜索临时搜索分组','') || homeGroup;
                         ssdatalist = getSearchLists(group);
-                        clearMyVar('SrcJu_搜索临时搜索分组');
+                        clearMyVar('搜索临时搜索分组');
                     }
                 }catch(e){
                     //xlog(e.message);
                 }
-
+                
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     judata.push({

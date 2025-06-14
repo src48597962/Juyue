@@ -235,7 +235,7 @@ function yiji(testSource) {
             }else{//分组接口/当前接口
                 let ssmode = getItem('接口搜索方式','');
                 if(getMyVar('接口搜索方式互换')){
-                    ssmode = ssmode === "当前接口" ? "分组接口" : "当前接口";
+                    ssmode = ssmode === "分组接口" ? "当前接口" : "分组接口";
                     clearMyVar('接口搜索方式互换');
                 }
                 if(ssmode=="分组接口"){

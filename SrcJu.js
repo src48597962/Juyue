@@ -273,6 +273,7 @@ function yiji(testSource) {
                         deleteItemByCls('homesousuolist');
                     }else if(input==" "){
                         let recordlist = storage0.getItem('searchrecord') || [];
+                        let d = [];
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,
@@ -283,6 +284,7 @@ function yiji(testSource) {
                                 }
                             });
                         })
+                        addItemAfter(homesousuoid);
                     }
                 }, searchurl)
             }

@@ -215,7 +215,7 @@ function yiji(testSource) {
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
             if(!jkdata.name){
                 return 'toast://未找到接口数据';
-            }else if(getItem('接口搜索方式','主页界面')=="主页界面"){
+            }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
@@ -238,10 +238,10 @@ function yiji(testSource) {
                     ssmode = ssmode === "当前接口" ? "分组接口" : "当前接口";
                     clearMyVar('接口搜索方式互换');
                 }
-                if(ssmode=="当前接口"){
-                    storage0.putMyVar('搜索临时搜索数据', jkdata);
-                }else if(ssmode=="分组接口"){
+                if(ssmode=="分组接口"){
                     putMyVar('搜索临时搜索分组', homeGroup||jkdata.type);
+                }else if(ssmode=="当前接口"){
+                    storage0.putMyVar('搜索临时搜索数据', jkdata);
                 }
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }

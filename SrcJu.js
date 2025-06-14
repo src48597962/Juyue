@@ -251,6 +251,15 @@ function yiji(testSource) {
                 if(getItem("记忆搜索词","")=='1'){
                     putVar("keyword", input);
                 }
+                let recordlist = storage0.getItem('searchrecord') || [];
+                if(recordlist.indexOf(input)>-1){
+                    recordlist = recordlist.filter((item) => item !== input);
+                }
+                recordlist.unshift(input);
+                if(recordlist.length>20){
+                    recordlist.splice(recordlist.length-1,1);
+                }
+                storage0.setItem('searchrecord', recordlist);
                 return input + searchurl;
             },searchurl),
             desc: "搜你想要的...",

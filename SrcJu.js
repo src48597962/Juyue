@@ -248,6 +248,9 @@ function yiji(testSource) {
                 if(input == ''){
                     return "hiker://empty"
                 }
+                if(getItem("记忆搜索词","")=='1'){
+                    putVar("keyword", input);
+                }
                 return input + searchurl;
             },searchurl),
             desc: "搜你想要的...",
@@ -256,13 +259,23 @@ function yiji(testSource) {
                 id: 'homesousuoid',
                 titleVisible: true,
                 defaultValue: getItem("记忆搜索词","")=='1'?getVar("keyword", ""):"",
-                onChange: $.toString(() => {
+                onChange: $.toString((searchurl) => {
                     if(input==""){
                         deleteItemByCls('homesousuolist');
-                    }else if(getItem("记忆搜索词","")=='1'){
-                        putVar("keyword", input);
+                    }else if(input==" "){
+                        let recordlist = storage0.getItem('searchrecord') || [];
+                        recordlist.forEach(item=>{
+                            d.push({
+                                title: item,
+                                url: item + searchurl,
+                                col_type: 'scroll_button',
+                                extra: {
+                                    cls: 'homesousuolist'
+                                }
+                            });
+                        })
                     }
-                })
+                }, searchurl)
             }
         });
 

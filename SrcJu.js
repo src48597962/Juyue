@@ -244,6 +244,13 @@ function yiji(testSource) {
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
+                if(input.endsWith('  ')){
+                    if(getItem('接口搜索方式','主页界面')=="当前接口"){
+                        searchurl = searchurl.replace(`=="当前接口"`, `=="分组接口"`);
+                    }else if(getItem('接口搜索方式')=="分组接口"){
+                        searchurl = searchurl.replace(`=="分组接口"`, `=="当前接口"`);
+                    }
+                }
                 input = input.trim();
                 if(input == ''){
                     return "hiker://empty"
@@ -299,7 +306,7 @@ function yiji(testSource) {
                                     longClick: [{
                                         title: "删除",
                                         js: $.toString((item) => {
-                                            deleteItem(item);
+                                            deleteItem('recordid_' + item);
                                             let recordlist = storage0.getItem('searchrecord') || [];
                                             recordlist = recordlist.filter((v) => v !== item);
                                             storage0.setItem('searchrecord', recordlist);

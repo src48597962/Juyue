@@ -35,16 +35,15 @@ function objconvertjs(obj) {
 
     return str;
 }
-
+// Unicode转中文
+function decodeUnicodeEscapes(str) {
+    return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+    });
+}
 function oldtonew() {
     if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
-
-        function decodeUnicodeEscapes(str) {
-            return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
-                return String.fromCharCode(parseInt(p1, 16));
-            });
-        }
     
         olddatalist.forEach(it=>{
             if(it.parse&&it.erparse){

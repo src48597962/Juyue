@@ -233,8 +233,15 @@ function yiji(testSource) {
                     newSearch(input, group);
                 }, input, homeGroup||jkdata.type);
             }else{//分组接口/当前接口
-                storage0.putMyVar('搜索临时搜索数据', jkdata);
-                putMyVar('搜索临时搜索分组', homeGroup||jkdata.type);
+                let ssmode = getItem('接口搜索方式','');
+                if(getMyVar('接口搜索方式互换')){
+                    ssmode = ssmode === "当前接口" ? "分组接口" : "当前接口";
+                }
+                if(ssmode=="当前接口"){
+                    storage0.putMyVar('搜索临时搜索数据', jkdata);
+                }else if(ssmode=="分组接口"){
+                    putMyVar('搜索临时搜索分组', homeGroup||jkdata.type);
+                }
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
@@ -243,11 +250,7 @@ function yiji(testSource) {
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 if(input.endsWith('  ')){
-                    if(getItem('接口搜索方式','')=="当前接口"){
-                        clearMyVar('搜索临时搜索数据');
-                    }else{
-                        clearMyVar('搜索临时搜索分组');
-                    }
+                    putMyVar('接口搜索方式互换', '1');
                 }
                 input = input.trim();
                 if(input == ''){

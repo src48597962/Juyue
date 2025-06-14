@@ -236,6 +236,7 @@ function yiji(testSource) {
                 let ssmode = getItem('接口搜索方式','');
                 if(getMyVar('接口搜索方式互换')){
                     ssmode = ssmode === "当前接口" ? "分组接口" : "当前接口";
+                    clearMyVar('接口搜索方式互换');
                 }
                 if(ssmode=="当前接口"){
                     storage0.putMyVar('搜索临时搜索数据', jkdata);

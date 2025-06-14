@@ -416,7 +416,13 @@ function jianfan(str,x) {
     }
     return PYStr(str,x);
 }
-
+function getEvalResult(evalStr) {
+    var code = '';
+    var evals = evalStr.replace(/^eval/, '').replace('return p', 'return p + code');
+    var func = new Function('code', 'return ' + evals); 
+    var result = func(code);
+    return result; 
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

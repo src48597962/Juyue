@@ -356,11 +356,11 @@ function erji() {
     let pageid = smark.pageid || 0;//分页索引id
 
     if(jkdata.extstr){
-        saveFile(jkdata.url.replace('rules/Src','_cache'), jkdata.extstr);
+        writeFile(jkdata.url.replace('rules/Src','_cache'), jkdata.extstr);
         //if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
         //    writeFile(jkdata.url.replace('rules/Src','_cache'), jkdata.extstr);
         //}
-        //delete jkdata.extstr;
+        delete jkdata.extstr;
     }
     
     let d = [];
@@ -1083,15 +1083,7 @@ function erji() {
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
-                function stringifyWithFunctions(obj) {
-                    return JSON.stringify(obj, (key, value) => {
-                        if (typeof value === 'function') {
-                        return value.toString();
-                        }
-                        return value;
-                    }, 2);
-                }
-                erjiextra.data.extstr = 'let parse = ' + stringifyWithFunctions(parse);
+                erjiextra.data.extstr = objconvertjs(parse);
                 setPageParams(erjiextra);
             }
         }

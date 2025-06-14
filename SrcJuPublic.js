@@ -9,6 +9,33 @@ let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
 let gzip = $.require(codepath + "plugins/gzip.js");
 
+// 对象转js文本
+function objconvertjs(obj) {
+    let str = 'let parse = {\n';
+
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            let value = obj[key];
+            let valStr;
+
+            if (typeof value === 'function') {
+                // 函数直接保留原样
+                valStr = decodeUnicodeEscapes(value.toString());
+            } else {
+                // 其他值用 JSON.stringify 美化
+                valStr = JSON.stringify(value, null, 2);
+            }
+
+            str += `  ${JSON.stringify(key)}: ${valStr},\n`;
+        }
+    }
+
+    str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
+    str += '};';
+
+    return str;
+}
+
 function oldtonew() {
     if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
         let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
@@ -17,32 +44,6 @@ function oldtonew() {
             return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
                 return String.fromCharCode(parseInt(p1, 16));
             });
-        }
-        
-        function objconvertjs(obj) {
-            let str = 'let parse = {\n';
-
-            for (let key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    let value = obj[key];
-                    let valStr;
-
-                    if (typeof value === 'function') {
-                        // 函数直接保留原样
-                        valStr = decodeUnicodeEscapes(value.toString());
-                    } else {
-                        // 其他值用 JSON.stringify 美化
-                        valStr = JSON.stringify(value, null, 2);
-                    }
-
-                    str += `  ${JSON.stringify(key)}: ${valStr},\n`;
-                }
-            }
-
-            str = str.replace(/,\n$/, '\n'); // 去掉最后一个逗号
-            str += '};';
-
-            return str;
         }
     
         olddatalist.forEach(it=>{

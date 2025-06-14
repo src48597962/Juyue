@@ -284,7 +284,7 @@ function yiji(testSource) {
                                 }
                             });
                         })
-                        addItemAfter(homesousuoid);
+                        addItemAfter('homesousuoid', d);
                     }
                 }, searchurl)
             }

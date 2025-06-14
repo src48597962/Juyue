@@ -243,7 +243,11 @@ function yiji(testSource) {
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 if(input.endsWith('  ')){
-                    putMyVar('接口搜索方式互换', '1');
+                    if(getItem('接口搜索方式','')=="当前接口"){
+                        clearMyVar('搜索临时搜索数据');
+                    }else{
+                        clearMyVar('搜索临时搜索分组');
+                    }
                 }
                 input = input.trim();
                 if(input == ''){
@@ -1152,14 +1156,6 @@ function sousuo() {
             rules: $.toString((name) => {
                 let ssdatalist = [];
                 try{
-                    if(getMyVar('接口搜索方式互换')){
-                        if(getItem('接口搜索方式','')=="当前接口"){
-                            clearMyVar('搜索临时搜索数据');
-                        }else{
-                            clearMyVar('搜索临时搜索分组');
-                        }
-                        clearMyVar('接口搜索方式互换');
-                    }
                     if(storage0.getMyVar('搜索临时搜索数据')){
                         ssdatalist.push(storage0.getMyVar('搜索临时搜索数据'));
                         clearMyVar('搜索临时搜索数据');

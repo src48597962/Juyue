@@ -329,7 +329,7 @@ function getObjCode(jkdata, key) {
                 let delarr = [];
                 switch (key) {
                     case 'yi':
-                        delarr = ['搜索','二级','最新','解析'];
+                        delarr = ['二级','最新','解析'];
                         break;
                     case 'er':
                         delarr = ['主页','分类','排序','更新','搜索','解析'];

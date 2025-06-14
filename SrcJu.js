@@ -256,7 +256,7 @@ function yiji(testSource) {
                     recordlist = recordlist.filter((item) => item !== input);
                 }
                 recordlist.unshift(input);
-                if(recordlist.length>20){
+                if(recordlist.length>10){
                     recordlist.splice(recordlist.length-1,1);
                 }
                 storage0.setItem('searchrecord', recordlist);
@@ -282,14 +282,17 @@ function yiji(testSource) {
                                     deleteItemByCls('homesousuolist');
                                     return "toast://已清空";
                                 }),
-                                col_type: 'scroll_button'
+                                col_type: 'flex_button',
+                                extra: {
+                                    cls: 'homesousuolist'
+                                }
                             });
                         }
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,
                                 url: item + searchurl,
-                                col_type: 'scroll_button',
+                                col_type: 'flex_button',
                                 extra: {
                                     id: 'recordid_' + item,
                                     cls: 'homesousuolist',

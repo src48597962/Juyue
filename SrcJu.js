@@ -213,15 +213,24 @@ function yiji(testSource) {
             })
         }
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
+            deleteItemByCls('homesousuolist');
+            let recordlist = storage0.getItem('searchrecord') || [];
+            if(recordlist.indexOf(input)>-1){
+                recordlist = recordlist.filter((item) => item !== input);
+            }
+            recordlist.unshift(input);
+            if(recordlist.length>10){
+                recordlist.splice(recordlist.length-1,1);
+            }
+            storage0.setItem('searchrecord', recordlist);
             if(!jkdata.name){
-                return 'toast://未找到接口数据';
+                return 'toast://当前无接口数据';
             }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
                 hideLoading();
                 if(d.length>0){
-                    deleteItemByCls('homesousuolist');
                     addItemAfter('homesousuoid', d);
                 }else{
                     return 'toast://无结果';
@@ -260,15 +269,6 @@ function yiji(testSource) {
                 if(getItem("记忆搜索词","")=='1'){
                     putVar("keyword", input);
                 }
-                let recordlist = storage0.getItem('searchrecord') || [];
-                if(recordlist.indexOf(input)>-1){
-                    recordlist = recordlist.filter((item) => item !== input);
-                }
-                recordlist.unshift(input);
-                if(recordlist.length>10){
-                    recordlist.splice(recordlist.length-1,1);
-                }
-                storage0.setItem('searchrecord', recordlist);
                 return input + searchurl;
             },searchurl),
             desc: "搜你想要的...",
@@ -283,20 +283,6 @@ function yiji(testSource) {
                     }else if(input==" "){
                         let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
-                        if(recordlist.length>0){
-                            d.push({
-                                title: '🗑清空',
-                                url: $('#noLoading#').lazyRule(() => {
-                                    clearItem('searchrecord');
-                                    deleteItemByCls('homesousuolist');
-                                    return "toast://已清空";
-                                }),
-                                col_type: 'flex_button',
-                                extra: {
-                                    cls: 'homesousuolist'
-                                }
-                            });
-                        }
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,
@@ -306,13 +292,19 @@ function yiji(testSource) {
                                     id: 'recordid_' + item,
                                     cls: 'homesousuolist',
                                     longClick: [{
-                                        title: "删除",
+                                        title: "删除词条",
                                         js: $.toString((item) => {
                                             deleteItem('recordid_' + item);
                                             let recordlist = storage0.getItem('searchrecord') || [];
                                             recordlist = recordlist.filter((v) => v !== item);
                                             storage0.setItem('searchrecord', recordlist);
                                         }, item)
+                                    },{
+                                        title: "清空记录",
+                                        js: $.toString(() => {
+                                            clearItem('searchrecord');
+                                            deleteItemByCls('homesousuolist');
+                                        })
                                     }]
                                 }
                             });

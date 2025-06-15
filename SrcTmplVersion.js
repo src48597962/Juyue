@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V0.4",
         records: [
-            "新增：主页搜索框支持临时切换模式"
+            "新增：主页搜索框支持临时切换模式",
+            "优化：二级视频类型扩展搜索优化完善"
         ]
     },{
         title: "2025/06/13 V0.3",

@@ -481,6 +481,12 @@ function selectSource(selectGroup) {
 }
 //聚影搜索调用
 function JySearch(sskeyword, sstype) {
+    if(!config.聚影){
+        let rely = getPublicItem('聚影','https://raw.gitcode.com/src48597962/juying/raw/master/SrcJuying.js');
+        initConfig({
+            聚影: rely
+        });
+    }
     if (sstype == "云盘接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
             let d = [];
@@ -494,7 +500,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(getPublicItem('聚影','').replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
+            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
             aliDiskSearch(name);
         }, sskeyword);
     } else if (sstype == "Alist接口") {
@@ -510,7 +516,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(getPublicItem('聚影','').replace(/[^/]*$/,'') + 'SrcJyAlist.js');
+            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAlist.js');
             alistSearch2(name, 1);
         }, sskeyword);
     } else if (sstype == "百度网盘") {

@@ -392,7 +392,7 @@ function selectSource2(selectGroup) {
 }
 //封装选择主页源方法
 function selectSource(selectGroup) {
-    if(MY_NAME=="嗅觉浏览器" || getItem("选择主页源插件")=="hiker"){
+    if(getItem("选择主页源插件")=="原生组件"){
         return selectSource2(selectGroup);
     }
     //hikerPop插件

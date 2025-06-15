@@ -175,13 +175,13 @@ function getYiData(datatype, jkdata, dd) {
             })
             let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
             let 频道样式 = parse["频道样式"] || {};
-            channel.forEach(it=>{
-                let pdcoltype = 频道样式[it] || {};
+            channel.forEach((it, i)=>{
+                let imgs = 频道样式.imgs;
                 sourcemenu.push({
                     title: it,
                     url: rulePage(it, 页码[it]),
-                    pic_url: pdcoltype.pic_url || pdcoltype.img || "",
-                    col_type: pdcoltype.col_type || col_type,
+                    pic_url: imgs?imgs[i]:"",
+                    col_type: 频道样式.col_type || col_type,
                     extra: {
                         cls: "sourcemenu"
                     }

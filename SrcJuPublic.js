@@ -381,10 +381,11 @@ function selectSource2(selectGroup) {
         title: "当前:" + hometitle + "  合计:" + items.length,
         options: items,
         selectedIndex: index,
-        js: $.toString((sourceList,changeSource)=>{
+        js: $.toString((sourceList)=>{
             let sourcedata = sourceList[MY_INDEX];
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             return changeSource(sourcedata);
-        }, sourceList, changeSource),
+        }, sourceList),
         bottom:true
     })
     return "hiker://empty";

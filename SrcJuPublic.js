@@ -356,9 +356,40 @@ function changeSource(sourcedata) {
     refreshPage(false);
     return 'hiker://empty';
 }
-clearItem('sourceListGroup');
-//封装选择主页源方法
+//封装选择主页源方法-原生插件
 function selectSource(selectGroup) {
+    let sourceList = getDatas("yi", true);
+    if(selectGroup){
+        sourceList = getGroupLists(sourceList, selectGroup);//快速分组所在分组源列表
+    }
+    function getitems(list) {
+        let index = -1;
+        let items = list.map((v,i) => {
+            if(v.id==homeSourceId){
+                index = i;
+            }
+            return {title:v.name, icon:v.img};
+        });
+        return {items:items, index:index};
+    }
+    let index_items = getitems(sourceList);
+    let index = index_items.index;
+    let items = index_items.items;
+    let hometitle = index>-1?items[index].title:"无";
+
+    showSelectOptions({
+        title: hometitle + "  合计:" + items.length,
+        options: items,
+        selectedIndex: index,
+        js: $().toString(()=>{
+            xlog(MY_INDEX);
+            return "toast://点击是的"+ input;
+        }),
+        bottom:true
+    })
+}
+//封装选择主页源方法-hikerPop插件
+function selectSource2(selectGroup) {
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
     let tmpList = sourceList;

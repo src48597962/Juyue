@@ -381,10 +381,10 @@ function selectSource2(selectGroup) {
         title: "当前:" + hometitle + "  合计:" + items.length,
         options: items,
         selectedIndex: index,
-        js: $.toString(()=>{
+        js: $.toString((sourceList,changeSource)=>{
             let sourcedata = sourceList[MY_INDEX];
             return changeSource(sourcedata);
-        }),
+        }, sourceList, changeSource),
         bottom:true
     })
     return "hiker://empty";

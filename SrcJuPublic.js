@@ -378,15 +378,16 @@ function selectSource(selectGroup) {
     let hometitle = index>-1?items[index].title:"无";
 
     showSelectOptions({
-        title: hometitle + "  合计:" + items.length,
+        title: "当前：" + hometitle + "  合计:" + items.length,
         options: items,
         selectedIndex: index,
-        js: $().toString(()=>{
+        js: $.toString(()=>{
             xlog(MY_INDEX);
             return "toast://点击是的"+ input;
         }),
         bottom:true
     })
+    return "hiker://empty";
 }
 //封装选择主页源方法-hikerPop插件
 function selectSource2(selectGroup) {
@@ -422,7 +423,7 @@ function selectSource2(selectGroup) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: hometitle + "  合计:" + items.length,
+        title: "当前：" + hometitle + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,

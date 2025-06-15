@@ -386,14 +386,16 @@ function selectSource2(selectGroup) {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             return changeSource(sourcedata);
         }, sourceList),
-        bottom:true
+        bottom: true
     })
     return "hiker://empty";
 }
-//封装选择主页源方法-hikerPop插件
+//封装选择主页源方法
 function selectSource(selectGroup) {
-    return selectSource2(selectGroup);
-    xlog('来了吗');
+    if(MY_NAME=="嗅觉浏览器" || getItem("选择主页源插件")=="hiker"){
+        return selectSource2(selectGroup);
+    }
+    //hikerPop插件
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
     let tmpList = sourceList;

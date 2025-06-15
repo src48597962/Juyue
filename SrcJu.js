@@ -626,23 +626,16 @@ function erji() {
                 }
             })
             let sskeyword = name.split('/')[0].trim();
-            if(stype=="影视"){
+            if(stype=="视频"){
                 d.push({
                     title: "扩展搜索",
-                    url: JySearch(sskeyword, getItem("juyingSeachType")),
+                    url: $(["聚影接口","云盘接口","Alist接口","百度网盘"], 3).select((sskeyword) => {
+                        return JySearch(sskeyword, input);
+                    }, sskeyword),
                     pic_url: 'http://123.56.105.145/tubiao/messy/25.svg',
                     col_type: 'icon_small_3',
                     extra: {
-                        cls: "Juloadlist",
-                        longClick: [{
-                            title: "搜索类型：" + getItem("juyingSeachType", "默认"),
-                            js: $.toString(() => {
-                                return $(["聚搜接口","云盘接口","Alist接口"], 3).select(() => {
-                                    setItem("juyingSeachType",input);
-                                    refreshPage(false);
-                                })
-                            })
-                        }]
+                        cls: "Juloadlist"
                     }
                 })
             }else{

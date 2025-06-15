@@ -630,6 +630,7 @@ function erji() {
                 d.push({
                     title: "扩展搜索",
                     url: $(["聚影接口","云盘接口","Alist接口","百度网盘"], 3).select((sskeyword) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return JySearch(sskeyword, input);
                     }, sskeyword),
                     pic_url: 'http://123.56.105.145/tubiao/messy/25.svg',

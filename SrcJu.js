@@ -155,7 +155,7 @@ function yiji(testSource) {
         })
         d.push({
             title: "管理",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","程序管理中心"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心"],1).select(()=>{
                 if(MY_INDEX==0){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
@@ -173,6 +173,11 @@ function yiji(testSource) {
                         return 'hiker://empty';
                     })
                 }else if(MY_INDEX==2){
+                    return $(['hikerPop', '原生组件'],2,"选择主页源插件").select(() => {
+                        setItem('选择主页源插件', input);
+                        return 'toast://接口类型已设置为：' + input;
+                    })
+                }else if(MY_INDEX==3){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('管理中心');
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');

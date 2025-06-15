@@ -357,7 +357,7 @@ function changeSource(sourcedata) {
     return 'hiker://empty';
 }
 //封装选择主页源方法-原生插件
-function selectSource(selectGroup) {
+function selectSource2(selectGroup) {
     let sourceList = getDatas("yi", true);
     if(selectGroup){
         sourceList = getGroupLists(sourceList, selectGroup);//快速分组所在分组源列表
@@ -378,19 +378,21 @@ function selectSource(selectGroup) {
     let hometitle = index>-1?items[index].title:"无";
 
     showSelectOptions({
-        title: "当前：" + hometitle + "  合计:" + items.length,
+        title: "当前:" + hometitle + "  合计:" + items.length,
         options: items,
         selectedIndex: index,
         js: $.toString(()=>{
-            xlog(MY_INDEX);
-            return "toast://点击是的"+ input;
+            let sourcedata = sourceList[MY_INDEX];
+            return changeSource(sourcedata);
         }),
         bottom:true
     })
     return "hiker://empty";
 }
 //封装选择主页源方法-hikerPop插件
-function selectSource2(selectGroup) {
+function selectSource(selectGroup) {
+    return selectSource2(selectGroup);
+    xlog('来了吗');
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
     let tmpList = sourceList;
@@ -423,7 +425,7 @@ function selectSource2(selectGroup) {
     let pop = hikerPop.selectBottomResIcon({
         iconList: items,
         columns: spen,
-        title: "当前：" + hometitle + "  合计:" + items.length,
+        title: "当前:" + hometitle + "  合计:" + items.length,
         noAutoDismiss: false,
         position: index,
         toPosition: index,

@@ -255,7 +255,7 @@ function yiji(testSource) {
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
-        let descarr = ['1个空格显示历史','结尾+2个空格，互换搜索'];
+        let descarr = ['1个空格显示历史','结尾2空格互换方式'];
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {

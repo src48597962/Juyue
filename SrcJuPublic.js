@@ -481,12 +481,7 @@ function selectSource(selectGroup) {
 }
 //聚影搜索调用
 function JySearch(sskeyword, sstype) {
-    if (sstype == "聚搜接口") {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
-            xunmi(name);
-        }, sskeyword);
-    } else if (sstype == "云盘接口") {
+    if (sstype == "云盘接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
             let d = [];
             d.push({
@@ -499,7 +494,7 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyAliDisk.js');
+            require(getPublicItem('聚影','').replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
             aliDiskSearch(name);
         }, sskeyword);
     } else if (sstype == "Alist接口") {
@@ -515,9 +510,12 @@ function JySearch(sskeyword, sstype) {
                 }
             })
             setResult(d);
-            require(config.聚阅.replace(/[^/]*$/,'').replace('/Ju/', '/master/') + 'SrcJyAlist.js');
+            require(getPublicItem('聚影','').replace(/[^/]*$/,'') + 'SrcJyAlist.js');
             alistSearch2(name, 1);
         }, sskeyword);
+    } else if (sstype == "百度网盘") {
+        putVar('keyword',sskeyword);
+        return "hiker://page/search?fypage&rule=百度网盘";
     } else {
         return "hiker://search?rule=聚影&s=" + sskeyword;
     }

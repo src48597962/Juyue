@@ -289,6 +289,11 @@ function yiji(testSource) {
                         deleteItemByCls('sousuorecordlist');
                         let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
+                        if(getItem("搜索建议词","")=='1'){
+                            d.push({
+                                col_type: "line"
+                            })
+                        }
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,

@@ -175,7 +175,7 @@ function getYiData(datatype, jkdata, dd) {
                     channel.push(it);
                 }
             })
-            let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
+            let col_type = channel.length>5?"scroll_button":channel.length==5?"text_5":channel.length==4?"text_4":channel.length==3?"text_3":"text_2";
             col_type = parse["频道"].样式 || col_type;
             let imgs = parse["频道"].对应图标;
             channel.forEach((it, i)=>{

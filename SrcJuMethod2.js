@@ -1,5 +1,8 @@
 //子页面读接口规则数据
 function readData(jkdata){
+    if($.type(jkdata)=="string"){
+        jkdata = {id: jkdata}
+    }
     let fileid = jkdata.id;
     let file = `hiker://files/rules/Src/Juyue/jiekou/${fileid}.txt`;
     let filedata = fetch(file);

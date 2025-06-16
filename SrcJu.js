@@ -323,6 +323,12 @@ function yiji(testSource) {
                                 }
                             });
                         })
+                        d.push({
+                            col_type: "line",
+                            extra: {
+                                cls: 'sousuorecordlist homesousuolist'
+                            }
+                        })
                         addItemAfter('homesousuoid', d);
                     }
                 }, searchurl)

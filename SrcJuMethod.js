@@ -325,6 +325,7 @@ function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         eval(jkstr);
+        parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
         if(key){
             try{

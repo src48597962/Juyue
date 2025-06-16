@@ -291,7 +291,10 @@ function yiji(testSource) {
                         let d = [];
                         if(getItem("搜索建议词","")=='1'){
                             d.push({
-                                col_type: "line"
+                                col_type: "line",
+                                extra: {
+                                    cls: 'sousuorecordlist homesousuolist'
+                                }
                             })
                         }
                         recordlist.forEach(item=>{

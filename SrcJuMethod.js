@@ -171,19 +171,28 @@ function getYiData(datatype, jkdata, dd) {
             let channel = [];
 
             (parse["频道"].包含项 || [z1,z2,z3]).forEach(it=>{
-                if(it && it!="主页" && parse[it]){
-                    channel.push(it);
+                let itname,iticon,itcol;
+                if($.type(it)=="object"){
+                    itname = it.名称;
+                    iticon = it.图标;
+                    itcol = it.样式;
+                }else{
+                    itname = it;
+                }
+                if(itname && itname!="主页" && parse[itname]){
+                    channel.push({name: itname, icon: iticon, col: itcol});
                 }
             })
             let col_type = channel.length>5?"scroll_button":channel.length==5?"text_5":channel.length==4?"text_4":channel.length==3?"text_3":"text_2";
             col_type = parse["频道"].样式 || col_type;
             let imgs = parse["频道"].对应图标;
+            
             channel.forEach((it, i)=>{
                 sourcemenu.push({
-                    title: it,
-                    url: rulePage(it, 页码[it]),
-                    pic_url: imgs?imgs[i]:"",
-                    col_type: col_type,
+                    title: it.name,
+                    url: rulePage(it.name, 页码[it.name]),
+                    pic_url: it.icon || (imgs?imgs[i]:""),
+                    col_type: it.col || col_type,
                     extra: {
                         cls: "sourcemenu"
                     }

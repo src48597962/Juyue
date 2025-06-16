@@ -586,7 +586,7 @@ function erji() {
                 }
             }, dataObj);
             let download = $.toString((jkdata) => {
-                let parse = $.require("jiekou?rule=聚阅").parse(jkdata.id);
+                let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
                 if(parse['解析']){
                     eval("let 解析2 = " + parse['解析']);
                     return 解析2.call(parse, input);
@@ -1116,7 +1116,6 @@ function erji() {
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
-                //let parse = $.require("jiekou?rule=聚阅").parse(jkdata.id);
                 let parse = getObjCode(jkdata, 'zx');
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);

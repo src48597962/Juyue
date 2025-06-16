@@ -125,6 +125,7 @@ function getYiData(datatype, jkdata, dd) {
 
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     let parse = getObjCode(jkdata, 'yi');
+    parse["频道"] = parse["频道"] || {};
     let d = dd || [];
     let page = MY_PAGE || 1;
     let sourcemenu = [];
@@ -168,20 +169,21 @@ function getYiData(datatype, jkdata, dd) {
             let z2 = 转换["分类"] || "分类";
             let z3 = 转换["更新"] || "更新";
             let channel = [];
-            (parse["频道"] || [z1,z2,z3]).forEach(it=>{
+
+            (parse["频道"].包含项 || [z1,z2,z3]).forEach(it=>{
                 if(it && it!="主页" && parse[it]){
                     channel.push(it);
                 }
             })
             let col_type = channel.length>4?"scroll_button":channel.length==4?"text_4":channel.length==2?"text_2":"text_3";
-            let 频道样式 = parse["频道样式"] || {};
+            col_type = parse["频道"].样式 || col_type;
+            let imgs = parse["频道"].对应图标;
             channel.forEach((it, i)=>{
-                let imgs = 频道样式.imgs;
                 sourcemenu.push({
                     title: it,
                     url: rulePage(it, 页码[it]),
                     pic_url: imgs?imgs[i]:"",
-                    col_type: 频道样式.col_type || col_type,
+                    col_type: col_type,
                     extra: {
                         cls: "sourcemenu"
                     }
@@ -258,6 +260,10 @@ function getYiData(datatype, jkdata, dd) {
             updateItem("sourcemenu", {
                 title: sourcemenu[0].title,
                 url: sourcemenu[0].url
+            })
+        }else if(parse["频道"].显示为){
+            updateItem("sourcemenu", {
+                title: parse["频道"].显示为
             })
         }
     }

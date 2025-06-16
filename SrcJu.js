@@ -286,6 +286,7 @@ function yiji(testSource) {
                     if(input==""){
                         deleteItemByCls('homesousuolist');
                     }else if(input==" "){
+                        deleteItemByCls('sousuorecordlist');
                         let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
                         recordlist.forEach(item=>{
@@ -295,7 +296,7 @@ function yiji(testSource) {
                                 col_type: 'flex_button',
                                 extra: {
                                     id: 'recordid_' + item,
-                                    cls: 'homesousuolist',
+                                    cls: 'sousuorecordlist homesousuolist',
                                     longClick: [{
                                         title: "删除词条",
                                         js: $.toString((item) => {
@@ -308,7 +309,7 @@ function yiji(testSource) {
                                         title: "清空记录",
                                         js: $.toString(() => {
                                             clearItem('searchrecord');
-                                            deleteItemByCls('homesousuolist');
+                                            deleteItemByCls('sousuorecordlist');
                                         })
                                     }]
                                 }

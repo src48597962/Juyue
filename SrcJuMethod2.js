@@ -1,5 +1,6 @@
 //子页面读接口规则数据
-function readData(fileid){
+function readData(jkdata){
+    let fileid = jkdata.id;
     let file = `hiker://files/rules/Src/Juyue/jiekou/${fileid}.txt`;
     let filedata = fetch(file);
     if(filedata){
@@ -11,16 +12,16 @@ function readData(fileid){
                 delete parse[it];
             })
         }catch(e){}
+        parse['sourcename'] = jkdata.name;
         return parse;
     }else{
         return {};
     }
 }
 
-let parse = function(fileid) {
-    let jkdata = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
-    fileid = fileid || jkdata.id;
-    return readData(fileid);
+let parse = function(jkdata) {
+    jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
+    return readData(jkdata);
 }
 
 function 图片解密(key, iv, kiType, mode, isBase64Dec) {

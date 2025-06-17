@@ -355,7 +355,7 @@ function getObjCode(jkdata, key) {
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'ss':
-                        delarr = ['主页','分类','排序','更新','二级','最新','解析'];
+                        delarr = ['主页','分类','排序','更新','二级','最新'];
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'jx':

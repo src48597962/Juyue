@@ -238,6 +238,18 @@ function yiji(testSource) {
                 let d = search(input, 'yiji' , jkdata);
                 hideLoading();
                 if(d.length>0){
+                    d.push({
+                        col_type: "line_blank",
+                        extra: {
+                            cls: 'homesousuolist'
+                        }
+                    })
+                    d.push({
+                        col_type: "big_blank_block",
+                        extra: {
+                            cls: 'homesousuolist'
+                        }
+                    })
                     addItemAfter('homesousuoid', d);
                 }else{
                     return 'toast://无结果';
@@ -1174,9 +1186,13 @@ function erji() {
                     let zx = 最新2.call(parse, url) || "";
                     setResult(jkdata.name + " | " + (zx||""));
                 }catch(e){
-                    最新2.call(parse, url);
+                    setResult(jkdata.name + " | 最新获取失败");
                 }
             }, MY_URL, jkdata, {}))
+        }else{
+            setLastChapterRule('js:' + $.toString((sname) => {
+                setResult(sname + " | 作者没写最新");
+            }, sname))
         }
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {

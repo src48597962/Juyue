@@ -324,6 +324,7 @@ function yiji(testSource) {
                             return getSoftHexColor()
                         }
                         recordlist.forEach(item=>{
+                            let color = 背景色();
                             d.push({
                                 title: item,
                                 url: item + searchurl,
@@ -331,7 +332,7 @@ function yiji(testSource) {
                                 extra: {
                                     id: 'recordid_' + item,
                                     cls: 'sousuorecordlist homesousuolist',
-                                    backgroundColor: 背景色().replace('#',''),
+                                    backgroundColor: color.replace('#',''),
                                     longClick: [{
                                         title: "删除词条",
                                         js: $.toString((item) => {
@@ -351,7 +352,7 @@ function yiji(testSource) {
                             });
                         })
                         d.push({
-                            col_type: "line_bank",
+                            col_type: "line_blank",
                             extra: {
                                 cls: 'sousuorecordlist homesousuolist'
                             }

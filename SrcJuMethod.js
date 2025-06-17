@@ -10,11 +10,7 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
-function putMyVar(param0, param1, param2) {
-    param2 = MY_TICKET;
-    xlog(param0);
-    method_putMyVar.invoke(javaContext, param0, param1, param2);
-}
+
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

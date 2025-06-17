@@ -133,9 +133,11 @@ function yiji(testSource) {
                         setItem(input, "1");
                         return "toast://已设置" + input;
                     }
-                }else if(input=='页面聚合'){
+                }
+                /*else if(input=='页面聚合'){
                     return "toast://还没写";
-                }else{
+                }
+                */else{
                     setItem("接口搜索方式",input);
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
@@ -244,7 +246,7 @@ function yiji(testSource) {
             }else if(getItem('接口搜索方式')=="页面聚合"){
                 return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
                     require(config.聚阅);
-                    newSearch(input, group);
+                    newsousuopage(input, group);
                 }, input, homeGroup||jkdata.type);
             }else{//分组接口/当前接口
                 let ssmode = getItem('接口搜索方式','');
@@ -1230,7 +1232,7 @@ function search(name, sstype, jkdata) {
 //二级切源搜索
 function erjisousuo(name,group,datas,sstype) {
     sstype = sstype || "erji";
-    let updateItemid = sstype=="erji"?"erji_loading":"newSearch_loading";
+    let updateItemid = sstype=="erji"?"erji_loading":group+"_newpage_loading";
     let searchMark = storage0.getMyVar('SrcJu_searchMark') || {};//二级换源缓存
     let markId = group+'_'+name;
     if(!datas && searchMark[markId] && sstype=="erji"){
@@ -1417,33 +1419,17 @@ function Version() {
     }
 }
 //新搜索页
-function newsousuopage(keyword,searchtype,relyfile) {
+function newsousuopage(keyword,searchtype) {
     addListener("onClose", $.toString(() => {
-        if(getMyVar('SrcJu_rely')){
-            initConfig({
-                依赖: getMyVar('SrcJu_rely')
-            });
-            clearMyVar('SrcJu_rely');
-        }
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
         putMyVar("SrcJu_停止搜索线程", "1");
     }));
-    addListener('onRefresh', $.toString(() => {
-        clearMyVar('SrcJu_sousuoName');
-    }));
     setPageTitle("搜索|聚阅");
-    if(relyfile){
-        if(!getMyVar('SrcJu_rely') && config.聚阅){
-            putMyVar('SrcJu_rely',config.聚阅);
-        }
-        initConfig({
-            依赖: relyfile
-        });
-    }
-    let name = getMyVar('SrcJu_sousuoName',keyword||'');
+
+    let name = getMyVar('SrcJu_sousuoName', keyword||'');
     let d = [];
-    let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','切换站源长按可进入这里','接口有分组，则搜索同分组'];
+    let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','接口有分组，则搜索同分组'];
     if(MY_PAGE==1){
         d.push({
             title: "🔍",
@@ -1481,15 +1467,6 @@ function newsousuopage(keyword,searchtype,relyfile) {
                     return "hiker://empty";
                 },it),
                 col_type: 'text_5'
-            }
-            if(it=="影视" && name){
-                obj.extra = {};
-                obj["extra"].longClick = [{
-                    title:"🔍聚影搜索",
-                    js: $.toString((url)=>{
-                        return url;
-                    }, JySearch(name, getItem("juyingSeachType")))
-                }];
             }
             d.push(obj);
         })

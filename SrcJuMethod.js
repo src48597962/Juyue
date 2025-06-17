@@ -10,12 +10,12 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
-xlog(putMyVar.toString());
-xlog(getMyVar.toString());
+
 // 重定义MyVar
 function putMyVar(param0, param1, param2) {
     xlog(param0 + '>' +param1);
     param2 = MY_TICKET;
+    xlog(param2);
     method_putMyVar.invoke(javaContext, param0, param1, param2);
 }
 

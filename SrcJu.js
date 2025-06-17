@@ -1222,6 +1222,11 @@ function search(name, sstype, jkdata) {
             it.extra = it.extra || {};
             it.extra.cls = "homesousuolist";
             ssdata.push(it);
+        }else if(sstype=="newpage"){
+            if(it.title.includes(name)){
+                it.col_type = "movie_1_vertical_pic";
+                ssdata.push(it);
+            }
         }else{
             ssdata.push(it);
         }

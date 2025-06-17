@@ -299,6 +299,30 @@ function yiji(testSource) {
                                 }
                             })
                         }
+
+                        function 背景色() {
+                            function getSoftHexColor() {
+                                // 随机色相（0-360），低饱和度（10-30%），高亮度（85-95%）
+                                const h = Math.floor(Math.random() * 360);
+                                const s = 10 + Math.floor(Math.random() * 20); // 10-30% 饱和度
+                                const l = 85 + Math.floor(Math.random() * 10); // 85-95% 亮度
+
+                                // 将HSL转换为十六进制
+                                return hslToHex(h, s, l);
+                            }
+                            // HSL转十六进制辅助函数
+                            function hslToHex(h, s, l) {
+                                l /= 100;
+                                const a = s * Math.min(l, 1 - l) / 100;
+                                const f = n => {
+                                    const k = (n + h / 30) % 12;
+                                    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                                    return Math.round(255 * color).toString(16).padStart(2, '0');
+                                };
+                                return `#${f(0)}${f(8)}${f(4)}`;
+                            }
+                            return getSoftHexColor()
+                        }
                         recordlist.forEach(item=>{
                             d.push({
                                 title: item,
@@ -307,6 +331,7 @@ function yiji(testSource) {
                                 extra: {
                                     id: 'recordid_' + item,
                                     cls: 'sousuorecordlist homesousuolist',
+                                    backgroundColor: 背景色().replace('#',''),
                                     longClick: [{
                                         title: "删除词条",
                                         js: $.toString((item) => {
@@ -326,7 +351,7 @@ function yiji(testSource) {
                             });
                         })
                         d.push({
-                            col_type: "line",
+                            col_type: "line_bank",
                             extra: {
                                 cls: 'sousuorecordlist homesousuolist'
                             }

@@ -1428,6 +1428,7 @@ function newsousuopage(keyword,searchtype) {
     setPageTitle("搜索|聚阅");
 
     let name = getMyVar('SrcJu_sousuoName', keyword||'');
+    let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
     let d = [];
     let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','接口有分组，则搜索同分组'];
     if(MY_PAGE==1){
@@ -1515,7 +1516,7 @@ function newsousuopage(keyword,searchtype) {
         col_type: 'text_center_1',
         url: "hiker://empty",
         extra: {
-            id: "sousuoloading"+getMyVar('SrcJu_sousuoType', searchtype||runMode),
+            id: group+"_newpage_loading",
             lineVisible: false
         }
     });
@@ -1523,8 +1524,6 @@ function newsousuopage(keyword,searchtype) {
     
     if(name){
         deleteItemByCls('searchrecord');
-        let info = storage0.getMyVar('一级源接口信息') || {};
-        let type = getMyVar("SrcJu_sousuoType", searchtype||info.type);
-        search(name,"sousuopage",false,info.group,type);
+        erjisousuo(name,group,false,"newpage");
     }
 }

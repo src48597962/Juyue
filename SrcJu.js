@@ -357,6 +357,12 @@ function yiji(testSource) {
                                 cls: 'sousuorecordlist homesousuolist'
                             }
                         })
+                        d.push({
+                            col_type: "big_blank_block",
+                            extra: {
+                                cls: 'sousuorecordlist homesousuolist'
+                            }
+                        })
                         addItemAfter('homesousuoid', d);
                     }
                 }, searchurl)

@@ -213,7 +213,7 @@ function yiji(testSource) {
                 }
                 if(homeGroup==it){
                     item.extra = {
-                        backgroundColor: homeGroup==it?"#2" + Color.replace('#',''):""
+                        backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
                     }
                 }
                 d.push(item);
@@ -332,7 +332,7 @@ function yiji(testSource) {
                                 extra: {
                                     id: 'recordid_' + item,
                                     cls: 'sousuorecordlist homesousuolist',
-                                    backgroundColor: "#20" + color.replace('#',''),
+                                    backgroundColor: "#10" + color.replace('#',''),
                                     longClick: [{
                                         title: "删除词条",
                                         js: $.toString((item) => {

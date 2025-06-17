@@ -332,7 +332,7 @@ function yiji(testSource) {
                                 extra: {
                                     id: 'recordid_' + item,
                                     cls: 'sousuorecordlist homesousuolist',
-                                    backgroundColor: "#10" + color.replace('#',''),
+                                    backgroundColor: color,
                                     longClick: [{
                                         title: "删除词条",
                                         js: $.toString((item) => {

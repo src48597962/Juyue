@@ -11,28 +11,6 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 
-// 重定义MyVar
-function putMyVar(param0, param1, param2) {
-    try{
-        xlog(jkdata.id);//this.sourcename
-    }catch(e){}
-    xlog(param0 + '>' +param1);
-    param2 = MY_TICKET;
-    method_putMyVar.invoke(javaContext, param0, param1, param2);
-}
-
-function getMyVar(param0, param1, param2) {
-    param2 = MY_TICKET;
-    var retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
-    try {
-        if (retStr instanceof java.io.InputStream) {
-            return retStr;
-        }
-    }
-    catch (e) {
-    }
-    return retStr == null ? retStr : retStr + "";
-}
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){
@@ -362,6 +340,7 @@ function removeByValue(arr, val) {
 function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
+        jkstr = jkstr.replace(/getMyVar(/g, 'getMyVar('+jkdata.id).replace(/putMyVar(/g, 'putMyVar('+jkdata.id);
         eval(jkstr);
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};

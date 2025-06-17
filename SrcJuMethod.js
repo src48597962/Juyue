@@ -13,9 +13,11 @@ if (getItem('接口日志打印') != "1") {
 
 // 重定义MyVar
 function putMyVar(param0, param1, param2) {
+    try{
+        xlog(typeof jkdata);
+    }catch(e){}
     xlog(param0 + '>' +param1);
     param2 = MY_TICKET;
-    xlog(param2);
     method_putMyVar.invoke(javaContext, param0, param1, param2);
 }
 

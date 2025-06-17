@@ -14,18 +14,26 @@ if (getItem('接口日志打印') != "1") {
 let xputMyVar = putMyVar;
 let xgetMyVar = getMyVar;
 function putMyVar(key, input) {
-    if($.type(jkdata)=="object"){
-        xlog(key+":写入:"+input+">"+jkdata.name);
-        xputMyVar(key+jkdata.name, input);
-    }else{
+    try{
+        if($.type(jkdata)=="object"){
+            xlog(key+":写入:"+input+">"+jkdata.name);
+            xputMyVar(key+jkdata.name, input);
+        }else{
+            xputMyVar(key, input);
+        }
+    }catch(e){
         xputMyVar(key, input);
     }
 }
 function getMyVar(key) {
-    if($.type(jkdata)=="object"){
-        xlog(key+":读取:"+input+">"+jkdata.name);
-        return xgetMyVar(key+jkdata.name);
-    }else{
+    try{
+        if($.type(jkdata)=="object"){
+            xlog(key+":读取:"+input+">"+jkdata.name);
+            return xgetMyVar(key+jkdata.name);
+        }else{
+            return xgetMyVar(key);
+        }
+    }catch(e){
         return xgetMyVar(key);
     }
 }

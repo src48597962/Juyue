@@ -1165,6 +1165,9 @@ function erji() {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
                 let parse = getObjCode(jkdata, 'zx');
+                if (parse['预处理']) {
+                    parse['预处理'].call(parse);
+                }
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
                 try{

@@ -10,7 +10,11 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
-
+function putMyVar(param0, param1, param2) {
+    param2 = MY_TICKET;
+    xlog(param0);
+    method_putMyVar.invoke(javaContext, param0, param1, param2);
+}
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){
@@ -340,7 +344,7 @@ function removeByValue(arr, val) {
 function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
-        jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id).replace(/putMyVar\(/g, 'putMyVar('+jkdata.id);
+        jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(jkstr);
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};

@@ -10,6 +10,25 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
+// 重定义MyVar
+let xputMyVar = putMyVar;
+let xgetMyVar = getMyVar;
+function putMyVar(key, input) {
+    if($.type(jkdata)=="object"){
+        xlog(key+":写入:"+input+">"+jkdata.name);
+        xputMyVar(key+jkdata.name, input);
+    }else{
+        xputMyVar(key, input);
+    }
+}
+function getMyVar(key) {
+    if($.type(jkdata)=="object"){
+        xlog(key+":读取:"+input+">"+jkdata.name);
+        return xgetMyVar(key+jkdata.name);
+    }else{
+        return xgetMyVar(key);
+    }
+}
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

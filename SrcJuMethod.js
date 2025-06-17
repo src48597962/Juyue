@@ -13,32 +13,24 @@ if (getItem('接口日志打印') != "1") {
 xlog(putMyVar.toString());
 xlog(getMyVar.toString());
 // 重定义MyVar
-/*
-function putMyVar(key, input) {
-    try{
-        if($.type(jkdata)=="object"){
-            xlog(key+":写入:"+input+">"+jkdata.name);
-            xputMyVar(key+jkdata.name, input);
-        }else{
-            xputMyVar(key, input);
-        }
-    }catch(e){
-        xputMyVar(key, input);
-    }
+function putMyVar(param0, param1, param2) {
+    xlog(param0 + '>' +param1);
+    param2 = MY_TICKET;
+    method_putMyVar.invoke(javaContext, param0, param1, param2);
 }
-function getMyVar(key) {
-    try{
-        if($.type(jkdata)=="object"){
-            xlog(key+":读取:"+input+">"+jkdata.name);
-            return xgetMyVar(key+jkdata.name);
-        }else{
-            return xgetMyVar(key);
+
+function getMyVar(param0, param1, param2) {
+    param2 = MY_TICKET;
+    var retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
+    try {
+        if (retStr instanceof java.io.InputStream) {
+            return retStr;
         }
-    }catch(e){
-        return xgetMyVar(key);
     }
+    catch (e) {
+    }
+    return retStr == null ? retStr : retStr + "";
 }
-*/
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

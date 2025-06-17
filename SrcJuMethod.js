@@ -10,9 +10,10 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
+xlog(putMyVar.toString());
+xlog(getMyVar.toString());
 // 重定义MyVar
-let xputMyVar = putMyVar;
-let xgetMyVar = getMyVar;
+/*
 function putMyVar(key, input) {
     try{
         if($.type(jkdata)=="object"){
@@ -37,6 +38,7 @@ function getMyVar(key) {
         return xgetMyVar(key);
     }
 }
+*/
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

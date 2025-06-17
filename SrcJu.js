@@ -213,7 +213,7 @@ function yiji(testSource) {
                 }
                 if(homeGroup==it){
                     item.extra = {
-                        backgroundColor: homeGroup==it?"#10" + Color.replace('#',''):""
+                        backgroundColor: homeGroup==it?"#2" + Color.replace('#',''):""
                     }
                 }
                 d.push(item);

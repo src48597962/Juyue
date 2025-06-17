@@ -344,7 +344,7 @@ function removeByValue(arr, val) {
 function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
-        jkstr = jkstr.replace(/getMyVar(/g, 'getMyVar('+jkdata.id).replace(/putMyVar(/g, 'putMyVar('+jkdata.id);
+        jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id).replace(/putMyVar\(/g, 'putMyVar('+jkdata.id);
         eval(jkstr);
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};

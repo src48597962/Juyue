@@ -517,11 +517,25 @@ function erji() {
                 parse = getObjCode(jkdata, 'er');
                 try {
                     if (parse['预处理']) {
+                        parse['预处理'].call(parse);
+                    }
+                    let putMyVar = function(param0, param1, param2) {
+                        param2 = MY_TICKET;
+                        param0 = jkdata.id + param0;
+                        method_putMyVar.invoke(javaContext, param0, param1, param2);
+                    }
+                    let getMyVar = function(param0, param1, param2) {
+                        param2 = MY_TICKET;
+                        param0 = jkdata.id + param0;
+                        let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
                         try {
-                            parse['预处理'].call(parse);
-                        } catch (e) {
-                            xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                            if (retStr instanceof java.io.InputStream) {
+                                return retStr;
+                            }
                         }
+                        catch (e) {
+                        }
+                        return retStr == null ? retStr : retStr + "";
                     }
                     if(parse['二级']){
                         eval("let 二级获取 = " + parse['二级'])
@@ -1190,6 +1204,24 @@ function erji() {
                     parse['预处理'].call(parse);
                 }
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
+                let putMyVar = function(param0, param1, param2) {
+                    param2 = MY_TICKET;
+                    param0 = jkdata.id + param0;
+                    method_putMyVar.invoke(javaContext, param0, param1, param2);
+                }
+                let getMyVar = function(param0, param1, param2) {
+                    param2 = MY_TICKET;
+                    param0 = jkdata.id + param0;
+                    let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
+                    try {
+                        if (retStr instanceof java.io.InputStream) {
+                            return retStr;
+                        }
+                    }
+                    catch (e) {
+                    }
+                    return retStr == null ? retStr : retStr + "";
+                }
                 eval("let 最新2 = " + 最新str);
                 try{
                     let zx = 最新2.call(parse, url) || "";

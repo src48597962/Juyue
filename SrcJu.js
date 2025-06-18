@@ -226,7 +226,7 @@ function yiji(testSource) {
                 recordlist = recordlist.filter((item) => item !== input);
             }
             recordlist.unshift(input);
-            if(recordlist.length>10){
+            if(recordlist.length>18){
                 recordlist.splice(recordlist.length-1,1);
             }
             storage0.setItem('searchrecord', recordlist);
@@ -372,18 +372,20 @@ function yiji(testSource) {
                                 }
                             });
                         })
-                        d.push({
-                            col_type: "line_blank",
-                            extra: {
-                                cls: 'sousuorecordlist homesousuolist'
-                            }
-                        })
-                        d.push({
-                            col_type: "big_blank_block",
-                            extra: {
-                                cls: 'sousuorecordlist homesousuolist'
-                            }
-                        })
+                        if(recordlist.length>0){
+                            d.push({
+                                col_type: "line_blank",
+                                extra: {
+                                    cls: 'sousuorecordlist homesousuolist'
+                                }
+                            })
+                            d.push({
+                                col_type: "big_blank_block",
+                                extra: {
+                                    cls: 'sousuorecordlist homesousuolist'
+                                }
+                            })
+                        }
                         addItemAfter('homesousuoid', d);
                     }
                 }, searchurl)

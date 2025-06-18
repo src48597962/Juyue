@@ -67,7 +67,7 @@ function createClass(d, obj) {
                             }, isAll ? "fyAll_id" : "fyarea_id", fyarea, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fyarea==it?"#20" + Color.replace('#',''):""
                             }
                         })
                     } catch (e) { }
@@ -95,7 +95,7 @@ function createClass(d, obj) {
                             }, isAll ? "fyAll_id" : "fyyear_id", fyyear, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fyyear==it?"#20" + Color.replace('#',''):""
                             }
                         })
                     } catch (e) { }
@@ -123,7 +123,7 @@ function createClass(d, obj) {
                             }, "fysort_id", fysort, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fysort==it?"#20" + Color.replace('#',''):""
                             }
                         })
                     } catch (e) { }

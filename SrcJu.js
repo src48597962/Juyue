@@ -1336,10 +1336,10 @@ function erjisousuo(name,group,datas,sstype) {
             return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
-                    return {result:lists, success:1};
+                    return {result:lists, success:1, type: obj.type};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
-                    return {result:[], success:0};
+                    return {result:[], success:0, type: obj.type};
                 }
             })();
         }
@@ -1368,7 +1368,7 @@ function erjisousuo(name,group,datas,sstype) {
                             searchMark[markId] = searchMark[markId].concat(data);
                             addItemBefore(updateItemid, data);
                             hideLoading();
-                            if(success>=20){
+                            if(success>=20 && taskResult.type=="erji"){
                                 return "break";
                             }
                         }
@@ -1586,7 +1586,7 @@ function newsousuopage(keyword, searchtype) {
         }
     });
     setResult(d);
-    refreshPage();
+    
     if(name){
         deleteItemByCls('searchrecord');
         erjisousuo(name,group,false,"newpage");

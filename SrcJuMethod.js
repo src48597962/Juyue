@@ -14,13 +14,13 @@ if (getItem('接口日志打印') != "1") {
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){
-        let class_name = (obj.class_name || "").split('&');//.filter(item => item != '');
+        let class_name = (obj.class_name || "").split('&').filter(item => item != '');
         let class_url = (obj.class_url || "").split('&');//.filter(item => item != '');
-        let area_name = (obj.area_name || "").split('&');//.filter(item => item != '');
+        let area_name = (obj.area_name || "").split('&').filter(item => item != '');
         let area_url = (obj.area_url || "").split('&');//.filter(item => item != '');
-        let year_name = (obj.year_name || "").split('&');//.filter(item => item != '');
+        let year_name = (obj.year_name || "").split('&').filter(item => item != '');
         let year_url = (obj.year_url || "").split('&');//.filter(item => item != '');
-        let sort_name = (obj.sort_name || "").split('&');//.filter(item => item != '');
+        let sort_name = (obj.sort_name || "").split('&').filter(item => item != '');
         let sort_url = (obj.sort_url || "").split('&');//.filter(item => item != '');
         let isAll = (obj.url || "").includes('fyAll') ? 1 : 0;
         fyAll = getMyVar("fyAll_id", class_url.length > 0 ? class_url[0] : "");

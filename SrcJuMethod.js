@@ -246,13 +246,13 @@ function getYiData(datatype, jkdata, dd) {
             let resultd;
             let setResult = function(d) { resultd = d; };
             let putMyVar = function(param0, param1, param2) {
-                xlog(param2);
-                param2 = jkdata.id + MY_TICKET;
-                xlog(param2);
+                xlog(param0);
+                param2 = MY_TICKET;
+                xlog(jkdata.id + param0);
                 method_putMyVar.invoke(javaContext, param0, param1, param2);
             }
             let getMyVar = function(param0, param1, param2) {
-                param2 = jkdata.id + MY_TICKET;
+                param2 = MY_TICKET;
                 let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
                 try {
                     if (retStr instanceof java.io.InputStream) {

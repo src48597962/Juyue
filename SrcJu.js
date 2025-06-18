@@ -1197,6 +1197,7 @@ function erji() {
                 }
             }, MY_URL, jkdata, {}))
         }else{
+            xlog("为什么走这里了");
             setLastChapterRule('js:' + $.toString((sname) => {
                 setResult(sname + " | 作者没写最新");
             }, sname))

@@ -1333,20 +1333,21 @@ function erjisousuo(name,group,datas,sstype) {
         }
 
         let task = function (obj) {
-            //return (function() {
+            return (function() {
                 try {
+                    let MY_PAGE = obj.page;
                     let lists = obj.search(obj.name, obj.type, obj.data);
                     return {result:lists, success:1};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
                     return {result:[], success:0};
                 }
-            //})();
+            })();
         }
         let list = ssdatalist.map((item) => {
             return {
                 func: task,
-                param: {"search":search,"name":name,"type":sstype,"data":item},
+                param: {"search":search,"name":name,"type":sstype,"data":item,"page":sstype=="newpage"?MY_PAGE:1},
                 id: item.id
             }
         });

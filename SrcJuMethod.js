@@ -29,11 +29,12 @@ function createClass(d, obj) {
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
         fysort = getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
         if (MY_PAGE == 1) {
+            let Color = '#2E9465';
             if(class_name.length>0){
                 class_url.forEach((it, i) => {
                     try {
                         d.push({
-                            title: fyclass == it ? `““””<b><span style="color: #09c11b">` + class_name[i] + `</span></b>` : class_name[i],
+                            title: fyclass == it ? `““””<span style="color: ` + Color + `">` + class_name[i] + `</span>` : class_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -41,7 +42,10 @@ function createClass(d, obj) {
                                 }
                                 return 'hiker://empty'
                             }, isAll ? "fyAll_id" : "fyclass_id", fyclass, it),
-                            col_type: 'scroll_button'
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                            }
                         })
                     } catch (e) { }
                 })
@@ -53,7 +57,7 @@ function createClass(d, obj) {
                 area_url.forEach((it, i) => {
                     try {
                         d.push({
-                            title: fyarea == it ? `““””<b><span style="color: #09c11b">` + area_name[i] + `</span></b>` : area_name[i],
+                            title: fyarea == it ? `““””<span style="color: ` + Color + `">` + area_name[i] + `</span>` : area_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -61,7 +65,10 @@ function createClass(d, obj) {
                                 }
                                 return 'hiker://empty'
                             }, isAll ? "fyAll_id" : "fyarea_id", fyarea, it),
-                            col_type: 'scroll_button'
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                            }
                         })
                     } catch (e) { }
                 })
@@ -78,7 +85,7 @@ function createClass(d, obj) {
                     }
                     try {
                         d.push({
-                            title: fyyear == it ? `““””<b><span style="color: #09c11b">` + year_name[i] + `</span></b>` : year_name[i],
+                            title: fyyear == it ? `““””<span style="color: ` + Color + `">` + year_name[i] + `</span>` : year_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -86,7 +93,10 @@ function createClass(d, obj) {
                                 }
                                 return 'hiker://empty'
                             }, isAll ? "fyAll_id" : "fyyear_id", fyyear, it),
-                            col_type: 'scroll_button'
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                            }
                         })
                     } catch (e) { }
                 })
@@ -103,7 +113,7 @@ function createClass(d, obj) {
                     }
                     try {
                         d.push({
-                            title: fysort == it ? `““””<b><span style="color: #09c11b">` + sort_name[i] + `</span></b>` : sort_name[i],
+                            title: fysort == it ? `““””<span style="color: ` + Color + `">` + sort_name[i] + `</span>` : sort_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -111,7 +121,10 @@ function createClass(d, obj) {
                                 }
                                 return 'hiker://empty'
                             }, "fysort_id", fysort, it),
-                            col_type: 'scroll_button'
+                            col_type: 'scroll_button',
+                            extra: {
+                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                            }
                         })
                     } catch (e) { }
                 })

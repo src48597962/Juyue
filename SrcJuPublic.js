@@ -188,7 +188,7 @@ function getJkGroups(datas, isgroup) {
 function getTypeNames(s) {
     let snames = [];
     if (s == "搜索页") {
-        snames = ["漫画", "小说", "听书", "影视", "聚合"];
+        snames = ["漫画", "小说", "音频", "视频", "聚合"];
     } else if (s == "主页") {
         snames = getJkGroups(getDatas('yi', 1));
     } else {

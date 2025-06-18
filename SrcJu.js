@@ -1336,10 +1336,10 @@ function erjisousuo(name,group,datas,sstype) {
             return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
-                    return {result:lists, success:1, type: obj.type};
+                    return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
-                    return {result:[], success:0, type: obj.type};
+                    return {result:[], success:0, type: obj.type, name: obj.data.name};
                 }
             })();
         }
@@ -1356,6 +1356,7 @@ function erjisousuo(name,group,datas,sstype) {
         if (list.length > 0) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
+                    xlog(taskResult.name);
                     beidlist.push(id);
 
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){

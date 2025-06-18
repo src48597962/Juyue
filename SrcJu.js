@@ -1360,9 +1360,11 @@ function erjisousuo(name,group,datas,sstype) {
                     beidlist.push(id);
 
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
+                        xlog("停止搜索");
                         return "break";
                     }else if(taskResult.success==1){
                         let data = taskResult.result;
+                        xlog("结果"+data.length);
                         if(data.length>0){
                             success++;
                             searchMark[markId] = searchMark[markId] || [];

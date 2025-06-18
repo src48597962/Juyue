@@ -245,6 +245,24 @@ function getYiData(datatype, jkdata, dd) {
             }
             let resultd;
             let setResult = function(d) { resultd = d; };
+            let putMyVar = function(param0, param1, param2) {
+                xlog(param2);
+                param2 = jkdata.id + MY_TICKET;
+                xlog(param2);
+                method_putMyVar.invoke(javaContext, param0, param1, param2);
+            }
+            let getMyVar = function(param0, param1, param2) {
+                param2 = jkdata.id + MY_TICKET;
+                let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
+                try {
+                    if (retStr instanceof java.io.InputStream) {
+                        return retStr;
+                    }
+                }
+                catch (e) {
+                }
+                return retStr == null ? retStr : retStr + "";
+            }
             eval("let 数据 = " + 执行str);
             getData = 数据.call(parse) || [];
             if(resultd&&getData.length==0){

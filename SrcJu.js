@@ -1335,7 +1335,6 @@ function erjisousuo(name,group,datas,sstype) {
         let task = function (obj) {
             return (function() {
                 try {
-                    let MY_PAGE = obj.page;
                     let lists = obj.search(obj.name, obj.type, obj.data);
                     return {result:lists, success:1};
                 } catch (e) {
@@ -1347,7 +1346,7 @@ function erjisousuo(name,group,datas,sstype) {
         let list = ssdatalist.map((item) => {
             return {
                 func: task,
-                param: {"search":search,"name":name,"type":sstype,"data":item,"page":1},
+                param: {"search":search,"name":name,"type":sstype,"data":item},
                 id: item.id
             }
         });
@@ -1485,7 +1484,7 @@ function Version() {
     }
 }
 //新搜索页
-function newsousuopage(keyword,searchtype) {
+function newsousuopage(keyword, searchtype) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
@@ -1520,7 +1519,7 @@ function newsousuopage(keyword,searchtype) {
             desc: descarr[Math.floor(Math.random() * descarr.length)],
             col_type: "input",
             extra: {
-                defaultValue: getMyVar('SrcJu_sousuoName',keyword||''),
+                defaultValue: name,
                 titleVisible: true
             }
         });
@@ -1587,10 +1586,9 @@ function newsousuopage(keyword,searchtype) {
         }
     });
     setResult(d);
-    
+    refreshPage();
     if(name){
         deleteItemByCls('searchrecord');
-        xlog("newpage>"+MY_PAGE);
         erjisousuo(name,group,false,"newpage");
     }
 }

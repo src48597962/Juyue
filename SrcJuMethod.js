@@ -27,7 +27,7 @@ function createClass(d, obj) {
         fyclass = isAll ? fyAll : getMyVar("fyclass_id", class_url.length > 0 ? class_url[0] : "");
         fyarea = isAll ? fyAll : getMyVar("fyarea_id", area_url.length > 0 ? area_url[0] : "");
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
-        fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
+        fysort = getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
         if (MY_PAGE == 1) {
             if(class_name.length>0){
                 class_url.forEach((it, i) => {
@@ -110,7 +110,7 @@ function createClass(d, obj) {
                                     refreshPage(false);
                                 }
                                 return 'hiker://empty'
-                            }, isAll ? "fyAll_id" : "fysort_id", fysort, it),
+                            }, "fysort_id", fysort, it),
                             col_type: 'scroll_button'
                         })
                     } catch (e) { }
@@ -122,7 +122,7 @@ function createClass(d, obj) {
         }
 
         let fypage = MY_PAGE;
-        MY_URL = obj.url.replace('fyAll', fyAll).replace('fyclass', fyclass).replace('fyarea', fyarea).replace('fyyear', fyyear).replace('fysort', fysort).replace('fypage', fypage);
+        MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort).replace(/fypage/g, fypage);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

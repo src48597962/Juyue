@@ -10,6 +10,25 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
+// 重定义临时变量存取
+let putMyVar2 = function(param0, param1, param2) {
+    param2 = MY_TICKET;
+    //param0 = jkdata.id + param0;
+    method_putMyVar.invoke(javaContext, param0, param1, param2);
+}
+let getMyVar2 = function(param0, param1, param2) {
+    param2 = MY_TICKET;
+    //param0 = jkdata.id + param0;
+    let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
+    try {
+        if (retStr instanceof java.io.InputStream) {
+            return retStr;
+        }
+    }
+    catch (e) {
+    }
+    return retStr == null ? retStr : retStr + "";
+}
 
 // 静态分类调用生成方法
 function createClass(d, obj) {
@@ -240,24 +259,6 @@ function getYiData(datatype, jkdata, dd) {
         try {
             let sourcename = jkdata.name;
             let getData = [];
-            let putMyVar = function(param0, param1, param2) {
-                param2 = MY_TICKET;
-                param0 = jkdata.id + param0;
-                method_putMyVar.invoke(javaContext, param0, param1, param2);
-            }
-            let getMyVar = function(param0, param1, param2) {
-                param2 = MY_TICKET;
-                param0 = jkdata.id + param0;
-                let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
-                try {
-                    if (retStr instanceof java.io.InputStream) {
-                        return retStr;
-                    }
-                }
-                catch (e) {
-                }
-                return retStr == null ? retStr : retStr + "";
-            }
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
@@ -340,24 +341,6 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
-            let putMyVar = function(param0, param1, param2) {
-                param2 = MY_TICKET;
-                param0 = jkdata.id + param0;
-                method_putMyVar.invoke(javaContext, param0, param1, param2);
-            }
-            let getMyVar = function(param0, param1, param2) {
-                param2 = MY_TICKET;
-                param0 = jkdata.id + param0;
-                let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
-                try {
-                    if (retStr instanceof java.io.InputStream) {
-                        return retStr;
-                    }
-                }
-                catch (e) {
-                }
-                return retStr == null ? retStr : retStr + "";
-            }
             if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }

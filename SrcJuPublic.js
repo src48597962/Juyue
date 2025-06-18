@@ -331,6 +331,7 @@ function changeSource(sourcedata) {
     }
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");
+        unRegisterTask("lunbo");
     } else {
         toast("软件版本过低，可能存在异常");
     }

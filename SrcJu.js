@@ -1282,7 +1282,7 @@ function search(name, sstype, jkdata) {
             if(it.title.includes(name)){
                 it.title = it.title.replace(name, '‘‘’’<font color=red>'+name+'</font>');
                 it.col_type = "movie_1_vertical_pic";
-                it.desc = it.desc + '\n\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
+                it.desc = (it.desc||"") + '\n\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
         }else{

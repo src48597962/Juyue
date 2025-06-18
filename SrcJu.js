@@ -517,7 +517,7 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata, 'er');
-                xlog(parse['最新']);
+                xlog(parse['最新'].toString());
                 try {
                     if (parse['预处理']) {
                         parse['预处理'].call(parse);
@@ -1181,7 +1181,7 @@ function erji() {
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节
-        xlog(parse['最新']);
+        xlog(parse['最新'].toString());
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;

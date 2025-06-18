@@ -517,7 +517,6 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata, 'er');
-                xlog(parse['最新'].toString());
                 try {
                     if (parse['预处理']) {
                         parse['预处理'].call(parse);
@@ -1181,7 +1180,6 @@ function erji() {
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节
-        xlog(parse['最新'].toString());
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
@@ -1198,8 +1196,7 @@ function erji() {
                     setResult(jkdata.name + " | 最新获取失败");
                 }
             }, MY_URL, jkdata, {}))
-        }else{
-            xlog("为什么走这里了");
+        }else if(parse['二级']){
             setLastChapterRule('js:' + $.toString((sname) => {
                 setResult(sname + " | 作者没写最新");
             }, sname))

@@ -1356,15 +1356,12 @@ function erjisousuo(name,group,datas,sstype) {
         if (list.length > 0) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
-                    xlog(taskResult.name + ">>" + taskResult.success);
                     beidlist.push(id);
 
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
-                        xlog("停止搜索");
                         return "break";
                     }else if(taskResult.success==1){
                         let data = taskResult.result;
-                        xlog("结果"+data.length);
                         if(data.length>0){
                             success++;
                             searchMark[markId] = searchMark[markId] || [];
@@ -1491,7 +1488,6 @@ function newsousuopage(keyword, searchtype) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
-        putMyVar("SrcJu_停止搜索线程", "1");
     }));
     setPageTitle("搜索|聚阅");
 

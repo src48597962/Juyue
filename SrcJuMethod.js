@@ -246,13 +246,13 @@ function getYiData(datatype, jkdata, dd) {
             let resultd;
             let setResult = function(d) { resultd = d; };
             let putMyVar = function(param0, param1, param2) {
-                xlog(param0);
                 param2 = MY_TICKET;
-                xlog(jkdata.id + param0);
+                param0 = jkdata.id + param0;
                 method_putMyVar.invoke(javaContext, param0, param1, param2);
             }
             let getMyVar = function(param0, param1, param2) {
                 param2 = MY_TICKET;
+                param0 = jkdata.id + param0;
                 let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
                 try {
                     if (retStr instanceof java.io.InputStream) {
@@ -345,6 +345,24 @@ function getSsData(name, jkdata, page) {
             }
             let resultd;
             let setResult = function(d) { resultd = d; };
+            let putMyVar = function(param0, param1, param2) {
+                param2 = MY_TICKET;
+                param0 = jkdata.id + param0;
+                method_putMyVar.invoke(javaContext, param0, param1, param2);
+            }
+            let getMyVar = function(param0, param1, param2) {
+                param2 = MY_TICKET;
+                param0 = jkdata.id + param0;
+                let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
+                try {
+                    if (retStr instanceof java.io.InputStream) {
+                        return retStr;
+                    }
+                }
+                catch (e) {
+                }
+                return retStr == null ? retStr : retStr + "";
+            }
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name) || [];
             if(resultd&&getData.length==0){

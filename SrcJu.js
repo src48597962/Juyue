@@ -1319,6 +1319,7 @@ function erjisousuo(name,group,datas,sstype) {
         if (i > 30) { delete searchMark[one]; }
         hideLoading();
     }else{
+        clearMyVar("SrcJu_停止搜索线程");
         showLoading('搜源中，请稍后...');
         updateItem(updateItemid, {
             title: "搜源中..."
@@ -1402,12 +1403,11 @@ function erjisousuo(name,group,datas,sstype) {
             if(getMyVar("SrcJu_停止搜索线程")!="1"){
                 storage0.putMyVar('SrcJu_searchMark', searchMark);
             }
-            clearMyVar("SrcJu_停止搜索线程");
-            let sousuosm = "‘‘’’<small><font color=#f13b66a>" + success + "</font>/" + list.length + "，搜索完成</small>";
+            let pagesm = sstype=="newpage"?"第"+MY_PAGE+"页":"";
+            let sousuosm = "‘‘’’<small><font color=#f13b66a>" + success + "</font>/" + list.length + "，"+pagesm+"搜索完成</small>";
             updateItem(updateItemid, { title: sousuosm });
         } else {
             hideLoading();
-            clearMyVar("SrcJu_停止搜索线程");
             updateItem(updateItemid, { title: '' });
             toast("无接口");
         }

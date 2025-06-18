@@ -354,7 +354,7 @@ function getSsData(name, jkdata, page) {
         }
     } catch (e) {
         error = e.message;
-        xlog('执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
     return {
         vodlists: getData,

@@ -517,6 +517,7 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata, 'er');
+                xlog(parse['最新']);
                 try {
                     if (parse['预处理']) {
                         parse['预处理'].call(parse);

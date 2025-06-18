@@ -29,7 +29,8 @@ function createClass(d, obj) {
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
         fysort = getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
         if (MY_PAGE == 1) {
-            let Color = '#2E9465';
+            let Color = obj.textColor || '#2E9465';
+            let backColor = obj.backgroundColor || "#20" + Color.replace('#','');
             if(class_name.length>0){
                 class_url.forEach((it, i) => {
                     try {
@@ -44,7 +45,7 @@ function createClass(d, obj) {
                             }, isAll ? "fyAll_id" : "fyclass_id", fyclass, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyclass==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fyclass==it?backColor:""
                             }
                         })
                     } catch (e) { }
@@ -67,7 +68,7 @@ function createClass(d, obj) {
                             }, isAll ? "fyAll_id" : "fyarea_id", fyarea, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyarea==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fyarea==it?backColor:""
                             }
                         })
                     } catch (e) { }
@@ -95,7 +96,7 @@ function createClass(d, obj) {
                             }, isAll ? "fyAll_id" : "fyyear_id", fyyear, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fyyear==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fyyear==it?backColor:""
                             }
                         })
                     } catch (e) { }
@@ -106,11 +107,6 @@ function createClass(d, obj) {
             }
             if(sort_name.length>0){
                 sort_url.forEach((it, i) => {
-                    if (i == 0) {
-                        d.push({
-                            col_type: "blank_block"
-                        })
-                    }
                     try {
                         d.push({
                             title: fysort == it ? `““””<span style="color: ` + Color + `">` + sort_name[i] + `</span>` : sort_name[i],
@@ -123,7 +119,7 @@ function createClass(d, obj) {
                             }, "fysort_id", fysort, it),
                             col_type: 'scroll_button',
                             extra: {
-                                backgroundColor: fysort==it?"#20" + Color.replace('#',''):""
+                                backgroundColor: fysort==it?backColor:""
                             }
                         })
                     } catch (e) { }

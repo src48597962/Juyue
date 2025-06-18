@@ -239,6 +239,15 @@ function yiji(testSource) {
                 hideLoading();
                 if(d.length>0){
                     d.push({
+                        title: "‘‘’’<small><small><font color=#bfbfbf>以上为当前源搜索结果</font></small></small>",
+                        url: 'hiker://empty',
+                        col_type: 'text_center_1',
+                        extra: {
+                            cls: 'homesousuolist',
+                            lineVisible: false
+                        }
+                    });
+                    d.push({
                         col_type: "line_blank",
                         extra: {
                             cls: 'homesousuolist'

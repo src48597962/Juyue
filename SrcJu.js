@@ -516,24 +516,6 @@ function erji() {
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata, 'er');
                 try {
-                    let putMyVar = function(param0, param1, param2) {
-                        param2 = MY_TICKET;
-                        param0 = jkdata.id + param0;
-                        method_putMyVar.invoke(javaContext, param0, param1, param2);
-                    }
-                    let getMyVar = function(param0, param1, param2) {
-                        param2 = MY_TICKET;
-                        param0 = jkdata.id + param0;
-                        let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
-                        try {
-                            if (retStr instanceof java.io.InputStream) {
-                                return retStr;
-                            }
-                        }
-                        catch (e) {
-                        }
-                        return retStr == null ? retStr : retStr + "";
-                    }
                     if (parse['预处理']) {
                         parse['预处理'].call(parse);
                     }
@@ -1200,24 +1182,6 @@ function erji() {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
                 let parse = getObjCode(jkdata, 'zx');
-                let putMyVar = function(param0, param1, param2) {
-                    param2 = MY_TICKET;
-                    param0 = jkdata.id + param0;
-                    method_putMyVar.invoke(javaContext, param0, param1, param2);
-                }
-                let getMyVar = function(param0, param1, param2) {
-                    param2 = MY_TICKET;
-                    param0 = jkdata.id + param0;
-                    let retStr = method_getMyVar.invoke(javaContext, param0, param1, param2);
-                    try {
-                        if (retStr instanceof java.io.InputStream) {
-                            return retStr;
-                        }
-                    }
-                    catch (e) {
-                    }
-                    return retStr == null ? retStr : retStr + "";
-                }
                 if (parse['预处理']) {
                     parse['预处理'].call(parse);
                 }

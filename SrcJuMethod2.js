@@ -7,7 +7,7 @@ function readData(jkdata){
     let file = `hiker://files/rules/Src/Juyue/jiekou/${fileid}.txt`;
     let filestr = fetch(file);
     if(filestr){
-        filestr = filestr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
+        //filestr = filestr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(filestr);
         try{
             let arr = ['主页','分类','排序','更新','搜索','二级'];

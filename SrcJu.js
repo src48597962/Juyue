@@ -1333,7 +1333,7 @@ function erjisousuo(name,group,datas,sstype) {
         }
 
         let task = function (obj) {
-            return (function() {
+            //return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
                     return {result:lists, success:1};
@@ -1341,7 +1341,7 @@ function erjisousuo(name,group,datas,sstype) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
                     return {result:[], success:0};
                 }
-            })();
+            //})();
         }
         let list = ssdatalist.map((item) => {
             return {

@@ -1347,7 +1347,7 @@ function erjisousuo(name,group,datas,sstype) {
         let list = ssdatalist.map((item) => {
             return {
                 func: task,
-                param: {"search":search,"name":name,"type":sstype,"data":item,"page":sstype=="newpage"?MY_PAGE:1},
+                param: {"search":search,"name":name,"type":sstype,"data":item,"page":1},
                 id: item.id
             }
         });
@@ -1590,6 +1590,7 @@ function newsousuopage(keyword,searchtype) {
     
     if(name){
         deleteItemByCls('searchrecord');
+        xlog("newpage>"+MY_PAGE);
         erjisousuo(name,group,false,"newpage");
     }
 }

@@ -29,84 +29,96 @@ function createClass(d, obj) {
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
         fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
         if (MY_PAGE == 1) {
-            class_url.forEach((it, i) => {
-                try {
-                    d.push({
-                        title: fyclass == it ? `““””<b><span style="color: #09c11b">` + class_name[i] + `</span></b>` : class_name[i],
-                        url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
-                            if (nowid != newid) {
-                                putMyVar(id_name, newid);
-                                refreshPage(false);
-                            }
-                            return 'hiker://empty'
-                        }, isAll ? "fyAll_id" : "fyclass_id", fyclass, it),
-                        col_type: 'scroll_button'
-                    })
-                } catch (e) { }
-            })
-            area_url.forEach((it, i) => {
-                if (i == 0) {
-                    d.push({
-                        col_type: "blank_block"
-                    })
-                }
-                try {
-                    d.push({
-                        title: fyarea == it ? `““””<b><span style="color: #09c11b">` + area_name[i] + `</span></b>` : area_name[i],
-                        url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
-                            if (nowid != newid) {
-                                putMyVar(id_name, newid);
-                                refreshPage(false);
-                            }
-                            return 'hiker://empty'
-                        }, isAll ? "fyAll_id" : "fyarea_id", fyarea, it),
-                        col_type: 'scroll_button'
-                    })
-                } catch (e) { }
-            })
-            year_url.forEach((it, i) => {
-                if (i == 0) {
-                    d.push({
-                        col_type: "blank_block"
-                    })
-                }
-                try {
-                    d.push({
-                        title: fyyear == it ? `““””<b><span style="color: #09c11b">` + year_name[i] + `</span></b>` : year_name[i],
-                        url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
-                            if (nowid != newid) {
-                                putMyVar(id_name, newid);
-                                refreshPage(false);
-                            }
-                            return 'hiker://empty'
-                        }, isAll ? "fyAll_id" : "fyyear_id", fyyear, it),
-                        col_type: 'scroll_button'
-                    })
-                } catch (e) { }
-            })
-            sort_url.forEach((it, i) => {
-                if (i == 0) {
-                    d.push({
-                        col_type: "blank_block"
-                    })
-                }
-                try {
-                    d.push({
-                        title: fysort == it ? `““””<b><span style="color: #09c11b">` + sort_name[i] + `</span></b>` : sort_name[i],
-                        url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
-                            if (nowid != newid) {
-                                putMyVar(id_name, newid);
-                                refreshPage(false);
-                            }
-                            return 'hiker://empty'
-                        }, isAll ? "fyAll_id" : "fysort_id", fysort, it),
-                        col_type: 'scroll_button'
-                    })
-                } catch (e) { }
-            })
-            d.push({
-                col_type: "blank_block"
-            })
+            if(class_name.length>0){
+                class_url.forEach((it, i) => {
+                    try {
+                        d.push({
+                            title: fyclass == it ? `““””<b><span style="color: #09c11b">` + class_name[i] + `</span></b>` : class_name[i],
+                            url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
+                                if (nowid != newid) {
+                                    putMyVar(id_name, newid);
+                                    refreshPage(false);
+                                }
+                                return 'hiker://empty'
+                            }, isAll ? "fyAll_id" : "fyclass_id", fyclass, it),
+                            col_type: 'scroll_button'
+                        })
+                    } catch (e) { }
+                })
+                d.push({
+                    col_type: "blank_block"
+                })
+            }
+            if(area_name.length>0){
+                area_url.forEach((it, i) => {
+                    try {
+                        d.push({
+                            title: fyarea == it ? `““””<b><span style="color: #09c11b">` + area_name[i] + `</span></b>` : area_name[i],
+                            url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
+                                if (nowid != newid) {
+                                    putMyVar(id_name, newid);
+                                    refreshPage(false);
+                                }
+                                return 'hiker://empty'
+                            }, isAll ? "fyAll_id" : "fyarea_id", fyarea, it),
+                            col_type: 'scroll_button'
+                        })
+                    } catch (e) { }
+                })
+                d.push({
+                    col_type: "blank_block"
+                })
+            }
+            if(year_name.length>0){
+                year_url.forEach((it, i) => {
+                    if (i == 0) {
+                        d.push({
+                            col_type: "blank_block"
+                        })
+                    }
+                    try {
+                        d.push({
+                            title: fyyear == it ? `““””<b><span style="color: #09c11b">` + year_name[i] + `</span></b>` : year_name[i],
+                            url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
+                                if (nowid != newid) {
+                                    putMyVar(id_name, newid);
+                                    refreshPage(false);
+                                }
+                                return 'hiker://empty'
+                            }, isAll ? "fyAll_id" : "fyyear_id", fyyear, it),
+                            col_type: 'scroll_button'
+                        })
+                    } catch (e) { }
+                })
+                d.push({
+                    col_type: "blank_block"
+                })
+            }
+            if(sort_name.length>0){
+                sort_url.forEach((it, i) => {
+                    if (i == 0) {
+                        d.push({
+                            col_type: "blank_block"
+                        })
+                    }
+                    try {
+                        d.push({
+                            title: fysort == it ? `““””<b><span style="color: #09c11b">` + sort_name[i] + `</span></b>` : sort_name[i],
+                            url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
+                                if (nowid != newid) {
+                                    putMyVar(id_name, newid);
+                                    refreshPage(false);
+                                }
+                                return 'hiker://empty'
+                            }, isAll ? "fyAll_id" : "fysort_id", fysort, it),
+                            col_type: 'scroll_button'
+                        })
+                    } catch (e) { }
+                })
+                d.push({
+                    col_type: "blank_block"
+                })
+            }
         }
 
         let fypage = MY_PAGE;

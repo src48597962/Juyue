@@ -1410,6 +1410,23 @@ function erjisousuo(name,group,datas,sstype) {
             updateItem(updateItemid, { title: sousuosm });
         } else {
             hideLoading();
+            addItemBefore(updateItemid, [{
+                title: "",
+                url: "hiker://empty",
+                col_type: 'text_center_1',
+                extra: {
+                    cls: "Juloadlist",
+                    lineVisible: false
+                }
+            },{
+                title: "",
+                url: "hiker://empty",
+                col_type: 'text_center_1',
+                extra: {
+                    cls: "Juloadlist",
+                    lineVisible: false
+                }
+            }]);
             updateItem(updateItemid, { title: '当前分组无接口' });
             toast("无接口");
         }
@@ -1491,11 +1508,17 @@ function newsousuopage(keyword, searchtype) {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
     }));
-    setPageTitle("搜索|聚阅");
-
+    
     let name = getMyVar('SrcJu_sousuoName', keyword||'');
     let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
+    setPageTitle("聚搜>"+name+" | 聚阅");
+
     let d = [];
+    d.push({
+        col_type: 'pic_1_full',
+        img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+        url: 'hiker://empty',
+    });
     let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','接口有分组，则搜索同分组'];
     if(MY_PAGE==1){
         d.push({

@@ -35,7 +35,7 @@ function createClass(d, obj) {
                 class_url.forEach((it, i) => {
                     try {
                         d.push({
-                            title: fyclass == it ? `““””<span style="color: ` + Color + `">` + class_name[i] + `</span>` : class_name[i],
+                            title: fyclass == it ? `““””<b><span style="color: ` + Color + `">` + class_name[i] + `</span></b>` : class_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -58,7 +58,7 @@ function createClass(d, obj) {
                 area_url.forEach((it, i) => {
                     try {
                         d.push({
-                            title: fyarea == it ? `““””<span style="color: ` + Color + `">` + area_name[i] + `</span>` : area_name[i],
+                            title: fyarea == it ? `““””<b><span style="color: ` + Color + `">` + area_name[i] + `</span></b>` : area_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -86,7 +86,7 @@ function createClass(d, obj) {
                     }
                     try {
                         d.push({
-                            title: fyyear == it ? `““””<span style="color: ` + Color + `">` + year_name[i] + `</span>` : year_name[i],
+                            title: fyyear == it ? `““””<b><span style="color: ` + Color + `">` + year_name[i] + `</span></b>` : year_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);
@@ -109,7 +109,7 @@ function createClass(d, obj) {
                 sort_url.forEach((it, i) => {
                     try {
                         d.push({
-                            title: fysort == it ? `““””<span style="color: ` + Color + `">` + sort_name[i] + `</span>` : sort_name[i],
+                            title: fysort == it ? `““””<b><span style="color: ` + Color + `">` + sort_name[i] + `</span></b>` : sort_name[i],
                             url: $("#noLoading#").lazyRule((id_name, nowid, newid) => {
                                 if (nowid != newid) {
                                     putMyVar(id_name, newid);

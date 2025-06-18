@@ -1333,7 +1333,7 @@ function erjisousuo(name,group,datas,sstype) {
         }
 
         let task = function (obj) {
-            return (function() {
+            //return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
@@ -1341,7 +1341,7 @@ function erjisousuo(name,group,datas,sstype) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
                     return {result:[], success:0, type: obj.type, name: obj.data.name};
                 }
-            })();
+            //})();
         }
         let list = ssdatalist.map((item) => {
             return {
@@ -1357,6 +1357,7 @@ function erjisousuo(name,group,datas,sstype) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
                     xlog(taskResult.name);
+                    /*
                     beidlist.push(id);
 
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
@@ -1377,6 +1378,7 @@ function erjisousuo(name,group,datas,sstype) {
                         nosousuolist.push(id);
                         storage0.putMyVar('SrcJu_nosousuolist', nosousuolist);
                     }
+                    */
                 },
                 param: {
                 }

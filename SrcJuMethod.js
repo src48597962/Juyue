@@ -240,11 +240,6 @@ function getYiData(datatype, jkdata, dd) {
         try {
             let sourcename = jkdata.name;
             let getData = [];
-            if (parse['预处理']) {
-                parse['预处理'].call(parse);
-            }
-            let resultd;
-            let setResult = function(d) { resultd = d; };
             let putMyVar = function(param0, param1, param2) {
                 param2 = MY_TICKET;
                 param0 = jkdata.id + param0;
@@ -263,6 +258,11 @@ function getYiData(datatype, jkdata, dd) {
                 }
                 return retStr == null ? retStr : retStr + "";
             }
+            if (parse['预处理']) {
+                parse['预处理'].call(parse);
+            }
+            let resultd;
+            let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + 执行str);
             getData = 数据.call(parse) || [];
             if(resultd&&getData.length==0){
@@ -340,11 +340,6 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
-            if (parse['预处理']) {
-                parse['预处理'].call(parse);
-            }
-            let resultd;
-            let setResult = function(d) { resultd = d; };
             let putMyVar = function(param0, param1, param2) {
                 param2 = MY_TICKET;
                 param0 = jkdata.id + param0;
@@ -363,6 +358,11 @@ function getSsData(name, jkdata, page) {
                 }
                 return retStr == null ? retStr : retStr + "";
             }
+            if (parse['预处理']) {
+                parse['预处理'].call(parse);
+            }
+            let resultd;
+            let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name) || [];
             if(resultd&&getData.length==0){

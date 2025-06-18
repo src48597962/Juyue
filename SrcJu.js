@@ -1356,8 +1356,7 @@ function erjisousuo(name,group,datas,sstype) {
         if (list.length > 0) {
             be(list, {
                 func: function (obj, id, error, taskResult) {
-                    xlog(taskResult.name);
-                    /*
+                    xlog(taskResult.name + ">>" + taskResult.success);
                     beidlist.push(id);
 
                     if(getMyVar("SrcJu_停止搜索线程")=="1"){
@@ -1378,7 +1377,6 @@ function erjisousuo(name,group,datas,sstype) {
                         nosousuolist.push(id);
                         storage0.putMyVar('SrcJu_nosousuolist', nosousuolist);
                     }
-                    */
                 },
                 param: {
                 }

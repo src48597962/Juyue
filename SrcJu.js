@@ -516,9 +516,6 @@ function erji() {
                 let t1 = new Date().getTime();
                 parse = getObjCode(jkdata, 'er');
                 try {
-                    if (parse['预处理']) {
-                        parse['预处理'].call(parse);
-                    }
                     let putMyVar = function(param0, param1, param2) {
                         param2 = MY_TICKET;
                         param0 = jkdata.id + param0;
@@ -536,6 +533,9 @@ function erji() {
                         catch (e) {
                         }
                         return retStr == null ? retStr : retStr + "";
+                    }
+                    if (parse['预处理']) {
+                        parse['预处理'].call(parse);
                     }
                     if(parse['二级']){
                         eval("let 二级获取 = " + parse['二级'])
@@ -1200,10 +1200,6 @@ function erji() {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
                 let parse = getObjCode(jkdata, 'zx');
-                if (parse['预处理']) {
-                    parse['预处理'].call(parse);
-                }
-                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 let putMyVar = function(param0, param1, param2) {
                     param2 = MY_TICKET;
                     param0 = jkdata.id + param0;
@@ -1222,6 +1218,10 @@ function erji() {
                     }
                     return retStr == null ? retStr : retStr + "";
                 }
+                if (parse['预处理']) {
+                    parse['预处理'].call(parse);
+                }
+                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                 eval("let 最新2 = " + 最新str);
                 try{
                     let zx = 最新2.call(parse, url) || "";

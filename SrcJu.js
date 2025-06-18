@@ -1180,6 +1180,7 @@ function erji() {
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节
+        xlog(parse['最新']);
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                 MY_URL = url;
@@ -1411,7 +1412,7 @@ function erjisousuo(name,group,datas,sstype) {
             updateItem(updateItemid, { title: sousuosm });
         } else {
             hideLoading();
-            updateItem(updateItemid, { title: '' });
+            updateItem(updateItemid, { title: '当前分组无接口' });
             toast("无接口");
         }
     }

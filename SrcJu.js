@@ -1548,8 +1548,10 @@ function newsousuopage(keyword, searchtype) {
                 id: 'newpagesousuoid',
                 defaultValue: name,
                 titleVisible: true,
-                onChange: $.toString((searchurl) => {
-                    if(input==" "){
+                onChange: $.toString(() => {
+                    if(input==""){
+                        deleteItemByCls('searchrecord');
+                    }else if(input==" "){
                         deleteItemByCls('searchrecord');
                         let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
@@ -1589,9 +1591,10 @@ function newsousuopage(keyword, searchtype) {
                             let color = 背景色();
                             d.push({
                                 title: item,
-                                url: item + $.toString(() => {
+                                url: item + $().lazyRule(() => {
                                     putMyVar('SrcJu_sousuoName',input);
                                     refreshPage(true);
+                                    return "hiker://empty";
                                 }),
                                 col_type: 'flex_button',
                                 extra: {

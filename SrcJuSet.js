@@ -555,7 +555,7 @@ function jiekouapi(data, look) {
                             putMyVar('apiauthor', parse['作者']);
                             is = 1;
                         }
-                        let version = parse['版本'] || parse['Ver'] || $.dateFormat(new Date(),"yyyy-MM-dd HH:mm:ss");
+                        let version = parse['版本'] || parse['Ver'] || $.dateFormat(new Date(),"yyyyMMddHHmmss");
                         if(version != getMyVar('apiversion','')){
                             putMyVar('apiversion', version);
                             is = 1;

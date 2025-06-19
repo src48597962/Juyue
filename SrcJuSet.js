@@ -1173,7 +1173,7 @@ function importConfirm(jsfile) {
             }
             
             d.push({
-                title: it.name + "  (" + it.type + ")" + (it.group?"  ["+it.group+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}",
+                title: it.name + "  (" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}",
                 url: $(datamenu, 2).select((lx, data, isnew) => {
                     data = JSON.parse(base64Decode(data));
 

@@ -265,7 +265,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }else if(getItem('接口搜索方式')=="页面聚合"){
-                return $('hiker://empty##fypage#noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
+                return $('hiker://empty##fypage#immersiveTheme##noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
                     require(config.聚阅);
                     newsousuopage(input, group);
                 }, input, homeGroup||jkdata.type);

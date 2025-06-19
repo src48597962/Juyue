@@ -1652,7 +1652,7 @@ function newsousuopage(keyword, searchtype) {
         let searchTypes = getTypeNames("搜索页");
         searchTypes.forEach((it) =>{
             let obj = {
-                title: getMyVar("SrcJu_sousuoType",searchtype||runMode)==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+                title: group==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
                 url: $('#noLoading#').lazyRule((it) => {
                     putMyVar("SrcJu_sousuoType",it);
                     refreshPage(false);

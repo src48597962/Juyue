@@ -459,8 +459,12 @@ function selectSource(selectGroup) {
                         inputBox.setDefaultValue("");
                         
                         tmpList = getGroupLists(sourceList, s);
-                        let flist = getitems(tmpList).items;
-                        manage.setTitle("当前:" + hometitle + "  合计:" + flist.length);
+                        index_items = getitems(tmpList);
+                        index = index_items.index;
+                        manage.position = index;
+                        manage.toPosition = index;
+                        manage.setTitle("当前:" + hometitle + "  合计:" + tmpList.length);
+                        let flist = index_items.items;
                         manage.change(flist);
                     }
                 });

@@ -285,7 +285,7 @@ function yiji(testSource) {
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
-        let descarr = ['搜你想要的...','1个空格显示历史','结尾2空格互换方式'];
+        let descarr = ['搜你想要的...','1空格显示搜索历史','结尾2空格互换方式'];
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
@@ -1516,7 +1516,7 @@ function newsousuopage(keyword, searchtype) {
     setPageTitle("聚合搜索 | 聚阅");
 
     let d = [];
-    let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','接口有分组，则搜索同分组'];
+    let descarr = ['可快速切换下面类型','1空格显示搜索历史','搜你想要的...'];
     if(MY_PAGE==1){
         d.push({
             col_type: 'pic_1_full',
@@ -1545,8 +1545,94 @@ function newsousuopage(keyword, searchtype) {
             desc: descarr[Math.floor(Math.random() * descarr.length)],
             col_type: "input",
             extra: {
+                id: 'newpagesousuoid',
                 defaultValue: name,
-                titleVisible: true
+                titleVisible: true,
+                onChange: $.toString((searchurl) => {
+                    if(input==" "){
+                        deleteItemByCls('searchrecord');
+                        let recordlist = storage0.getItem('searchrecord') || [];
+                        let d = [];
+                        if(getItem("搜索建议词","")=='1'){
+                            d.push({
+                                col_type: "line",
+                                extra: {
+                                    cls: 'searchrecord'
+                                }
+                            })
+                        }
+
+                        function 背景色() {
+                            function getSoftHexColor() {
+                                // 随机色相（0-360），低饱和度（10-30%），高亮度（85-95%）
+                                const h = Math.floor(Math.random() * 360);
+                                const s = 10 + Math.floor(Math.random() * 20); // 10-30% 饱和度
+                                const l = 85 + Math.floor(Math.random() * 10); // 85-95% 亮度
+
+                                // 将HSL转换为十六进制
+                                return hslToHex(h, s, l);
+                            }
+                            // HSL转十六进制辅助函数
+                            function hslToHex(h, s, l) {
+                                l /= 100;
+                                const a = s * Math.min(l, 1 - l) / 100;
+                                const f = n => {
+                                    const k = (n + h / 30) % 12;
+                                    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                                    return Math.round(255 * color).toString(16).padStart(2, '0');
+                                };
+                                return `#${f(0)}${f(8)}${f(4)}`;
+                            }
+                            return getSoftHexColor()
+                        }
+                        recordlist.forEach(item=>{
+                            let color = 背景色();
+                            d.push({
+                                title: item,
+                                url: item + $.toString(() => {
+                                    putMyVar('SrcJu_sousuoName',input);
+                                    refreshPage(true);
+                                }),
+                                col_type: 'flex_button',
+                                extra: {
+                                    id: 'recordid_' + item,
+                                    cls: 'searchrecord',
+                                    backgroundColor: color,
+                                    longClick: [{
+                                        title: "删除词条",
+                                        js: $.toString((item) => {
+                                            deleteItem('recordid_' + item);
+                                            let recordlist = storage0.getItem('searchrecord') || [];
+                                            recordlist = recordlist.filter((v) => v !== item);
+                                            storage0.setItem('searchrecord', recordlist);
+                                        }, item)
+                                    },{
+                                        title: "清空记录",
+                                        js: $.toString(() => {
+                                            clearItem('searchrecord');
+                                            deleteItemByCls('searchrecord');
+                                        })
+                                    }]
+                                }
+                            });
+                        })
+                        if(recordlist.length>0){
+                            d.push({
+                                col_type: "line_blank",
+                                extra: {
+                                    cls: 'searchrecord'
+                                }
+                            })
+                            d.push({
+                                col_type: "big_blank_block",
+                                extra: {
+                                    cls: 'searchrecord'
+                                }
+                            })
+                        }
+                        addItemAfter('newpagesousuoid', d);
+                    }
+                })
             }
         });
         let searchTypes = getTypeNames("搜索页");

@@ -937,6 +937,11 @@ function importConfirm(jsfile) {
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
+    d.push({
+        col_type: 'pic_1_full',
+        img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+        url: 'hiker://empty',
+    });
     
     if(!jsfile){
         //云口令导入

@@ -1516,13 +1516,13 @@ function newsousuopage(keyword, searchtype) {
     setPageTitle("聚合搜索 | 聚阅");
 
     let d = [];
-    d.push({
-        col_type: 'pic_1_full',
-        img: "http://123.56.105.145/weisyr/img/TopImg0.png",
-        url: 'hiker://empty',
-    });
     let descarr = ['可快速切换下面类型','关键字+2个空格，搜当前','关键字+2个空格+接口名','接口有分组，则搜索同分组'];
     if(MY_PAGE==1){
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
         d.push({
             title: "🔍",
             url: $.toString(() => {

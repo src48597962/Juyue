@@ -1245,6 +1245,9 @@ function importConfirm(jsfile) {
                             yiji(data);
                         },data)
                     }else if (input == "查看本地") {
+                        if(isnew){
+                            return "toast://新增加，本地没有";
+                        }
                         return "editFile://" + data.url;
                     }else if (input == "查看文件") {
                         writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);

@@ -1082,7 +1082,7 @@ function importConfirm(jsfile) {
                 back(false);
                 return "toast://增量导入"+(num<0?"失败":num);
             },lx),
-            img: getIcon("管理-增量导入.svg"),
+            img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
             col_type: 'icon_small_3'
         });
         d.push({

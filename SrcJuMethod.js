@@ -167,9 +167,11 @@ function getYiData(datatype, jkdata, dd) {
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
-    let d = dd || [];
+    let ide = parse["频道"].页面标识 || "";
+    
     let page = MY_PAGE || 1;
     let sourcemenu = [];
+    let d = dd || [];
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
@@ -227,7 +229,6 @@ function getYiData(datatype, jkdata, dd) {
             let col_type = channel.length>5?"scroll_button":channel.length==5?"text_5":channel.length==4?"text_4":channel.length==3?"text_3":"text_2";
             col_type = parse["频道"].样式 || col_type;
             let imgs = parse["频道"].对应图标;
-            let ide = parse["频道"].页面标识 || "";
             
             channel.forEach((it, i)=>{
                 sourcemenu.push({
@@ -243,6 +244,14 @@ function getYiData(datatype, jkdata, dd) {
             
             if(sourcemenu.length>1){
                 storage0.putMyVar("sourcemenu", sourcemenu);
+            }
+        }else{
+            if(ide.includes('#immersiveTheme#')){//频道页面，有传页面标识的统一处理
+                d.push({
+                    col_type: 'pic_1_full',
+                    img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+                    url: 'hiker://empty',
+                });
             }
         }
 

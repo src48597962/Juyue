@@ -146,7 +146,18 @@ function yiji(testSource) {
                 }
             }),
             pic_url: "http://123.56.105.145/tubiao/more/101.png",
-            col_type: 'icon_5'
+            col_type: 'icon_5',
+            extra: {
+                longClick: [{
+                    title: '新搜索页',
+                    js: $.toString(()=>{
+                        return $('hiker://empty##fypage#immersiveTheme##noRecordHistory##noHistory##noRefresh#').rule(() => {
+                            require(config.聚阅);
+                            newsousuopage();
+                        })
+                    })
+                }]
+            }
         })
         d.push({
             title: "书架",
@@ -1591,11 +1602,11 @@ function newsousuopage(keyword, searchtype) {
                             let color = 背景色();
                             d.push({
                                 title: item,
-                                url: item + $().lazyRule(() => {
-                                    putMyVar('SrcJu_sousuoName',input);
-                                    refreshPage(true);
+                                url: $().lazyRule((item) => {
+                                    putMyVar('SrcJu_sousuoName',item);
+                                    refreshPage(false);
                                     return "hiker://empty";
-                                }),
+                                }, item),
                                 col_type: 'flex_button',
                                 extra: {
                                     id: 'recordid_' + item,

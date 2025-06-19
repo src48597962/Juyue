@@ -544,7 +544,7 @@ function jiekouapi(data, look) {
                     try {
                         eval(fetch("file://" + input)); 
                     } catch (e) {
-                        toast("文件存在错误>" + e.message);
+                        toast("文件存在错误>" + e.message + " 错误行#" + e.lineNumber);
                     }
                 })
                 return "editFile://" + file + `@js=` + jsstr;

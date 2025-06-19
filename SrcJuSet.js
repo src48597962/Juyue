@@ -359,6 +359,7 @@ function jiekouapi(data, look) {
     addListener("onClose", $.toString(() => {
         clearMyVar('apiname');
         clearMyVar('apiauthor');
+        clearMyVar('apiversion')
         clearMyVar('apiimg');
         clearMyVar('apitype');
         clearMyVar('apigroup');
@@ -370,6 +371,7 @@ function jiekouapi(data, look) {
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
             putMyVar('apiauthor', data.author||"");
+            putMyVar('apiversion', data.version||"");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
@@ -395,14 +397,19 @@ function jiekouapi(data, look) {
     d.push({
         title: '源接口作者：'+ getMyVar('apiauthor',''),
         col_type: 'text_1',
-        url: $(getMyVar('apiauthor',''), "源接口作者").input(() => {
+        url: 'hiker://empyt',/*$(getMyVar('apiauthor',''), "源接口作者").input(() => {
             putMyVar('apiauthor',input);
             refreshPage(false);
             return 'toast://源接口作者已设置为：' + input;
-        }),
+        }),*/
         extra: {
             //lineVisible: false
         }
+    });
+    d.push({
+        title: '源版本号：'+ getMyVar('apiversion',''),
+        col_type: 'text_1',
+        url: 'hiker://empyt'
     });
     d.push({
         title: '接口类型：'+ getMyVar('apitype',''),
@@ -543,6 +550,19 @@ function jiekouapi(data, look) {
                 let jsstr = $.toString(()=>{
                     try {
                         eval(fetch("file://" + input)); 
+                        let is;
+                        if(parse['作者'] && parse['作者'] != getMyVar('apiauthor','')){
+                            putMyVar('apiauthor', parse['作者']);
+                            is = 1;
+                        }
+                        let version = parse['版本'] || parse['Ver'] || "";
+                        if(version != getMyVar('apiversion','')){
+                            putMyVar('apiversion', version);
+                            is = 1;
+                        }
+                        if(is){
+                            toast('作者、版本有变化，记得点保存');
+                        }
                     } catch (e) {
                         toast("文件存在错误>" + e.message + " 错误行#" + e.lineNumber);
                     }
@@ -555,7 +575,16 @@ function jiekouapi(data, look) {
             let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
             let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
             writeFile(codeTmpl, tmpl);
-            return `editFile://` + codeTmpl + `@js=try{let tmplfile = "hiker://files/_cache/Juyue/parseCodeTmpl.txt";eval(fetch(tmplfile));putMyVar("apiruleurl",tmplfile);refreshPage(false);}catch(e){toast("文件存在错误>"+e.message);}`;
+            let jsstr = $.toString((codeTmpl)=>{
+                try {
+                    eval(fetch(codeTmpl));
+                    putMyVar("apiruleurl", codeTmpl);
+                    refreshPage(false);
+                } catch (e) {
+                    toast("文件存在错误>" + e.message + " 错误行#" + e.lineNumber);
+                }
+            }, codeTmpl)
+            return `editFile://` + codeTmpl + `@js=` + jsstr;
         }),
         extra: {
             titleVisible: true,
@@ -634,6 +663,7 @@ function jiekouapi(data, look) {
             
                 let name = getMyVar('apiname');
                 let author = getMyVar('apiauthor');
+                let version = getMyVar('apiversion');
                 let ruleurl = getMyVar('apiruleurl');
                 let img = getMyVar('apiimg');
                 let type = getMyVar('apitype');
@@ -650,6 +680,9 @@ function jiekouapi(data, look) {
                 }
                 if(author){
                     newapi['author'] = author;
+                }
+                if(version){
+                    newapi['version'] = version;
                 }
                 if(group){
                     newapi['group'] = group;
@@ -1068,7 +1101,7 @@ function importConfirm(jsfile) {
         })
         let oldnum = importdatas.length - newdatas.length;
         d.push({
-            title: "聚阅云口令导入",
+            title: "““””<big><big><b><font color=#648e93>📲 云口令导入</font></b></big></big>",
             desc: (sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
             url: "hiker://empty",
             col_type: 'text_center_1'

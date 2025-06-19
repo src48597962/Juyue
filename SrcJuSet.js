@@ -1092,6 +1092,9 @@ function importConfirm(jsfile) {
         importdatas.forEach(it=>{
             if(!datalist.some(v=>v.id==it.id)){
                 newdatas.push(it);
+            }else{
+                let olddata = datalist.filter(v=>v.id==it.id)[0];
+                it.oldversion = olddata.version || "";
             }
         })
         let oldnum = importdatas.length - newdatas.length;
@@ -1264,8 +1267,9 @@ function importConfirm(jsfile) {
                         }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
-                img: getIcon("管理-箭头.svg"),
-                col_type: "text_icon",
+                desc: isnew?(it.version?'版本号:'+it.version:''):('新版本:'+it.version+'  旧版本:'+it.oldversion),
+                img: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?(it.img || "http://123.56.105.145/tubiao/ke/31.png"):getIcon("管理-箭头.svg"),
+                col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"text_icon",
                 extra: {
                     id: it.id
                 }

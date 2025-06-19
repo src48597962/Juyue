@@ -118,7 +118,8 @@ function yiji(testSource) {
             return v==getItem("接口搜索方式","主页界面")?modeSelect(v):v+'  ';
         });
         searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
-        searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
+        //searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
+        searchModeS.push('记录搜索数');
 
         d.push({
             title: "搜索",
@@ -133,11 +134,12 @@ function yiji(testSource) {
                         setItem(input, "1");
                         return "toast://已设置" + input;
                     }
-                }
-                /*else if(input=='页面聚合'){
-                    return "toast://还没写";
-                }
-                */else{
+                }else if(input=='记录搜索数'){
+                    return $(getItem("记录搜索历史数量", "18"),"记录搜索历史数量").input(()=>{
+                        setItem("记录搜索历史数量", input);
+                        return "hiker://empty";
+                    })
+                }else{
                     setItem("接口搜索方式",input);
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
@@ -226,7 +228,7 @@ function yiji(testSource) {
                 recordlist = recordlist.filter((item) => item !== input);
             }
             recordlist.unshift(input);
-            if(recordlist.length>18){
+            if(recordlist.length>parseInt(getItem("记录搜索历史数量", "18"))){
                 recordlist.splice(recordlist.length-1,1);
             }
             storage0.setItem('searchrecord', recordlist);

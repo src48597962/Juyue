@@ -544,12 +544,19 @@ function jiekouapi(data, look) {
         title: data||getMyVar('apiruleurl')?'查看':'新建',
         col_type: 'input',
         desc: "接口规则文件，不能为空",
-        url: data?$.toString(() => {
+        url: $.toString((isnew) => {
             let file = getMyVar('apiruleurl','');
+            if(isnew){
+                let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
+                let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
+                writeFile(codeTmpl, tmpl);
+                file = codeTmpl;
+            }
+
             if(fileExist(file)){
-                let jsstr = $.toString(()=>{
+                let jsstr = $.toString((file)=>{
                     try {
-                        eval(fetch("file://" + input)); 
+                        eval(fetch(file)); 
                         let is;
                         if(parse['作者'] && parse['作者'] != getMyVar('apiauthor','')){
                             putMyVar('apiauthor', parse['作者']);
@@ -563,29 +570,17 @@ function jiekouapi(data, look) {
                         if(is){
                             toast('作者、版本有变化，记得点保存');
                         }
+                        putMyVar("apiruleurl", file);
+                        refreshPage(false);
                     } catch (e) {
                         toast("文件存在错误>" + e.message + " 错误行#" + e.lineNumber);
                     }
-                })
+                },file)
                 return "editFile://" + file + `@js=` + jsstr;
             }else{
                 return "toast://文件不存在，无法查看";
             }
-        }):$.toString(() => {
-            let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
-            let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
-            writeFile(codeTmpl, tmpl);
-            let jsstr = $.toString((codeTmpl)=>{
-                try {
-                    eval(fetch(codeTmpl));
-                    putMyVar("apiruleurl", codeTmpl);
-                    refreshPage(false);
-                } catch (e) {
-                    toast("文件存在错误>" + e.message + " 错误行#" + e.lineNumber);
-                }
-            }, codeTmpl)
-            return `editFile://` + codeTmpl + `@js=` + jsstr;
-        }),
+        }, data?0:1),
         extra: {
             titleVisible: true,
             defaultValue: getMyVar('apiruleurl',''),

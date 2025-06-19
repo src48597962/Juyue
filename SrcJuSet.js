@@ -540,7 +540,14 @@ function jiekouapi(data, look) {
         url: data?$.toString(() => {
             let file = getMyVar('apiruleurl','');
             if(fileExist(file)){
-                return "editFile://" + file + `@js=try{eval(fetch("file://"+input));}catch(e){toast("文件存在错误>"+e.message);}`;
+                let jsstr = $.toString(()=>{
+                    try {
+                        eval(fetch("file://" + input)); 
+                    } catch (e) {
+                        toast("文件存在错误>" + e.message);
+                    }
+                })
+                return "editFile://" + file + `@js=` + jsstr;
             }else{
                 return "toast://文件不存在，无法查看";
             }

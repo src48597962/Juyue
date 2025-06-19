@@ -227,11 +227,12 @@ function getYiData(datatype, jkdata, dd) {
             let col_type = channel.length>5?"scroll_button":channel.length==5?"text_5":channel.length==4?"text_4":channel.length==3?"text_3":"text_2";
             col_type = parse["频道"].样式 || col_type;
             let imgs = parse["频道"].对应图标;
+            let ide = parse["频道"].页面标识 || "";
             
             channel.forEach((it, i)=>{
                 sourcemenu.push({
                     title: it.name,
-                    url: rulePage(it.name, 页码[it.name]),
+                    url: rulePage(it.name, 页码[it.name], ide),
                     pic_url: it.icon || (imgs?imgs[i]:""),
                     col_type: it.col || col_type,
                     extra: {
@@ -362,8 +363,8 @@ function getSsData(name, jkdata, page) {
     };
 }
 //打开指定类型的新页面
-function rulePage(datatype, ispage) {
-    return $("hiker://empty#noRecordHistory##noHistory#" + (ispage ? "?page=fypage" : "")).rule((datatype) => {
+function rulePage(datatype, ispage, ide) {
+    return $("hiker://empty##" + (ispage ? "fypage" : "") + ide + "#noRecordHistory##noHistory#").rule((datatype) => {
         getYiData(datatype);
     }, datatype)
 }

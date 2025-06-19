@@ -1169,9 +1169,18 @@ function importConfirm(jsfile) {
                     //datamenu.push("删除文件");
                 }
             }
-            
+            let ittitle,itimg,itcol;
+            if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
+                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}";
+                itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+                itcol = "icon_1_left_pic";
+            }else{
+                ittitle = it.name + "<small><font color=grey>(" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}";
+                itimg = getIcon("管理-箭头.svg");
+                itcol = "text_icon";
+            }
             d.push({
-                title: it.name + "  (" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}",
+                title: ittitle,
                 url: $(datamenu, 2).select((lx, data, isnew) => {
                     data = JSON.parse(base64Decode(data));
 
@@ -1268,8 +1277,8 @@ function importConfirm(jsfile) {
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
                 desc: isnew?(it.version?'版本号:'+it.version:''):('新版本:'+it.version+'\n旧版本:'+it.oldversion),
-                img: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?(it.img || "http://123.56.105.145/tubiao/ke/31.png"):getIcon("管理-箭头.svg"),
-                col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"text_icon",
+                img: itimg,
+                col_type: itcol,
                 extra: {
                     id: it.id
                 }

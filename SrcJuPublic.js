@@ -441,8 +441,6 @@ function selectSource(selectGroup) {
                 putMyVar("SrcJu_sourceListFilter", s);
                 let tmpList2 = tmpList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                 let flist = getitems(tmpList2).items;
-                manage.setTitle("当前:" + hometitle + "  合计:" + flist.length);
-                manage.change();
                 manage.change(flist);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
@@ -462,6 +460,7 @@ function selectSource(selectGroup) {
                         
                         tmpList = getGroupLists(sourceList, s);
                         let flist = getitems(tmpList).items;
+                        manage.setTitle("当前:" + hometitle + "  合计:" + flist.length);
                         manage.change(flist);
                     }
                 });

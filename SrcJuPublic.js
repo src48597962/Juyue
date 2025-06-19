@@ -439,8 +439,7 @@ function selectSource(selectGroup) {
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
-                let tmpList2 = tmpList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
-                let flist = getitems(tmpList2).items;
+                let flist = items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
                 manage.change(flist);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
@@ -460,12 +459,12 @@ function selectSource(selectGroup) {
                         
                         tmpList = getGroupLists(sourceList, s);
                         index_items = getitems(tmpList);
-                        let flist = index_items.items;
-                        manage.change(flist);
-                        manage.setTitle("当前:" + hometitle + "  合计:" + flist.length);
+                        items = index_items.items;
+                        manage.change(items);
+                        manage.setTitle("当前:" + hometitle + "  合计:" + items.length);
                         index = index_items.index;
                         manage.setSelectedIndex(index);
-                        //manage.scrollToPosition(index, false);
+                        manage.scrollToPosition(index, false);
                     }
                 });
             },

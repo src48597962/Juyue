@@ -245,7 +245,7 @@ function getYiData(datatype, jkdata, dd) {
             if(sourcemenu.length>1){
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
-        }else{
+        }else if(page==1){
             if(ide.includes('#immersiveTheme#')){//频道页面，有传页面标识的统一处理
                 d.push({
                     col_type: 'pic_1_full',

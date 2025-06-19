@@ -464,8 +464,8 @@ function selectSource(selectGroup) {
                         manage.change(flist);
                         manage.setTitle("当前:" + hometitle + "  合计:" + flist.length);
                         index = index_items.index;
-                        manage.scrollToPosition(index, true);
                         manage.setSelectedIndex(index);
+                        //manage.scrollToPosition(index, false);
                     }
                 });
             },

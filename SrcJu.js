@@ -1427,7 +1427,7 @@ function erjisousuo(name,group,datas,sstype) {
                     lineVisible: false
                 }
             }]);
-            updateItem(updateItemid, { title: '当前分组无接口' });
+            updateItem(updateItemid, { title: '‘‘’’<font color=#bfbfbf>当前分组无接口</font>' });
             toast("无接口");
         }
     }

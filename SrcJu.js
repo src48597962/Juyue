@@ -1511,7 +1511,7 @@ function newsousuopage(keyword, searchtype) {
     
     let name = getMyVar('SrcJu_sousuoName', keyword||'');
     let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
-    setPageTitle("聚搜>"+name+" | 聚阅");
+    setPageTitle("聚合搜索 | 聚阅");
 
     let d = [];
     d.push({

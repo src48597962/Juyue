@@ -1163,19 +1163,18 @@ function importConfirm(jsfile) {
             if(lx=="jk"){
                 datamenu.push("设定分组");
                 datamenu.push("接口测试");
+                datamenu.push("查看版本");
                 if(!it.url.startsWith('http')){
-                    datamenu.push("查看本地");
                     datamenu.push("查看文件");
-                    //datamenu.push("删除文件");
                 }
             }
             let ittitle,itimg,itcol;
             if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}";
+                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"");
                 itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
                 itcol = "icon_1_left_pic";
             }else{
-                ittitle = it.name + "<small><font color=grey>(" + it.type + ")" + (it.author?"  ["+it.author+"]":"") + "  {" + (isnew?"新增加":"已存在") + "}";
+                ittitle = it.name + "<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + "{" + (isnew?"新增加":"已存在") + "}";
                 itimg = getIcon("管理-箭头.svg");
                 itcol = "text_icon";
             }
@@ -1251,11 +1250,9 @@ function importConfirm(jsfile) {
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                             yiji(data);
                         },data)
-                    }else if (input == "查看本地") {
-                        if(isnew){
-                            return "toast://新增加，本地没有";
-                        }
-                        return "editFile://" + data.url;
+                    }else if (input == "查看版本") {
+                        let sm = isnew?('版本号:'+data.version):('新版本:'+data.version+' 旧版本:'+data.oldversion);
+                        return "toast://" + sm;
                     }else if (input == "查看文件") {
                         writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
                         return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
@@ -1276,7 +1273,7 @@ function importConfirm(jsfile) {
                         }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
-                desc: isnew?(it.version?'版本号:'+it.version:''):('新版本:'+it.version+'\n旧版本:'+it.oldversion),
+                desc: isnew?"{新增加}":"{已存在}",
                 img: itimg,
                 col_type: itcol,
                 extra: {

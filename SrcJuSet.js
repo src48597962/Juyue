@@ -562,7 +562,7 @@ function jiekouapi(data, look) {
                             putMyVar('apiauthor', parse['作者']);
                             is = 1;
                         }
-                        let version = parse['版本'] || parse['Ver'] || $.dateFormat(new Date(),"yyyyMMddHHmmss");
+                        let version = parse['版本'] || parse['Ver'] || $.dateFormat(new Date(),"yyyyMMddss");
                         if(version != getMyVar('apiversion','')){
                             putMyVar('apiversion', version);
                             is = 1;
@@ -1163,14 +1163,13 @@ function importConfirm(jsfile) {
             if(lx=="jk"){
                 datamenu.push("设定分组");
                 datamenu.push("接口测试");
-                datamenu.push("查看版本");
                 if(!it.url.startsWith('http')){
                     datamenu.push("查看文件");
                 }
             }
             let ittitle,itimg,itcol;
             if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"");
+                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.version?"-V"+it.version:"");
                 itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
                 itcol = "icon_1_left_pic";
             }else{
@@ -1250,9 +1249,6 @@ function importConfirm(jsfile) {
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                             yiji(data);
                         },data)
-                    }else if (input == "查看版本") {
-                        let sm = isnew?('版本号:'+data.version):('新版本:'+data.version+' 旧版本:'+data.oldversion);
-                        return "toast://" + sm;
                     }else if (input == "查看文件") {
                         writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
                         return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
@@ -1273,7 +1269,7 @@ function importConfirm(jsfile) {
                         }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
-                desc: isnew?"{新增加}":"{已存在}",
+                desc: isnew?"新增加"+(it.version?"-V"+it.version:""):"已存在"+(it.oldversion?"-V"+it.oldversion:""),
                 img: itimg,
                 col_type: itcol,
                 extra: {

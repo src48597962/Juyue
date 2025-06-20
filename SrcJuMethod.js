@@ -246,7 +246,6 @@ function getYiData(datatype, jkdata, dd) {
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }else if(page==1){
-            /*
             if(ide.includes('#immersiveTheme#')){//频道页面，有传页面标识的统一处理
                 d.push({
                     col_type: 'pic_1_full',
@@ -254,7 +253,6 @@ function getYiData(datatype, jkdata, dd) {
                     url: 'hiker://empty',
                 });
             }
-            */
         }
 
         if(parse['host']){

@@ -973,7 +973,7 @@ function importConfirm(jsfile) {
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
     if(isDarkMode()){
-        for(let i=0;i<3;i++){
+        for(let i=0;i<2;i++){
             d.push({
                 title: "",
                 url: "hiker://empty",

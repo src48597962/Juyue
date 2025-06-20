@@ -1094,7 +1094,7 @@ function importConfirm(jsfile) {
         })
         let oldnum = importdatas.length - newdatas.length;
         d.push({
-            title: "““””<big><b><font color=#648e93>📲 聚阅云口令导入  </font></b></big>",
+            title: "““””<big><b><font color=#648e93>📲 云口令导入  </font></b></big>",
             desc: (sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
             url: "hiker://empty",
             col_type: 'text_center_1'

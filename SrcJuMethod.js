@@ -375,8 +375,8 @@ function getSsData(name, jkdata, page) {
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage, ide) {
-    return $("hiker://empty" + (ispage ? "?page=fypage" : "") + "#noRecordHistory##noHistory#" + ide).rule((datatype) => {
-        getYiData(datatype);
+    return $("hiker://empty#noHistory##noRecordHistory#" + ide).rule((datatype) => {
+        getYiData(datatype);//" + (ispage ? "?page=fypage" : "") + "
     }, datatype)
 }
 // 移除数组元素

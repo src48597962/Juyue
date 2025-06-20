@@ -1396,6 +1396,20 @@ function manageSet(){
         col_type: 'text_icon'
     });
     d.push({
+        title: '不显示沉浸图',
+        img: getItem('不显示沉浸图')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        url: $("#noLoading#").lazyRule(() => {
+            if(getItem('不显示沉浸图')=="1"){
+                clearItem('不显示沉浸图');
+            }else{
+                setItem('不显示沉浸图','1');
+            }
+            refreshPage();
+            return 'hiker://empty';
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
         col_type: "line_blank"
     });
     d.push({

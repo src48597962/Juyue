@@ -1540,6 +1540,7 @@ function newsousuopage(keyword, searchtype) {
                 if(input){
                     putMyVar('SrcJu_sousuoName',input);
                     if(input){
+                        putVar('keyword',input);
                         let recordlist = storage0.getItem('searchrecord') || [];
                         if(recordlist.indexOf(input)>-1){
                             recordlist = recordlist.filter((item) => item !== input);

@@ -1529,11 +1529,16 @@ function newsousuopage(keyword, searchtype) {
     let d = [];
     let descarr = ['可快速切换下面类型','1空格显示搜索历史','搜你想要的...'];
     if(MY_PAGE==1){
+        /*
         d.push({
             col_type: 'pic_1_full',
             img: "http://123.56.105.145/weisyr/img/TopImg0.png",
             url: 'hiker://empty',
         });
+        */
+        require('http://123.56.105.145/weisyr/Top_H5.js');
+        d.push(Top_H5());
+        
         d.push({
             title: "🔍",
             url: $.toString(() => {

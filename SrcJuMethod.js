@@ -167,7 +167,6 @@ function getYiData(datatype, jkdata, dd) {
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
-    let ide = parse["频道"].页面标识 || "";
     
     let page = MY_PAGE || 1;
     let sourcemenu = [];
@@ -175,15 +174,21 @@ function getYiData(datatype, jkdata, dd) {
 
     try {
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
-            d.push({
-                title: "",
-                url: "hiker://empty",
-                col_type: "text_1",
-                extra: {
-                    lineVisible: false,
-                    cls: "loading_gif"
-                }
-            })
+            let num = 1;
+            if(datatype!='主页'){
+                num = 4;
+            }
+            for(let i=0;i<num;i++){
+                d.push({
+                    title: "",
+                    url: "hiker://empty",
+                    col_type: "text_1",
+                    extra: {
+                        lineVisible: false,
+                        cls: "loading_gif"
+                    }
+                })
+            }
             d.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
@@ -201,6 +206,7 @@ function getYiData(datatype, jkdata, dd) {
         if(!页码[datatype] && page>1){
             return [];
         }
+        let ide = parse["频道"].页面标识 || "";
         
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
@@ -246,10 +252,10 @@ function getYiData(datatype, jkdata, dd) {
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }else if(page==1){
-            if(ide.includes('#immersiveTheme#')){//频道页面，有传页面标识的统一处理
+            if(ide.includes('#immersiveTheme#') || ide.includes('#gameTheme#')){//频道页面，有传页面标识的统一处理
                 d.push({
                     col_type: 'pic_1_full',
-                    img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+                    img: parse["频道"].顶图 || "http://123.56.105.145/weisyr/img/TopImg0.png",
                     url: 'hiker://empty',
                 });
             }

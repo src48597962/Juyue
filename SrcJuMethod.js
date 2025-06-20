@@ -246,6 +246,7 @@ function getYiData(datatype, jkdata, dd) {
                 storage0.putMyVar("sourcemenu", sourcemenu);
             }
         }else if(page==1){
+            /*
             if(ide.includes('#immersiveTheme#')){//频道页面，有传页面标识的统一处理
                 d.push({
                     col_type: 'pic_1_full',
@@ -253,6 +254,7 @@ function getYiData(datatype, jkdata, dd) {
                     url: 'hiker://empty',
                 });
             }
+            */
         }
 
         if(parse['host']){
@@ -373,7 +375,7 @@ function getSsData(name, jkdata, page) {
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage, ide) {
-    return $("hiker://empty##" + (ispage ? "fypage" : "") + ide + "#noRecordHistory##noHistory#").rule((datatype) => {
+    return $("hiker://empty" + (ispage ? "?page=fypage" : "") + "#noRecordHistory##noHistory#" + ide).rule((datatype) => {
         getYiData(datatype);
     }, datatype)
 }

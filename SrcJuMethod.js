@@ -242,6 +242,7 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 */
                 //顺佬H5沉浸顶图样式
+                require('http://123.56.105.145/weisyr/Top_H5.js');
                 d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||""));
             }
         }
@@ -483,76 +484,6 @@ function getEvalResult(evalStr) {
     var func = new Function('code', 'return ' + evals); 
     var result = func(code);
     return result; 
-}
-// 顺佬沉浸顶图风格h5
-function Top_H5() {
-	// 默认值设置
-	var height = '110';
-	var img = null;
-	var arr = null;
-	var 本地 = '';
-	
-	// 将arguments转为数组
-	var args = [];
-	for (var i = 0; i < arguments.length; i++) {
-		args.push(arguments[i]);
-	}
-	
-	// 1. 检查是否有数组参数（最后一个参数）
-	var lastArg = args[args.length - 1];
-	if (Array.isArray(lastArg)) {
-		arr = lastArg;
-		args.pop(); // 移除数组参数
-	}
-	
-	// 2. 处理剩余参数
-	for (var j = 0; j < args.length; j++) {
-		var arg = args[j];
-		// 判断是否是高度参数
-		if (typeof arg === 'number' || (typeof arg === 'string' && /^\d+$/.test(arg))) {
-			height = String(arg);
-		}
-		// 判断是否是图片参数
-		else if (typeof arg === 'string' && (arg.indexOf('http') === 0 || arg.indexOf('file') === 0)) {
-			img = arg;
-		}
-	}
-	
-	// 变量处理
-	if (MY_PAGE == 1) {
-		// 确保HTML文件存在
-		本地 = getPath('hiker://files/rules/dzHouse/html/Top_H5.html');
-		if (!fileExist(本地)) {
-			var 远程x5 = request('http://123.56.105.145/weisyr/Top_H5.html');
-			writeFile(本地, 远程x5);
-		}
-		
-		// 图片处理
-		clearVar('Top_H5定义图');
-		clearVar('定义图');
-		var finalImg = img || 'http://123.56.105.145/weisyr/img/TopImg0.png';
-		putVar('Top_H5定义图', finalImg);
-		if(!img) putVar('定义图','false')
-	}
-	
-	// 创建配置对象
-	var Top_H5_Arr = {
-		desc: 'list&&' + height,
-		url: 本地,
-		col_type: 'x5_webview_single',
-		extra: {
-			ua: MOBILE_UA,
-			autoPlay: true,
-			imgLongClick: false
-		}
-	};
-	
-	// 处理数组参数
-	if (arr) {
-		arr.push(Top_H5_Arr);
-		return arr;
-	}
-	return Top_H5_Arr;
 }
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){

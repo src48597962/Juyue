@@ -972,11 +972,6 @@ function importConfirm(jsfile) {
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
-    d.push({
-        col_type: 'pic_1_full',
-        img: isDarkMode()?"https://pics0.baidu.com/feed/8c1001e93901213f27e89522d67c58df2d2e959b.jpeg?token=d65e411382c0dc240562b80d4bd87758":"http://123.56.105.145/weisyr/img/TopImg0.png",
-        url: 'hiker://empty',
-    });
     
     if(!jsfile){
         //云口令导入

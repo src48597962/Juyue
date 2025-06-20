@@ -241,9 +241,22 @@ function getYiData(datatype, jkdata, dd) {
                     url: 'hiker://empty',
                 });
                 */
-                //顺佬H5沉浸顶图样式
-                require('http://123.56.105.145/weisyr/Top_H5.js');
-                d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||""));
+                if(getItem('不显示沉浸图')=='1'){
+                    for(let i=0;i<2;i++){
+                        d.push({
+                            title: "",
+                            url: "hiker://empty",
+                            col_type: "text_1",
+                            extra: {
+                                lineVisible: false
+                            }
+                        })
+                    }
+                }else{
+                    //顺佬H5沉浸顶图样式
+                    require('http://123.56.105.145/weisyr/Top_H5.js');
+                    d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||"130"));
+                }
             }
         }
 

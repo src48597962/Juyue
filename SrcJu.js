@@ -243,6 +243,7 @@ function yiji(testSource) {
                 recordlist.splice(recordlist.length-1,1);
             }
             storage0.setItem('searchrecord', recordlist);
+            putVar("keyword", input);
             if(!jkdata.name){
                 return 'toast://当前无接口数据';
             }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
@@ -307,7 +308,6 @@ function yiji(testSource) {
                 if(input == ''){
                     return "hiker://empty"
                 }
-                putVar("keyword", input);
                 return input + searchurl;
             },searchurl),
             desc: descarr[Math.floor(Math.random() * descarr.length)],

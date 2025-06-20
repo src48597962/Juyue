@@ -241,7 +241,7 @@ function getYiData(datatype, jkdata, dd) {
                     url: 'hiker://empty',
                 });
                 */
-
+                //顺佬H5沉浸顶图样式
                 d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||""));
             }
         }

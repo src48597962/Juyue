@@ -607,6 +607,14 @@ function getIcon(icon, nochange) {
         }
     },color))
 }
+// 手机是否暗黑模式
+function isDarkMode() {
+  const Configuration = android.content.res.Configuration;
+  let cx = getCurrentActivity();
+
+  let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+  return theme == Configuration.UI_MODE_NIGHT_YES;
+}
 // 检测依赖
 if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){

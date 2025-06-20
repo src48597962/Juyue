@@ -307,9 +307,7 @@ function yiji(testSource) {
                 if(input == ''){
                     return "hiker://empty"
                 }
-                if(getItem("记忆搜索词","")=='1'){
-                    putVar("keyword", input);
-                }
+                putVar("keyword", input);
                 return input + searchurl;
             },searchurl),
             desc: descarr[Math.floor(Math.random() * descarr.length)],
@@ -1529,15 +1527,21 @@ function newsousuopage(keyword, searchtype) {
     let d = [];
     let descarr = ['可快速切换下面类型','1空格显示搜索历史','搜你想要的...'];
     if(MY_PAGE==1){
-        /*
-        d.push({
-            col_type: 'pic_1_full',
-            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
-            url: 'hiker://empty',
-        });
-        */
-        require('http://123.56.105.145/weisyr/Top_H5.js');
-        d.push(Top_H5());
+        if(getItem('不显示沉浸图')=='1'){
+            for(let i=0;i<2;i++){
+                d.push({
+                    title: "",
+                    url: "hiker://empty",
+                    col_type: "text_1",
+                    extra: {
+                        lineVisible: false
+                    }
+                })
+            }
+        }else{
+            require('http://123.56.105.145/weisyr/Top_H5.js');
+            d.push(Top_H5(150));
+        }
         
         d.push({
             title: "🔍",

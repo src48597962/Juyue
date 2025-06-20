@@ -972,7 +972,7 @@ function importConfirm(jsfile) {
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
-    if(isDarkMode()){
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
         for(let i=0;i<2;i++){
             d.push({
                 title: "",

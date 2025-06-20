@@ -71,6 +71,13 @@ function yiji(testSource) {
                     deleteData(data);
                     return "toast://已处理";
                 }, jkdata)
+            },{
+                title: "禁用当前源",
+                js: $.toString((data) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    dataHandle(data, '禁用');
+                    return "toast://已处理";
+                }, jkdata)
             })
         }
         d.push({
@@ -1540,7 +1547,7 @@ function newsousuopage(keyword, searchtype) {
             }
         }else{
             require('http://123.56.105.145/weisyr/Top_H5.js');
-            d.push(Top_H5(150));
+            d.push(Top_H5(130));
         }
         
         d.push({

@@ -974,7 +974,7 @@ function importConfirm(jsfile) {
     let d = [];
     d.push({
         col_type: 'pic_1_full',
-        img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+        img: isDarkMode()?"http://123.56.105.145/img/top.png":"http://123.56.105.145/weisyr/img/TopImg0.png",
         url: 'hiker://empty',
     });
     

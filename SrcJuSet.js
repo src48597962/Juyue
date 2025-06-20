@@ -972,9 +972,10 @@ function importConfirm(jsfile) {
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
+    let topimg = "http://123.56.105.145/weisyr/img/TopImg0.png";
     d.push({
         col_type: 'pic_1_full',
-        img: isDarkMode()?"http://123.56.105.145/img/top.png":"http://123.56.105.145/weisyr/img/TopImg0.png",
+        img: isDarkMode()?topimg+'?t=stop'+$().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):topimg,
         url: 'hiker://empty',
     });
     

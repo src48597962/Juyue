@@ -373,7 +373,7 @@ function getSsData(name, jkdata, page) {
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage, ide) {
-    return $("hiker://empty#noRecordHistory##noHistory#" + ide + (ispage ? "##fypage" : "")).rule((datatype) => {
+    return $("hiker://empty" + (ispage ? "##fypage" : "") + "#noRecordHistory##noHistory#" + ide).rule((datatype) => {
         getYiData(datatype);
     }, datatype)
 }

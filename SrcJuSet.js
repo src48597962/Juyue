@@ -972,6 +972,24 @@ function importConfirm(jsfile) {
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
+    if(isDarkMode()){
+        for(let i=0;i<3;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+    }
     
     if(!jsfile){
         //云口令导入

@@ -237,7 +237,7 @@ function yiji(testSource) {
             })
         }
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
-            //deleteItemByCls('homesousuolist');
+            deleteItemByCls('homesousuolist');
             let recordlist = storage0.getItem('searchrecord') || [];
             if(recordlist.indexOf(input)>-1){
                 recordlist = recordlist.filter((item) => item !== input);

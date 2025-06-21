@@ -1577,10 +1577,12 @@ function newsousuopage(keyword, searchtype) {
                 id: 'newpagesousuoid',
                 defaultValue: name,
                 titleVisible: true,
-                onChange: $.toString(() => {
+                onChange: $.toString((name) => {
                     if(input==""){
                         deleteItemByCls('searchrecord');
-                        clearVar('keyword');
+                        if(name){
+                            clearVar('keyword');
+                        }
                     }else if(input==" "){
                         deleteItemByCls('searchrecord');
                         let recordlist = storage0.getItem('searchrecord') || [];
@@ -1665,7 +1667,7 @@ function newsousuopage(keyword, searchtype) {
                         }
                         addItemAfter('newpagesousuoid', d);
                     }
-                })
+                },name)
             }
         });
         let searchTypes = getTypeNames("搜索页");

@@ -1550,34 +1550,37 @@ function newsousuopage(keyword, searchtype) {
             require('http://123.56.105.145/weisyr/Top_H5.js');
             d.push(Top_H5(130));
         }
-        
+        let searchurl = $('#noLoading#').lazyRule(() => {
+            putMyVar('SrcJu_sousuoName',input);
+            putVar('keyword',input);
+            let recordlist = storage0.getItem('searchrecord') || [];
+            if(recordlist.indexOf(input)>-1){
+                recordlist = recordlist.filter((item) => item !== input);
+            }
+            recordlist.unshift(input);
+            if(recordlist.length>parseInt(getItem("记录搜索历史数量", "18"))){
+                recordlist.splice(recordlist.length-1,1);
+            }
+            storage0.setItem('searchrecord', recordlist);
+            refreshPage(true);
+            return 'hiker://empty';
+        })
         d.push({
             title: "🔍",
-            url: $.toString(() => {
-                if(input){
-                    putMyVar('SrcJu_sousuoName',input);
-                    if(input){
-                        putVar('keyword',input);
-                        let recordlist = storage0.getItem('searchrecord') || [];
-                        if(recordlist.indexOf(input)>-1){
-                            recordlist = recordlist.filter((item) => item !== input);
-                        }
-                        recordlist.unshift(input);
-                        if(recordlist.length>20){
-                            recordlist.splice(recordlist.length-1,1);
-                        }
-                        storage0.setItem('searchrecord', recordlist);
-                    }
-                    refreshPage(true);
+            url: $.toString((searchurl) => {
+                input = input.trim();
+                if(input == ''){
+                    return "hiker://empty"
                 }
-            }),
+                return input + searchurl;
+            },searchurl),
             desc: descarr[Math.floor(Math.random() * descarr.length)],
             col_type: "input",
             extra: {
                 id: 'newpagesousuoid',
                 defaultValue: name,
                 titleVisible: true,
-                onChange: $.toString((name) => {
+                onChange: $.toString((name, searchurl) => {
                     if(input==""){
                         deleteItemByCls('searchrecord');
                         if(name){
@@ -1623,11 +1626,7 @@ function newsousuopage(keyword, searchtype) {
                             let color = 背景色();
                             d.push({
                                 title: item,
-                                url: $().lazyRule((item) => {
-                                    putMyVar('SrcJu_sousuoName',item);
-                                    refreshPage(false);
-                                    return "hiker://empty";
-                                }, item),
+                                url: item + searchurl,
                                 col_type: 'flex_button',
                                 extra: {
                                     id: 'recordid_' + item,
@@ -1667,7 +1666,7 @@ function newsousuopage(keyword, searchtype) {
                         }
                         addItemAfter('newpagesousuoid', d);
                     }
-                },name)
+                }, name, searchurl)
             }
         });
         let searchTypes = getTypeNames("搜索页");

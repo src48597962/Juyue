@@ -1215,7 +1215,7 @@ function importConfirm(jsfile) {
                                 let index2 = importlist.findIndex(item => item.id === dataid);
                                 importlist.splice(index2, 1);
                                 storage0.putMyVar('importConfirm', importlist);
-                                deleteItem(dataurl);
+                                deleteItem(dataid);
                             }
                             return "toast://导入"+(num<0?"失败":num);
                         }

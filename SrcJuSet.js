@@ -144,11 +144,11 @@ function SRCSet() {
 
     let groupNames = getJkGroups(datalist);
     groupNames.unshift("全部");
-    let color = "#3399cc";
+    let Color = getItem('主题颜色','#3399cc');
     let groupColtype = getItem("groupColtype", "flex_button");
     groupNames.forEach(it =>{
         let obj = {
-            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: #`+color+`">`+it+`</span></b>`:it,
+            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("selectGroup")!=it){
                     putMyVar("selectGroup",it);
@@ -158,7 +158,7 @@ function SRCSet() {
             },it),
             col_type: groupColtype,
             extra: {
-                backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + color.replace('#',''):""
+                backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + Color.replace('#',''):""
             }
         }
         
@@ -1112,7 +1112,7 @@ function importConfirm(jsfile) {
         })
         let oldnum = importdatas.length - newdatas.length;
         d.push({
-            title: "““””<big><b><font color=#648e93>📲 云口令导入  </font></b></big>",
+            title: "““””<big><b><font color="+getItem('主题颜色','#3399cc')+">📲 云口令导入  </font></b></big>",
             desc: (sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
             url: "hiker://empty",
             col_type: 'text_center_1'

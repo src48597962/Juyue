@@ -383,7 +383,7 @@ function rulePage(datatype, ispage, ide) {
         getYiData(datatype);
     }, datatype)
     */
-    return `hiker://page/rulePage?type=` + datatype + (ispage ? "&page=fypage" : "") +`#noRecordHistory##noHistory#` + ide;
+    return `hiker://page/rulePage#noRecordHistory##noHistory#` + ide + `?type=` + datatype + (ispage ? "&page=fypage" : "");
 }
 // 移除数组元素
 function removeByValue(arr, val) {

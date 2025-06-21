@@ -283,9 +283,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }else if(getItem('接口搜索方式')=="页面聚合"){
-                return input + $('#noLoading#').lazyRule((group)=>{
-                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+group+`&page=fypage&keyword=`+input;
-                },homeGroup||jkdata.type)
+                return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input;
             }else{//分组接口/当前接口
                 let ssmode = getItem('接口搜索方式','');
                 if(getMyVar('接口搜索方式互换')){
@@ -322,6 +320,7 @@ function yiji(testSource) {
                 onChange: $.toString((searchurl) => {
                     if(input==""){
                         deleteItemByCls('homesousuolist');
+                        deleteItemByCls('sousuorecordlist');
                     }else if(input==" "){
                         deleteItemByCls('sousuorecordlist');
                         let recordlist = storage0.getItem('searchrecord') || [];
@@ -330,7 +329,7 @@ function yiji(testSource) {
                             d.push({
                                 col_type: "line",
                                 extra: {
-                                    cls: 'sousuorecordlist homesousuolist'
+                                    cls: 'sousuorecordlist'
                                 }
                             })
                         }
@@ -366,7 +365,7 @@ function yiji(testSource) {
                                 col_type: 'flex_button',
                                 extra: {
                                     id: 'recordid_' + item,
-                                    cls: 'sousuorecordlist homesousuolist',
+                                    cls: 'sousuorecordlist',
                                     backgroundColor: color,
                                     longClick: [{
                                         title: "删除词条",
@@ -390,13 +389,13 @@ function yiji(testSource) {
                             d.push({
                                 col_type: "line_blank",
                                 extra: {
-                                    cls: 'sousuorecordlist homesousuolist'
+                                    cls: 'sousuorecordlist'
                                 }
                             })
                             d.push({
                                 col_type: "big_blank_block",
                                 extra: {
-                                    cls: 'sousuorecordlist homesousuolist'
+                                    cls: 'sousuorecordlist'
                                 }
                             })
                         }

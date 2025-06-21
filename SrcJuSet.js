@@ -1109,6 +1109,7 @@ function importConfirm(jsfile) {
                 let olddata = datalist.filter(v=>v.id==it.id)[0];
                 it.oldversion = olddata.version || "";
             }
+            it.id = it.id.toString();
         })
         let oldnum = importdatas.length - newdatas.length;
         d.push({

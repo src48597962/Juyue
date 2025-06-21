@@ -1294,14 +1294,10 @@ function search(name, sstype, jkdata) {
             it.extra.cls = "homesousuolist";
             ssdata.push(it);
         }else if(sstype=="newSearch"){
-            let maxLength = 20;
-            let longText = (it.desc||"").replace(/\\n|\\r/g, ' ');
-            let shortText = longText.substring(0, maxLength) + (longText.length > maxLength ? "..." : "");
-            xlog(shortText);
             if(it.title.includes(name)){
                 it.title = it.title.replace(name, '‘‘’’<font color=red>'+name+'</font>');
                 it.col_type = "movie_1_vertical_pic";
-                it.desc = shortText + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
+                it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
         }else{

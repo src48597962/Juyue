@@ -283,8 +283,9 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }else if(getItem('接口搜索方式')=="页面聚合"){
-                xlog(`hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input);
-                return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input;
+                return input + $('#noLoading#').lazyRule((group)=>{
+                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+group+`&page=fypage&keyword=`+input;
+                },homeGroup||jkdata.type)
             }else{//分组接口/当前接口
                 let ssmode = getItem('接口搜索方式','');
                 if(getMyVar('接口搜索方式互换')){

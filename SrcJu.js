@@ -1525,6 +1525,7 @@ function newsousuopage(keyword, searchtype) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
+        clearVar('keyword');
     }));
     
     let name = getMyVar('SrcJu_sousuoName', keyword||'');
@@ -1579,9 +1580,7 @@ function newsousuopage(keyword, searchtype) {
                 onChange: $.toString(() => {
                     if(input==""){
                         deleteItemByCls('searchrecord');
-                        if(getVar('keyword')){
-                            clearVar('keyword');
-                        }
+                        clearVar('keyword');
                     }else if(input==" "){
                         deleteItemByCls('searchrecord');
                         let recordlist = storage0.getItem('searchrecord') || [];

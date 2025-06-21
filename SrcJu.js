@@ -1293,9 +1293,9 @@ function search(name, sstype, jkdata) {
             it.extra = it.extra || {};
             it.extra.cls = "homesousuolist";
             ssdata.push(it);
-        }else if(sstype=="newpage"){
-            let maxLength = 10;
-            let longText = (it.desc||"");
+        }else if(sstype=="newSearch"){
+            let maxLength = 18;
+            let longText = (it.desc||"").replace(/\\n/g, ' ');
             let shortText = longText.substring(0, maxLength) + (longText.length > maxLength ? "..." : "");
             if(it.title.includes(name)){
                 it.title = it.title.replace(name, '‘‘’’<font color=red>'+name+'</font>');
@@ -1313,7 +1313,7 @@ function search(name, sstype, jkdata) {
 //二级切源搜索
 function erjisousuo(name,group,datas,sstype) {
     sstype = sstype || "erji";
-    let updateItemid = sstype=="erji"?"erji_loading":group+"_newpage_loading";
+    let updateItemid = sstype=="erji"?"erji_loading":group+"_newSearch_loading";
     let searchMark = storage0.getMyVar('SrcJu_searchMark') || {};//二级换源缓存
     let markId = group+'_'+name;
     if(!datas && searchMark[markId] && sstype=="erji"){
@@ -1421,7 +1421,7 @@ function erjisousuo(name,group,datas,sstype) {
             if(getMyVar("SrcJu_停止搜索线程")!="1"){
                 storage0.putMyVar('SrcJu_searchMark', searchMark);
             }
-            let pagesm = sstype=="newpage"?"第"+MY_PAGE+"页":"";
+            let pagesm = sstype=="newSearch"?"第"+MY_PAGE+"页":"";
             let sousuosm = "‘‘’’<small><font color=#f13b66a>" + success + "</font>/" + list.length + "，"+pagesm+"搜索完成</small>";
             updateItem(updateItemid, { title: sousuosm });
         } else {
@@ -1519,7 +1519,7 @@ function Version() {
     }
 }
 //新搜索页
-function newsousuopage(keyword, searchtype) {
+function newSearch(keyword, searchtype) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');
@@ -1575,10 +1575,10 @@ function newsousuopage(keyword, searchtype) {
             desc: descarr[Math.floor(Math.random() * descarr.length)],
             col_type: "input",
             extra: {
-                id: 'newpagesousuoid',
+                id: 'newSearchid',
                 defaultValue: name,
                 titleVisible: true,
-                onChange: $.toString((name, searchurl) => {
+                onChange: $.toString((searchurl) => {
                     if(input==""){
                         deleteItemByCls('searchrecord');
                     }else if(input==" "){
@@ -1659,9 +1659,9 @@ function newsousuopage(keyword, searchtype) {
                                 }
                             })
                         }
-                        addItemAfter('newpagesousuoid', d);
+                        addItemAfter('newSearchid', d);
                     }
-                }, name, searchurl)
+                }, searchurl)
             }
         });
         let searchTypes = getTypeNames("搜索页");
@@ -1687,7 +1687,7 @@ function newsousuopage(keyword, searchtype) {
         col_type: 'text_center_1',
         url: "hiker://empty",
         extra: {
-            id: group+"_newpage_loading",
+            id: group+"_newSearch_loading",
             lineVisible: false
         }
     });
@@ -1695,6 +1695,6 @@ function newsousuopage(keyword, searchtype) {
     
     if(name){
         deleteItemByCls('searchrecord');
-        erjisousuo(name,group,false,"newpage");
+        erjisousuo(name,group,false,"newSearch");
     }
 }

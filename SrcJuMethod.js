@@ -331,6 +331,13 @@ function getYiData(datatype, jkdata, dd) {
                 title: parse["频道"].显示为
             })
         }
+    }else{
+        if (typeof (setPageParams) != "undefined") {
+            if (!MY_PARAMS.data) {
+                MY_PARAMS.data = jkdata;
+                setPageParams(MY_PARAMS);
+            }
+        }
     }
 }
 //ocr数字验证码识别

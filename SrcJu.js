@@ -1519,7 +1519,7 @@ function Version() {
     }
 }
 //新搜索页
-function newSearch(keyword, searchtype) {
+function newSearchPage(keyword, searchtype) {
     addListener("onClose", $.toString(() => {
         clearMyVar('SrcJu_sousuoName');
         clearMyVar('SrcJu_sousuoType');

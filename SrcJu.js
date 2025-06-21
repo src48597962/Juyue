@@ -1728,6 +1728,7 @@ function newsousuopage(keyword, searchtype) {
     setResult(d);
     
     if(name){
+        xlog(name);
         deleteItemByCls('searchrecord');
         erjisousuo(name,group,false,"newpage");
     }

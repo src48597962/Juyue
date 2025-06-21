@@ -39,17 +39,21 @@ function bookCase() {
             col_type: "blank_block"
         })
     }
+    let Color = getItem('主题颜色','#3399cc');
     let typebtn = getTypeNames();
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
         d.push({
-            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
                 putMyVar("SrcJu_bookCaseType",it);
                 refreshPage(false);
                 return "hiker://empty";
             },it),
-            col_type: 'scroll_button'
+            col_type: 'scroll_button',
+            extra: {
+                backgroundColor: getMyVar("SrcJu_bookCaseType","全部")==it?"#20" + Color.replace('#',''):""
+            }
         })
     })
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");

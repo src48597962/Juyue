@@ -1664,56 +1664,21 @@ function newsousuopage(keyword, searchtype) {
             }
         });
         let searchTypes = getTypeNames("搜索页");
+        let Color = getItem('主题颜色','#3399cc');
         searchTypes.forEach((it) =>{
             let obj = {
-                title: group==it?`““””<b><span style="color: #3399cc">`+it+`</span></b>`:it,
+                title: group==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
                 url: $('#noLoading#').lazyRule((it) => {
                     putMyVar("SrcJu_sousuoType",it);
                     refreshPage(false);
                     return "hiker://empty";
                 },it),
-                col_type: 'text_5'
+                col_type: 'text_5',
+                extra: {
+                    backgroundColor: group==it?"#20" + Color.replace('#',''):""
+                }
             }
             d.push(obj);
-        })
-
-        let recordlist = storage0.getItem('searchrecord') || [];
-        if(recordlist.length>0){
-            d.push({
-                title: '🗑清空',
-                url: $('#noLoading#').lazyRule(() => {
-                    clearItem('searchrecord');
-                    deleteItemByCls('searchrecord');
-                    return "toast://已清空";
-                }),
-                col_type: 'flex_button',//scroll_button
-                extra: {
-                    cls: 'searchrecord'
-                }
-            });
-        }else{
-            d.push({
-                title: '↻无记录',
-                url: "hiker://empty",
-                col_type: 'flex_button',
-                extra: {
-                    cls: 'searchrecord'
-                }
-            });
-        }
-        recordlist.forEach(item=>{
-            d.push({
-                title: item,
-                url: $().lazyRule((input) => {
-                    putMyVar('SrcJu_sousuoName',input);
-                    refreshPage(true);
-                    return "hiker://empty";
-                },item),
-                col_type: 'flex_button',
-                extra: {
-                    cls: 'searchrecord'
-                }
-            });
         })
     }
     d.push({
@@ -1728,7 +1693,6 @@ function newsousuopage(keyword, searchtype) {
     setResult(d);
     
     if(name){
-        xlog(name);
         deleteItemByCls('searchrecord');
         erjisousuo(name,group,false,"newpage");
     }

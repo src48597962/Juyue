@@ -1579,7 +1579,9 @@ function newsousuopage(keyword, searchtype) {
                 onChange: $.toString(() => {
                     if(input==""){
                         deleteItemByCls('searchrecord');
-                        clearVar('keyword');
+                        if(getVar('keyword')){
+                            clearVar('keyword');
+                        }
                     }else if(input==" "){
                         deleteItemByCls('searchrecord');
                         let recordlist = storage0.getItem('searchrecord') || [];

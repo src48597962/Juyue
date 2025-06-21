@@ -378,9 +378,12 @@ function getSsData(name, jkdata, page) {
 }
 //打开指定类型的新页面
 function rulePage(datatype, ispage, ide) {
+    /*
     return $("hiker://empty" + (ispage ? "##fypage" : "") + "#noRecordHistory##noHistory#" + ide).rule((datatype) => {
         getYiData(datatype);
     }, datatype)
+    */
+    return `hiker://page/rulePage?type=` + datatype + (ispage ? "&page=fypage" : "") +`#noRecordHistory##noHistory#` + ide;
 }
 // 移除数组元素
 function removeByValue(arr, val) {

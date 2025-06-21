@@ -159,10 +159,7 @@ function yiji(testSource) {
                 longClick: [{
                     title: '新搜索页',
                     js: $.toString(()=>{
-                        return $('hiker://empty##fypage#immersiveTheme##noRecordHistory##noHistory##noRefresh#').rule(() => {
-                            require(config.聚阅);
-                            newsousuopage();
-                        })
+                        return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
                     })
                 }]
             }
@@ -286,10 +283,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://empty';
             }else if(getItem('接口搜索方式')=="页面聚合"){
-                return $('hiker://empty##fypage#immersiveTheme##noRecordHistory##noHistory##noRefresh#').rule((input,group) => {
-                    require(config.聚阅);
-                    newsousuopage(input, group);
-                }, input, homeGroup||jkdata.type);
+                return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input;
             }else{//分组接口/当前接口
                 let ssmode = getItem('接口搜索方式','');
                 if(getMyVar('接口搜索方式互换')){

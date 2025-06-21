@@ -118,8 +118,9 @@ function yiji(testSource) {
                 id: "sourcemenu"
             }
         })
+        let Color = getItem('主题颜色','#3399cc');
         function modeSelect(v) {
-            return `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+v+`√</front></strong>`;
+            return `‘‘’’<strong><font color="`+Color+`">`+v+`√</front></strong>`;
         }
         let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"]).map(v=>{
             return v==getItem("接口搜索方式","主页界面")?modeSelect(v):v+'  ';
@@ -213,7 +214,6 @@ function yiji(testSource) {
         
         if(getItem('显示快速分组')=="1" && !testSource){
             let typemenubtn = getTypeNames("主页");
-            let Color = '#3399cc';
             typemenubtn.forEach((it) =>{
                 let item = {
                     title: homeGroup==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
@@ -689,7 +689,7 @@ function erji() {
                     }else{
                         putMyVar('二级简介打开标识',"1");
                         addItemAfter('detailid', [{
-                            title: `<font color="#098AC1">详情简介 </font><small><font color="#f47983"> ></font></small>`,
+                            title: `<font color="#098AC1">详情简介 </font><small><font color="#f47983"> ::</font></small>`,
                             col_type: "avatar",
                             url: $("#noLoading#").lazyRule(() => {
                                 clearMyVar('二级简介打开标识');
@@ -1299,10 +1299,13 @@ function search(name, sstype, jkdata) {
             it.extra.cls = "homesousuolist";
             ssdata.push(it);
         }else if(sstype=="newpage"){
+            let maxLength = 10;
+            let longText = (it.desc||"");
+            let shortText = longText.substring(0, maxLength) + (longText.length > maxLength ? "..." : "");
             if(it.title.includes(name)){
                 it.title = it.title.replace(name, '‘‘’’<font color=red>'+name+'</font>');
                 it.col_type = "movie_1_vertical_pic";
-                it.desc = (it.desc||"") + '\n\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
+                it.desc = shortText + '\n\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
         }else{

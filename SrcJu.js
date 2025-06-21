@@ -1569,7 +1569,7 @@ function newsousuopage(keyword, searchtype) {
             return 'hiker://empty';
         })
         d.push({
-            title: "🔍",
+            title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 input = input.trim();
                 if(input == ''){

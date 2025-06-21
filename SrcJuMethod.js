@@ -145,7 +145,7 @@ function getYiData(datatype, jkdata, dd) {
         }catch(e){}
     },datatype));
 
-    jkdata = jkdata || storage0.getMyVar('一级源接口信息');
+    jkdata = jkdata || storage0.getMyVar('一级源接口信息') || MY_PARAMS.data;
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
     

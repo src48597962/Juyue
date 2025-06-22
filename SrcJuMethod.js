@@ -145,7 +145,7 @@ function getYiData(datatype, jkdata, dd) {
         }catch(e){}
     },datatype));
 
-    jkdata = jkdata || storage0.getMyVar('一级源接口信息') || MY_PARAMS.data;
+    jkdata = jkdata || MY_PARAMS.data || storage0.getMyVar('一级源接口信息');
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
     
@@ -224,7 +224,8 @@ function getYiData(datatype, jkdata, dd) {
                     pic_url: it.icon || (imgs?imgs[i]:""),
                     col_type: it.col || col_type,
                     extra: {
-                        cls: "sourcemenu"
+                        cls: "sourcemenu",
+                        data: jkdata
                     }
                 })
             })

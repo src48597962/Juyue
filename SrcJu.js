@@ -858,8 +858,8 @@ function erji() {
             let reviseLiTitle = getItem('reviseLiTitle','0');
             d.push({
                 title: `““””<b><span style="color: #f47983">样式<small>🎨</small></span></b>`,
-                url: $(["text_1","text_2","text_3","text_4","flex_button","text_2_left","text_3_left","分页设置"],2,"选集列表样式").select(() => {
-                    if(input=="分页设置"){
+                url: $(["修正选集标题："+(reviseLiTitle=="1"?"是":"否"),"显示扩展项："+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式："+getItem('SrcJuLine_col_type', 'scroll_button'),"选集分页设置"], 1, "选集列表样式").select(() => {
+                    if(input=="选集分页设置"){
                         return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                             let partpage = storage0.getItem('partpage') || {};
                             if(input=="开启分页"){
@@ -886,72 +886,44 @@ function erji() {
                             refreshPage(false);
                             return 'hiker://empty'
                         })
-                    }else{
-                        let 列表 = findItemsByCls('playlist') || [];
-                        if(列表.length==0){
-                            return 'toast://未获取到列表'
+                    }else if(input.includes('修正选集标题')){
+                        let sm;
+                        if(getItem('reviseLiTitle','0')=="1"){
+                            clearItem('reviseLiTitle');
+                            sm = "取消修正选集标题名称";
+                        }else{
+                            setItem('reviseLiTitle','1');
+                            sm = "统一修正选集标题名称";
                         }
-                        deleteItemByCls('playlist');
-                        let list_col_type = input;
-                        列表.forEach(item => {
-                            item.col_type = list_col_type.replace("_left","");
-                            if(list_col_type.indexOf("_left")>-1){
-                                item.extra.textAlign = 'left';
-                            }else{
-                                delete item.extra.textAlign;
-                            }
-                        })
-                        addItemBefore(getMyVar('二级加载扩展列表')?"extendlist":getMyVar('换源变更列表id')?"erji_loading2":"erji_loading", 列表);
-                        setItem('SrcJuList_col_type', input);
-                        return 'hiker://empty'
+                        refreshPage(false);
+                        return "toast://"+sm;
+                    }else if(input.includes('显示扩展项')){
+                        let sm;
+                        if(getItem('extenditems','1')=="1"){
+                            setItem('extenditems','0');
+                            sm = "取消显示二级扩展项";
+                        }else{
+                            clearItem('extenditems');
+                            sm = "显示二级扩展项";
+                        }
+                        refreshPage(false);
+                        return "toast://"+sm;
+                    }else if(input.includes('线路样式')){
+                        let sm;
+                        if(getItem('SrcJuLine_col_type', 'scroll_button')=="flex_button"){
+                            clearItem('SrcJuLine_col_type');
+                            sm = "线路样式已切换为scroll_button";
+                        }else{
+                            setItem('SrcJuLine_col_type','flex_button');
+                            sm = "线路样式已切换为flex_button";
+                        }
+                        refreshPage(false);
+                        return "toast://"+sm;
                     }
                 }),
                 col_type: line_col_type,
                 extra: {
-                    cls: "Juloadlist",
-                    longClick: [{
-                        title: "修正选集标题："+(reviseLiTitle=="1"?"是":"否"),
-                        js: $.toString(() => {
-                            let sm;
-                            if(getItem('reviseLiTitle','0')=="1"){
-                                clearItem('reviseLiTitle');
-                                sm = "取消修正选集标题名称";
-                            }else{
-                                setItem('reviseLiTitle','1');
-                                sm = "统一修正选集标题名称";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
-                        })
-                    },{
-                        title: "显示扩展项："+(getItem('extenditems','1')=="1"?"是":"否"),
-                        js: $.toString(() => {
-                            let sm;
-                            if(getItem('extenditems','1')=="1"){
-                                setItem('extenditems','0');
-                                sm = "取消显示二级扩展项";
-                            }else{
-                                clearItem('extenditems');
-                                sm = "显示二级扩展项";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
-                        })
-                    },{
-                        title: "线路样式："+getItem('SrcJuLine_col_type', 'scroll_button'),
-                        js: $.toString(() => {
-                            let sm;
-                            if(getItem('SrcJuLine_col_type', 'scroll_button')=="flex_button"){
-                                clearItem('SrcJuLine_col_type');
-                                sm = "线路样式已切换为scroll_button";
-                            }else{
-                                setItem('SrcJuLine_col_type','flex_button');
-                                sm = "线路样式已切换为flex_button";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
-                        })
-                    }]
+                    cls: "Juloadlist"
                 }
             })
             
@@ -1096,8 +1068,16 @@ function erji() {
                     列表 = 分页s[pageid];//取当前分页的选集列表
                 }
             }
+            // 修正列表选集标题
+            function reviseTitle(str){
+                if(reviseLiTitle){
+                    return str.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
+                }
+                return str.trim();
+            }
+            let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
+            let list_col_type = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2'; //列表默认样式
 
-            let list_col_type = getItem('SrcJuList_col_type', 'text_3');//列表样式
             for(let i=0; i<列表.length; i++) {
                 let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
                 try{
@@ -1112,9 +1092,7 @@ function erji() {
                     }
                     extra.videoExcludeRules = ['m3u8.js','?url='];
                 }
-                if(list_col_type.indexOf("_left")>-1){
-                    extra.textAlign = 'left';
-                }
+
                 let isrule;
                 if (stype=="小说" || erLoadData.rule || erLoadData.novel || 列表[i].rule) {
                     isrule = 1;
@@ -1122,11 +1100,11 @@ function erji() {
                     lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
                 }
                 d.push({
-                    title: reviseLiTitle=="1"?列表[i].title.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')'):列表[i].title,
+                    title: reviseTitle(列表[i].title),
                     url: 列表[i].url.includes('@lazyRule=.')? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
                     desc: 列表[i].desc,
                     img: 列表[i].img,
-                    col_type: 列表[i].col_type || list_col_type.replace("_left",""),
+                    col_type: 列表[i].col_type || list_col_type,
                     extra: extra
                 });
             }

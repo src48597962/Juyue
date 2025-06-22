@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu":"0.4",
+    "SrcJu":"0.5",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
-        title: "beta V0.5",
+        title: "2025/06/22 V0.5",
         records: [
             "修复：搜索页、频道页改用子页面修复足迹问题",
             "优化：频道页面、导入确认页界面美化，主题颜色",

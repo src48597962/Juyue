@@ -264,48 +264,55 @@ function getYiData(datatype, jkdata, dd) {
         if(parse['host']){
             MY_URL = parse['host'];
         }
-        
-        let 执行str = (parse[datatype]||"").toString();
-        let obj = parse['静态分类'] || {};
-        if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
-            createClass(d, obj);
-        }
-
-        执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
-        try {
-            let sourcename = jkdata.name;
-            let getData = [];
-            if (parse['预处理']) {
-                parse['预处理'].call(parse);
-            }
-            let resultd;
-            let setResult = function(d) { resultd = d; };
-            eval("let 数据 = " + 执行str);
-            getData = 数据.call(parse) || [];
-            if(resultd&&getData.length==0){
-                getData = resultd;
+        if(parse[datatype]){
+            let 执行str = (parse[datatype]||"").toString();
+            let obj = parse['静态分类'] || {};
+            if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
+                createClass(d, obj);
             }
 
-            if (getData.length == 0 && page == 1) {
+            执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+            try {
+                let sourcename = jkdata.name;
+                let getData = [];
+                if (parse['预处理']) {
+                    parse['预处理'].call(parse);
+                }
+                let resultd;
+                let setResult = function(d) { resultd = d; };
+                eval("let 数据 = " + 执行str);
+                getData = 数据.call(parse) || [];
+                if(resultd&&getData.length==0){
+                    getData = resultd;
+                }
+
+                if (getData.length == 0 && page == 1) {
+                    d.push({
+                        title: "未获取到数据",
+                        url: "hiker://empty",
+                        col_type: "text_center_1",
+                    })
+                } else if (getData.length > 0) {
+                    getData.forEach(item => {
+                        item = toerji(item, jkdata);
+                    })
+                }
+                d = d.concat(getData);
+            } catch (e) {
                 d.push({
-                    title: "未获取到数据",
-                    url: "hiker://empty",
-                    col_type: "text_center_1",
-                })
-            } else if (getData.length > 0) {
-                getData.forEach(item => {
-                    item = toerji(item, jkdata);
-                })
+                    title: jkdata.name + '>' + datatype + '>加载异常',
+                    desc: e.message + ' 错误行#' + e.lineNumber,
+                    url: 'hiker://empty',
+                    col_type: 'text_center_1'
+                });
+                xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
-            d = d.concat(getData);
-        } catch (e) {
+        }else{
             d.push({
-                title: jkdata.name + '>加载' + datatype + '异常',
-                desc: e.message + ' 错误行#' + e.lineNumber,
+                title: jkdata.name + '>' + datatype + '>代码不存在',
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });
-            xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
         }
         deleteItemByCls("loading_gif");
     } catch (e) {

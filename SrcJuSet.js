@@ -474,7 +474,7 @@ function jiekouapi(data, look) {
                         if(selectTag.indexOf(input)>-1 || runTypes.indexOf(input)>-1){
                             return "toast://不能重复录入";
                         }
-                        selectTag.push(tag);
+                        selectTag.push(input);
                         putMyVar('selectTag',selectTag.join(','));
                         refreshPage(false);
                         return 'hiker://empty';

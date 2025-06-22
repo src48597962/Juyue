@@ -12,7 +12,7 @@ function yiji(testSource) {
         try{
             programversion = $.require("config").version || MY_RULE.version || 0;
         }catch(e){}
-        if(programversion<1){
+        if(programversion<2){
             confirm({
                 title: "温馨提示",
                 content: "发现小程序新版本",

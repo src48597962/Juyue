@@ -321,6 +321,7 @@ function yiji(testSource) {
                     if(input==""){
                         deleteItemByCls('homesousuolist');
                         deleteItemByCls('sousuorecordlist');
+                        clearVar("keyword");
                     }else if(input==" "){
                         deleteItemByCls('sousuorecordlist');
                         let recordlist = storage0.getItem('searchrecord') || [];

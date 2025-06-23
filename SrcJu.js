@@ -858,7 +858,7 @@ function erji() {
             let reviseLiTitle = getItem('reviseLiTitle','0');
             d.push({
                 title: `““””<b><span style="color: #f47983">样式<small>🎨</small></span></b>`,
-                url: $(["修正选集标题："+(reviseLiTitle=="1"?"是":"否"),"显示扩展项："+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式："+getItem('SrcJuLine_col_type', 'scroll_button'),"选集分页设置"], 1, "选集列表样式").select(() => {
+                url: $(["修整选集标题："+(reviseLiTitle=="1"?"是":"否"),"显示扩展项："+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式："+getItem('SrcJuLine_col_type', 'scroll_button'),"选集分页设置"], 1, "选集列表样式").select(() => {
                     if(input=="选集分页设置"){
                         return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                             let partpage = storage0.getItem('partpage') || {};
@@ -886,14 +886,14 @@ function erji() {
                             refreshPage(false);
                             return 'hiker://empty'
                         })
-                    }else if(input.includes('修正选集标题')){
+                    }else if(input.includes('修整选集标题')){
                         let sm;
                         if(getItem('reviseLiTitle','0')=="1"){
                             clearItem('reviseLiTitle');
-                            sm = "取消修正选集标题名称";
+                            sm = "取消修整选集标题名称";
                         }else{
                             setItem('reviseLiTitle','1');
-                            sm = "统一修正选集标题名称";
+                            sm = "统一修整选集标题名称";
                         }
                         refreshPage(false);
                         return "toast://"+sm;

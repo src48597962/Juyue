@@ -1294,7 +1294,8 @@ function importConfirm(jsfile) {
     }
     setResult(d);
 }
-//管理中心
+
+// 管理中心
 function manageSet(){
     addListener("onClose", $.toString(() => {
         //refreshPage(false);
@@ -1585,11 +1586,15 @@ function manageSet(){
         title: `<small>
                 1. 本小程序是一个空壳小程序，无任何内置资源。<br>
                 2. 本小程序开源<b>完全免费</b>，如果是付费购买的那你被骗了。<br>
-                3. 本小程序用于部分网络场景测试，并非所有接口都支持。<br>
+                3. 本小程序免费无偿使用，不接受任何指责和无理要求。<br>
 	            4. 本小程序仅用于个人学习研究，请于导入24小时内删除！<br>
                 <b>开始使用本规则即代表遵守规则条例</b><br>
             </small>`,
         col_type: 'rich_text'
     });
     setResult(d);
+}
+// 程序图标设置
+function iconSet() {
+    
 }

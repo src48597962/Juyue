@@ -1522,6 +1522,14 @@ function manageSet(){
         })
     });
     d.push({
+        title: '开发手册文档',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: $("#noLoading#").lazyRule(() => {
+            return "web://https://docs.qq.com/doc/DWERBTHJzcWV0UHVE";
+        })
+    });
+    d.push({
         title: '检测版本更新',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',

@@ -2,6 +2,13 @@ var newVersion = {
     "SrcJu":"0.5",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V0.6",
+        records: [
+            "修复：二级选集标题名称修整判断错误的问题",
+            "修复：二级切源列表未显示最新章节问题extar.desc",
+            "新增：管理中心增加开发手机说明文档入口"
+        ]
+    },{
         title: "2025/06/22 V0.5",
         records: [
             "修复：搜索页、频道页改用子页面修复足迹问题",

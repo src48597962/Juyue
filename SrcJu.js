@@ -1263,6 +1263,7 @@ function search(name, sstype, jkdata) {
                     }
                 }, it.extra);
                 it.title = it.extra.data.name;
+                it.desc = it.extra.desc || it.desc || "源作者没写";
                 it.col_type = "avatar";
                 if(it.extra.name.toLowerCase()==name.toLowerCase()){
                     ssdata.push(it);

@@ -1607,24 +1607,34 @@ function manageSet(){
 // 程序图标设置
 function iconUISet() {
     addListener("onClose", $.toString(() => {
+        clearMyVar('themeList');
         clearMyVar('新增主题');
         clearMyVar('选择按钮名称');
         clearMyVar('选择按钮图标');
         clearMyVar('选择按钮索引');
         clearMyVar('图标类型');
-        clearMyVar('新主题名称');
+        clearMyVar('选择主题名称');
+        clearMyVar('主页按钮图标');
     }));
     setPageTitle('管理中心-主题图标设置');
-    let themeList = getThemeList();
+    let themefile = libspath + 'theme.json';
+    eval('let themeList = ' + (fetch(themefile) || '[]'));
+    storage0.putMyVar('themeList', themeList);
     let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0];
-    let themename = getMyVar('新主题名称', currenttheme['名称'] || '');
-    let d = [];
-    let themenames = themeList.map(it=>it.name);
+    let themename = getMyVar('选择主题名称', currenttheme['名称'] || '');
+    let themenames = themeList.map(it=>it.名称);
     themenames.unshift('原生');
+    let d = [];
     d.push({
         title: '主题：' + themename,
         url: $(themenames, 2, '选择主题').select(()=>{
-            
+            if(input!='原生'){
+                let theme = storage0.getMyVar('themeList').filter(v==v.名称)[0];
+                putMyVar('选择主题名称', input);
+                putMyVar('主页按钮图标', theme.主页图标);
+            }
+            refreshPage();
+            return 'hiker://empty';
         }),
         col_type: 'text_2'
     })
@@ -1634,12 +1644,13 @@ function iconUISet() {
             if(themeList.some(v=>v.名称==input)){
                 return 'toast://主题名称已存在';
             }else if(input){
-                putMyVar('新主题名称', input);
+                putMyVar('选择主题名称', input);
                 putMyVar('新增主题', '1');
                 clearMyVar('选择按钮名称');
                 clearMyVar('选择按钮图标');
                 clearMyVar('选择按钮索引');
                 clearMyVar('选择图标类型');
+                clearMyVar('主页按钮图标');
                 refreshPage();
             }
             return 'hiker://empty';
@@ -1723,10 +1734,16 @@ function iconUISet() {
                 themelist.forEach(it=>{
                     delete it.启用;
                 })
-            }else{
+            }else if(getMyVar('图标是否有修改')){
+                let themes = themelist.filter(v=>v.名称==themename);
+                let oldtheme = {};
+                if(themes.length>0){
+                    oldtheme = themes[0];
+                    themelist = themelist.filter(v=>v.名称!=themename);
+                }
                 let theme = {
-                    名称: getMyVar('新主题名称', '新增'),
-                    主页图标: storage0.getMyVar('主页按钮图标', ['','','','','']),
+                    名称: themename,
+                    主页图标: storage0.getMyVar('主页按钮图标', oldtheme.主页图标||undefined),
                     启用: true
                 }
                 themelist.push(theme);

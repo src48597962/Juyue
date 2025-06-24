@@ -1509,6 +1509,15 @@ function manageSet(){
         }
     });
     d.push({
+        title: 'Ui图标设置',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            iconUiSet();
+        })
+    });
+    d.push({
         title: '查看更新日志',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',
@@ -1596,8 +1605,82 @@ function manageSet(){
     setResult(d);
 }
 // 程序图标设置
-function iconSet() {
+function iconUiSet() {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('对应名称');
+    }));
+
     let d = [];
-    
+    d.push({
+        title: '““””<b>修改主页图标</b>',
+        col_type: 'text_center_1'
+    })
+    let data = ['换源', '频道', '搜索', '书架', '管理'];
+    let imgs = [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg',];
+    for (let i = 0; i < 5; i++) {
+        d.push({
+            title: data[i],
+            img: imgs[i],
+            col_type: 'icon_5',
+            url: $('#noLoading#').lazyRule((i, data) => {
+                putMyVar('对应名称', data[i])
+                updateItem("对应标题", {
+                    title: '编辑图标[' + data[i] + ']'
+                });
+                return 'hiker://empty'
+
+            }, i, data),
+            extra: {
+                id: '主页图标' + i,
+            }
+        })
+    }
+    d.push({
+        col_type: 'line',
+        extra: {
+            lineVisible: false,
+            id: '主页图标编辑',
+        }
+    })
+    d.push({
+        title: '编辑图标[' + getMyVar('对应名称', '换源') + ']',
+        col_type: 'text_1',
+        extra: {
+            lineVisible: false,
+            cls: '主页图标编辑',
+            id: '对应标题'
+        }
+    })
+    d.push({
+        title: '',
+        desc: '显示对应原本地址',
+        url: '',
+        col_type: 'input',
+        extra: {
+            lineVisible: false,
+            cls: '主页图标编辑',
+        }
+    })
+
+    d.push({
+        title: '覆盖颜色',
+        col_type: 'icon_2_round',
+        img: ' ',
+        extra: {
+            cls: '主页图标编辑',
+        }
+    })
+    d.push({
+        title: '保存 | 分享',
+        col_type: 'icon_2_round',
+        img: ' ',
+        extra: {
+            cls: '主页图标编辑',
+        }
+    })
+
+    d.push({
+        col_type: 'line_blank'
+    })
     setResult(d);
 }

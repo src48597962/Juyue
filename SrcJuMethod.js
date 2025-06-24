@@ -27,7 +27,7 @@ function createClass(d, obj) {
         fyclass = isAll ? fyAll : getMyVar("fyclass_id", class_url.length > 0 ? class_url[0] : "");
         fyarea = isAll ? fyAll : getMyVar("fyarea_id", area_url.length > 0 ? area_url[0] : "");
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
-        fysort = getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
+        fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
         if (MY_PAGE == 1) {
             let Color = obj.textColor || '#2E9465';
             let backColor = obj.backgroundColor || "#20" + Color.replace('#','');
@@ -116,7 +116,7 @@ function createClass(d, obj) {
                                     refreshPage(false);
                                 }
                                 return 'hiker://empty'
-                            }, "fysort_id", fysort, it),
+                            }, isAll ? "fyAll_id" : "fysort_id", fysort, it),
                             col_type: 'scroll_button',
                             extra: {
                                 backgroundColor: fysort==it?backColor:""
@@ -185,7 +185,7 @@ function getYiData(datatype, jkdata, dd) {
 
         let 页码 = parse["页码"] || {};
         if(!页码[datatype] && page>1){
-            return [];
+            setResult([]);
         }
         let ide = parse["频道"].页面标识 || "";
         

@@ -615,6 +615,24 @@ function isDarkMode() {
   let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
   return theme == Configuration.UI_MODE_NIGHT_YES;
 }
+// 获取主题图标列表
+function getThemeList(isEnable) {
+    let themefile = libspath + 'theme.json';
+    eval('let theme = ' + (fetch(themefile) || '[]'));
+    theme.unshift({
+        原生: {
+            主页图标: [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg']
+        }
+    })
+    let yxtheme = theme;
+    if(isEnable){
+        yxtheme = theme.filter(v=>v.启用);
+        if(yxtheme.length==0){
+            yxtheme = theme['原生'];
+        }
+    }
+    return yxtheme;
+}
 // 检测依赖
 if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){

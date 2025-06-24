@@ -1608,6 +1608,8 @@ function manageSet(){
 function iconUISet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('对应名称');
+        clearMyVar('新增主题');
+        clearMyVar('主页图标');
     }));
     setPageTitle('管理中心-主题图标设置');
     let themeList = getThemeList();
@@ -1670,7 +1672,7 @@ function iconUISet() {
         d.push({
             title: '',
             desc: '输入'+getMyVar('对应名称', '换源')+'的图标地址',
-            url: $().lazyRule((data)=>{
+            url: $.toString((data)=>{
                 let imgs = storage0.getMyVar('主页图标', ['','','','','']);
                 let i = data.indexOf(getMyVar('对应名称', '换源'));
                 imgs[i] = input;
@@ -1678,6 +1680,7 @@ function iconUISet() {
                 updateItem('主页图标' + i, {
                     img: input
                 });
+                return 'hiker://empty';
             }, data),
             col_type: 'input',
             extra: {

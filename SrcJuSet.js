@@ -1617,11 +1617,15 @@ function iconUISet() {
     setPageTitle('管理中心-主题图标设置');
     let themeList = getThemeList();
     let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0];
-    let themename = currenttheme['名称'] || getMyVar('新主题名称', '新增');
+    let themename = getMyVar('新主题名称', currenttheme['名称'] || '');
     let d = [];
+    let themenames = themeList.map(it=>it.name);
+    themenames.unshift('原生');
     d.push({
         title: '主题：' + themename,
-        url: 'hiker://empty',
+        url: $(themenames, 2, '选择主题').select(()=>{
+            
+        }),
         col_type: 'text_2'
     })
     d.push({

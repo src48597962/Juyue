@@ -1421,12 +1421,12 @@ function manageSet(){
         url: 'toast://哥就是帅'
     });
     d.push({
-        title: 'Ui图标设置',
+        title: 'UI图标设置',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',
         url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            iconUiSet();
+            iconUISet();
         })
     });
     let colors = [{
@@ -1605,7 +1605,7 @@ function manageSet(){
     setResult(d);
 }
 // 程序图标设置
-function iconUiSet() {
+function iconUISet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('对应名称');
     }));
@@ -1671,21 +1671,24 @@ function iconUiSet() {
                 
             }
         })
-
-        d.push({
-            title: '覆盖颜色',
-            col_type: 'text_2',
-            img: ' '
-        })
     }
     d.push({
-        title: themename=='原生'?'使用原生自带图标':'保存 | 分享',
-        col_type: themename=='原生'?'text_center_1':'text_2',
-        img: ' '
-    })
-    
-    d.push({
         col_type: 'line_blank'
+    })
+    d.push({
+            title: themename!='原生'?'可变颜色':'',
+            url: themename!='原生'?'':'hiker://empty',
+            col_type: 'text_3'
+        })
+    d.push({
+        title: '保存&应用',
+        url: '',
+        col_type: 'text_3'
+    })
+    d.push({
+        title: themename!='原生'?'分享主题':'',
+        url: themename!='原生'?'':'hiker://empty',
+        col_type: 'text_3'
     })
     setResult(d);
 }

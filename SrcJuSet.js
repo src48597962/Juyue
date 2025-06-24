@@ -1609,14 +1609,28 @@ function iconUiSet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('对应名称');
     }));
-
+    let themeList = getThemeList();
+    let yxtheme = themeList.filter(v=>v.启用)[0];
     let d = [];
+    d.push({
+        title: '主题：' + yxtheme['名称'],
+        url: 'hiker://empty',
+        col_type: 'text_2'
+    })
+    d.push({
+        title: '新增主题',
+        url: 'hiker://empty',
+        col_type: 'text_2'
+    })
+    d.push({
+        col_type: 'line_blank'
+    })
     d.push({
         title: '““””<b>修改主页图标</b>',
         col_type: 'text_center_1'
     })
     let data = ['换源', '频道', '搜索', '书架', '管理'];
-    let imgs = [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg',];
+    let imgs = yxtheme['主页图标'];
     for (let i = 0; i < 5; i++) {
         d.push({
             title: data[i],
@@ -1636,18 +1650,13 @@ function iconUiSet() {
         })
     }
     d.push({
-        col_type: 'line',
-        extra: {
-            lineVisible: false,
-            id: '主页图标编辑',
-        }
+        col_type: 'line'
     })
     d.push({
         title: '编辑图标[' + getMyVar('对应名称', '换源') + ']',
         col_type: 'text_1',
         extra: {
             lineVisible: false,
-            cls: '主页图标编辑',
             id: '对应标题'
         }
     })
@@ -1657,26 +1666,19 @@ function iconUiSet() {
         url: '',
         col_type: 'input',
         extra: {
-            lineVisible: false,
-            cls: '主页图标编辑',
+            
         }
     })
 
     d.push({
         title: '覆盖颜色',
         col_type: 'icon_2_round',
-        img: ' ',
-        extra: {
-            cls: '主页图标编辑',
-        }
+        img: ' '
     })
     d.push({
         title: '保存 | 分享',
         col_type: 'icon_2_round',
-        img: ' ',
-        extra: {
-            cls: '主页图标编辑',
-        }
+        img: ' '
     })
 
     d.push({

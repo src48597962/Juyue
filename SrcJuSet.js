@@ -1609,9 +1609,10 @@ function iconUISet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('对应名称');
     }));
+    setPageTitle('管理中心-主题图标设置');
     let themeList = getThemeList();
-    let yxtheme = themeList.filter(v=>v.启用)[0];
-    let themename = yxtheme['名称'];
+    let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0];
+    let themename = currenttheme['名称'] || "";
     let d = [];
     d.push({
         title: '主题：' + themename,
@@ -1620,7 +1621,11 @@ function iconUISet() {
     })
     d.push({
         title: '新增主题',
-        url: 'hiker://empty',
+        url: $().lazyRule(()=>{
+            putMyVar('新增主题', '1');
+            refreshPage();
+            return 'hiker://empty';
+        }),
         col_type: 'text_2'
     })
     d.push({
@@ -1631,7 +1636,7 @@ function iconUISet() {
         col_type: 'text_center_1'
     })
     let data = ['换源', '频道', '搜索', '书架', '管理'];
-    let imgs = yxtheme['主页图标'];
+    let imgs = currenttheme['主页图标'] || storage0.getMyVar('主页图标', ['','','','','']);
     for (let i = 0; i < 5; i++) {
         d.push({
             title: data[i],

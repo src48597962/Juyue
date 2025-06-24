@@ -620,14 +620,17 @@ function getThemeList(isEnable) {
     let themefile = libspath + 'theme.json';
     eval('let themelist = ' + (fetch(themefile) || '[]'));
     themelist.unshift({
-        原生: {
-            主页图标: [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg']
-        }
+        名称: '原生',
+        主页图标: [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg']
     })
     let yxtheme = themelist.filter(v=>v.启用);
     if(yxtheme.length==0){
-        themelist['原生'].启用 = 1;
-        yxtheme = themelist['原生'];
+        themelist.forEach(it=>{
+            if(it['名称']=='原生'){
+                it.启用 = 1;
+                yxtheme = it;
+            }
+        })
     }
     if(isEnable){
         return yxtheme;

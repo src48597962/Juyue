@@ -1611,9 +1611,10 @@ function iconUiSet() {
     }));
     let themeList = getThemeList();
     let yxtheme = themeList.filter(v=>v.启用)[0];
+    let themename = yxtheme['名称'];
     let d = [];
     d.push({
-        title: '主题：' + yxtheme['名称'],
+        title: '主题：' + themename,
         url: 'hiker://empty',
         col_type: 'text_2'
     })
@@ -1652,35 +1653,37 @@ function iconUiSet() {
     d.push({
         col_type: 'line'
     })
-    d.push({
-        title: '编辑图标[' + getMyVar('对应名称', '换源') + ']',
-        col_type: 'text_1',
-        extra: {
-            lineVisible: false,
-            id: '对应标题'
-        }
-    })
-    d.push({
-        title: '',
-        desc: '显示对应原本地址',
-        url: '',
-        col_type: 'input',
-        extra: {
-            
-        }
-    })
+    if(themename!='原生'){
+        d.push({
+            title: '编辑图标[' + getMyVar('对应名称', '换源') + ']',
+            col_type: 'text_1',
+            extra: {
+                lineVisible: false,
+                id: '对应标题'
+            }
+        })
+        d.push({
+            title: '',
+            desc: '显示对应原本地址',
+            url: '',
+            col_type: 'input',
+            extra: {
+                
+            }
+        })
 
+        d.push({
+            title: '覆盖颜色',
+            col_type: 'text_2',
+            img: ' '
+        })
+    }
     d.push({
-        title: '覆盖颜色',
-        col_type: 'icon_2_round',
+        title: themename=='原生'?'使用原生自带图标':'保存 | 分享',
+        col_type: themename=='原生'?'text_center_1':'text_2',
         img: ' '
     })
-    d.push({
-        title: '保存 | 分享',
-        col_type: 'icon_2_round',
-        img: ' '
-    })
-
+    
     d.push({
         col_type: 'line_blank'
     })

@@ -1669,8 +1669,16 @@ function iconUISet() {
         })
         d.push({
             title: '',
-            desc: '显示对应原本地址',
-            url: '',
+            desc: '输入'+getMyVar('对应名称', '换源')+'的图标地址',
+            url: $().lazyRule((data)=>{
+                let imgs = storage0.getMyVar('主页图标', ['','','','','']);
+                let i = data.indexOf(getMyVar('对应名称', '换源'));
+                imgs[i] = input;
+                storage0.putMyVar('主页图标', imgs);
+                updateItem('主页图标' + i, {
+                    img: input
+                });
+            }, data),
             col_type: 'input',
             extra: {
                 

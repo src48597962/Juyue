@@ -377,7 +377,7 @@ function getSsData(name, jkdata, page) {
             let resultd;
             let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + parse['搜索'].toString());
-            getData = 数据.call(parse, name) || [];
+            getData = 数据.call(parse, name, page) || [];
             if(resultd&&getData.length==0){
                 getData = resultd;
             }

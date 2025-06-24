@@ -1617,10 +1617,10 @@ function iconUISet() {
         clearMyVar('主页按钮图标');
     }));
     setPageTitle('管理中心-主题图标设置');
-    let themefile = libspath + 'theme.json';
+    let themefile = libspath + 'themes.json';
     eval('let themeList = ' + (fetch(themefile) || '[]'));
     storage0.putMyVar('themeList', themeList);
-    let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0];
+    let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0]||{};
     let themename = getMyVar('选择主题名称', currenttheme['名称'] || '');
     let themenames = themeList.map(it=>it.名称);
     themenames.unshift('原生');
@@ -1728,27 +1728,26 @@ function iconUISet() {
     d.push({
         title: '保存&应用',
         url: $().lazyRule((libspath,themename)=>{
-            let themefile = libspath + 'theme.json';
-            eval('let themelist = ' + (fetch(themefile) || '[]'));
+            let themeList = storage0.getMyVar('themeList', []);
             if(themename=='原生'){
-                themelist.forEach(it=>{
+                themeList.forEach(it=>{
                     delete it.启用;
                 })
             }else if(getMyVar('图标是否有修改')){
-                let themes = themelist.filter(v=>v.名称==themename);
+                let themes = themeList.filter(v=>v.名称==themename);
                 let oldtheme = {};
                 if(themes.length>0){
                     oldtheme = themes[0];
-                    themelist = themelist.filter(v=>v.名称!=themename);
+                    themeList = themeList.filter(v=>v.名称!=themename);
                 }
                 let theme = {
                     名称: themename,
                     主页图标: storage0.getMyVar('主页按钮图标', oldtheme.主页图标||undefined),
                     启用: true
                 }
-                themelist.push(theme);
+                themeList.push(theme);
             }
-            writeFile(libspath+'themes.json', JSON.stringify(themelist));
+            writeFile(libspath+'themes.json', JSON.stringify(themeList));
             return 'toast://已保存并生效';
         }, libspath, themename),
         col_type: 'text_3'

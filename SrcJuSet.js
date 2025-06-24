@@ -1607,14 +1607,17 @@ function manageSet(){
 // 程序图标设置
 function iconUISet() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('对应名称');
         clearMyVar('新增主题');
-        clearMyVar('主页图标');
+        clearMyVar('选择按钮名称');
+        clearMyVar('选择按钮图标');
+        clearMyVar('选择按钮索引');
+        clearMyVar('图标类型');
+        clearMyVar('新主题名称');
     }));
     setPageTitle('管理中心-主题图标设置');
     let themeList = getThemeList();
     let currenttheme = getMyVar('新增主题')=='1'?{}:themeList.filter(v=>v.启用)[0];
-    let themename = currenttheme['名称'] || "";
+    let themename = currenttheme['名称'] || getMyVar('新主题名称', '新增');
     let d = [];
     d.push({
         title: '主题：' + themename,
@@ -1623,11 +1626,20 @@ function iconUISet() {
     })
     d.push({
         title: '新增主题',
-        url: $().lazyRule(()=>{
-            putMyVar('新增主题', '1');
-            refreshPage();
+        url: $('','请输入一个主题名称').input((themeList)=>{
+            if(themeList.some(v=>v.名称==input)){
+                return 'toast://主题名称已存在';
+            }else if(input){
+                putMyVar('新主题名称', input);
+                putMyVar('新增主题', '1');
+                clearMyVar('选择按钮名称');
+                clearMyVar('选择按钮图标');
+                clearMyVar('选择按钮索引');
+                clearMyVar('选择图标类型');
+                refreshPage();
+            }
             return 'hiker://empty';
-        }),
+        }, themeList),
         col_type: 'text_2'
     })
     d.push({
@@ -1638,22 +1650,24 @@ function iconUISet() {
         col_type: 'text_center_1'
     })
     let data = ['换源', '频道', '搜索', '书架', '管理'];
-    let imgs = currenttheme['主页图标'] || storage0.getMyVar('主页图标', ['','','','','']);
+    let imgs = currenttheme['主页图标'] || ['','','','',''];
     for (let i = 0; i < 5; i++) {
         d.push({
             title: data[i],
             img: imgs[i],
             col_type: 'icon_5',
             url: $('#noLoading#').lazyRule((i, data) => {
-                putMyVar('对应名称', data[i])
+                putMyVar('选择图标类型', '主页');
+                putMyVar('选择按钮名称', data[i]);
+                putMyVar('选择按钮索引', i);
                 updateItem("对应标题", {
                     title: '编辑图标[' + data[i] + ']'
                 });
-                return 'hiker://empty'
+                return 'hiker://empty';
 
             }, i, data),
             extra: {
-                id: '主页图标' + i,
+                id: '主页图标id' + i,
             }
         })
     }
@@ -1662,7 +1676,7 @@ function iconUISet() {
     })
     if(themename!='原生'){
         d.push({
-            title: '编辑图标[' + getMyVar('对应名称', '换源') + ']',
+            title: '编辑图标[' + getMyVar('选择按钮名称', '换源') + ']',
             col_type: 'text_1',
             extra: {
                 lineVisible: false,
@@ -1671,17 +1685,17 @@ function iconUISet() {
         })
         d.push({
             title: '',
-            desc: '输入'+getMyVar('对应名称', '换源')+'的图标地址',
-            url: $.toString((data)=>{
-                let imgs = storage0.getMyVar('主页图标', ['','','','','']);
-                let i = data.indexOf(getMyVar('对应名称', '换源'));
+            desc: '输入'+getMyVar('选择按钮名称', '换源')+'的图标地址',
+            url: $.toString(()=>{
+                let imgs = storage0.getMyVar(getMyVar('选择图标类型', '主页')+'按钮图标', ['','','','','']);
+                let i = parseInt(getMyVar('选择按钮索引', '0'));
                 imgs[i] = input;
-                storage0.putMyVar('主页图标', imgs);
-                updateItem('主页图标' + i, {
+                storage0.putMyVar(getMyVar('选择图标类型', '主页')+'按钮图标', imgs);
+                updateItem(getMyVar('选择图标类型', '主页')+'图标id' + i, {
                     img: input
                 });
                 return 'hiker://empty';
-            }, data),
+            }),
             col_type: 'input',
             extra: {
                 
@@ -1698,7 +1712,24 @@ function iconUISet() {
         })
     d.push({
         title: '保存&应用',
-        url: '',
+        url: $().lazyRule((libspath,themename)=>{
+            let themefile = libspath + 'theme.json';
+            eval('let themelist = ' + (fetch(themefile) || '[]'));
+            if(themename=='原生'){
+                themelist.forEach(it=>{
+                    delete it.启用;
+                })
+            }else{
+                let theme = {
+                    名称: getMyVar('新主题名称', '新增'),
+                    主页图标: storage0.getMyVar('主页按钮图标', ['','','','','']),
+                    启用: true
+                }
+                themelist.push(theme);
+            }
+            writeFile(libspath+'themes.json', JSON.stringify(themelist));
+            return 'toast://已保存并生效';
+        }, libspath, themename),
         col_type: 'text_3'
     })
     d.push({

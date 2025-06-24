@@ -1420,6 +1420,15 @@ function manageSet(){
         col_type: 'avatar',
         url: 'toast://哥就是帅'
     });
+    d.push({
+        title: 'Ui图标设置',
+        img: getIcon("管理-箭头.svg"),
+        col_type: 'text_icon',
+        url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            iconUiSet();
+        })
+    });
     let colors = [{
         title: '绿意盎然',
         icon: "#4EAF7C"
@@ -1507,15 +1516,6 @@ function manageSet(){
                 })
             }]
         }
-    });
-    d.push({
-        title: 'Ui图标设置',
-        img: getIcon("管理-箭头.svg"),
-        col_type: 'text_icon',
-        url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            iconUiSet();
-        })
     });
     d.push({
         title: '查看更新日志',

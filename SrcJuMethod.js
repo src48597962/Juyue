@@ -516,6 +516,19 @@ function getEvalResult(evalStr) {
     var result = func(code);
     return result; 
 }
+// 搜索历史记录操作方法
+function searchRecord(lx, input) {
+    let filepath = 'hiker://files/rules/Src/Juyue/searchRecord.json';
+    eval("let recordlist = " + (fetch(filepath)||'[]'));
+    if(lx=='get'){
+        return recordlist.slice(0, parseInt(getItem("显示搜索历史数量", "18")));
+    }else if(lx=='put'){
+        recordlist = recordlist.slice(0, 100).filter(v=v!=input);
+        recordlist.unshift(input);
+        writeFile(filepath, JSON.stringify(recordlist));
+    }
+    return;
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

@@ -1262,8 +1262,8 @@ function search(name, sstype, jkdata) {
     }
 
     function isMatch(searchText, targetText) {
-        const normalizedSearch = normalizeSearchText(searchText);
-        const normalizedTarget = normalizeSearchText(targetText);
+        let normalizedSearch = normalizeSearchText(searchText);
+        let normalizedTarget = normalizeSearchText(targetText);
 
         if (!normalizedSearch) return false;
 
@@ -1273,11 +1273,11 @@ function search(name, sstype, jkdata) {
         }
 
         // 如果搜索词带空格，检查所有单词是否按顺序出现（不要求连续）
-        const searchWords = normalizedSearch.split(' ');
+        let searchWords = normalizedSearch.split(' ');
         let lastIndex = 0;
 
-        for (const word of searchWords) {
-            const index = normalizedTarget.indexOf(word, lastIndex);
+        for (let word of searchWords) {
+            let index = normalizedTarget.indexOf(word, lastIndex);
             if (index === -1) return false; // 任意一个词不匹配就失败
             lastIndex = index + word.length; // 确保顺序
         }

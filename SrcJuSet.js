@@ -1741,14 +1741,12 @@ function iconUISet() {
         title: '保存&应用',
         url: $().lazyRule((libspath,themename)=>{
             let themeList = storage0.getMyVar('themeList', []).filter(v=>v.名称!='原生');
-            if(themename=='原生'){
-                themeList.forEach(it=>{
-                    delete it.启用;
-                })
-            }else{
-                themeList = themeList.filter(v=>v.名称!=themename);
-                themeList.push(storage0.getMyVar('currentTheme'));
-            }
+            themeList.forEach(it=>{
+                delete it.启用;
+            })
+
+            themeList = themeList.filter(v=>v.名称!=themename);
+            themeList.push(storage0.getMyVar('currentTheme'));
             writeFile(libspath+'themes.json', JSON.stringify(themeList));
             return 'toast://已保存并生效';
         }, libspath, themename),

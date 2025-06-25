@@ -1431,7 +1431,6 @@ function manageSet(){
         col_type: 'avatar',
         url: 'toast://哥就是帅'
     });
-    /*
     d.push({
         title: 'UI图标设置',
         img: getIcon("管理-箭头.svg"),
@@ -1441,7 +1440,6 @@ function manageSet(){
             iconUISet();
         })
     });
-    */
     let colors = [{
         title: '绿意盎然',
         icon: "#4EAF7C"

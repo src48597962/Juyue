@@ -851,7 +851,7 @@ function erji() {
             let reviseLiTitle = getItem('reviseLiTitle','0');
             d.push({
                 title: `““””<b><span style="color: #f47983">样式<small>🎨</small></span></b>`,
-                url: $(["修整选集标题："+(reviseLiTitle=="1"?"是":"否"),"显示扩展项："+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式："+getItem('SrcJuLine_col_type', 'scroll_button'),"选集分页设置"], 1, "选集列表样式").select(() => {
+                url: $(["修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'),"选集样式:"+getItem('SrcJuList_col_type', '自动'),"选集分页设置"], 1, "选集列表样式").select(() => {
                     if(input=="选集分页设置"){
                         return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                             let partpage = storage0.getItem('partpage') || {};
@@ -912,6 +912,16 @@ function erji() {
                         }
                         refreshPage(false);
                         return "toast://"+sm;
+                    }else if(input.includes('选集样式')){
+                        return $(["自动判断","text_1","text_2","text_3","text_4","flex_button"],2,"选集列表样式").select(() => {
+                            if(input=='自动判断'){
+                                clearItem('SrcJuList_col_type');
+                            }else{
+                                setItem('SrcJuList_col_type', input);
+                            }
+                            refreshPage();
+                            return 'hiker://empty';
+                        })
                     }
                 }),
                 col_type: line_col_type,
@@ -1069,7 +1079,7 @@ function erji() {
                 return str.trim();
             }
             let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
-            let list_col_type = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2'; //列表默认样式
+            let list_col_type = getItem('SrcJuList_col_type', '自动')=='自动'?(列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2'):getItem('SrcJuList_col_type'); //列表默认样式
 
             for(let i=0; i<列表.length; i++) {
                 let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认

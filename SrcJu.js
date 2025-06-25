@@ -1307,6 +1307,8 @@ function search(name, sstype, jkdata) {
                 }
             }
         }else if(sstype=="yiji"){
+            xlog(name);
+            xlog(it.title);
             if(isMatch(name, it.title)){
                 it.extra = it.extra || {};
                 it.extra.cls = "homesousuolist";

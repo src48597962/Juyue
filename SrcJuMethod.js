@@ -520,6 +520,11 @@ function getEvalResult(evalStr) {
 function searchRecord(lx, input) {
     let filepath = 'hiker://files/rules/Src/Juyue/searchRecord.json';
     eval("let recordlist = " + (fetch(filepath)||'[]'));
+    if(storage0.getItem('searchrecord')){
+        recordlist = storage0.getItem('searchrecord');
+        clearItem('searchrecord');
+        writeFile(filepath, JSON.stringify(recordlist));
+    }
     if(lx=='get'){
         return recordlist.slice(0, parseInt(getItem("显示搜索历史数量", "18")));
     }else if(lx=='put'){

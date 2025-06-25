@@ -1531,9 +1531,7 @@ function newSearchPage(keyword, searchtype) {
                 recordlist = recordlist.filter((item) => item !== input);
             }
             recordlist.unshift(input);
-            if(recordlist.length>parseInt(getItem("记录搜索历史数量", "18"))){
-                recordlist.splice(recordlist.length-1,1);
-            }
+            recordlist.slice(0, getItem("记录搜索历史数量", "18"));
             storage0.setItem('searchrecord', recordlist);
             refreshPage(true);
             return 'hiker://empty';

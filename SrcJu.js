@@ -1249,6 +1249,23 @@ function search(name, sstype, jkdata) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
 
+    function normalizeSearchText(text) {
+        return text
+            // 移除开头和结尾的标点符号
+            .replace(/^[^\w\u4e00-\u9fa5]+|[^\w\u4e00-\u9fa5]+$/g, '')
+            // 移除中间所有非文字字符（保留中文、英文、数字）
+            .replace(/[^\w\u4e00-\u9fa5]/g, '')
+            // 转换为小写（如果需要不区分大小写）
+            .toLowerCase();
+    }
+
+    function isMatch(searchText, targetText) {
+        const normalizedSearch = normalizeSearchText(searchText);
+        const normalizedTarget = normalizeSearchText(targetText);
+
+        return normalizedTarget.includes(normalizedSearch);
+    }
+
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){
@@ -1271,17 +1288,19 @@ function search(name, sstype, jkdata) {
                 }
             }
         }else if(sstype=="yiji"){
-            it.extra = it.extra || {};
-            it.extra.cls = "homesousuolist";
-            ssdata.push(it);
+            if(isMatch(name, it.title)){
+                it.extra = it.extra || {};
+                it.extra.cls = "homesousuolist";
+                ssdata.push(it);
+            }
         }else if(sstype=="newSearch"){
-            if(it.title.includes(name)){
+            if(isMatch(name, it.title)){
                 it.title = it.title.replace(name, '‘‘’’<font color=red>'+name+'</font>');
                 it.col_type = "movie_1_vertical_pic";
                 it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
-        }else{
+        }else if(isMatch(name, it.title)){
             ssdata.push(it);
         }
     })

@@ -703,7 +703,18 @@ function jiekouapi(data, look) {
                     back(true);
                     return "toast://保存成功";
                 }
-            }, (data?data.id:"")||"")
+            }, (data?data.id:"")||""),
+            extra: {
+                longClick: [{
+                    title: "分享代码文件",
+                    js: $.toString(() => {
+                        if(!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))){
+                            return 'toast://代码文件不存在';
+                        }
+                        return 'share://'+ getMyVar('apiruleurl');
+                    })
+                }]
+            }
         });
     }
     d.push({

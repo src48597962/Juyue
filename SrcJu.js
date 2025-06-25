@@ -246,7 +246,7 @@ function yiji(testSource) {
                 recordlist = recordlist.filter((item) => item !== input);
             }
             recordlist.unshift(input);
-            recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
+            recordlist = recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
             storage0.setItem('searchrecord', recordlist);
             putVar("keyword", input);
             if(!jkdata.name){
@@ -1534,7 +1534,7 @@ function newSearchPage(keyword, searchtype) {
                 recordlist = recordlist.filter((item) => item !== input);
             }
             recordlist.unshift(input);
-            recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
+            recordlist = recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
             storage0.setItem('searchrecord', recordlist);
             refreshPage(true);
             return 'hiker://empty';

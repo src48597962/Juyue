@@ -527,6 +527,7 @@ function banner(start, arr, data, cfg){
     let time = cfg.time || 4000;
     let col_type = cfg.col_type || 'card_pic_1';
     let desc = cfg.desc || '0';
+    let extra = item.extra || {};
 
     arr.push({
         col_type: col_type,
@@ -536,6 +537,7 @@ function banner(start, arr, data, cfg){
         url: item.url,
         extra: {
             id: 'bar',
+            cls: extra.cls
         }
     })
     if (start == false || getMyVar('benstart', 'true') == 'false') {

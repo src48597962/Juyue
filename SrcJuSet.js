@@ -1628,23 +1628,24 @@ function iconUISet() {
         clearMyVar('图标类型');
     }));
     setPageTitle('管理中心-主题图标设置');
-    let themefile = libspath + 'themes.json';
-    eval('let themeList = ' + (fetch(themefile) || '[]'));
-    storage0.putMyVar('themeList', themeList);
+    
+    let themeList = storage0.getMyVar('themeList');
+    if(!themeList){
+        themeList = getThemeList();
+        storage0.putMyVar('themeList', themeList);
+    }    
 
     let currentTheme = storage0.getMyVar('currentTheme', (themeList.filter(v=>v.启用)||[{}])[0]);
     let themename = currentTheme['名称'] || '';
     let themenames = themeList.map(it=>it.名称);
-    themenames.unshift('原生');
     
     let d = [];
     d.push({
         title: '主题：' + themename,
         url: $(themenames, 2, '选择主题').select(()=>{
-            if(input!='原生'){
-                let theme = storage0.getMyVar('themeList').filter(v==v.名称)[0];
-                putMyVar('主页按钮图标', theme.主页图标);
-            }
+            let theme = storage0.getMyVar('themeList').filter(v=>v.名称==input)[0];
+            theme.启用 = 1;
+            storage0.putMyVar('currentTheme', theme);
             refreshPage();
             return 'hiker://empty';
         }),
@@ -1652,20 +1653,19 @@ function iconUISet() {
     })
     d.push({
         title: '新增主题',
-        url: $('','请输入一个主题名称').input((themeList)=>{
+        url: $('','请输入一个主题名称').input(()=>{
+            let themeList = storage0.getMyVar('themeList');
             if(themeList.some(v=>v.名称==input)){
                 return 'toast://主题名称已存在';
             }else if(input){
-                putMyVar('新增主题', '1');
-                clearMyVar('选择按钮名称');
-                clearMyVar('选择按钮图标');
-                clearMyVar('选择按钮索引');
-                clearMyVar('选择图标类型');
-                clearMyVar('主页按钮图标');
+                storage0.putMyVar('currentTheme', {
+                    名称: input,
+                    启用: 1
+                });
                 refreshPage();
             }
             return 'hiker://empty';
-        }, themeList),
+        }),
         col_type: 'text_2'
     })
     d.push({
@@ -1713,10 +1713,13 @@ function iconUISet() {
             title: '',
             desc: '输入'+getMyVar('选择按钮名称', '换源')+'的图标地址',
             url: $.toString(()=>{
-                let imgs = storage0.getMyVar(getMyVar('选择图标类型', '主页')+'按钮图标', ['','','','','']);
+                let imgtype = getMyVar('选择图标类型', '主页') + '图标';
+                let currentTheme = storage0.getMyVar('currentTheme', {});
+                let imgs = currentTheme[imgtype] || [];
                 let i = parseInt(getMyVar('选择按钮索引', '0'));
                 imgs[i] = input;
-                storage0.putMyVar(getMyVar('选择图标类型', '主页')+'按钮图标', imgs);
+                currentTheme[imgtype] = imgs;
+                storage0.putMyVar('currentTheme', currentTheme);
                 updateItem(getMyVar('选择图标类型', '主页')+'图标id' + i, {
                     img: input
                 });
@@ -1739,24 +1742,14 @@ function iconUISet() {
     d.push({
         title: '保存&应用',
         url: $().lazyRule((libspath,themename)=>{
-            let themeList = storage0.getMyVar('themeList', []);
+            let themeList = storage0.getMyVar('themeList', []).filter(v=>v.名称!='原生');
             if(themename=='原生'){
                 themeList.forEach(it=>{
                     delete it.启用;
                 })
-            }else if(getMyVar('图标是否有修改')){
-                let themes = themeList.filter(v=>v.名称==themename);
-                let oldtheme = {};
-                if(themes.length>0){
-                    oldtheme = themes[0];
-                    themeList = themeList.filter(v=>v.名称!=themename);
-                }
-                let theme = {
-                    名称: themename,
-                    主页图标: storage0.getMyVar('主页按钮图标', oldtheme.主页图标||undefined),
-                    启用: true
-                }
-                themeList.push(theme);
+            }else{
+                themeList = themeList.filter(v=>v.名称!=themename);
+                themeList.push(storage0.getMyVar('currentTheme'));
             }
             writeFile(libspath+'themes.json', JSON.stringify(themeList));
             return 'toast://已保存并生效';

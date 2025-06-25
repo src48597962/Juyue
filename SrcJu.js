@@ -1251,38 +1251,19 @@ function search(name, sstype, jkdata) {
 
     function normalizeSearchText(text) {
         return text
-            // 移除所有非文字字符（中文、英文、数字），但保留空格
-            .replace(/[^\w\u4e00-\u9fa5\s]/g, '')
-            // 多个空格合并成1个
-            .replace(/\s+/g, ' ')
-            // 移除首尾空格
-            .trim()
-            // 转为小写（可选）
+            // 移除开头和结尾的标点符号
+            .replace(/^[^\w\u4e00-\u9fa5]+|[^\w\u4e00-\u9fa5]+$/g, '')
+            // 移除中间所有非文字字符（保留中文、英文、数字）
+            .replace(/[^\w\u4e00-\u9fa5]/g, '')
+            // 转换为小写（如果需要不区分大小写）
             .toLowerCase();
     }
 
     function isMatch(searchText, targetText) {
-        let normalizedSearch = normalizeSearchText(searchText);
-        let normalizedTarget = normalizeSearchText(targetText);
+        const normalizedSearch = normalizeSearchText(searchText);
+        const normalizedTarget = normalizeSearchText(targetText);
 
-        if (!normalizedSearch) return false;
-
-        // 如果搜索词无空格，直接检查是否包含
-        if (!normalizedSearch.includes(' ')) {
-            return normalizedTarget.includes(normalizedSearch);
-        }
-
-        // 如果搜索词带空格，检查所有单词是否按顺序出现（不要求连续）
-        let searchWords = normalizedSearch.split(' ');
-        let lastIndex = 0;
-
-        for (let word of searchWords) {
-            let index = normalizedTarget.indexOf(word, lastIndex);
-            if (index === -1) return false; // 任意一个词不匹配就失败
-            lastIndex = index + word.length; // 确保顺序
-        }
-
-        return true;
+        return normalizedTarget.includes(normalizedSearch);
     }
 
     getSsData(name, jkdata, page).vodlists.forEach(it => {
@@ -1307,8 +1288,6 @@ function search(name, sstype, jkdata) {
                 }
             }
         }else if(sstype=="yiji"){
-            xlog(name);
-            xlog(it.title);
             if(isMatch(name, it.title)){
                 it.extra = it.extra || {};
                 it.extra.cls = "homesousuolist";
@@ -1316,15 +1295,7 @@ function search(name, sstype, jkdata) {
             }
         }else if(sstype=="newSearch"){
             if(isMatch(name, it.title)){
-                let keys = name.split(' ');
-                keys.forEach((v,i)=>{
-                    let b = '';
-                    if(i==0){
-                        b = '‘‘’’';
-                    }
-                    it.title = it.title.replace(v, b + '<font color=red>' + v + '</font>');
-                })
-                
+                it.title = it.title.replace(name, '‘‘’’<font color=red>' + name + '</font>');
                 it.col_type = "movie_1_vertical_pic";
                 it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);

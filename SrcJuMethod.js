@@ -528,7 +528,7 @@ function searchRecord(lx, input) {
     if(lx=='get'){
         return recordlist.slice(0, parseInt(getItem("显示搜索历史数量", "18")));
     }else if(lx=='put'){
-        recordlist = recordlist.slice(0, 100).filter(v=v!=input);
+        recordlist = recordlist.slice(0, 100).filter(v=>v!=input);
         recordlist.unshift(input);
         writeFile(filepath, JSON.stringify(recordlist));
     }else if(lx=='del'){

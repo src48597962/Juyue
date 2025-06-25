@@ -617,7 +617,7 @@ function isDarkMode() {
 }
 // 获取主题图标列表
 function getThemeList(isEnable) {
-    let themefile = libspath + 'theme.json';
+    let themefile = libspath + 'themes.json';
     eval('let themelist = ' + (fetch(themefile) || '[]'));
     themelist.unshift({
         名称: '原生',

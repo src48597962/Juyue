@@ -532,7 +532,7 @@ function searchRecord(lx, input) {
         recordlist.unshift(input);
         writeFile(filepath, JSON.stringify(recordlist));
     }else if(lx=='del'){
-        recordlist = input==''?[]:recordlist.filter(v=v!=input);
+        recordlist = input==''?[]:recordlist.filter(v=>v!=input);
         writeFile(filepath, JSON.stringify(recordlist));
     }
     return;

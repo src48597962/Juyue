@@ -144,6 +144,9 @@ function yiji(testSource) {
                     }
                 }else if(input=='记录搜索数'){
                     return $(getItem("记录搜索历史数量", "18"),"记录搜索历史数量").input(()=>{
+                        if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
+                            return 'toast://输入有误，请输入1-100数字';
+                        }
                         setItem("记录搜索历史数量", input);
                         return "hiker://empty";
                     })

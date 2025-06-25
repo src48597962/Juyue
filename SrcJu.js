@@ -127,7 +127,7 @@ function yiji(testSource) {
         });
         searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
         //searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
-        searchModeS.push('记录搜索数');
+        searchModeS.push('显示搜索数');
 
         d.push({
             title: "搜索",
@@ -142,12 +142,12 @@ function yiji(testSource) {
                         setItem(input, "1");
                         return "toast://已设置" + input;
                     }
-                }else if(input=='记录搜索数'){
-                    return $(getItem("记录搜索历史数量", "18"),"记录搜索历史数量").input(()=>{
+                }else if(input=='显示搜索数'){
+                    return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
                         if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
                             return 'toast://输入有误，请输入1-100数字';
                         }
-                        setItem("记录搜索历史数量", input);
+                        setItem("显示搜索历史数量", input);
                         return "hiker://empty";
                     })
                 }else{
@@ -241,13 +241,7 @@ function yiji(testSource) {
         }
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
             deleteItemByCls('homesousuolist');
-            let recordlist = storage0.getItem('searchrecord') || [];
-            if(recordlist.indexOf(input)>-1){
-                recordlist = recordlist.filter((item) => item !== input);
-            }
-            recordlist.unshift(input);
-            recordlist = recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
-            storage0.setItem('searchrecord', recordlist);
+            searchRecord('put', input);
             putVar("keyword", input);
             if(!jkdata.name){
                 return 'toast://当前无接口数据';
@@ -325,7 +319,6 @@ function yiji(testSource) {
                         clearVar("keyword");
                     }else if(input==" "){
                         deleteItemByCls('sousuorecordlist');
-                        let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
                         if(getItem("搜索建议词","")=='1'){
                             d.push({
@@ -359,6 +352,7 @@ function yiji(testSource) {
                             }
                             return getSoftHexColor()
                         }
+                        let recordlist = searchRecord('get');
                         recordlist.forEach(item=>{
                             let color = 背景色();
                             d.push({
@@ -373,14 +367,12 @@ function yiji(testSource) {
                                         title: "删除词条",
                                         js: $.toString((item) => {
                                             deleteItem('recordid_' + item);
-                                            let recordlist = storage0.getItem('searchrecord') || [];
-                                            recordlist = recordlist.filter((v) => v !== item);
-                                            storage0.setItem('searchrecord', recordlist);
+                                            searchRecord('del', item);
                                         }, item)
                                     },{
                                         title: "清空记录",
                                         js: $.toString(() => {
-                                            clearItem('searchrecord');
+                                            searchRecord('del', '');
                                             deleteItemByCls('sousuorecordlist');
                                         })
                                     }]
@@ -1548,13 +1540,7 @@ function newSearchPage(keyword, searchtype) {
         let searchurl = $('#noLoading#').lazyRule(() => {
             putMyVar('SrcJu_sousuoName',input);
             putVar('keyword',input);
-            let recordlist = storage0.getItem('searchrecord') || [];
-            if(recordlist.indexOf(input)>-1){
-                recordlist = recordlist.filter((item) => item !== input);
-            }
-            recordlist.unshift(input);
-            recordlist = recordlist.slice(0, parseInt(getItem("记录搜索历史数量", "18")));
-            storage0.setItem('searchrecord', recordlist);
+            searchRecord('put', input);
             refreshPage(true);
             return 'hiker://empty';
         })
@@ -1578,7 +1564,6 @@ function newSearchPage(keyword, searchtype) {
                         deleteItemByCls('searchrecord');
                     }else if(input==" "){
                         deleteItemByCls('searchrecord');
-                        let recordlist = storage0.getItem('searchrecord') || [];
                         let d = [];
                         if(getItem("搜索建议词","")=='1'){
                             d.push({
@@ -1612,6 +1597,7 @@ function newSearchPage(keyword, searchtype) {
                             }
                             return getSoftHexColor()
                         }
+                        let recordlist = searchRecord('get');
                         recordlist.forEach(item=>{
                             let color = 背景色();
                             d.push({
@@ -1626,14 +1612,12 @@ function newSearchPage(keyword, searchtype) {
                                         title: "删除词条",
                                         js: $.toString((item) => {
                                             deleteItem('recordid_' + item);
-                                            let recordlist = storage0.getItem('searchrecord') || [];
-                                            recordlist = recordlist.filter((v) => v !== item);
-                                            storage0.setItem('searchrecord', recordlist);
+                                            searchRecord('del', item);
                                         }, item)
                                     },{
                                         title: "清空记录",
                                         js: $.toString(() => {
-                                            clearItem('searchrecord');
+                                            searchRecord('del', '');
                                             deleteItemByCls('searchrecord');
                                         })
                                     }]

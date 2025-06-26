@@ -1733,10 +1733,10 @@ function iconUISet() {
         col_type: 'line_blank'
     })
     d.push({
-            title: themename!='原生'?'可变颜色':'',
-            url: themename!='原生'?'':'hiker://empty',
-            col_type: 'text_3'
-        })
+        title: themename!='原生'?'可变颜色':'',
+        url: themename!='原生'?'':'hiker://empty',
+        col_type: 'text_3'
+    })
     d.push({
         title: '保存&应用',
         url: $().lazyRule((libspath,themename)=>{

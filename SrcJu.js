@@ -1118,7 +1118,7 @@ function erji() {
                 isload = 1;
             }else if(列表.length==0){
                 d.push({
-                    title: "‘‘’’<small><font color=#bfbfbf>选集列表为空，请更换其他源</font></small>",
+                    title: "‘‘’’<small><font color=grey>选集列表为空，请更换其他源</font></small>",
                     url: 'hiker://empty',
                     col_type: 'text_center_1',
                     extra: {

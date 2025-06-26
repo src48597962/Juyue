@@ -619,21 +619,12 @@ function isDarkMode() {
 function getThemeList(isEnable) {
     let themefile = libspath + 'themes.json';
     eval('let themelist = ' + (fetch(themefile) || '[]'));
-    themelist.unshift({
-        名称: '原生',
-        主页图标: [codepath+'img/主页-切源.svg',codepath+'img/主页-频道.svg',codepath+'img/主页-搜索.svg',codepath+'img/主页-书架.svg',codepath+'img/主页-管理.svg']
-    })
-    let yxtheme = themelist.filter(v=>v.启用);
-    if(yxtheme.length==0){
-        themelist.forEach(it=>{
-            if(it['名称']=='原生'){
-                it.启用 = 1;
-                yxtheme = [it];
-            }
-        })
-    }
+    
     if(isEnable){
-        return yxtheme[0];
+        let yxtheme = themelist.filter(v=>v.启用);
+        return yxtheme.length>0?yxtheme[0]:{
+            主页图标: ["http://123.56.105.145/tubiao/more/157.png","http://123.56.105.145/tubiao/more/287.png","http://123.56.105.145/tubiao/more/101.png","http://123.56.105.145/tubiao/more/286.png","http://123.56.105.145/tubiao/more/129.png"]
+        };
     }
     return themelist;
 }

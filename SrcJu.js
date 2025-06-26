@@ -500,7 +500,7 @@ function erji() {
     let erLoadData = {};
     let isload;//是否正确加载
     let pic;
-    let parse = {};
+    let parse = getObjCode(jkdata, 'er');
     
     try {
         if (sid&&MY_URL) {
@@ -524,7 +524,6 @@ function erji() {
                 storage0.putMyVar('二级源接口信息', jkdata);
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
-                parse = getObjCode(jkdata, 'er');
                 try {
                     if (parse['预处理']) {
                         parse['预处理'].call(parse);

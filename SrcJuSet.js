@@ -12,6 +12,7 @@ function SRCSet() {
     }));
 
     let d = [];
+    let jkIcons = getThemeList(true)['接口图标'];
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
@@ -19,7 +20,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             jiekouapi();
         }),
-        img: "http://123.56.105.145/tubiao/more/25.png",
+        img: jkIcons[0],
         col_type: "icon_small_4",
         extra: {
             longClick: []
@@ -61,7 +62,7 @@ function SRCSet() {
                 return "toast://"+sm;
             }
         }),
-        img: "http://123.56.105.145/tubiao/more/290.png",
+        img: jkIcons[1],
         col_type: "icon_small_4"
     });
     d.push({
@@ -76,7 +77,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return JYimport(input);
         }),
-        img: "http://123.56.105.145/tubiao/more/43.png",
+        img: jkIcons[2],
         col_type: "icon_small_4"
     });
     let pastes = getPastes();
@@ -104,7 +105,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return JYshare(input);
         }),
-        img: "http://123.56.105.145/tubiao/more/3.png",
+        img: jkIcons[3],
         col_type: "icon_small_4",
         extra: {
             longClick: [{

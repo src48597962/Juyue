@@ -1117,48 +1117,55 @@ function erji() {
             if(列表.length>0){
                 isload = 1;
             }else if(列表.length==0){
-                toast("选集列表为空，请更换其他源");
+                d.push({
+                    title: "‘‘’’<small><font color=#bfbfbf>选集列表为空，请更换其他源</font></small>",
+                    url: 'hiker://empty',
+                    col_type: 'text_center_1',
+                    extra: {
+                        cls: 'Juloadlist',
+                        lineVisible: false
+                    }
+                });
+            }
+            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
+                let extenditems = erLoadData.extenditems;
+                if(extenditems.length>0){
+                    d.push({
+                        col_type: "blank_block",
+                        extra: {
+                            cls: "Juloadlist extendlist",
+                            id: "extendlist"
+                        }
+                    })
+                    extenditems.forEach(item => {
+                        if(item.url!=MY_URL){
+                            item = toerji(item, jkdata);
+                            item.extra = item.extra || {};
+                            //item.extra['back'] = 1;
+                            item.extra['cls'] = "Juloadlist extendlist";
+                            d.push(item)
+                        }
+                    })
+                }
+                putMyVar('二级加载扩展列表','1');
             }
         }
     } catch (e) {
         toast('有异常，看日志');
         xlog(sname + '>加载详情失败>' + e.message + ' 错误行#' + e.lineNumber);
     }
+    d.push({
+        title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
+        url: 'toast://温馨提示：且用且珍惜！',
+        col_type: 'text_center_1',
+        extra: {
+            id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",
+            lineVisible: false
+        }
+    });
+    setResult(d);
 
     if (isload) {
-        if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
-            let extenditems = erLoadData.extenditems;
-            if(extenditems.length>0){
-                d.push({
-                    col_type: "blank_block",
-                    extra: {
-                        cls: "Juloadlist extendlist",
-                        id: "extendlist"
-                    }
-                })
-                extenditems.forEach(item => {
-                    if(item.url!=MY_URL){
-                        item = toerji(item, jkdata);
-                        item.extra = item.extra || {};
-                        //item.extra['back'] = 1;
-                        item.extra['cls'] = "Juloadlist extendlist";
-                        d.push(item)
-                    }
-                })
-            }
-            putMyVar('二级加载扩展列表','1');
-        }
-        d.push({
-            title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
-            url: 'toast://温馨提示：且用且珍惜！',
-            col_type: 'text_center_1',
-            extra: {
-                id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",
-                lineVisible: false
-            }
-        });
-        setResult(d);
-
         //更换收藏封面
         if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
             setPagePicUrl(erTempData.img);

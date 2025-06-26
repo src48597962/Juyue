@@ -1733,7 +1733,7 @@ function themeIconSet() {
     })
     data = ['增加', '操作', '导入', '分享'];
     imgs = currentTheme['接口图标'] || ['','','',''];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
         d.push({
             title: data[i],
             img: imgs[i],

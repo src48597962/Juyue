@@ -795,7 +795,6 @@ function jiekousave(urls, mode) {
         let olddatanum = datalist.length;
 
         urls.forEach(it=>{
-            xlog(it);
             function checkitem(item) {
                 return item.id==it.id;
             }

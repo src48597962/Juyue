@@ -1749,6 +1749,7 @@ function iconUISet() {
             themeList.push(storage0.getMyVar('currentTheme'));
             writeFile(libspath+'themes.json', JSON.stringify(themeList));
             clearMyVar('themeList');
+            refreshPage(true);
             return 'toast://已保存并生效';
         }, libspath, themename),
         col_type: 'text_3'

@@ -672,7 +672,7 @@ function erji() {
             let erIcons = getThemeList(true)['二级图标'];
             d.push({
                 title: "详情简介",
-                url: $("#noLoading#").lazyRule((jjimg) => {
+                url: $("#noLoading#").lazyRule((desc, jjimg) => {
                     if(getMyVar('二级简介打开标识')=="1"){
                         clearMyVar('二级简介打开标识');
                         deleteItemByCls("SrcJudescload");

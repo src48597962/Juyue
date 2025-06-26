@@ -577,7 +577,7 @@ function erji() {
                 xlog(sname+">线路或列表返回数据有误>"+e.message);
             }
             if(erLoadData.listparse){//选集列表需要动态解析获取
-                let 线路选集 = erLoadData.listparse(lineid,线路s[lineid]) || [];
+                let 线路选集 = erLoadData.listparse.call(lineid,线路s[lineid]) || [];
                 if(线路选集.length>0){
                     列表s[lineid] = 线路选集;
                 }

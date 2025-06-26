@@ -761,7 +761,7 @@ function erji() {
             }
 
             d.push({
-                title: "切换站源",
+                title: sname||"切换站源",
                 url: $("#noLoading#").lazyRule((name,group) => {
                     updateItem("erji_loading2", { 
                         extra: {
@@ -1118,7 +1118,7 @@ function erji() {
                 isload = 1;
             }else if(列表.length==0){
                 d.push({
-                    title: "‘‘’’<small><font color=grey>选集列表为空，请更换其他源</font></small>",
+                    title: "‘‘’’<font color=grey>选集列表为空，请更换其他源</font>",
                     url: 'hiker://empty',
                     col_type: 'text_center_1',
                     extra: {

@@ -907,7 +907,7 @@ function JYshare(input,data) {
             xlog('剪贴板地址>'+pasteurl);
             let code = sm+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
             copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
-            return "toast://聚影分享口令已生成";
+            return "toast://聚阅分享口令已生成";
         }else{
             xlog('分享失败>'+pasteurl);
             return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
@@ -1791,16 +1791,14 @@ function themeIconSet() {
     })
     
     d.push({
-        title: '使用自带',
+        title: '恢复&删除',
         url: 'hiker://empty',
         col_type: 'text_3'
     })
     d.push({
         title: '保存&应用',
-        url: $().lazyRule((libspath,themename)=>{
-            if(!themename){
-                return 'toast://没有主题';
-            }else if(!storage0.getMyVar('currentTheme')){
+        url: !themename?'toast://没有主题':$().lazyRule((libspath,themename)=>{
+            if(!storage0.getMyVar('currentTheme')){
                 return 'toast://新建主题没有内容';
             }
             let themeList = storage0.getMyVar('themeList', []);
@@ -1818,9 +1816,54 @@ function themeIconSet() {
         col_type: 'text_3'
     })
     d.push({
-        title: '分享主题',
-        url: 'hiker://empty',
-        col_type: 'text_3'
+        title: '导入&分享',
+        url: $().lazyRule(()=>{
+            return $("", "输入聚阅主题分享口令").input(() => {
+                let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
+                let inputname = input.split('￥')[0];
+                if(inputname=='聚阅主题'){
+                    try{
+                        let text = JSON.parse(parsePaste(pasteurl));
+                        storage0.putMyVar('currentTheme', text);
+                        refreshPage();
+                        return 'toast://确定需要，则要保存';
+                    }catch(e){
+                        return 'toast://口令异常';
+                    }
+                }
+                return 'toast://不是聚阅主题口令';
+            })
+        }),
+        col_type: 'text_3',
+        extra: {
+            longClick: [{
+                title: "主题分享",
+                js: $.toString((themename) => {
+                    if(!themename){
+                        return 'toast://没有主题'
+                    }else if(!storage0.getMyVar('currentTheme')){
+                        return 'toast://新建主题没有内容';
+                    }
+                    let themeList = storage0.getMyVar('themeList', []).filter(v=>v.名称==themename);
+                    if(themeList.length==1){
+                        let sharetxt = JSON.stringify(themeList[0]);
+                        let pasteurl = sharePaste(sharetxt);
+                        if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+                            xlog('剪贴板地址>'+pasteurl);
+                            let code = 聚阅主题+'￥'+aesEncode('Juyue', pasteurl);
+                            copy(code);
+                            return "toast://分享口令已生成";
+                        }else{
+                            xlog('分享失败>'+pasteurl);
+                            return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+                        }
+                    }
+                    return 'toast://异常';
+                },themename)
+            }]
+        }
+
+        
     })
     setResult(d);
 }

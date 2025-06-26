@@ -628,12 +628,12 @@ function getThemeList(isEnable) {
         themelist.forEach(it=>{
             if(it['名称']=='原生'){
                 it.启用 = 1;
-                yxtheme = it;
+                yxtheme = [it];
             }
         })
     }
     if(isEnable){
-        return yxtheme;
+        return yxtheme[0];
     }
     return themelist;
 }

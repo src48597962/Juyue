@@ -1432,12 +1432,12 @@ function manageSet(){
         url: 'toast://哥就是帅'
     });
     d.push({
-        title: 'UI图标设置',
+        title: '主题图标设置',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',
         url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            iconUISet();
+            themeIconSet();
         })
     });
     let colors = [{
@@ -1616,7 +1616,7 @@ function manageSet(){
     setResult(d);
 }
 // 程序图标设置
-function iconUISet() {
+function themeIconSet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('themeList');
         clearMyVar('currentTheme');
@@ -1636,6 +1636,7 @@ function iconUISet() {
     let currentTheme = storage0.getMyVar('currentTheme', (themeList.filter(v=>v.启用)||[{}])[0]);
     let themename = currentTheme['名称'] || '';
     let themenames = themeList.map(it=>it.名称);
+
     
     let d = [];
     d.push({
@@ -1698,57 +1699,56 @@ function iconUISet() {
     d.push({
         col_type: 'line'
     })
-    if(themename!='原生'){
-        d.push({
-            title: '编辑图标[' + getMyVar('选择按钮名称', '换源') + ']',
-            col_type: 'text_1',
-            extra: {
-                lineVisible: false,
-                id: '对应标题'
-            }
-        })
-        d.push({
-            title: '',
-            desc: '输入'+getMyVar('选择按钮名称', '换源')+'的图标地址',
-            url: $.toString(()=>{
-                let imgtype = getMyVar('选择图标类型', '主页') + '图标';
-                let currentTheme = storage0.getMyVar('currentTheme', {});
-                let imgs = currentTheme[imgtype] || [];
-                let i = parseInt(getMyVar('选择按钮索引', '0'));
-                imgs[i] = input;
-                currentTheme[imgtype] = imgs;
-                storage0.putMyVar('currentTheme', currentTheme);
-                updateItem(getMyVar('选择图标类型', '主页')+'图标id' + i, {
-                    img: input
-                });
-                return 'hiker://empty';
-            }),
-            col_type: 'input',
-            extra: {
-                
-            }
-        })
-    }
+    d.push({
+        title: '编辑图标[' + getMyVar('选择按钮名称', '换源') + ']',
+        col_type: 'text_1',
+        extra: {
+            lineVisible: false,
+            id: '对应标题'
+        }
+    })
+    d.push({
+        title: '',
+        desc: '输入'+getMyVar('选择按钮名称', '换源')+'的图标地址',
+        url: $.toString(()=>{
+            let imgtype = getMyVar('选择图标类型', '主页') + '图标';
+            let currentTheme = storage0.getMyVar('currentTheme', {});
+            let imgs = currentTheme[imgtype] || [];
+            let i = parseInt(getMyVar('选择按钮索引', '0'));
+            imgs[i] = input;
+            currentTheme[imgtype] = imgs;
+            storage0.putMyVar('currentTheme', currentTheme);
+            updateItem(getMyVar('选择图标类型', '主页')+'图标id' + i, {
+                img: input
+            });
+            return 'hiker://empty';
+        }),
+        col_type: 'input',
+        extra: {
+            
+        }
+    })
     d.push({
         col_type: 'line_blank'
     })
     d.push({
-        title: themename!='原生'?'可变颜色':'',
-        url: themename!='原生'?'':'hiker://empty',
+        title: '使用自带',
+        url: 'hiker://empty',
         col_type: 'text_3'
     })
     d.push({
         title: '保存&应用',
         url: $().lazyRule((libspath,themename)=>{
-            let themeList = storage0.getMyVar('themeList', []).filter(v=>v.名称!='原生');
+            if(!storage0.getMyVar('currentTheme')){
+                return 'toast://新建主题没有内容';
+            }
+            let themeList = storage0.getMyVar('themeList', []);
             themeList.forEach(it=>{
                 delete it.启用;
             })
 
             themeList = themeList.filter(v=>v.名称!=themename);
-            if(themename!='原生'){
-                themeList.push(storage0.getMyVar('currentTheme'));
-            }
+            themeList.push(storage0.getMyVar('currentTheme'));
             writeFile(libspath+'themes.json', JSON.stringify(themeList));
             clearMyVar('themeList');
             refreshPage(true);
@@ -1757,8 +1757,8 @@ function iconUISet() {
         col_type: 'text_3'
     })
     d.push({
-        title: themename!='原生'?'分享主题':'',
-        url: themename!='原生'?'':'hiker://empty',
+        title: '分享主题',
+        url: 'hiker://empty',
         col_type: 'text_3'
     })
     setResult(d);

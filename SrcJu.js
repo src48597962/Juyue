@@ -669,10 +669,10 @@ function erji() {
                     return "toast://没找到解析方法";
                 }
             }, jkdata);
-
+            let erIcons = getThemeList(true)['二级图标'];
             d.push({
                 title: "详情简介",
-                url: $("#noLoading#").lazyRule((desc) => {
+                url: $("#noLoading#").lazyRule((jjimg) => {
                     if(getMyVar('二级简介打开标识')=="1"){
                         clearMyVar('二级简介打开标识');
                         deleteItemByCls("SrcJudescload");
@@ -686,7 +686,7 @@ function erji() {
                                 deleteItemByCls("SrcJudescload");
                                 return "hiker://empty";
                             }),
-                            pic_url: "http://123.56.105.145/tubiao/ke/91.png",
+                            pic_url: jjimg,
                             extra: {
                                 cls: "SrcJudescload"
                             }
@@ -699,8 +699,8 @@ function erji() {
                         }]);
                     }
                     return "hiker://empty";
-                }, erTempData.desc||""),
-                pic_url: "http://123.56.105.145/tubiao/messy/32.svg",
+                }, erTempData.desc||"", erIcons[3]),
+                pic_url: erIcons[0],
                 col_type: 'icon_small_3',
                 extra: {
                     cls: "Juloadlist"
@@ -714,7 +714,7 @@ function erji() {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return JySearch(sskeyword, input);
                     }, sskeyword),
-                    pic_url: 'http://123.56.105.145/tubiao/messy/25.svg',
+                    pic_url: erIcons[4],
                     col_type: 'icon_small_3',
                     extra: {
                         cls: "Juloadlist"
@@ -727,7 +727,7 @@ function erji() {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                         bookCase();
                     }),
-                    pic_url: 'http://123.56.105.145/tubiao/messy/70.svg',
+                    pic_url: erIcons[1],
                     col_type: 'icon_small_3',
                     extra: {
                         cls: "Juloadlist",
@@ -777,7 +777,7 @@ function erji() {
                     //hideLoading();
                     return  "hiker://empty";
                 }, sskeyword, sgroup),
-                pic_url: 'http://123.56.105.145/tubiao/messy/20.svg',
+                pic_url: erIcons[2],
                 col_type: 'icon_small_3',
                 extra: {
                     cls: "Juloadlist"

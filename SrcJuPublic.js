@@ -265,8 +265,8 @@ function dataHandle(data, input) {
     return input + '：已处理' + waitlist.length + '个';
 }
 // 文字上色
-function colorTitle(title, Color) {
-    return '<font color="' + Color + '">' + title + '</font>';
+function colorTitle(title, Color, Color2) {
+    return '<font color="' + Color + ';background-color='+Color2+'">' + title + '</font>';
 }
 // 获取接口对应的显示标题
 function getDataTitle(data) {

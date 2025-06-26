@@ -80,14 +80,15 @@ function yiji(testSource) {
                 }, jkdata)
             })
         }
-        let homeicon = getThemeList(true)['主页图标'];
+        let homeicons = getThemeList(true)['主页图标'];
+        xlog(homeicons);
         d.push({
             title: jkdata.name || "切源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();
             }),
-            pic_url: homeicon['切源'] || "http://123.56.105.145/tubiao/more/157.png",
+            pic_url: homeicons['切源'] || "http://123.56.105.145/tubiao/more/157.png",
             col_type: "icon_5",
             extra: {
                 longClick: longClick
@@ -113,7 +114,7 @@ function yiji(testSource) {
                     }
                 }
             }),
-            pic_url: homeicon['频道'] || "http://123.56.105.145/tubiao/more/287.png",
+            pic_url: homeicons['频道'] || "http://123.56.105.145/tubiao/more/287.png",
             col_type: 'icon_5',
             extra: {
                 id: "sourcemenu"
@@ -157,7 +158,7 @@ function yiji(testSource) {
                     return "toast://搜索方式设置为："+input;
                 }
             }),
-            pic_url: homeicon['搜索'] || "http://123.56.105.145/tubiao/more/101.png",
+            pic_url: homeicons['搜索'] || "http://123.56.105.145/tubiao/more/101.png",
             col_type: 'icon_5',
             extra: {
                 longClick: [{
@@ -174,7 +175,7 @@ function yiji(testSource) {
                 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
                 bookCase();
             }),
-            pic_url: homeicon['书架'] || "http://123.56.105.145/tubiao/more/286.png",
+            pic_url: homeicons['书架'] || "http://123.56.105.145/tubiao/more/286.png",
             col_type: 'icon_5'
         })
         d.push({
@@ -209,7 +210,7 @@ function yiji(testSource) {
                     })
                 }
             }),
-            pic_url: homeicon['管理'] || "http://123.56.105.145/tubiao/more/129.png",
+            pic_url: homeicons['管理'] || "http://123.56.105.145/tubiao/more/129.png",
             col_type: "icon_5"
         })
         

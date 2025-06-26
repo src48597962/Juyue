@@ -577,7 +577,7 @@ function erji() {
                 xlog(sname+">线路或列表返回数据有误>"+e.message);
             }
             if(erLoadData.listparse){//选集列表需要动态解析获取
-                eval("let 列表动态解析 = " + erLoadData.listparse)
+                eval("let 列表动态解析 = " + erLoadData.listparse.toString())
                 let 线路选集 = 列表动态解析.call(parse, lineid, 线路s[lineid]) || [];
                 if(线路选集.length>0){
                     列表s[lineid] = 线路选集;
@@ -590,7 +590,7 @@ function erji() {
                         if(pageid > 分页s.length){
                             pageid = 0;
                         }
-                        eval("let 分页选集动态解析 = " + erLoadData.pageparse)
+                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
                         let 分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;

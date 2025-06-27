@@ -761,7 +761,7 @@ function erji() {
             }
 
             d.push({
-                title: sname||"切换站源",
+                title: "切换站源",
                 url: $("#noLoading#").lazyRule((name,group) => {
                     updateItem("erji_loading2", { 
                         extra: {

@@ -714,6 +714,14 @@ function jiekouapi(data, look) {
                         }
                         return 'share://'+ getMyVar('apiruleurl');
                     })
+                },{
+                    title: "打开代码文件",
+                    js: $.toString(() => {
+                        if(!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))){
+                            return 'toast://代码文件不存在';
+                        }
+                        return 'openFile://'+ getMyVar('apiruleurl');
+                    })
                 }]
             }
         });

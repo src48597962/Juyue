@@ -1443,7 +1443,7 @@ function manageSet(){
         title: '主题图标设置',
         img: getIcon("管理-箭头.svg"),
         col_type: 'text_icon',
-        url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+        url: $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             themeIconSet();
         })
@@ -1625,8 +1625,6 @@ function manageSet(){
 }
 // 程序图标设置
 function themeIconSet() {
-    setPageTitle('管理中心-主题图标设置');
-    /*
    addListener("onRefresh", $.toString(() => {
        clearMyVar('themeList');
        clearMyVar('currentTheme');
@@ -1637,15 +1635,7 @@ function themeIconSet() {
        clearMyVar('二级按钮索引');
        clearMyVar('接口按钮索引');
    }));
-   */
-    clearMyVar('themeList');
-    clearMyVar('currentTheme');
-    clearMyVar('按钮名称');
-    clearMyVar('编辑类别');
-    clearMyVar('编辑组件状态');
-    clearMyVar('主页按钮索引');
-    clearMyVar('二级按钮索引');
-    clearMyVar('接口按钮索引');
+
     setPageTitle('主题图标设置');
 
     let d = [];
@@ -1748,10 +1738,10 @@ function themeIconSet() {
         })
         return d
     }
-    let 编辑 = 编辑组件()
+    let 编辑 = 编辑组件();
     let data = [{
         'type': '主页',
-        'name': ['换源', '频道', '搜索', '书架', '管理']
+        'name': ['切源', '频道', '搜索', '书架', '管理']
     }, {
         'type': '二级',
         'name': ['简介', '书架', '换源', '详情', '搜索']
@@ -1908,7 +1898,7 @@ function themeIconSet() {
                         let pasteurl = sharePaste(sharetxt);
                         if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
                             xlog('剪贴板地址>' + pasteurl);
-                            let code = 聚阅主题 + '￥' + aesEncode('Juyue', pasteurl);
+                            let code = 聚阅主题 + '￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
                             copy(code);
                             return "toast://分享口令已生成";
                         } else {

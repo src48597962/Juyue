@@ -547,7 +547,7 @@ function jiekouapi(data, look) {
         desc: "接口规则文件，不能为空",
         url: $.toString((isnew) => {
             let file = getMyVar('apiruleurl','');
-            if(isnew){
+            if(isnew && !file){
                 let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
                 let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
                 writeFile(codeTmpl, tmpl);

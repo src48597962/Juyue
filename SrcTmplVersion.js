@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu":"0.5",
+    "SrcJu": "0.6",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
-        title: "beta V0.6",
+        title: "2025/06/28 V0.6",
         records: [
             "修复：搜索记录数从高到低未截取记录数据的问题",
             "修复：静态分类fyall，主页无翻页时未setResult",

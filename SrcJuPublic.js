@@ -632,6 +632,7 @@ function getThemeList(isEnable) {
     
     if(isEnable){
         let currentTheme = storage0.getItem('currentTheme', {
+            名称: '原生主题',
             主页图标: ["http://123.56.105.145/tubiao/more/157.png","http://123.56.105.145/tubiao/more/287.png","http://123.56.105.145/tubiao/more/101.png","http://123.56.105.145/tubiao/more/286.png","http://123.56.105.145/tubiao/more/129.png"],
             二级图标: ['http://123.56.105.145/tubiao/messy/32.svg','http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/20.svg',"http://123.56.105.145/tubiao/ke/91.png",'http://123.56.105.145/tubiao/messy/25.svg'],
             接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"],

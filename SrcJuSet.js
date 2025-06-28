@@ -1857,8 +1857,9 @@ function themeIconSet() {
                         });
                         
                         updateItem("图标编辑input", {
+                            desc: inputdesc,
                             extra: {
-                                defaultValue: 'file://' + input,
+                                defaultValue: inputdesc.startsWith('pic_')?'':inputdesc,
                                 id: '图标编辑input',
                                 cls: '图标编辑组件'
                             }

@@ -1687,14 +1687,14 @@ function themeIconSet() {
             d.push({
                 title: '图标着色',
                 col_type: 'flex_button',
-                url: $("", "输入svg图标可替色的颜色代码").input(() => {
+                url: $("", "输入可随主题替换的颜色代码").input(() => {
                     input = input.trim();
                     if(input){
                         let imgtype = getMyVar('编辑类别', '主页') + '图标';
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let imgs = currentTheme[imgtype] || [];
                         let i = parseInt(getMyVar('按钮索引', '0'));
-                        imgs[i] = {img:imgs[i].img||undefined, color: input};
+                        imgs[i] = {img: (imgs[i]||{}).img||undefined, color: input};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);
                         /*
@@ -1744,7 +1744,7 @@ function themeIconSet() {
                     let currentTheme = storage0.getMyVar('currentTheme', {});
                     let imgs = currentTheme[imgtype] || [];
                     let i = parseInt(getMyVar('按钮索引', '0'));
-                    imgs[i] = {img: input, color: imgs[i].color||undefined};
+                    imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;
                     storage0.putMyVar('currentTheme', currentTheme);
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
@@ -1798,7 +1798,7 @@ function themeIconSet() {
                     title: icon_name,
                     img: icon_img,
                     col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
-                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, icon_img, 编辑d) => {
+                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, img, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                             title: getMyVar('按钮名称'),
@@ -1822,7 +1822,7 @@ function themeIconSet() {
                         });
                         
                         updateItem("图标编辑input", {
-                            desc: icon_img
+                            desc: img
                         });
                         
                         //修正当前选中按钮图标
@@ -1844,7 +1844,7 @@ function themeIconSet() {
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
                         return 'hiker://empty';
-                    }, type_name, icon_name, i, icon_img, 编辑d),
+                    }, type_name, icon_name, i, imgs[i].img, 编辑d),
                     extra: {
                         id: type_name + '图标id' + i,
                     }

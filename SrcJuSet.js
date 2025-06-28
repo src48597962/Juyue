@@ -1860,6 +1860,24 @@ function themeIconSet() {
                         putMyVar('按钮索引', i);
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
+
+                        //处理增加底部空白
+                        if(type_name=='接口'){
+                            deleteItemByCls('底部增加空白区');
+                            let d = [];
+                            for(let i=0;i<8;i++){
+                                d.push({
+                                    title: "",
+                                    url: "hiker://empty",
+                                    col_type: "text_1",
+                                    extra: {
+                                        cls: '底部增加空白区',
+                                        lineVisible: false
+                                    }
+                                })
+                            }
+                            addItemAfter('icondownid', d);
+                        }
                         return 'hiker://empty';
                     }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
                     extra: {
@@ -1980,7 +1998,6 @@ function themeIconSet() {
         }
 
     })
-
     d.push({
         title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
         col_type: "text_center_1",
@@ -1989,5 +2006,17 @@ function themeIconSet() {
             lineVisible: false,
         }
     })
+    for(let i=0;i<2;i++){
+        d.push({
+            title: "",
+            url: "hiker://empty",
+            col_type: "text_1",
+            extra: {
+                id: 'icondownid',
+                lineVisible: false
+            }
+        })
+    }
+    
     setResult(d);
 }

@@ -1785,7 +1785,7 @@ function themeIconSet() {
                 col_type: 'text_1',
                 url: 'hiker://empty'
             })
-            let imgs = currentTheme[type_name + '图标'];
+            let imgs = currentTheme[type_name + '图标'] || [];
             let inputdesc = ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];
             imgs = imgs.map((v)=>{
                 return {

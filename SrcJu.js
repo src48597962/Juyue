@@ -78,6 +78,14 @@ function yiji(testSource) {
                     dataHandle(data, '禁用');
                     return "toast://已处理";
                 }, jkdata)
+            },{
+                title: "打开代码文件",
+                js: $.toString((ruleurl) => {
+                    if(!ruleurl || !fetch(ruleurl)){
+                        return 'toast://代码文件不存在';
+                    }
+                    return 'openFile://'+ ruleurl;
+                }, jkdata.url)
             })
         }
         let homeIcons = getThemeList(true)['主页图标'];

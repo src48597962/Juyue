@@ -1969,7 +1969,7 @@ function themeIconSet() {
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
                         if($.type(v)=='object' && !v.img.startsWith(libspath)){
-                            let newimg = libspath+themename+v.img.substr(v.img.lastIndexOf('/'));
+                            let newimg = libspath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/'));
                             saveImage(v.img, newimg);
                             v.img = newimg;
                         }

@@ -1892,6 +1892,7 @@ function themeIconSet() {
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
 
+                        /*
                         //处理增加底部空白
                         deleteItemByCls('底部增加空白区');
                         let addnum = 0;
@@ -1913,6 +1914,7 @@ function themeIconSet() {
                             })
                         }
                         addItemAfter('icondownid', d);
+                        */
                         return 'hiker://empty';
                     }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
                     extra: {

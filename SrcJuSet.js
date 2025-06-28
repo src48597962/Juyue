@@ -1625,7 +1625,7 @@ function manageSet(){
 }
 // 程序图标设置
 function themeIconSet() {
-    addListener("onRefresh", $.toString(() => {
+    addListener("onClose", $.toString(() => {
         clearMyVar('themeList');
         clearMyVar('currentTheme');
         clearMyVar('按钮名称');
@@ -1633,7 +1633,6 @@ function themeIconSet() {
         clearMyVar('编辑类别');
         clearMyVar('编辑组件状态');
     }));
-    xlog(listMyVarKeys());
     setPageTitle('主题图标设置');
 
     let d = [];

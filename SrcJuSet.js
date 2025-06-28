@@ -1748,9 +1748,11 @@ function themeIconSet() {
                 title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
                 col_type: 'flex_button',
                 url: `fileSelect://`+$.toString(()=>{
+                    /*
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: 'file://' + input
                     })
+                    */
                     updateItem("图标编辑input", {
                         extra: {
                             defaultValue: 'file://' + input,

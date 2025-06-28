@@ -591,22 +591,25 @@ function sortByPinyin(arr) {
     return arrNew
 }
 // 获取图标地址
-function getIcon(icon, nochange) {
+function getIcon(icon, nochange, color2) {
     if(!icon.includes('.svg')){
         return codepath + 'img/' + icon;
     }
     let color = getItem('主题颜色','');
-    return codepath + 'img/' + icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color) => {
+    return codepath + 'img/' + icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color,color2) => {
         let javaImport = new JavaImporter();
         javaImport.importPackage(Packages.com.example.hikerview.utils);
         with(javaImport) {
             let bytes = FileUtil.toBytes(input);
             let str = new java.lang.String(bytes, "UTF-8") + "";
-            str = str.replace(/#feb833|#6dc9ff|#2ec99d|#587bff|#ff7772|#a88efa|#FD9173/gi, color);
+            str = str.replace(/#feb833/gi, color);
+            if(color2){
+                str = str.replace(color2, color);
+            }
             bytes = new java.lang.String(str).getBytes();
             return FileUtil.toInputStream(bytes);
         }
-    },color))
+    },color, color2))
 }
 // 手机是否暗黑模式
 function isDarkMode() {

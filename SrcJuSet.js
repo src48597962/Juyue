@@ -1747,6 +1747,7 @@ function themeIconSet() {
                     let i = parseInt(getMyVar('按钮索引', '0'));
                     imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;
+                    xlog(currentTheme);
                     storage0.putMyVar('currentTheme', currentTheme);
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: input
@@ -1901,7 +1902,7 @@ function themeIconSet() {
         title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
         url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
             if (!storage0.getMyVar('currentTheme')) {
-                return 'toast://新建主题没有内容';
+                return 'toast://新建主题没有内容/变化';
             }
             let themeList = storage0.getMyVar('themeList', []);
             themeList.forEach(it => {

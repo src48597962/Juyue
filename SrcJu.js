@@ -87,7 +87,7 @@ function yiji(testSource) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return selectSource();
             }),
-            pic_url: homeIcons[0],
+            pic_url: getIcon(homeIcons[0].img, false, homeIcons[0].color),
             col_type: "icon_5",
             extra: {
                 longClick: longClick
@@ -113,7 +113,7 @@ function yiji(testSource) {
                     }
                 }
             }),
-            pic_url: homeIcons[1],
+            pic_url: getIcon(homeIcons[1].img, false, homeIcons[1].color),
             col_type: 'icon_5',
             extra: {
                 id: "sourcemenu"
@@ -157,7 +157,7 @@ function yiji(testSource) {
                     return "toast://搜索方式设置为："+input;
                 }
             }),
-            pic_url: homeIcons[2],
+            pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: 'icon_5',
             extra: {
                 longClick: [{
@@ -174,7 +174,7 @@ function yiji(testSource) {
                 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
                 bookCase();
             }),
-            pic_url: homeIcons[3],
+            pic_url: getIcon(homeIcons[3].img, false, homeIcons[3].color),
             col_type: 'icon_5'
         })
         d.push({
@@ -209,7 +209,7 @@ function yiji(testSource) {
                     })
                 }
             }),
-            pic_url: homeIcons[4],
+            pic_url: getIcon(homeIcons[4].img, false, homeIcons[4].color),
             col_type: "icon_5"
         })
         
@@ -700,8 +700,8 @@ function erji() {
                         }]);
                     }
                     return "hiker://empty";
-                }, erTempData.desc||"", erIcons[3]),
-                pic_url: erIcons[0],
+                }, erTempData.desc||"", getIcon(erIcons[3].img, false, erIcons[3].color)),
+                pic_url: getIcon(erIcons[0].img, false, erIcons[0].color),
                 col_type: 'icon_small_3',
                 extra: {
                     cls: "Juloadlist"
@@ -715,7 +715,7 @@ function erji() {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         return JySearch(sskeyword, input);
                     }, sskeyword),
-                    pic_url: erIcons[4],
+                    pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                     col_type: 'icon_small_3',
                     extra: {
                         cls: "Juloadlist"
@@ -728,7 +728,7 @@ function erji() {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                         bookCase();
                     }),
-                    pic_url: erIcons[1],
+                    pic_url: getIcon(erIcons[1].img, false, erIcons[1].color),
                     col_type: 'icon_small_3',
                     extra: {
                         cls: "Juloadlist",
@@ -778,7 +778,7 @@ function erji() {
                     //hideLoading();
                     return  "hiker://empty";
                 }, sskeyword, sgroup),
-                pic_url: erIcons[2],
+                pic_url: getIcon(erIcons[2].img, false, erIcons[2].color),
                 col_type: 'icon_small_3',
                 extra: {
                     cls: "Juloadlist"

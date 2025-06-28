@@ -599,7 +599,7 @@ function getIcon(icon, nochange, color2) {
         return icon;
     }
     let color = getItem('主题颜色','');
-    return codepath + 'img/' + icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color,color2) => {
+    return icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color,color2) => {
         let javaImport = new JavaImporter();
         javaImport.importPackage(Packages.com.example.hikerview.utils);
         with(javaImport) {

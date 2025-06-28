@@ -1632,14 +1632,13 @@ function themeIconSet() {
         clearMyVar('按钮索引');
         clearMyVar('编辑类别');
         clearMyVar('编辑组件状态');
-
     }));
-
+    xlog(listMyVarKeys());
     setPageTitle('主题图标设置');
 
     let d = [];
     require('http://123.56.105.145/weisyr/Top_H5.js');
-    Top_H5(d, 100) //给个指定高度
+    Top_H5(d, 110) //给个指定高度
 
     let themeList = storage0.getMyVar('themeList');
     if (!themeList) {

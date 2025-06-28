@@ -1849,7 +1849,13 @@ function themeIconSet() {
                         });
                         
                         //执行按钮编辑组件变换
-                        if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
+                        if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
+                            deleteItemByCls('图标编辑组件');
+                            putMyVar('编辑组件状态', '0');
+                            updateItem(type_name + '图标id' + i, {
+                                title: icon_name,
+                            });
+                        } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
                             deleteItemByCls('图标编辑组件');
                             addItemAfter(type_name + 'add', 编辑d);
                             putMyVar('编辑组件状态', '1');

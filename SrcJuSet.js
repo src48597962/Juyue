@@ -1628,14 +1628,11 @@ function themeIconSet() {
     addListener("onClose", $.toString(() => {
         clearMyVar('themeList');
         clearMyVar('currentTheme');
-        clearMyVar('按钮名称');
-        clearMyVar('按钮索引');
-        clearMyVar('编辑类别');
-        clearMyVar('编辑组件状态');
     }));
     setPageTitle('主题图标设置');
     clearMyVar('按钮名称');
     clearMyVar('按钮索引');
+    clearMyVar('按钮图标');
     clearMyVar('编辑类别');
     clearMyVar('编辑组件状态');
 
@@ -1756,7 +1753,12 @@ function themeIconSet() {
                         img: 'file://' + input
                     })
                     updateItem("图标编辑input", {
-                        desc: 'file://' + input
+                        desc: 'file://' + input,
+                        extra: {
+                            defaultValue: 'file://' + input,
+                            id: '图标编辑input',
+                            cls: '图标编辑组件'
+                        }
                     });
                 }),
                 extra: {
@@ -1787,6 +1789,7 @@ function themeIconSet() {
                 }),
                 col_type: 'input',
                 extra: {
+                    defaultValue: '',
                     id: '图标编辑input',
                     cls: '图标编辑组件'
                 }
@@ -1876,6 +1879,7 @@ function themeIconSet() {
                         putMyVar('按钮索引', i);
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
+                        clearMyVar('按钮图标');
 
                         //处理增加底部空白
                         deleteItemByCls('底部增加空白区');

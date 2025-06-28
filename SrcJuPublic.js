@@ -626,11 +626,18 @@ function getThemeList(isEnable) {
     
     if(isEnable){
         let yxtheme = themelist.filter(v=>v.启用);
-        return yxtheme.length>0?yxtheme[0]:{
+        let imgs = yxtheme.length>0?yxtheme[0]:{
             主页图标: ["http://123.56.105.145/tubiao/more/157.png","http://123.56.105.145/tubiao/more/287.png","http://123.56.105.145/tubiao/more/101.png","http://123.56.105.145/tubiao/more/286.png","http://123.56.105.145/tubiao/more/129.png"],
             二级图标: ['http://123.56.105.145/tubiao/messy/32.svg','http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/20.svg',"http://123.56.105.145/tubiao/ke/91.png",'http://123.56.105.145/tubiao/messy/25.svg'],
-            接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"]
+            接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"],
+            书架图标: ['http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/85.svg']
         };
+        return imgs.map((v)=>{
+            return {
+                img: $.type(v)=='object'?v.img:v,
+                color: $.type(v)=='object'?v.color||'':''
+            }
+        })
     }
     return themelist;
 }

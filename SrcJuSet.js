@@ -1784,20 +1784,16 @@ function themeIconSet() {
                         deleteItemByCls('图标编辑组件');
                         addItemAfter(type_name + 'add', 编辑d);
                         putMyVar('编辑组件状态', '1');
-                        updateItem("图标编辑着色", {
-                            title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
-                        });
-
-                        updateItem("图标编辑input", {
-                            desc: imgs[i]
-                        });
                     }
-                    
-                    //记录当前选中的按钮信息
-                    putMyVar('按钮索引', i);
-                    putMyVar('按钮名称', icon_name);
-                    putMyVar('编辑类别', type_name);
 
+                    updateItem("图标编辑着色", {
+                        title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
+                    });
+
+                    updateItem("图标编辑input", {
+                        desc: imgs[i]
+                    });
+                    
                     //修正当前选中按钮图标
                     let font;
                     if (type_name == '二级') {
@@ -1811,6 +1807,11 @@ function themeIconSet() {
 
                         });
                     }
+                    
+                    //记录当前选中的按钮信息
+                    putMyVar('按钮索引', i);
+                    putMyVar('按钮名称', icon_name);
+                    putMyVar('编辑类别', type_name);
                     return 'hiker://empty';
                 }, type_name, icon_name, i, imgs, 编辑d),
                 extra: {

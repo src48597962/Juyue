@@ -1639,7 +1639,7 @@ function themeIconSet() {
 
     let d = [];
     require('http://123.56.105.145/weisyr/Top_H5.js');
-    Top_H5(d, 90) //给个指定高度
+    Top_H5(d, 100) //给个指定高度
 
     let themeList = storage0.getMyVar('themeList');
     if (!themeList) {
@@ -1703,7 +1703,7 @@ function themeIconSet() {
         d.push({
             title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
             col_type: 'flex_button',
-            url: `fileSelect://updateItem(getMyVar('编辑类别') + getMyVar('按钮索引'), {
+            url: `fileSelect://updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
                     img: 'file://'+input,
                 })`,
             extra: {
@@ -1723,7 +1723,7 @@ function themeIconSet() {
                 imgs[i] = input;
                 currentTheme[imgtype] = imgs;
                 storage0.putMyVar('currentTheme', currentTheme);
-                updateItem(getMyVar('编辑类别') + getMyVar('按钮索引'), {
+                updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
                     img: input
                 });
                 return 'hiker://empty';
@@ -1768,53 +1768,50 @@ function themeIconSet() {
                 img: imgs[i],
                 col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
                 url: $('#noLoading#').lazyRule((type_name, icon_name, i, imgs, 编辑d) => {
-
-                    updateItem(getMyVar('编辑类别') + getMyVar('按钮索引'), {
+                    //还原上一个图标名称
+                    updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
                         title: getMyVar('按钮名称'),
                     });
+                    //记录当前选中的按钮信息
+                    putMyVar('按钮索引', i);
+                    putMyVar('按钮名称', icon_name);
+                    putMyVar('编辑类别', type_name);
+                    //执行按钮编辑组件变换
                     if (getMyVar('编辑类别') == type_name && getMyVar(type_name + '按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
                         deleteItemByCls('图标编辑组件');
                         putMyVar('编辑组件状态', '0');
-                        updateItem(type_name + i, {
+                        updateItem(type_name + 'id' + i, {
                             title: icon_name,
                         });
                     } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
                         deleteItemByCls('图标编辑组件');
                         addItemAfter(type_name + 'add', 编辑d);
                         putMyVar('编辑组件状态', '1');
+                        updateItem("图标编辑着色", {
+                            title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
+                        });
+
+                        updateItem("图标编辑input", {
+                            desc: imgs[i]
+                        });
                     }
-
-                    putMyVar('按钮索引', i);
-                    putMyVar('按钮名称', icon_name);
-                    putMyVar('编辑类别', type_name);
-
+                    //修正当前选中按钮图标
                     let font;
                     if (type_name == '二级') {
                         font = '';
                     } else {
                         font = '““””';
                     }
-
                     if (getMyVar('编辑组件状态', '1') == '1') {
-                        updateItem(type_name + i, {
+                        updateItem(type_name + 'id' + i, {
                             title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
 
                         });
                     }
-
-                    updateItem("图标编辑着色", {
-                        title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
-                    });
-
-                    updateItem("图标编辑input", {
-                        desc: imgs[i]
-                    });
-
                     return 'hiker://empty';
-
                 }, type_name, icon_name, i, imgs, 编辑d),
                 extra: {
-                    id: type_name + i,
+                    id: type_name + 'id' + i,
                 }
             })
         })

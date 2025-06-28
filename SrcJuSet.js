@@ -1955,7 +1955,7 @@ function themeIconSet() {
                             let pasteurl = sharePaste(sharetxt);
                             if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
                                 xlog('剪贴板地址>' + pasteurl);
-                                let code = 聚阅主题 + '￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
+                                let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
                                 copy(code);
                                 return "toast://分享口令已生成";
                             } else {

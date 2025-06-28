@@ -14,10 +14,11 @@ function bookCase() {
     })
     setPageTitle('我的书架');
     let d = [];
+    let sjIcons = getThemeList(true)['书架图标'];
     d.push({
         title: ' 本地下载',
         url: getMyVar("SrcJu_bookCaseType","全部")=="全部"?"hiker://page/Main.view?rule=本地资源管理":"hiker://page/Bookrack.view?rule=本地资源管理&ruleName="+MY_RULE.title+"&type="+(getMyVar("SrcJu_bookCaseType")=="漫画"?"comic":"novel"),
-        img: "http://123.56.105.145/tubiao/messy/70.svg",
+        img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
         col_type: "icon_2"
     });
     d.push({
@@ -31,7 +32,7 @@ function bookCase() {
             refreshPage(false);
             return 'hiker://empty';
         }),
-        img: "http://123.56.105.145/tubiao/messy/85.svg",
+        img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
         col_type: "icon_2"
     });
     for (let i = 0; i < 8; i++) {

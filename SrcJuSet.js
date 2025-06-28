@@ -1794,7 +1794,7 @@ function themeIconSet() {
             })
             data.name.forEach((it, i) => {
                 let icon_name = it;
-                let icon_img = imgs[i]?getIcon(imgs[i].img, false, imgs[i].color):"";
+                let icon_img = $.type(imgs[i])=='object'?getIcon(imgs[i].img, false, imgs[i].color):"";
                 d.push({
                     title: icon_name,
                     img: icon_img,

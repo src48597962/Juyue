@@ -1652,6 +1652,9 @@ function themeIconSet() {
     let currentTheme = storage0.getMyVar('currentTheme', (themeList.filter(v => v.启用) || [{}])[0]);
     let themename = currentTheme['名称'] || '';
     let themenames = themeList.map(it => it.名称);
+    if (!storage0.getMyVar('currentTheme') && themename) {
+        storage0.putMyVar('currentTheme', currentTheme);
+    }
 
     d.push({
         title: '主题：' + (themename || '没有主题'),
@@ -1702,7 +1705,6 @@ function themeIconSet() {
                             img: input
                         });
                         */
-                        xlog(currentTheme);
                     }
                     return 'hiker://empty';
                 }),
@@ -1901,8 +1903,11 @@ function themeIconSet() {
     d.push({
         title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
         url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
-            if (!storage0.getMyVar('currentTheme')) {
-                return 'toast://新建主题没有内容/变化';
+            let currentTheme = storage0.getMyVar('currentTheme', {});
+            if (!themename) {
+                return 'toast://没有主题'
+            } else if (!currentTheme.主页图标) {
+                return 'toast://新建主题没有内容';
             }
             let themeList = storage0.getMyVar('themeList', []);
             themeList.forEach(it => {
@@ -1941,8 +1946,8 @@ function themeIconSet() {
         extra: {
             longClick: [{
                 title: "主题分享",
-                js: $.toString((themename,currentTheme) => {
-                    currentTheme = storage0.getMyVar('currentTheme', currentTheme || {});
+                js: $.toString((themename) => {
+                    let currentTheme = storage0.getMyVar('currentTheme', {});
                     if (!themename) {
                         return 'toast://没有主题'
                     } else if (!currentTheme.主页图标) {
@@ -1963,7 +1968,7 @@ function themeIconSet() {
                         }
                     }
                     return 'toast://异常';
-                }, themename, currentTheme)
+                }, themename)
             }]
         }
 

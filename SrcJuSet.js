@@ -1654,7 +1654,7 @@ function themeIconSet() {
     let themenames = themeList.map(it => it.名称);
 
     d.push({
-        title: '主题：' + themename,
+        title: '主题：' + (themename || '没有主题'),
         url: $(themenames, 2, '选择主题').select(() => {
             let theme = storage0.getMyVar('themeList').filter(v => v.名称 == input)[0];
             theme.启用 = 1;
@@ -1681,299 +1681,300 @@ function themeIconSet() {
         }),
         col_type: 'text_2'
     })
-
-    let 编辑组件 = () => {
-        let d = []
-        d.push({
-            title: '图标着色',
-            col_type: 'flex_button',
-            url: $("", "输入svg图标可替色的颜色代码").input(() => {
-                input = input.trim();
-                if(input){
+    if(themename){
+        let 编辑组件 = () => {
+            let d = []
+            d.push({
+                title: '图标着色',
+                col_type: 'flex_button',
+                url: $("", "输入svg图标可替色的颜色代码").input(() => {
+                    input = input.trim();
+                    if(input){
+                        let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                        let currentTheme = storage0.getMyVar('currentTheme', {});
+                        let imgs = currentTheme[imgtype] || [];
+                        let i = parseInt(getMyVar('按钮索引', '0'));
+                        imgs[i] = {img:imgs[i].img||undefined, color: input};
+                        currentTheme[imgtype] = imgs;
+                        storage0.putMyVar('currentTheme', currentTheme);
+                        /*
+                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                            img: input
+                        });
+                        */
+                    }
+                    return 'hiker://empty';
+                }),
+                extra: {
+                    id: '图标编辑着色',
+                    cls: '图标编辑组件'
+                }
+            })
+            d.push({
+                title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
+                col_type: 'flex_button',
+                url: `fileSelect://`+$.toString(()=>{
+                    if(MY_PATH.includes('/data/聚阅/')){
+                        let path = 'hiker://files/data/聚阅/' + MY_PATH.split('/data/聚阅/')[1];
+                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                            img: 'file://' + path
+                        })
+                        updateItem("图标编辑input", {
+                            desc: 'file://' + path
+                        });
+                    }else{
+                        toast('请将图标放到海阔目录/data/聚阅/下面');
+                    }
+                }),
+                extra: {
+                    id: '本地选择',
+                    cls: '图标编辑组件',
+                    backgroundColor: '#FB9966'
+                }
+            })
+            d.push({
+                title: '',
+                desc: '输入图标地址',
+                url: $.toString(() => {
+                    input = input.trim();
+                    if(!input){
+                        return 'toast://输入不能为空';
+                    }
                     let imgtype = getMyVar('编辑类别', '主页') + '图标';
                     let currentTheme = storage0.getMyVar('currentTheme', {});
                     let imgs = currentTheme[imgtype] || [];
                     let i = parseInt(getMyVar('按钮索引', '0'));
-                    imgs[i] = {img:imgs[i].img||undefined, color: input};
+                    imgs[i] = {img: input, color: imgs[i].color||undefined};
                     currentTheme[imgtype] = imgs;
                     storage0.putMyVar('currentTheme', currentTheme);
-                    /*
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: input
                     });
-                    */
-                }
-                return 'hiker://empty';
-            }),
-            extra: {
-                id: '图标编辑着色',
-                cls: '图标编辑组件'
-            }
-        })
-        d.push({
-            title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
-            col_type: 'flex_button',
-            url: `fileSelect://`+$.toString(()=>{
-                if(MY_PATH.includes('/data/聚阅/')){
-                    let path = 'hiker://files/data/聚阅/' + MY_PATH.split('/data/聚阅/')[1];
-                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                        img: 'file://' + path
-                    })
-                    updateItem("图标编辑input", {
-                        desc: 'file://' + path
-                    });
-                }else{
-                    toast('请将图标放到海阔目录/data/聚阅/下面');
-                }
-            }),
-            extra: {
-                id: '本地选择',
-                cls: '图标编辑组件',
-                backgroundColor: '#FB9966'
-            }
-        })
-        d.push({
-            title: '',
-            desc: '输入图标地址',
-            url: $.toString(() => {
-                input = input.trim();
-                if(!input){
-                    return 'toast://输入不能为空';
-                }
-                let imgtype = getMyVar('编辑类别', '主页') + '图标';
-                let currentTheme = storage0.getMyVar('currentTheme', {});
-                let imgs = currentTheme[imgtype] || [];
-                let i = parseInt(getMyVar('按钮索引', '0'));
-                imgs[i] = {img: input, color: imgs[i].color||undefined};
-                currentTheme[imgtype] = imgs;
-                storage0.putMyVar('currentTheme', currentTheme);
-                updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                    img: input
-                });
-                return 'hiker://empty';
-            }),
-            col_type: 'input',
-            extra: {
-                id: '图标编辑input',
-                cls: '图标编辑组件'
-            }
-        })
-        return d
-    }
-    let 编辑d = 编辑组件();
-    let datas = [{
-        'type': '主页',
-        'name': ['切源', '频道', '搜索', '书架', '管理']
-    }, {
-        'type': '二级',
-        'name': ['简介', '书架', '换源', '详情', '搜索']
-    },
-    {
-        'type': '书架',
-        'name': ['本地下载', '切换样式']
-    }, {
-        'type': '接口',
-        'name': ['增加', '操作', '导入', '分享']
-    }
-    ]
-
-    datas.forEach((data) => {
-        let type_name = data.type;
-        d.push({
-            title: `““””<b><font color=#B5B5B5>${type_name}图标</font></b>`,
-            col_type: 'text_1',
-            url: 'hiker://empty'
-        })
-        let imgs = currentTheme[type_name + '图标'] || ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];
-        imgs = imgs.map((v)=>{
-            return {
-                img: $.type(v)=='object'?v.img:v,
-                color: $.type(v)=='object'?v.color||'':''
-            }
-        })
-        data.name.forEach((it, i) => {
-            let icon_name = it;
-            let icon_img = getIcon(imgs[i].img, false, imgs[i].color);
-            d.push({
-                title: icon_name,
-                img: icon_img,
-                col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
-                url: $('#noLoading#').lazyRule((type_name, icon_name, i, icon_img, 编辑d) => {
-                    //还原上一个图标名称
-                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                        title: getMyVar('按钮名称'),
-                    });
-                    
-                    //执行按钮编辑组件变换
-                    if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
-                        deleteItemByCls('图标编辑组件');
-                        putMyVar('编辑组件状态', '0');
-                        updateItem(type_name + '图标id' + i, {
-                            title: icon_name,
-                        });
-                    } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
-                        deleteItemByCls('图标编辑组件');
-                        addItemAfter(type_name + 'add', 编辑d);
-                        putMyVar('编辑组件状态', '1');
-                    }
-
-                    updateItem("图标编辑着色", {
-                        title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
-                    });
-                    
-                    updateItem("图标编辑input", {
-                        desc: icon_img
-                    });
-                    
-                    //修正当前选中按钮图标
-                    let font;
-                    if (type_name == '二级') {
-                        font = '';
-                    } else {
-                        font = '““””';
-                    }
-                    if (getMyVar('编辑组件状态', '1') == '1') {
-                        updateItem(type_name + '图标id' + i, {
-                            title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
-
-                        });
-                    }
-                    
-                    //记录当前选中的按钮信息
-                    putMyVar('按钮索引', i);
-                    putMyVar('按钮名称', icon_name);
-                    putMyVar('编辑类别', type_name);
                     return 'hiker://empty';
-                }, type_name, icon_name, i, icon_img, 编辑d),
+                }),
+                col_type: 'input',
                 extra: {
-                    id: type_name + '图标id' + i,
+                    id: '图标编辑input',
+                    cls: '图标编辑组件'
                 }
             })
+            return d
+        }
+        let 编辑d = 编辑组件();
+        let datas = [{
+            'type': '主页',
+            'name': ['切源', '频道', '搜索', '书架', '管理']
+        }, {
+            'type': '二级',
+            'name': ['简介', '书架', '换源', '详情', '搜索']
+        },
+        {
+            'type': '书架',
+            'name': ['本地下载', '切换样式']
+        }, {
+            'type': '接口',
+            'name': ['增加', '操作', '导入', '分享']
+        }
+        ]
+
+        datas.forEach((data) => {
+            let type_name = data.type;
+            d.push({
+                title: `““””<b><font color=#B5B5B5>${type_name}图标</font></b>`,
+                col_type: 'text_1',
+                url: 'hiker://empty'
+            })
+            let imgs = currentTheme[type_name + '图标'] || ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];
+            imgs = imgs.map((v)=>{
+                return {
+                    img: $.type(v)=='object'?v.img:v,
+                    color: $.type(v)=='object'?v.color||'':''
+                }
+            })
+            data.name.forEach((it, i) => {
+                let icon_name = it;
+                let icon_img = getIcon(imgs[i].img, false, imgs[i].color);
+                d.push({
+                    title: icon_name,
+                    img: icon_img,
+                    col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
+                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, icon_img, 编辑d) => {
+                        //还原上一个图标名称
+                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                            title: getMyVar('按钮名称'),
+                        });
+                        
+                        //执行按钮编辑组件变换
+                        if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
+                            deleteItemByCls('图标编辑组件');
+                            putMyVar('编辑组件状态', '0');
+                            updateItem(type_name + '图标id' + i, {
+                                title: icon_name,
+                            });
+                        } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
+                            deleteItemByCls('图标编辑组件');
+                            addItemAfter(type_name + 'add', 编辑d);
+                            putMyVar('编辑组件状态', '1');
+                        }
+
+                        updateItem("图标编辑着色", {
+                            title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
+                        });
+                        
+                        updateItem("图标编辑input", {
+                            desc: icon_img
+                        });
+                        
+                        //修正当前选中按钮图标
+                        let font;
+                        if (type_name == '二级') {
+                            font = '';
+                        } else {
+                            font = '““””';
+                        }
+                        if (getMyVar('编辑组件状态', '1') == '1') {
+                            updateItem(type_name + '图标id' + i, {
+                                title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
+
+                            });
+                        }
+                        
+                        //记录当前选中的按钮信息
+                        putMyVar('按钮索引', i);
+                        putMyVar('按钮名称', icon_name);
+                        putMyVar('编辑类别', type_name);
+                        return 'hiker://empty';
+                    }, type_name, icon_name, i, icon_img, 编辑d),
+                    extra: {
+                        id: type_name + '图标id' + i,
+                    }
+                })
+            })
+            d.push({
+                col_type: 'blank_block',
+                extra: {
+                    id: type_name + 'add',
+                }
+            })
+            d.push({
+                col_type: 'line_blank'
+            })
         })
-        d.push({
-            col_type: 'blank_block',
-            extra: {
-                id: type_name + 'add',
-            }
-        })
+
+
         d.push({
             col_type: 'line_blank'
         })
-    })
-
-
-    d.push({
-        col_type: 'line_blank'
-    })
-    d.push({
-        col_type: 'big_blank_block',
-    })
-    d.push({
-        title: '恢复|清空',
-        url: $().lazyRule((libspath) => {
-            let themeList = storage0.getMyVar('themeList', []);
-            themeList.forEach(it => {
-                delete it.启用;
-            })
-            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
-            clearMyVar('currentTheme');
-            clearMyVar('themeList');
-            refreshPage(true);
-            return 'toast://已恢复使用原生自带';
-        }, libspath),
-        col_type: 'text_3',
-        extra: {
-            longClick: [{
-                title: "清空主题",
-                js: $.toString((libspath) => {
-                    return $("清空本地所有主题，确认？").confirm((libspath)=>{
-                        deleteFile(libspath + 'themes.json');
-                        clearMyVar('currentTheme');
-                        clearMyVar('themeList');
-                        refreshPage(true);
-                        return 'toast://已清空';
+        d.push({
+            col_type: 'big_blank_block',
+        })
+        d.push({
+            title: '恢复|清空',
+            url: $().lazyRule((libspath) => {
+                let themeList = storage0.getMyVar('themeList', []);
+                themeList.forEach(it => {
+                    delete it.启用;
+                })
+                writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+                clearMyVar('currentTheme');
+                clearMyVar('themeList');
+                refreshPage(true);
+                return 'toast://已恢复使用原生自带';
+            }, libspath),
+            col_type: 'text_3',
+            extra: {
+                longClick: [{
+                    title: "清空主题",
+                    js: $.toString((libspath) => {
+                        return $("清空本地所有主题，确认？").confirm((libspath)=>{
+                            deleteFile(libspath + 'themes.json');
+                            clearMyVar('currentTheme');
+                            clearMyVar('themeList');
+                            refreshPage(true);
+                            return 'toast://已清空';
+                        },libspath)
                     },libspath)
-                },libspath)
-            }]
-        }
-    })
-    d.push({
-        title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
-        url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
-            if (!storage0.getMyVar('currentTheme')) {
-                return 'toast://新建主题没有内容';
+                }]
             }
-            let themeList = storage0.getMyVar('themeList', []);
-            themeList.forEach(it => {
-                delete it.启用;
-            })
-
-            themeList = themeList.filter(v => v.名称 != themename);
-            themeList.push(storage0.getMyVar('currentTheme'));
-            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
-            clearMyVar('themeList');
-            refreshPage(true);
-            return 'toast://已保存并生效';
-        }, libspath, themename),
-        col_type: 'text_3'
-    })
-    d.push({
-        title: '导入|分享',
-        url: $().lazyRule(() => {
-            return $("", "输入聚阅主题分享口令").input(() => {
-                let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
-                let inputname = input.split('￥')[0];
-                if (inputname == '聚阅主题') {
-                    try {
-                        let text = JSON.parse(parsePaste(pasteurl));
-                        storage0.putMyVar('currentTheme', text);
-                        refreshPage();
-                        return 'toast://确定需要，则要保存';
-                    } catch (e) {
-                        return 'toast://口令异常';
-                    }
+        })
+        d.push({
+            title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
+            url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
+                if (!storage0.getMyVar('currentTheme')) {
+                    return 'toast://新建主题没有内容';
                 }
-                return 'toast://不是聚阅主题口令';
-            })
-        }),
-        col_type: 'text_3',
-        extra: {
-            longClick: [{
-                title: "主题分享",
-                js: $.toString((themename) => {
-                    if (!themename) {
-                        return 'toast://没有主题'
-                    } else if (!storage0.getMyVar('currentTheme')) {
-                        return 'toast://新建主题没有内容';
-                    }
-                    let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
-                    if (themeList.length == 1) {
-                        let sharetxt = JSON.stringify(themeList[0]);
-                        let pasteurl = sharePaste(sharetxt);
-                        if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
-                            xlog('剪贴板地址>' + pasteurl);
-                            let code = 聚阅主题 + '￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
-                            copy(code);
-                            return "toast://分享口令已生成";
-                        } else {
-                            xlog('分享失败>' + pasteurl);
-                            return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
+                let themeList = storage0.getMyVar('themeList', []);
+                themeList.forEach(it => {
+                    delete it.启用;
+                })
+
+                themeList = themeList.filter(v => v.名称 != themename);
+                themeList.push(storage0.getMyVar('currentTheme'));
+                writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+                clearMyVar('themeList');
+                refreshPage(true);
+                return 'toast://已保存并生效';
+            }, libspath, themename),
+            col_type: 'text_3'
+        })
+        d.push({
+            title: '导入|分享',
+            url: $().lazyRule(() => {
+                return $("", "输入聚阅主题分享口令").input(() => {
+                    let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
+                    let inputname = input.split('￥')[0];
+                    if (inputname == '聚阅主题') {
+                        try {
+                            let text = JSON.parse(parsePaste(pasteurl));
+                            storage0.putMyVar('currentTheme', text);
+                            refreshPage();
+                            return 'toast://确定需要，则要保存';
+                        } catch (e) {
+                            return 'toast://口令异常';
                         }
                     }
-                    return 'toast://异常';
-                }, themename)
-            }]
-        }
+                    return 'toast://不是聚阅主题口令';
+                })
+            }),
+            col_type: 'text_3',
+            extra: {
+                longClick: [{
+                    title: "主题分享",
+                    js: $.toString((themename) => {
+                        if (!themename) {
+                            return 'toast://没有主题'
+                        } else if (!storage0.getMyVar('currentTheme')) {
+                            return 'toast://新建主题没有内容';
+                        }
+                        let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
+                        if (themeList.length == 1) {
+                            let sharetxt = JSON.stringify(themeList[0]);
+                            let pasteurl = sharePaste(sharetxt);
+                            if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
+                                xlog('剪贴板地址>' + pasteurl);
+                                let code = 聚阅主题 + '￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
+                                copy(code);
+                                return "toast://分享口令已生成";
+                            } else {
+                                xlog('分享失败>' + pasteurl);
+                                return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
+                            }
+                        }
+                        return 'toast://异常';
+                    }, themename)
+                }]
+            }
 
-    })
+        })
 
-    d.push({
-        title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
-        col_type: "text_center_1",
-        url: 'hiker://empty',
-        extra: {
-            lineVisible: false,
-        }
-    })
+        d.push({
+            title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
+            col_type: "text_center_1",
+            url: 'hiker://empty',
+            extra: {
+                lineVisible: false,
+            }
+        })
+    }
     setResult(d);
 }

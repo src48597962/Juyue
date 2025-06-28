@@ -1692,8 +1692,11 @@ function themeIconSet() {
                     if(input){
                         let imgtype = getMyVar('编辑类别', '主页') + '图标';
                         let currentTheme = storage0.getMyVar('currentTheme', {});
+                        xlog(currentTheme);
                         let imgs = currentTheme[imgtype] || [];
+                        xlog(imgs);
                         let i = parseInt(getMyVar('按钮索引', '0'));
+                        xlog(imgs[i]);
                         imgs[i] = {img: (imgs[i]||{}).img||undefined, color: input};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);

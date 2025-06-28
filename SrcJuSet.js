@@ -1942,10 +1942,11 @@ function themeIconSet() {
             extra: {
                 longClick: [{
                     title: "主题分享",
-                    js: $.toString((themename) => {
+                    js: $.toString((themename,currentTheme) => {
+                        currentTheme = storage0.getMyVar('currentTheme', currentTheme || {});
                         if (!themename) {
                             return 'toast://没有主题'
-                        } else if (!storage0.getMyVar('currentTheme')) {
+                        } else if (!currentTheme.主页图标) {
                             return 'toast://新建主题没有内容';
                         }
                         let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
@@ -1963,7 +1964,7 @@ function themeIconSet() {
                             }
                         }
                         return 'toast://异常';
-                    }, themename)
+                    }, themename, currentTheme)
                 }]
             }
 

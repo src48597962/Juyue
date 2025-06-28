@@ -1703,7 +1703,7 @@ function themeIconSet() {
         d.push({
             title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
             col_type: 'flex_button',
-            url: `fileSelect://updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
+            url: `fileSelect://updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                     img: 'file://'+input,
                 })`,
             extra: {
@@ -1723,7 +1723,7 @@ function themeIconSet() {
                 imgs[i] = input;
                 currentTheme[imgtype] = imgs;
                 storage0.putMyVar('currentTheme', currentTheme);
-                updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
+                updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                     img: input
                 });
                 return 'hiker://empty';
@@ -1769,7 +1769,7 @@ function themeIconSet() {
                 col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
                 url: $('#noLoading#').lazyRule((type_name, icon_name, i, imgs, 编辑d) => {
                     //还原上一个图标名称
-                    updateItem(getMyVar('编辑类别') + 'id' + getMyVar('按钮索引'), {
+                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         title: getMyVar('按钮名称'),
                     });
                     //记录当前选中的按钮信息
@@ -1777,10 +1777,10 @@ function themeIconSet() {
                     putMyVar('按钮名称', icon_name);
                     putMyVar('编辑类别', type_name);
                     //执行按钮编辑组件变换
-                    if (getMyVar('编辑类别') == type_name && getMyVar(type_name + '按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
+                    if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
                         deleteItemByCls('图标编辑组件');
                         putMyVar('编辑组件状态', '0');
-                        updateItem(type_name + 'id' + i, {
+                        updateItem(type_name + '图标id' + i, {
                             title: icon_name,
                         });
                     } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
@@ -1803,7 +1803,7 @@ function themeIconSet() {
                         font = '““””';
                     }
                     if (getMyVar('编辑组件状态', '1') == '1') {
-                        updateItem(type_name + 'id' + i, {
+                        updateItem(type_name + '图标id' + i, {
                             title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
 
                         });
@@ -1811,7 +1811,7 @@ function themeIconSet() {
                     return 'hiker://empty';
                 }, type_name, icon_name, i, imgs, 编辑d),
                 extra: {
-                    id: type_name + 'id' + i,
+                    id: type_name + '图标id' + i,
                 }
             })
         })

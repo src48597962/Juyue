@@ -1862,22 +1862,26 @@ function themeIconSet() {
                         putMyVar('编辑类别', type_name);
 
                         //处理增加底部空白
+                        deleteItemByCls('底部增加空白区');
+                        let addnum = 0;
                         if(type_name=='接口'){
-                            deleteItemByCls('底部增加空白区');
-                            let d = [];
-                            for(let i=0;i<8;i++){
-                                d.push({
-                                    title: "",
-                                    url: "hiker://empty",
-                                    col_type: "text_1",
-                                    extra: {
-                                        cls: '底部增加空白区',
-                                        lineVisible: false
-                                    }
-                                })
-                            }
-                            addItemAfter('icondownid', d);
+                            addnum = 4;
+                        }else if(type_name=='书架'){
+                            addnum = 2;
                         }
+                        let d = [];
+                        for(let i=0;i<addnum;i++){
+                            d.push({
+                                title: "",
+                                url: "hiker://empty",
+                                col_type: "text_1",
+                                extra: {
+                                    cls: '底部增加空白区',
+                                    lineVisible: false
+                                }
+                            })
+                        }
+                        addItemAfter('icondownid', d);
                         return 'hiker://empty';
                     }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
                     extra: {
@@ -2006,17 +2010,14 @@ function themeIconSet() {
             lineVisible: false,
         }
     })
-    for(let i=0;i<2;i++){
-        d.push({
-            title: "",
-            url: "hiker://empty",
-            col_type: "text_1",
-            extra: {
-                id: 'icondownid',
-                lineVisible: false
-            }
-        })
-    }
-    
+    d.push({
+        title: "",
+        url: "hiker://empty",
+        col_type: "text_1",
+        extra: {
+            id: 'icondownid',
+            lineVisible: false
+        }
+    })
     setResult(d);
 }

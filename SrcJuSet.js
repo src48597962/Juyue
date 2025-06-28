@@ -1720,7 +1720,7 @@ function themeIconSet() {
             let d = []
             d.push({
                 title: '图标着色',
-                col_type: 'text_4',
+                col_type: 'flex_button',
                 url: $("", "输入可随主题替换的颜色代码").input(() => {
                     input = input.trim();
                     if(input){
@@ -1746,7 +1746,7 @@ function themeIconSet() {
             })
             d.push({
                 title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
-                col_type: 'text_4',
+                col_type: 'flex_button',
                 url: `fileSelect://`+$.toString(()=>{
 
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
@@ -2046,7 +2046,7 @@ function themeIconSet() {
 
     })
     d.push({
-        title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
+        title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效，本地图标无法分享' + "</font></small></small>",
         col_type: "text_center_1",
         url: 'hiker://empty',
         extra: {

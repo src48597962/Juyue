@@ -1721,6 +1721,10 @@ function themeIconSet() {
             title: '',
             desc: '输入图标地址',
             url: $.toString(() => {
+                input = input.trim();
+                if(!input){
+                    return 'toast://输入不能为空';
+                }
                 let imgtype = getMyVar('编辑类别', '主页') + '图标';
                 let currentTheme = storage0.getMyVar('currentTheme', {});
                 let imgs = currentTheme[imgtype] || [];
@@ -1801,7 +1805,7 @@ function themeIconSet() {
                     updateItem("图标编辑着色", {
                         title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
                     });
-
+                    
                     updateItem("图标编辑input", {
                         desc: icon_img
                     });

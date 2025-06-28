@@ -1640,8 +1640,24 @@ function themeIconSet() {
     clearMyVar('编辑组件状态');
 
     let d = [];
-    require('http://123.56.105.145/weisyr/Top_H5.js');
-    Top_H5(d, 110) //给个指定高度
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+    }
 
     let themeList = storage0.getMyVar('themeList');
     if (!themeList) {
@@ -1940,8 +1956,20 @@ function themeIconSet() {
             } else if (!currentTheme.主页图标) {
                 return 'toast://新建主题没有内容';
             }
-            let themeList = storage0.getMyVar('themeList', []);
 
+            Object.keys(currentTheme).forEach(it=>{
+                if($.type(currentTheme[it])=='array'){
+                    currentTheme[it].forEach(v=>{
+                        if($.type(v)=='object' && !v.img.startsWith(libspath)){
+                            let newimg = libspath+themename+v.img.substr(v.img.lastIndexOf('/'));
+                            saveImage(v.img, newimg);
+                            v.img = newimg;
+                        }
+                    })
+                }
+            })
+
+            let themeList = storage0.getMyVar('themeList', []);
             themeList = themeList.filter(v => v.名称 != themename);
             themeList.push(currentTheme);
             writeFile(libspath + 'themes.json', JSON.stringify(themeList));

@@ -1772,10 +1772,7 @@ function themeIconSet() {
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         title: getMyVar('按钮名称'),
                     });
-                    //记录当前选中的按钮信息
-                    putMyVar('按钮索引', i);
-                    putMyVar('按钮名称', icon_name);
-                    putMyVar('编辑类别', type_name);
+                    
                     //执行按钮编辑组件变换
                     if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
                         deleteItemByCls('图标编辑组件');
@@ -1795,6 +1792,12 @@ function themeIconSet() {
                             desc: imgs[i]
                         });
                     }
+                    
+                    //记录当前选中的按钮信息
+                    putMyVar('按钮索引', i);
+                    putMyVar('按钮名称', icon_name);
+                    putMyVar('编辑类别', type_name);
+
                     //修正当前选中按钮图标
                     let font;
                     if (type_name == '二级') {

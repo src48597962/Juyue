@@ -607,7 +607,8 @@ function getIcon(icon, nochange, color2) {
             let str = new java.lang.String(bytes, "UTF-8") + "";
             str = str.replace(/#feb833/gi, color);
             if(color2){
-                str = str.replace(color2, color);
+                const regex = new RegExp(color2, 'gi');
+                str = str.replace(regex, color);
             }
             bytes = new java.lang.String(str).getBytes();
             return FileUtil.toInputStream(bytes);

@@ -1684,7 +1684,7 @@ function themeIconSet() {
         extra: {
             longClick: [{
                 title: "删除主题",
-                js: $.toString((libspath) => {
+                js: $.toString((libspath,themename) => {
                     return $("删除主题["+themename+"]，确认？").confirm((libspath)=>{
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let themeList = storage0.getMyVar('themeList', []);
@@ -1699,7 +1699,7 @@ function themeIconSet() {
                         refreshPage(true);
                         return 'toast://已保存并生效';
                     }, libspath)
-                }, libspath)
+                }, libspath, themename)
             }]
         }
     })

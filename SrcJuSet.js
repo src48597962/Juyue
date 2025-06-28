@@ -1634,6 +1634,9 @@ function themeIconSet() {
         clearMyVar('编辑组件状态');
     }));
     setPageTitle('主题图标设置');
+    clearMyVar('按钮名称');
+    clearMyVar('按钮索引');
+    clearMyVar('编辑类别');
     clearMyVar('编辑组件状态');
 
     let d = [];
@@ -1702,9 +1705,16 @@ function themeIconSet() {
         d.push({
             title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
             col_type: 'flex_button',
-            url: `fileSelect://updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                    img: 'file://'+input,
-                })`,
+            url: `fileSelect://`+$.toString(()=>{
+                toast('请将图标放到data\聚阅\下面');
+                //hiker://files/data/聚阅/
+                updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                    img: 'file://' + MY_PATH
+                })
+                updateItem("图标编辑input", {
+                    desc: 'file://' + MY_PATH
+                });
+            }),
             extra: {
                 id: '本地选择',
                 cls: '图标编辑组件',

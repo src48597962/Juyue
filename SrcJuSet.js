@@ -1687,8 +1687,23 @@ function themeIconSet() {
         d.push({
             title: '图标着色',
             col_type: 'flex_button',
-            url: $("#noLoading#").lazyRule(() => {
-                
+            url: $("", "输入svg图标可替色的颜色代码").input(() => {
+                input = input.trim();
+                if(input){
+                    let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                    let currentTheme = storage0.getMyVar('currentTheme', {});
+                    let imgs = currentTheme[imgtype] || [];
+                    let i = parseInt(getMyVar('按钮索引', '0'));
+                    imgs[i] = {img:imgs[i].img||undefined, color: input};
+                    currentTheme[imgtype] = imgs;
+                    storage0.putMyVar('currentTheme', currentTheme);
+                    /*
+                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                        img: input
+                    });
+                    */
+                }
+                return 'hiker://empty';
             }),
             extra: {
                 id: '图标编辑着色',
@@ -1729,7 +1744,7 @@ function themeIconSet() {
                 let currentTheme = storage0.getMyVar('currentTheme', {});
                 let imgs = currentTheme[imgtype] || [];
                 let i = parseInt(getMyVar('按钮索引', '0'));
-                imgs[i] = {img:input};
+                imgs[i] = {img: input, color: imgs[i].color||undefined};
                 currentTheme[imgtype] = imgs;
                 storage0.putMyVar('currentTheme', currentTheme);
                 updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
@@ -1854,9 +1869,33 @@ function themeIconSet() {
         col_type: 'big_blank_block',
     })
     d.push({
-        title: '恢复|删除',
-        url: 'hiker://empty',
-        col_type: 'text_3'
+        title: '恢复|清空',
+        url: $().lazyRule((libspath) => {
+            let themeList = storage0.getMyVar('themeList', []);
+            themeList.forEach(it => {
+                delete it.启用;
+            })
+            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+            clearMyVar('currentTheme');
+            clearMyVar('themeList');
+            refreshPage(true);
+            return 'toast://已恢复使用原生自带';
+        }, libspath),
+        col_type: 'text_3',
+        extra: {
+            longClick: [{
+                title: "清空主题",
+                js: $.toString((libspath) => {
+                    return $("清空本地所有主题，确认？").confirm((libspath)=>{
+                        deleteFile(libspath + 'themes.json');
+                        clearMyVar('currentTheme');
+                        clearMyVar('themeList');
+                        refreshPage(true);
+                        return 'toast://已清空';
+                    },libspath)
+                },libspath)
+            }]
+        }
     })
     d.push({
         title: '““””<b><font color=#94B5B0>保存|应用</font></b>',

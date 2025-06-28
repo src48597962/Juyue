@@ -74,7 +74,7 @@ function bookCase() {
                 d.push({
                     title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
                     pic_url: it.picUrl,
-                    desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask+"\n\n🔘 "+last:last,
+                    desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
                     url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
                         require(config.聚阅);
                         erji();

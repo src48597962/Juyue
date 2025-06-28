@@ -1632,7 +1632,6 @@ function themeIconSet() {
     setPageTitle('主题图标设置');
     clearMyVar('按钮名称');
     clearMyVar('按钮索引');
-    clearMyVar('按钮图标');
     clearMyVar('编辑类别');
     clearMyVar('编辑组件状态');
 
@@ -1879,7 +1878,6 @@ function themeIconSet() {
                         putMyVar('按钮索引', i);
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
-                        clearMyVar('按钮图标');
 
                         //处理增加底部空白
                         deleteItemByCls('底部增加空白区');

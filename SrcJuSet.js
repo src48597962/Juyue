@@ -20,7 +20,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             jiekouapi();
         }),
-        img: jkIcons[0],
+        img: getIcon(jkIcons[0].img, false, jkIcons[0].color),
         col_type: "icon_small_4",
         extra: {
             longClick: []
@@ -62,7 +62,7 @@ function SRCSet() {
                 return "toast://"+sm;
             }
         }),
-        img: jkIcons[1],
+        img: getIcon(jkIcons[1].img, false, jkIcons[1].color),
         col_type: "icon_small_4"
     });
     d.push({
@@ -77,7 +77,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return JYimport(input);
         }),
-        img: jkIcons[2],
+        img: getIcon(jkIcons[2].img, false, jkIcons[2].color),
         col_type: "icon_small_4"
     });
     let pastes = getPastes();
@@ -105,7 +105,7 @@ function SRCSet() {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return JYshare(input);
         }),
-        img: jkIcons[3],
+        img: getIcon(jkIcons[3].img, false, jkIcons[3].color),
         col_type: "icon_small_4",
         extra: {
             longClick: [{

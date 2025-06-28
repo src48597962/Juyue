@@ -1774,11 +1774,12 @@ function themeIconSet() {
         })
         data.name.forEach((it, i) => {
             let icon_name = it;
+            let icon_img = getIcon(imgs[i].img, false, imgs[i].color);
             d.push({
-                title: it,
-                img: getIcon(imgs[i].img, false, imgs[i].color),
+                title: icon_name,
+                img: icon_img,
                 col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
-                url: $('#noLoading#').lazyRule((type_name, icon_name, i, imgs, 编辑d) => {
+                url: $('#noLoading#').lazyRule((type_name, icon_name, i, icon_img, 编辑d) => {
                     //还原上一个图标名称
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         title: getMyVar('按钮名称'),
@@ -1802,7 +1803,7 @@ function themeIconSet() {
                     });
 
                     updateItem("图标编辑input", {
-                        desc: imgs[i].img
+                        desc: icon_img
                     });
                     
                     //修正当前选中按钮图标
@@ -1824,7 +1825,7 @@ function themeIconSet() {
                     putMyVar('按钮名称', icon_name);
                     putMyVar('编辑类别', type_name);
                     return 'hiker://empty';
-                }, type_name, icon_name, i, imgs, 编辑d),
+                }, type_name, icon_name, i, icon_img, 编辑d),
                 extra: {
                     id: type_name + '图标id' + i,
                 }

@@ -1720,7 +1720,7 @@ function themeIconSet() {
             let d = []
             d.push({
                 title: '图标着色',
-                col_type: 'flex_button',
+                col_type: 'text_4',
                 url: $("", "输入可随主题替换的颜色代码").input(() => {
                     input = input.trim();
                     if(input){
@@ -1746,13 +1746,13 @@ function themeIconSet() {
             })
             d.push({
                 title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
-                col_type: 'flex_button',
+                col_type: 'text_4',
                 url: `fileSelect://`+$.toString(()=>{
-                    /*
+
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: 'file://' + input
                     })
-                    */
+
                     updateItem("图标编辑input", {
                         extra: {
                             defaultValue: 'file://' + input,
@@ -1892,7 +1892,6 @@ function themeIconSet() {
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
 
-                        /*
                         //处理增加底部空白
                         deleteItemByCls('底部增加空白区');
                         let addnum = 0;
@@ -1914,7 +1913,6 @@ function themeIconSet() {
                             })
                         }
                         addItemAfter('icondownid', d);
-                        */
                         return 'hiker://empty';
                     }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
                     extra: {

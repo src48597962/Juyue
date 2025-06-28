@@ -592,7 +592,7 @@ function sortByPinyin(arr) {
 }
 // 获取图标地址
 function getIcon(icon, nochange, color2) {
-    if(!icon.includes('.svg')){
+    if(!icon.includes('.svg') && !icon.includes('://')){
         return codepath + 'img/' + icon;
     }
     let color = getItem('主题颜色','');

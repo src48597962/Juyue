@@ -1760,6 +1760,13 @@ function themeIconSet() {
                             cls: '图标编辑组件'
                         }
                     });
+                    let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                    let currentTheme = storage0.getMyVar('currentTheme', {});
+                    let imgs = currentTheme[imgtype] || [];
+                    let i = parseInt(getMyVar('按钮索引', '0'));
+                    imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
+                    currentTheme[imgtype] = imgs;
+                    storage0.putMyVar('currentTheme', currentTheme);
                 }),
                 extra: {
                     id: '本地选择',
@@ -1842,13 +1849,7 @@ function themeIconSet() {
                         });
                         
                         //执行按钮编辑组件变换
-                        if (getMyVar('编辑类别') == type_name && getMyVar('按钮索引') == i && getMyVar('编辑组件状态', '1') == '1') {
-                            deleteItemByCls('图标编辑组件');
-                            putMyVar('编辑组件状态', '0');
-                            updateItem(type_name + '图标id' + i, {
-                                title: icon_name,
-                            });
-                        } else if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
+                        if (getMyVar('编辑类别') != type_name || getMyVar('编辑组件状态', '0') == '0') {
                             deleteItemByCls('图标编辑组件');
                             addItemAfter(type_name + 'add', 编辑d);
                             putMyVar('编辑组件状态', '1');
@@ -1968,7 +1969,7 @@ function themeIconSet() {
             Object.keys(currentTheme).forEach(it=>{
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
-                        if($.type(v)=='object' && !v.img.startsWith(libspath)){
+                        if($.type(v)=='object' && !v.img.startsWith(libspath) && !v.img.startsWith('http')){
                             let newimg = libspath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/'));
                             saveImage(v.img, newimg);
                             v.img = newimg;

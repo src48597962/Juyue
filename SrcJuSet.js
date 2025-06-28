@@ -1863,121 +1863,119 @@ function themeIconSet() {
             })
         })
 
+        
+    }
 
-        d.push({
-            col_type: 'line_blank'
-        })
-        d.push({
-            col_type: 'big_blank_block',
-        })
-        d.push({
-            title: '恢复|清空',
-            url: $().lazyRule((libspath) => {
-                let themeList = storage0.getMyVar('themeList', []);
-                themeList.forEach(it => {
-                    delete it.启用;
-                })
-                writeFile(libspath + 'themes.json', JSON.stringify(themeList));
-                clearMyVar('currentTheme');
-                clearMyVar('themeList');
-                refreshPage(true);
-                return 'toast://已恢复使用原生自带';
-            }, libspath),
-            col_type: 'text_3',
-            extra: {
-                longClick: [{
-                    title: "清空主题",
-                    js: $.toString((libspath) => {
-                        return $("清空本地所有主题，确认？").confirm((libspath)=>{
-                            deleteFile(libspath + 'themes.json');
-                            clearMyVar('currentTheme');
-                            clearMyVar('themeList');
-                            refreshPage(true);
-                            return 'toast://已清空';
-                        },libspath)
+    d.push({
+        col_type: 'big_blank_block',
+    })
+    d.push({
+        title: '恢复|清空',
+        url: $().lazyRule((libspath) => {
+            let themeList = storage0.getMyVar('themeList', []);
+            themeList.forEach(it => {
+                delete it.启用;
+            })
+            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+            clearMyVar('currentTheme');
+            clearMyVar('themeList');
+            refreshPage(true);
+            return 'toast://已恢复使用原生自带';
+        }, libspath),
+        col_type: 'text_3',
+        extra: {
+            longClick: [{
+                title: "清空主题",
+                js: $.toString((libspath) => {
+                    return $("清空本地所有主题，确认？").confirm((libspath)=>{
+                        deleteFile(libspath + 'themes.json');
+                        clearMyVar('currentTheme');
+                        clearMyVar('themeList');
+                        refreshPage(true);
+                        return 'toast://已清空';
                     },libspath)
-                }]
+                },libspath)
+            }]
+        }
+    })
+    d.push({
+        title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
+        url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
+            if (!storage0.getMyVar('currentTheme')) {
+                return 'toast://新建主题没有内容';
             }
-        })
-        d.push({
-            title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
-            url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
-                if (!storage0.getMyVar('currentTheme')) {
-                    return 'toast://新建主题没有内容';
-                }
-                let themeList = storage0.getMyVar('themeList', []);
-                themeList.forEach(it => {
-                    delete it.启用;
-                })
+            let themeList = storage0.getMyVar('themeList', []);
+            themeList.forEach(it => {
+                delete it.启用;
+            })
 
-                themeList = themeList.filter(v => v.名称 != themename);
-                themeList.push(storage0.getMyVar('currentTheme'));
-                writeFile(libspath + 'themes.json', JSON.stringify(themeList));
-                clearMyVar('themeList');
-                refreshPage(true);
-                return 'toast://已保存并生效';
-            }, libspath, themename),
-            col_type: 'text_3'
-        })
-        d.push({
-            title: '导入|分享',
-            url: $().lazyRule(() => {
-                return $("", "输入聚阅主题分享口令").input(() => {
-                    let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
-                    let inputname = input.split('￥')[0];
-                    if (inputname == '聚阅主题') {
-                        try {
-                            let text = JSON.parse(parsePaste(pasteurl));
-                            storage0.putMyVar('currentTheme', text);
-                            refreshPage();
-                            return 'toast://确定需要，则要保存';
-                        } catch (e) {
-                            return 'toast://口令异常';
+            themeList = themeList.filter(v => v.名称 != themename);
+            themeList.push(storage0.getMyVar('currentTheme'));
+            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+            clearMyVar('themeList');
+            refreshPage(true);
+            return 'toast://已保存并生效';
+        }, libspath, themename),
+        col_type: 'text_3'
+    })
+    d.push({
+        title: '导入|分享',
+        url: $().lazyRule(() => {
+            return $("", "输入聚阅主题分享口令").input(() => {
+                let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
+                let inputname = input.split('￥')[0];
+                if (inputname == '聚阅主题') {
+                    try {
+                        let text = JSON.parse(parsePaste(pasteurl));
+                        storage0.putMyVar('currentTheme', text);
+                        refreshPage();
+                        return 'toast://确定需要，则要保存';
+                    } catch (e) {
+                        return 'toast://口令异常';
+                    }
+                }
+                return 'toast://不是聚阅主题口令';
+            })
+        }),
+        col_type: 'text_3',
+        extra: {
+            longClick: [{
+                title: "主题分享",
+                js: $.toString((themename,currentTheme) => {
+                    currentTheme = storage0.getMyVar('currentTheme', currentTheme || {});
+                    if (!themename) {
+                        return 'toast://没有主题'
+                    } else if (!currentTheme.主页图标) {
+                        return 'toast://新建主题没有内容';
+                    }
+                    let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
+                    if (themeList.length == 1) {
+                        let sharetxt = JSON.stringify(themeList[0]);
+                        let pasteurl = sharePaste(sharetxt);
+                        if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
+                            xlog('剪贴板地址>' + pasteurl);
+                            let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
+                            copy(code);
+                            return "toast://分享口令已生成";
+                        } else {
+                            xlog('分享失败>' + pasteurl);
+                            return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
                         }
                     }
-                    return 'toast://不是聚阅主题口令';
-                })
-            }),
-            col_type: 'text_3',
-            extra: {
-                longClick: [{
-                    title: "主题分享",
-                    js: $.toString((themename,currentTheme) => {
-                        currentTheme = storage0.getMyVar('currentTheme', currentTheme || {});
-                        if (!themename) {
-                            return 'toast://没有主题'
-                        } else if (!currentTheme.主页图标) {
-                            return 'toast://新建主题没有内容';
-                        }
-                        let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
-                        if (themeList.length == 1) {
-                            let sharetxt = JSON.stringify(themeList[0]);
-                            let pasteurl = sharePaste(sharetxt);
-                            if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
-                                xlog('剪贴板地址>' + pasteurl);
-                                let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
-                                copy(code);
-                                return "toast://分享口令已生成";
-                            } else {
-                                xlog('分享失败>' + pasteurl);
-                                return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
-                            }
-                        }
-                        return 'toast://异常';
-                    }, themename, currentTheme)
-                }]
-            }
+                    return 'toast://异常';
+                }, themename, currentTheme)
+            }]
+        }
 
-        })
+    })
 
-        d.push({
-            title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
-            col_type: "text_center_1",
-            url: 'hiker://empty',
-            extra: {
-                lineVisible: false,
-            }
-        })
-    }
+    d.push({
+        title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small></small>",
+        col_type: "text_center_1",
+        url: 'hiker://empty',
+        extra: {
+            lineVisible: false,
+        }
+    })
     setResult(d);
 }

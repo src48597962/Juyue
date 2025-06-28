@@ -1752,7 +1752,6 @@ function themeIconSet() {
                         img: 'file://' + input
                     })
                     updateItem("图标编辑input", {
-                        desc: 'file://' + input,
                         extra: {
                             defaultValue: 'file://' + input,
                             id: '图标编辑input',
@@ -1858,7 +1857,11 @@ function themeIconSet() {
                         });
                         
                         updateItem("图标编辑input", {
-                            desc: inputdesc
+                            extra: {
+                                defaultValue: 'file://' + input,
+                                id: '图标编辑input',
+                                cls: '图标编辑组件'
+                            }
                         });
                         
                         //修正当前选中按钮图标

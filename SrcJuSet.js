@@ -1649,7 +1649,7 @@ function themeIconSet() {
         storage0.putMyVar('themeList', themeList);
     }
 
-    let currentTheme = storage0.getMyVar('currentTheme', (themeList.filter(v => v.启用) || [{}])[0]);
+    let currentTheme = storage0.getMyVar('currentTheme', storage0.getItem('currentTheme', {}));
     let themename = currentTheme['名称'] || '';
     let themenames = themeList.map(it => it.名称);
     if (!storage0.getMyVar('currentTheme') && themename) {
@@ -1660,7 +1660,6 @@ function themeIconSet() {
         title: '主题：' + (themename || '没有主题'),
         url: $(themenames, 2, '选择主题').select(() => {
             let theme = storage0.getMyVar('themeList').filter(v => v.名称 == input)[0];
-            theme.启用 = 1;
             storage0.putMyVar('currentTheme', theme);
             refreshPage();
             return 'hiker://empty';
@@ -1675,8 +1674,7 @@ function themeIconSet() {
                 return 'toast://主题名称已存在';
             } else if (input) {
                 storage0.putMyVar('currentTheme', {
-                    名称: input,
-                    启用: 1
+                    名称: input
                 });
                 refreshPage();
             }
@@ -1873,17 +1871,13 @@ function themeIconSet() {
     })
     d.push({
         title: '恢复|清空',
-        url: $().lazyRule((libspath) => {
-            let themeList = storage0.getMyVar('themeList', []);
-            themeList.forEach(it => {
-                delete it.启用;
-            })
-            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+        url: $().lazyRule(() => {
+            clearItem('currentTheme');
             clearMyVar('currentTheme');
             clearMyVar('themeList');
             refreshPage(true);
             return 'toast://已恢复使用原生自带';
-        }, libspath),
+        }),
         col_type: 'text_3',
         extra: {
             longClick: [{
@@ -1910,13 +1904,11 @@ function themeIconSet() {
                 return 'toast://新建主题没有内容';
             }
             let themeList = storage0.getMyVar('themeList', []);
-            themeList.forEach(it => {
-                delete it.启用;
-            })
 
             themeList = themeList.filter(v => v.名称 != themename);
-            themeList.push(storage0.getMyVar('currentTheme'));
+            themeList.push(currentTheme);
             writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+            storage0.setItem('currentTheme', currentTheme);//保存为当前主题
             clearMyVar('themeList');
             refreshPage(true);
             return 'toast://已保存并生效';

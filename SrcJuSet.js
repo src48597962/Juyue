@@ -1799,7 +1799,7 @@ function themeIconSet() {
                 d.push({
                     title: icon_name,
                     img: icon_img,
-                    col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
+                    col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
                     url: $('#noLoading#').lazyRule((type_name, icon_name, i, inputdesc, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
@@ -1837,7 +1837,6 @@ function themeIconSet() {
                         if (getMyVar('编辑组件状态', '1') == '1') {
                             updateItem(type_name + '图标id' + i, {
                                 title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
-
                             });
                         }
                         
@@ -1846,7 +1845,7 @@ function themeIconSet() {
                         putMyVar('按钮名称', icon_name);
                         putMyVar('编辑类别', type_name);
                         return 'hiker://empty';
-                    }, type_name, icon_name, i, (imgs[i]||{}.img)||inputdesc[i], 编辑d),
+                    }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
                     extra: {
                         id: type_name + '图标id' + i,
                     }

@@ -1649,7 +1649,7 @@ function themeIconSet() {
         storage0.putMyVar('themeList', themeList);
     }
 
-    let currentTheme = storage0.getMyVar('currentTheme', storage0.getItem('currentTheme', {}));
+    let currentTheme = storage0.getMyVar('currentTheme', storage0.getItem('currentTheme', getThemeList(true)));
     let themename = currentTheme['名称'] || '';
     let themenames = themeList.map(it => it.名称);
     if (!storage0.getMyVar('currentTheme') && themename) {
@@ -1667,7 +1667,7 @@ function themeIconSet() {
         col_type: 'text_2'
     })
     d.push({
-        title: '新增主题',
+        title: '新增|删除',
         url: $('', '请输入一个主题名称').input(() => {
             let themeList = storage0.getMyVar('themeList');
             if (themeList.some(v => v.名称 == input)) {
@@ -1680,7 +1680,28 @@ function themeIconSet() {
             }
             return 'hiker://empty';
         }),
-        col_type: 'text_2'
+        col_type: 'text_2',
+        extra: {
+            longClick: [{
+                title: "删除主题",
+                js: $.toString((libspath) => {
+                    return $("删除主题["+themename+"]，确认？").confirm((libspath)=>{
+                        let currentTheme = storage0.getMyVar('currentTheme', {});
+                        let themeList = storage0.getMyVar('themeList', []);
+                        themeList = themeList.filter(v => v.名称 != currentTheme.名称);
+                        writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+
+                        if(storage0.getItem('currentTheme', {}).名称==currentTheme.名称){
+                            clearItem('currentTheme');
+                        }
+                        clearMyVar('currentTheme');
+                        clearMyVar('themeList');
+                        refreshPage(true);
+                        return 'toast://已保存并生效';
+                    }, libspath)
+                }, libspath)
+            }]
+        }
     })
     if(themename){
         let 编辑组件 = () => {
@@ -1715,17 +1736,12 @@ function themeIconSet() {
                 title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
                 col_type: 'flex_button',
                 url: `fileSelect://`+$.toString(()=>{
-                    if(MY_PATH.includes('/data/聚阅/')){
-                        let path = 'hiker://files/data/聚阅/' + MY_PATH.split('/data/聚阅/')[1];
-                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                            img: 'file://' + path
-                        })
-                        updateItem("图标编辑input", {
-                            desc: 'file://' + path
-                        });
-                    }else{
-                        toast('请将图标放到海阔目录/data/聚阅/下面');
-                    }
+                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                        img: 'file://' + input
+                    })
+                    updateItem("图标编辑input", {
+                        desc: 'file://' + input
+                    });
                 }),
                 extra: {
                     id: '本地选择',
@@ -1747,7 +1763,6 @@ function themeIconSet() {
                     let i = parseInt(getMyVar('按钮索引', '0'));
                     imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;
-                    xlog(currentTheme);
                     storage0.putMyVar('currentTheme', currentTheme);
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: input

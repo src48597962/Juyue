@@ -1688,14 +1688,7 @@ function themeIconSet() {
             title: '图标着色',
             col_type: 'flex_button',
             url: $("#noLoading#").lazyRule(() => {
-                const hikerPop = $.require("http://123.56.105.145/weisyr/js/hikerPop.js");
-                hikerPop.selectCenterColor(["#fdf000", "#FF0000", '#e3e3e3'], (color) => {
-                    hikerPop.confirm({
-                        content: "你选了" + color,
-                        hideCancel: true
-                    });
-                });
-                return "hiker://empty";
+                
             }),
             extra: {
                 id: '图标编辑着色',
@@ -1706,14 +1699,17 @@ function themeIconSet() {
             title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
             col_type: 'flex_button',
             url: `fileSelect://`+$.toString(()=>{
-                toast('请将图标放到data\聚阅\下面');
-                //hiker://files/data/聚阅/
-                updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                    img: 'file://' + MY_PATH
-                })
-                updateItem("图标编辑input", {
-                    desc: 'file://' + MY_PATH
-                });
+                if(MY_PATH.includes('/data/聚阅/')){
+                    let path = 'hiker://files/data/聚阅/' + MY_PATH.split('/data/聚阅/')[1];
+                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                        img: 'file://' + path
+                    })
+                    updateItem("图标编辑input", {
+                        desc: 'file://' + path
+                    });
+                }else{
+                    toast('请将图标放到海阔目录/data/聚阅/下面');
+                }
             }),
             extra: {
                 id: '本地选择',
@@ -1729,7 +1725,7 @@ function themeIconSet() {
                 let currentTheme = storage0.getMyVar('currentTheme', {});
                 let imgs = currentTheme[imgtype] || [];
                 let i = parseInt(getMyVar('按钮索引', '0'));
-                imgs[i] = input;
+                imgs[i] = {img:input};
                 currentTheme[imgtype] = imgs;
                 storage0.putMyVar('currentTheme', currentTheme);
                 updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
@@ -1762,7 +1758,7 @@ function themeIconSet() {
     }
     ]
 
-    datas.forEach((data, j) => {
+    datas.forEach((data) => {
         let type_name = data.type;
         d.push({
             title: `““””<b><font color=#B5B5B5>${type_name}图标</font></b>`,
@@ -1770,11 +1766,17 @@ function themeIconSet() {
             url: 'hiker://empty'
         })
         let imgs = currentTheme[type_name + '图标'] || ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];
+        imgs = imgs.map((v)=>{
+            return {
+                img: $.type(v)=='object'?v.img:v,
+                color: $.type(v)=='object'?v.color||'':''
+            }
+        })
         data.name.forEach((it, i) => {
             let icon_name = it;
             d.push({
                 title: it,
-                img: imgs[i],
+                img: getIcon(imgs[i].img, false, imgs[i].color),
                 col_type: type_name == '接口' ? 'icon_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
                 url: $('#noLoading#').lazyRule((type_name, icon_name, i, imgs, 编辑d) => {
                     //还原上一个图标名称
@@ -1800,7 +1802,7 @@ function themeIconSet() {
                     });
 
                     updateItem("图标编辑input", {
-                        desc: imgs[i]
+                        desc: imgs[i].img
                     });
                     
                     //修正当前选中按钮图标

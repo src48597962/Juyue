@@ -638,9 +638,19 @@ function getThemeList(isEnable) {
             接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"],
             书架图标: ['http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/85.svg']
         };
+        function padArray(arr, length, fill) {
+            fill = fill || '';
+            return arr.concat(Array(length - arr.length).fill(fill)).slice(0, length);
+        }
+        let 图标数量 = {
+            主页图标: 5,
+            二级图标: 5,
+            接口图标: 4,
+            书架图标: 2
+        }
         Object.keys(currentTheme).forEach(it=>{
             if($.type(currentTheme[it])=='array'){
-                currentTheme[it] = currentTheme[it].map((v)=>{
+                currentTheme[it] = padArray(currentTheme[it], 图标数量[it]).map((v)=>{
                     return {
                         img: $.type(v)=='object'?v.img:v,
                         color: $.type(v)=='object'?v.color||'':''

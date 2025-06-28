@@ -592,7 +592,9 @@ function sortByPinyin(arr) {
 }
 // 获取图标地址
 function getIcon(icon, nochange, color2) {
-    if(!icon.includes('/')){
+    if(!icon){
+        return '';
+    }else if(!icon.includes('/')){
         icon = codepath + 'img/' + icon;
     }
     if(!icon.includes('.svg')){

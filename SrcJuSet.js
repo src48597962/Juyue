@@ -1634,6 +1634,7 @@ function themeIconSet() {
         clearMyVar('编辑组件状态');
     }));
     setPageTitle('主题图标设置');
+    clearMyVar('编辑组件状态');
 
     let d = [];
     require('http://123.56.105.145/weisyr/Top_H5.js');

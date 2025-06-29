@@ -750,13 +750,8 @@ function erji() {
                                 if (cacheData != "") {
                                     try{
                                         eval("let cacheJson=" + cacheData + ";");
-                                        let obj = {
-                                            name: cacheJson.name,
-                                            img: cacheJson.img,
-                                            extra: cacheJson.extra
-                                        }
                                         require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
-                                        addCase(obj);
+                                        addCase(cacheJson.extra);
                                         return 'hiker://empty';
                                     }catch(e){
                                         xlog('加入书架处理异常>' + e.message);
@@ -1211,7 +1206,6 @@ function erji() {
         //当前二级数据保存到缓存文件，避免二级重复请深圳市
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
-            erLoadData.name = name;
             erLoadData.url = MY_URL;
             erLoadData.lineid = lineid;//好像没用到，先放着吧
             erLoadData.pageid = pageid;//好像没用到，先放着吧

@@ -4,11 +4,7 @@ function addCase(obj) {
     let casefile = rulepath + 'case.json';
     evar('let caselist = ' + (fetch(casefile)||'[]'));
 
-    caselist.unshift({
-        name: obj.name,
-        img: obj.img,
-        extra: obj.extra
-    })
+    caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));
     toast('已加入');
 }

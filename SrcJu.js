@@ -941,9 +941,10 @@ function erji() {
             })
             
             if(线路s.length>0 && 线路s[0] !="线路"){
+                let Color = getItem('主题颜色','#3399cc');
                 线路s.forEach((it,i)=>{
                     d.push({
-                        title: lineid==i?`““””<span style="color: #04B45F">`+it+`</span>`:it,
+                        title: lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
                         url: $("#noLoading#").lazyRule((lineurl,nowid,newid) => {
                             if(nowid != newid){
                                 putMyVar(lineurl, newid);
@@ -953,7 +954,8 @@ function erji() {
                         }, "SrcJu_"+MY_URL+"_line", lineid, i),
                         col_type: line_col_type,
                         extra: {
-                            cls: "Juloadlist"
+                            cls: "Juloadlist",
+                            backgroundColor: lineid==i?"#20" + Color.replace('#',''):""
                         }
                     })
                 })

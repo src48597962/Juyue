@@ -518,8 +518,10 @@ function erji() {
                 if (cacheData != "") {
                     try{
                         eval("let cacheJson=" + cacheData + ";");
-                        if(cacheJson.sid==sid && cacheJson.url==MY_URL){
-                            erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快
+                        let nowtime = Date.now();
+                        let oldtime = parseInt(cacheJson.updatetime||'0');
+                        if(cacheJson.sid==sid && cacheJson.url==MY_URL && nowtime > (oldtime + 1 * 60 * 60 * 1000)){
+                            erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快，缓存1小时
                         }
                     }catch(e){ }
                 }
@@ -1200,6 +1202,9 @@ function erji() {
             erLoadData.url = MY_URL;
             erLoadData.lineid = lineid;//好像没用到，先放着吧
             erLoadData.pageid = pageid;//好像没用到，先放着吧
+            let nowtime = Date.now();
+            erLoadData.updatetime = nowtime + '';
+            erLoadData.extra = MY_PARAMS;
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节

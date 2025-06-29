@@ -1824,8 +1824,7 @@ function themeIconSet() {
             let type_name = data.type;
             d.push({
                 title: `““””<b><font color=#B5B5B5>${type_name}图标</font></b>`,
-                col_type: 'text_1',
-                url: 'hiker://empty'
+                col_type: 'rich_text'
             })
             let imgs = currentTheme[type_name + '图标'] || [];
             let inputdesc = ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];

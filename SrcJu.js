@@ -742,6 +742,15 @@ function erji() {
                         cls: "Juloadlist",
                         inheritTitle: false,
                         longClick: [{
+                            title: "加入书架🗄",
+                            js: $.toString((itype) => {
+                                if(itype){
+                                    return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
+                                }else{
+                                    return "toast://不支持下载的类型"
+                                }
+                            },itype)
+                        },{
                             title: "下载本地📥",
                             js: $.toString((itype) => {
                                 if(itype){

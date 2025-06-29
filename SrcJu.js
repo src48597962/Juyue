@@ -745,13 +745,25 @@ function erji() {
                         inheritTitle: false,
                         longClick: [{
                             title: "加入书架🗄",
-                            js: $.toString((itype) => {
-                                if(itype){
-                                    return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
-                                }else{
-                                    return "toast://不支持下载的类型"
+                            js: $.toString((erCacheFile) => {
+                                let cacheData = fetch(erCacheFile);
+                                if (cacheData != "") {
+                                    try{
+                                        eval("let cacheJson=" + cacheData + ";");
+                                        let obj = {
+                                            name: cacheJson.name,
+                                            img: cacheJson.img,
+                                            extra: cacheJson.extra
+                                        }
+                                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
+                                        addCase(obj);
+                                        return 'hiker://empty';
+                                    }catch(e){
+                                        xlog('加入书架处理异常>' + e.message);
+                                    }
                                 }
-                            },itype)
+                                return 'toast://失败';
+                            }, erCacheFile)
                         },{
                             title: "下载本地📥",
                             js: $.toString((itype) => {
@@ -1199,6 +1211,7 @@ function erji() {
         //当前二级数据保存到缓存文件，避免二级重复请深圳市
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
+            erLoadData.name = name;
             erLoadData.url = MY_URL;
             erLoadData.lineid = lineid;//好像没用到，先放着吧
             erLoadData.pageid = pageid;//好像没用到，先放着吧

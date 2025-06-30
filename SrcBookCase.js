@@ -45,6 +45,7 @@ function bookCase() {
             }else{
                 setItem("切换收藏列表", "聚阅收藏");
             }
+            clearMyVar('书架收藏列表');
             refreshPage(false);
             return 'hiker://empty';
         }),

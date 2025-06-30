@@ -94,8 +94,12 @@ function bookCase() {
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile)||'[]'));
             let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
-            log(history);
+            history = history.filter(v=>v.type=='二级列表');
             caselist.forEach(it => {
+                history = history.filter(v=>v.title==it.name&&v.picUrl==it.img);
+                if(history.length==1){
+                    it.mask = history[0].lastClick?it.history[0].split('@@')[0]:"";
+                }
                 Julist.push(it);
             })
         }

@@ -2,7 +2,7 @@ require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
 
 function addCase(obj) {
     let casefile = rulepath + 'case.json';
-    evar('let caselist = ' + (fetch(casefile)||'[]'));
+    eval('let caselist = ' + (fetch(casefile)||'[]'));
 
     caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));

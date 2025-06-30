@@ -14,7 +14,7 @@ function bookCase() {
         clearMyVar('书架收藏列表');
     }));
 
-    setPageTitle('我的书架');
+    setPageTitle('我的收藏');
     let d = [];
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
@@ -116,6 +116,7 @@ function bookCase() {
                     let extra = JSON.parse(params.params);
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;
+                    delete extra['id'];
                     let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
@@ -146,6 +147,7 @@ function bookCase() {
                     let extra = it;
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;
+                    delete extra['id'];
                     let name = it.name;
                     let sname = extra.data.name;
                     let last = it.last||"";
@@ -175,7 +177,7 @@ function bookCase() {
     }
     
     d.push({
-        title: Julist.length==0?"书架空空如也~~"+(getItem("切换收藏列表")=="软件收藏"?"♥收藏即加入书架":"长按二级封面加入书架"):"",
+        title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="软件收藏"?"右上角♥加入软件收藏":"长按二级封面加入聚阅收藏"):"",
         url: "hiker://empty",
         col_type: "text_center_1",
         extra: {

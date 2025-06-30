@@ -48,7 +48,7 @@ function bookCase() {
             refreshPage(false);
             return 'hiker://empty';
         }),
-        img: getIcon(sjIcons[1].img, false, sjIcons[2].color),
+        img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
         col_type: "icon_small_3"
     });
     for (let i = 0; i < 8; i++) {

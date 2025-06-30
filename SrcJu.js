@@ -728,7 +728,24 @@ function erji() {
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                     col_type: 'icon_small_3',
                     extra: {
-                        cls: "Juloadlist"
+                        cls: "Juloadlist",
+                        longClick: [{
+                            title: "加入书架🗄",
+                            js: $.toString((erCacheFile) => {
+                                let cacheData = fetch(erCacheFile);
+                                if (cacheData != "") {
+                                    try{
+                                        eval("let cacheJson=" + cacheData + ";");
+                                        require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
+                                        addCase(cacheJson.extra);
+                                        return 'hiker://empty';
+                                    }catch(e){
+                                        xlog('加入书架处理异常>' + e.message);
+                                    }
+                                }
+                                return 'toast://失败';
+                            }, erCacheFile)
+                        }]
                     }
                 })
             }else{

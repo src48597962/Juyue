@@ -14,7 +14,7 @@ function bookCase() {
         clearMyVar('书架收藏列表');
     }));
 
-    setPageTitle('我的收藏架子');
+    setPageTitle('我的收藏书架');
     let d = [];
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({

@@ -148,6 +148,17 @@ function bookCase() {
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;
                     delete extra['id'];
+                    extra.longClick = [{
+                        title: "去除聚阅收藏",
+                        js: $.toString((caseurl,rulepath) => {
+                            let caselist = storage0.getMyVar('书架收藏列表');
+                            caselist = caselist.filter(item => item.url != caseurl);
+                            storage0.putMyVar('书架收藏列表', caselist);
+                            let casefile = rulepath + 'case.json';
+                            writeFile(casefile, JSON.stringify(caselist));
+                            refreshPage();
+                        }, it.url, rulepath)
+                    }]
                     let name = it.name;
                     let sname = extra.data.name;
                     let last = it.last||"";
@@ -165,6 +176,8 @@ function bookCase() {
                             const [target] = caselist.splice(index, 1);
                             caselist.unshift(target);
                             storage0.putMyVar('书架收藏列表', caselist);
+                            let casefile = rulepath + 'case.json';
+                            writeFile(casefile, JSON.stringify(caselist));
                         }, it.url),
                         col_type: col_type,
                         extra: extra

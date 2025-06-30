@@ -43,7 +43,7 @@ function bookCase() {
             if(getItem("切换收藏列表")=="软件收藏"){
                 clearItem("切换收藏列表");
             }else{
-                setItem("切换收藏列表", "聚阅收藏");
+                setItem("切换收藏列表", "软件收藏");
             }
             clearMyVar('书架收藏列表');
             refreshPage(false);
@@ -138,7 +138,7 @@ function bookCase() {
                 xlog("书架加载异常>"+e.message);
             }
         })
-    }else{
+    }else{//聚阅收藏列表
         Julist.forEach(it => {
             try{
                 let stype = it.data.type;
@@ -154,11 +154,16 @@ function bookCase() {
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
                         pic_url: it.img,
                         desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
-                        url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
+                        url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule((caseurl) => {
                             require(config.聚阅);
                             erji();
                             putMyVar('从书架进二级','1');
-                        }),
+                            let caselist = storage0.getMyVar('书架收藏列表');
+                            let index = caselist.findIndex(item => item.url === it.caseurl);
+                            const target = caselist.splice(index, 1);
+                            caselist.unshift(target);
+                            storage0.putMyVar('书架收藏列表', caselist);
+                        }, it.url),
                         col_type: col_type,
                         extra: extra
                     })

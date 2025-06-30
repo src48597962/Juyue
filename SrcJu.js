@@ -564,7 +564,7 @@ function erji() {
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
             detailextra.longClick.push({
-                title: "加入书架🗄",
+                title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {

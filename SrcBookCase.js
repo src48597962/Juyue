@@ -160,10 +160,8 @@ function bookCase() {
                             putMyVar('从书架进二级','1');
                             let caselist = storage0.getMyVar('书架收藏列表');
                             let index = caselist.findIndex(item => item.url === caseurl);
-                            const target = caselist.splice(index, 1);
-                            xlog(target);
+                            const [target] = caselist.splice(index, 1);
                             caselist.unshift(target);
-                            xlog(caselist);
                             storage0.putMyVar('书架收藏列表', caselist);
                         }, it.url),
                         col_type: col_type,

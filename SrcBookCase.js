@@ -98,7 +98,7 @@ function bookCase() {
             caselist.forEach(it => {
                 history = history.filter(v=>v.title==it.name&&v.picUrl==it.img);
                 if(history.length==1){
-                    it.mask = history[0].lastClick?history[0].split('@@')[0]:"";
+                    it.mask = history[0].lastClick?history[0].lastClick.split('@@')[0]:"";
                 }
                 Julist.push(it);
             })

@@ -730,7 +730,7 @@ function erji() {
                     extra: {
                         cls: "Juloadlist",
                         longClick: [{
-                            title: "加入书架🗄",
+                            title: "加入收藏🗄",
                             js: $.toString((erCacheFile) => {
                                 let cacheData = fetch(erCacheFile);
                                 if (cacheData != "") {
@@ -740,7 +740,7 @@ function erji() {
                                         addCase(cacheJson.extra);
                                         return 'hiker://empty';
                                     }catch(e){
-                                        xlog('加入书架处理异常>' + e.message);
+                                        xlog('加入收藏处理异常>' + e.message);
                                     }
                                 }
                                 return 'toast://失败';
@@ -761,7 +761,7 @@ function erji() {
                         cls: "Juloadlist",
                         inheritTitle: false,
                         longClick: [{
-                            title: "加入书架🗄",
+                            title: "加入收藏🗄",
                             js: $.toString((erCacheFile) => {
                                 let cacheData = fetch(erCacheFile);
                                 if (cacheData != "") {
@@ -771,7 +771,7 @@ function erji() {
                                         addCase(cacheJson.extra);
                                         return 'hiker://empty';
                                     }catch(e){
-                                        xlog('加入书架处理异常>' + e.message);
+                                        xlog('加入收藏处理异常>' + e.message);
                                     }
                                 }
                                 return 'toast://失败';

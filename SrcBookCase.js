@@ -25,13 +25,13 @@ function bookCase() {
     let d = [];
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
-        title: ' 本地下载',
+        title: '本地下载',
         url: getMyVar("SrcJu_bookCaseType","全部")=="全部"?"hiker://page/Main.view?rule=本地资源管理":"hiker://page/Bookrack.view?rule=本地资源管理&ruleName="+MY_RULE.title+"&type="+(getMyVar("SrcJu_bookCaseType")=="漫画"?"comic":"novel"),
         img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
-        col_type: "icon_2"
+        col_type: "icon_small_3"
     });
     d.push({
-        title: ' 切换样式',
+        title: '切换样式',
         url: $('#noLoading#').lazyRule(() => {
             if(getItem("bookCase_col_type")=="movie_3_marquee"){
                 clearItem("bookCase_col_type");
@@ -42,7 +42,21 @@ function bookCase() {
             return 'hiker://empty';
         }),
         img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
-        col_type: "icon_2"
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '切换收藏',
+        url: $('#noLoading#').lazyRule(() => {
+            if(getItem("切换收藏列表")=="软件收藏"){
+                clearItem("bookCase_col_type");
+            }else{
+                setItem("切换收藏列表", "聚阅收藏");
+            }
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
+        img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
+        col_type: "icon_small_3"
     });
     for (let i = 0; i < 8; i++) {
         d.push({

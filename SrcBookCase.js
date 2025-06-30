@@ -93,6 +93,8 @@ function bookCase() {
         }else{
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile)||'[]'));
+            let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
+            log(history);
             caselist.forEach(it => {
                 Julist.push(it);
             })
@@ -145,7 +147,7 @@ function bookCase() {
                     let mask = "";
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
-                        pic_url: it.picUrl,
+                        pic_url: it.img,
                         desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
                         url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
                             require(config.聚阅);

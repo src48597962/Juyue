@@ -148,7 +148,7 @@ function bookCase() {
                     let name = it.name;
                     let sname = extra.data.name;
                     let last = it.last||"";
-                    let mask = "";
+                    let mask = it.mask||"";
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
                         pic_url: it.img,

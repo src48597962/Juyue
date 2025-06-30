@@ -636,17 +636,17 @@ function getThemeList(isEnable) {
             主页图标: ["http://123.56.105.145/tubiao/more/157.png","http://123.56.105.145/tubiao/more/287.png","http://123.56.105.145/tubiao/more/101.png","http://123.56.105.145/tubiao/more/286.png","http://123.56.105.145/tubiao/more/129.png"],
             二级图标: ['http://123.56.105.145/tubiao/messy/32.svg','http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/20.svg',"http://123.56.105.145/tubiao/ke/91.png",'http://123.56.105.145/tubiao/messy/25.svg'],
             接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"],
-            书架图标: ['http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/85.svg','http://123.56.105.145/tubiao/messy/73.svg']
+            收藏图标: ['http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/85.svg','http://123.56.105.145/tubiao/messy/73.svg']
         });
         function padArray(arr, length, fill) {
             fill = fill || '';
             return arr.concat(Array(length - arr.length).fill(fill)).slice(0, length);
         }
-        let 图标数量 = {主页: 5, 二级: 5, 接口: 4, 书架: 3}
+        let 图标数量 = {主页: 5, 二级: 5, 接口: 4, 收藏: 3}
         currentTheme['主页图标'] = padArray(currentTheme['主页图标'] || [], 图标数量['主页']);
         currentTheme['二级图标'] = padArray(currentTheme['二级图标'] || [], 图标数量['二级']);
         currentTheme['接口图标'] = padArray(currentTheme['接口图标'] || [], 图标数量['接口']);
-        currentTheme['书架图标'] = padArray(currentTheme['书架图标'] || [], 图标数量['书架']);
+        currentTheme['收藏图标'] = padArray(currentTheme['收藏图标'] || [], 图标数量['收藏']);
 
         Object.keys(currentTheme).forEach(it=>{
             if($.type(currentTheme[it])=='array'){

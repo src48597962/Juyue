@@ -474,7 +474,6 @@ function erji() {
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
         if(getMyVar('从书架进二级')){
-            clearMyVar('从书架进二级');
             refreshPage(false);
         }
     }));

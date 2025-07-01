@@ -574,6 +574,7 @@ function erji() {
             detailextra.longClick.push({
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
+
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
@@ -1221,7 +1222,8 @@ function erji() {
             erLoadData.pageid = pageid;//好像没用到，先放着吧
             let nowtime = Date.now();
             erLoadData.updatetime = nowtime + '';
-            
+            xlog(MY_RULE);
+            /*
             let caseobj = {
                 url: MY_RULE.url,
                 find_rule: MY_RULE.find_rule,
@@ -1235,6 +1237,7 @@ function erji() {
             xlog(history[0]);
             
             erLoadData.extra = MY_PARAMS;
+            */
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节

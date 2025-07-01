@@ -1224,8 +1224,10 @@ function erji() {
             
             //let caseobj = Object.assign({}, MY_RULE);
             let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
+            xlog(history);
+
             history = history.filter(v=>v.type=='二级列表');
-            xlog(history[0]);
+            
             erLoadData.extra = MY_PARAMS;
             writeFile(erCacheFile, $.stringify(erLoadData));
         }

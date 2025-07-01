@@ -1221,6 +1221,11 @@ function erji() {
             erLoadData.pageid = pageid;//好像没用到，先放着吧
             let nowtime = Date.now();
             erLoadData.updatetime = nowtime + '';
+            
+            //let caseobj = Object.assign({}, MY_RULE);
+            let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
+            history = history.filter(v=>v.type=='二级列表');
+            xlog(history[0]);
             erLoadData.extra = MY_PARAMS;
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
@@ -1246,8 +1251,6 @@ function erji() {
                 setResult(sname + " | 作者没写最新");
             }, sname))
         }
-        xlog(MY_RULE);
-        
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {

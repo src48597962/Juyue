@@ -12,9 +12,12 @@ function addCase(obj) {
 function bookCase() {
     addListener("onClose", $.toString(() => {
         clearMyVar('书架收藏列表');
+        clearMyVar('从书架进二级');
     }));
 
     setPageTitle('我的收藏书架');
+    putMyVar('从书架进二级','1');
+    
     let d = [];
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
@@ -132,7 +135,6 @@ function bookCase() {
                             url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
                                 require(config.聚阅);
                                 erji();
-                                putMyVar('从书架进二级','1');
                             }),
                             col_type: col_type,
                             extra: extra
@@ -205,7 +207,7 @@ function bookCase() {
                         url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule((caseurl) => {
                             require(config.聚阅);
                             erji();
-                            putMyVar('从书架进二级','1');
+
                             let caselist = storage0.getMyVar('书架收藏列表');
                             let index = caselist.findIndex(item => item.url === caseurl);
                             const [target] = caselist.splice(index, 1);

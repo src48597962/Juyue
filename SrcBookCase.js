@@ -91,6 +91,7 @@ function bookCase() {
                     xlog("书架加载异常>"+e.message);
                 }
             })
+            xlog(Julist);
         }else{
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile)||'[]'));

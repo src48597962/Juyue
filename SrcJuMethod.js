@@ -451,8 +451,8 @@ function getObjCode(jkdata, key) {
         }
         return parse;
     }catch(e){
-        toast("接口url文件加载异常");
-        xlog("接口url文件加载异常>" + e.message + " 错误行#" + e.lineNumber);
+        toast(jkdata.name + ">代码文件加载异常");
+        xlog(jkdata.name + ">代码文件加载异常>" + e.message + " 错误行#" + e.lineNumber);
         return {};
     }
 }

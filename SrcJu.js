@@ -1224,7 +1224,6 @@ function erji() {
             erLoadData.extra = MY_PARAMS;
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
-        xlog(MY_RULE);
         //收藏更新最新章节
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
@@ -1247,6 +1246,8 @@ function erji() {
                 setResult(sname + " | 作者没写最新");
             }, sname))
         }
+        xlog(MY_RULE);
+        
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {

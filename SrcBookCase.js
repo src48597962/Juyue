@@ -1,5 +1,6 @@
 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
 
+/*
 function addCase(obj) {
     let casefile = rulepath + 'case.json';
     eval('let caselist = ' + (fetch(casefile)||'[]'));
@@ -8,6 +9,7 @@ function addCase(obj) {
     writeFile(casefile, JSON.stringify(caselist));
     toast('已加入');
 }
+*/
 
 function bookCase() {
     addListener("onClose", $.toString(() => {

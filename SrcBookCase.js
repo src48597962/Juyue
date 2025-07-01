@@ -126,7 +126,7 @@ function bookCase() {
                         let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                         let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
                         d.push({
-                            title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
+                            title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                             pic_url: it.picUrl,
                             desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
                             url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {

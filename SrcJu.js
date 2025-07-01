@@ -1224,6 +1224,7 @@ function erji() {
             erLoadData.extra = MY_PARAMS;
             writeFile(erCacheFile, $.stringify(erLoadData));
         }
+        xlog(MY_RULE);
         //收藏更新最新章节
         if (parse['最新']) {
             setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {

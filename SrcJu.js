@@ -1222,10 +1222,14 @@ function erji() {
             let nowtime = Date.now();
             erLoadData.updatetime = nowtime + '';
             
-            //let caseobj = Object.assign({}, MY_RULE);
+            let caseobj = {
+                url: MY_RULE.url,
+                find_rule: MY_RULE.find_rule,
+                params: MY_RULE.params,
+                picUrl: MY_PARAMS.img,
+                mTitle: MY_PARAMS.name
+            }
             let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
-            xlog(history);
-
             history = history.filter(v=>v.type=='二级列表');
             
             erLoadData.extra = MY_PARAMS;

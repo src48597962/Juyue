@@ -91,7 +91,6 @@ function bookCase() {
                     xlog("书架加载异常>"+e.message);
                 }
             })
-            xlog(Julist);
         }else{
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile)||'[]'));
@@ -110,6 +109,40 @@ function bookCase() {
 
     if(getItem("切换收藏列表")=="软件收藏"){
         Julist.forEach(it => {
+            try{
+                if(it.mITitle=='二级列表'){
+                    let params = JSON.parse(it.params);
+                    params['params'] = params['params'] || '{}';
+                    let extra = JSON.parse(params.params);
+                    extra['data'] = extra['data'] || {};
+                    let stype = extra['data'].type;
+                    if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
+                        extra['cls'] = "caselist";
+                        extra['lineVisible'] = false;
+                        delete extra['id'];
+                        let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
+                        let sname = extra.data.name;
+                        let extraData = it.extraData?JSON.parse(it.extraData):{};
+                        let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
+                        let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
+                        d.push({
+                            title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+stype+" | "+(sname||"")+"</font></small>":name,
+                            pic_url: it.picUrl,
+                            desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
+                            url: $("hiker://empty?type="+stype+"#immersiveTheme##autoCache#").rule(() => {
+                                require(config.聚阅);
+                                erji();
+                                putMyVar('从书架进二级','1');
+                            }),
+                            col_type: col_type,
+                            extra: extra
+                        })
+                    }
+                }
+            }catch(e){
+                xlog("书架加载异常>"+e.message);
+            }
+            /*
             try{
                 let params = JSON.parse(it.params);
                 let stype = JSON.parse(params.params).data.type;
@@ -139,6 +172,7 @@ function bookCase() {
             }catch(e){
                 xlog("书架加载异常>"+e.message);
             }
+            */
         })
     }else{//聚阅收藏列表
         Julist.forEach(it => {

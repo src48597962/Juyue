@@ -574,7 +574,8 @@ function erji() {
             detailextra.longClick.push({
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
-
+                    xlog(MY_RULE);
+                    /*
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
@@ -587,6 +588,7 @@ function erji() {
                         }
                     }
                     return 'toast://失败';
+                    */
                 }, erCacheFile)
             })
             d.push({
@@ -1222,7 +1224,7 @@ function erji() {
             erLoadData.pageid = pageid;//好像没用到，先放着吧
             let nowtime = Date.now();
             erLoadData.updatetime = nowtime + '';
-            xlog(MY_RULE);
+            
             /*
             let caseobj = {
                 url: MY_RULE.url,

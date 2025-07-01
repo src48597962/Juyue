@@ -123,6 +123,7 @@ function bookCase() {
                         extra['cls'] = "caselist";
                         extra['lineVisible'] = false;
                         delete extra['id'];
+                        delete extra['data']['extstr'];
                         let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
                         let sname = extra.data.name;
                         let extraData = it.extraData?JSON.parse(it.extraData):{};

@@ -321,7 +321,7 @@ function getYiData(datatype, jkdata, dd) {
     }
     setResult(d);
     if(datatype=="主页"){
-        if(!parse['搜索'] || parse['主页'].toString().includes('getVar("keyword", "")')){
+        if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');
         }
         if(sourcemenu.length==0){

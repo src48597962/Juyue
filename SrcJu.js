@@ -1225,7 +1225,6 @@ function erji() {
                 type: '二级列表',
                 title: name,
                 picUrl: erTempData.img,
-                url: MY_URL,
                 params: {
                     url: MY_RULE.url,
                     find_rule: MY_RULE.find_rule,

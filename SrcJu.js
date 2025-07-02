@@ -1860,7 +1860,7 @@ function bookCase() {
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                     let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
-                    let url = (params.url||it.url).split(';')[0];
+                    let url = (params.url||'').split(';')[0];
 
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;

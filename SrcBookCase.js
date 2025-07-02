@@ -109,6 +109,8 @@ function bookCase() {
                     params['params'] = params['params'] || '{}';
                     let extra = JSON.parse(params.params);
                     extra['data'] = extra['data'] || {};
+                    extra['pageTitle'] = it.mTitle;
+                    
                     let stype = extra['data'].type;
                     if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                         extra['cls'] = "caselist";

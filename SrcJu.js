@@ -575,6 +575,7 @@ function erji() {
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
                     xlog(MY_URL);
+                    xlog(getPageTitle());
                     //xlog(MY_RULE);
                     /*
                     let cacheData = fetch(erCacheFile);

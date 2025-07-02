@@ -539,30 +539,34 @@ function searchRecord(lx, input) {
 }
 // 加入聚阅收藏书架方法
 function addCase(obj) {
-    /* 
-    obj = {
-        type: '二级列表',
-        title: '名称',
-        picUrl: '图片',
-        url: MY_URL,
-        params: {
-            url: "",
-            find_rule: "js:(\n() => {\n require(config.聚阅);\n erji();\n}\n)()",//此为演示解析规则，进聚阅二级的
-            params: "就是extra"
-        }
-    }
-    */
     if(!obj){
         let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
         history = history.filter(v=>v.type=='二级列表');
-        
+        if(history.length>0 && history[0].title==getPageTitle()){
+            let data = history[0];
+            let params = JSON.parse(data.params);
+            obj = {
+                type: data.type,
+                title: data.title,
+                picUrl: data.picUrl,
+                url: data.ruleBaseUrl,
+                params: {
+                    url: params.url,
+                    find_rule: params.find_rule,
+                    params: params.params
+                }
+            }
+        }
+    }
+    if(!obj.url){
+        return 'toast://数据错误';
     }
     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
     eval('let caselist = ' + (fetch(casefile)||'[]'));
     caselist = caselist.filter(item => item.url != obj.url || !obj.type);
     caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));
-    toast('已加入');
+    return 'toast://已加入';
 }
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){

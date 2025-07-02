@@ -1383,7 +1383,7 @@ function search(name, sstype, jkdata) {
                 it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
-        }else if(isMatch(name, it.title)){
+        }else if(isMatch(name, it.title) || !it.url.includes('erji();')){
             ssdata.push(it);
         }
     })

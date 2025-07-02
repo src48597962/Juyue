@@ -1227,6 +1227,18 @@ function erji() {
             let nowtime = Date.now();
             erLoadData.updatetime = nowtime + '';
             
+            let caseData = {
+                type: '二级列表',
+                title: name,
+                picUrl: erTempData.img,
+                url: MY_URL,
+                params: {
+                    url: MY_RULE.url,
+                    find_rule: MY_RULE.find_rule,
+                    params: MY_PARAMS
+                }
+            }
+            erLoadData.caseData = caseData;
             /*
             let caseobj = {
                 url: MY_RULE.url,

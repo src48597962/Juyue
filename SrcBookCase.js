@@ -2,7 +2,6 @@ require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
 
 function bookCase() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('书架收藏列表');
         clearMyVar('从书架进二级');
     }));
 
@@ -10,6 +9,7 @@ function bookCase() {
     putMyVar('从书架进二级','1');
     
     let d = [];
+    let sjType = getItem("切换收藏列表");
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
         title: '本地下载',
@@ -71,75 +71,73 @@ function bookCase() {
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
 
     let Julist = [];
-    if(storage0.getMyVar('书架收藏列表')){
-        Julist = storage0.getMyVar('书架收藏列表');
-    }else{
-        if(getItem("切换收藏列表")=="软件收藏"){
-            let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
-            collection.forEach(it => {
-                try{
-                    if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
-                        Julist.push(it);
-                    }
-                }catch(e){
-                    xlog("书架加载异常>"+e.message);
-                }
-            })
-        }else{
-            let casefile = rulepath + 'case.json';
-            eval('let caselist = ' + (fetch(casefile)||'[]'));
-            let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
-            history = history.filter(v=>v.type=='二级列表');
-            caselist.forEach(it => {
-                history = history.filter(v=>v.title==it.name&&v.picUrl==it.img);
-                if(history.length==1){
-                    it.mask = history[0].lastClick?history[0].lastClick.split('@@')[0]:"";
-                }
-                Julist.push(it);
-            })
-        }
-        storage0.putMyVar('书架收藏列表', Julist);
-    }
-
-    if(getItem("切换收藏列表")=="软件收藏"){
-        Julist.forEach(it => {
+    if(sjType=="软件收藏"){
+        let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
+        collection.forEach(it => {
             try{
-                if(it.mITitle=='二级列表'){
-                    let params = JSON.parse(it.params);
-                    params['params'] = params['params'] || '{}';
-                    let extra = JSON.parse(params.params);
-                    extra['data'] = extra['data'] || {};
-                    extra['pageTitle'] = it.mTitle;
-                    
-                    let stype = extra['data'].type;
-                    if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
-                        extra['cls'] = "caselist";
-                        extra['lineVisible'] = false;
-                        delete extra['id'];
-                        delete extra['data']['extstr'];
-                        let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
-                        let sname = extra.data.name;
-                        let extraData = it.extraData?JSON.parse(it.extraData):{};
-                        let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
-                        let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
-                        let url = params.url.split(';')[0];
-
-                        d.push({
-                            title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
-                            pic_url: it.picUrl,
-                            desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
-                            url: $.toString((go)=>{
-                                return go;
-                            }, url + (url.startsWith('hiker://page/')?'':'@rule=' + params.find_rule)),
-                            col_type: col_type,
-                            extra: extra
-                        })
-                    }
+                if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
+                    it.type = it.mITitle;
+                    delete it.mITitle;
+                    Julist.push(it);
                 }
             }catch(e){
                 xlog("书架加载异常>"+e.message);
             }
-            /*
+        })
+    }else{
+        let casefile = rulepath + 'case.json';
+        eval('let caselist = ' + (fetch(casefile)||'[]'));
+        let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
+        history = history.filter(v=>v.type=='二级列表');
+        caselist.forEach(it => {
+            history = history.filter(v=>v.title==it.name&&v.picUrl==it.img);
+            if(history.length==1){
+                it.mask = history[0].lastClick?history[0].lastClick.split('@@')[0]:"";
+            }
+            Julist.push(it);
+        })
+    }
+
+    Julist.forEach(it => {
+        try{
+            if(it.type=='二级列表'){
+                let params = JSON.parse(it.params);
+                params['params'] = params['params'] || '{}';
+                let extra = JSON.parse(params.params);
+                extra['data'] = extra['data'] || {};
+                extra['pageTitle'] = it.mTitle;
+                
+                let stype = extra['data'].type;
+                if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
+                    extra['cls'] = "caselist";
+                    extra['lineVisible'] = false;
+                    delete extra['id'];
+                    delete extra['data']['extstr'];
+                    let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
+                    let sname = extra.data.name;
+                    let extraData = it.extraData?JSON.parse(it.extraData):{};
+                    let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
+                    let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
+                    let url = params.url.split(';')[0];
+
+                    d.push({
+                        title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
+                        pic_url: it.picUrl,
+                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
+                        url: url + (url.startsWith('hiker://page/')?'':'@rule=' + params.find_rule),
+                        col_type: col_type,
+                        extra: extra
+                    })
+                }
+            }
+        }catch(e){
+            xlog("书架加载异常>"+e.message);
+        }
+    })
+
+    /*
+    if(getItem("切换收藏列表")=="软件收藏"){
+        Julist.forEach(it => {
             try{
                 let params = JSON.parse(it.params);
                 let stype = JSON.parse(params.params).data.type;
@@ -168,7 +166,6 @@ function bookCase() {
             }catch(e){
                 xlog("书架加载异常>"+e.message);
             }
-            */
         })
     }else{//聚阅收藏列表
         Julist.forEach(it => {
@@ -219,7 +216,7 @@ function bookCase() {
             }
         })
     }
-    
+    */
     d.push({
         title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="软件收藏"?"右上角♥加入软件收藏":"长按二级封面加入聚阅收藏"):"",
         url: "hiker://empty",

@@ -574,23 +574,16 @@ function erji() {
             detailextra.longClick.push({
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
-                    xlog(MY_URL);
-                    xlog(getPageTitle());
-                    //xlog(MY_RULE);
-                    /*
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
                             eval("let cacheJson=" + cacheData + ";");
-                            require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcBookCase.js');
-                            addCase(cacheJson.extra);
-                            return 'hiker://empty';
+                            return addCase(cacheJson.caseData);
                         }catch(e){
                             xlog('加入收藏处理异常>' + e.message);
                         }
                     }
                     return 'toast://失败';
-                    */
                 }, erCacheFile)
             })
             d.push({

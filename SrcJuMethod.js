@@ -565,11 +565,10 @@ function addCase(obj, update) {
     eval('let caselist = ' + (fetch(casefile)||'[]'));
     if(update){
         if(!caselist.some(v=>v.url==obj.url&&v.title==obj.title)){
-            xlog('不存在');
             return;
         }
     }
-    caselist = caselist.filter(item => item.url != obj.url || !obj.type);
+    caselist = caselist.filter(item => (item.url!=obj.url&&item.title!=obj.title) || !obj.type);
     caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));
     return 'toast://已加入';

@@ -517,17 +517,17 @@ function erji() {
     let isload;//是否正确加载
     let pic;
     let parse = getObjCode(jkdata, 'er');
+    let erdataCache;//是否加载缓存页面数据
     
     try {
         if (sid&&MY_URL) {
-            let erdataCache;
             if(!getMyVar("SrcJu_调试模式")){
                 let cacheData = fetch(erCacheFile);
                 if (cacheData != "") {
                     try{
                         eval("let cacheJson=" + cacheData + ";");
                         let nowtime = Date.now();
-                        let oldtime = parseInt(cacheJson.updatetime||'0');
+                        let oldtime = cacheJson.updatetime||0;
                         if(cacheJson.sid==sid && cacheJson.url==MY_URL && nowtime > (oldtime + 1 * 60 * 60 * 1000)){
                             erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快，缓存1小时
                         }
@@ -1219,13 +1219,12 @@ function erji() {
         let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
         setMark(erjiMarkdata);
         //当前二级数据保存到缓存文件，避免二级重复请深圳市
-        if(!getMyVar("SrcJu_调试模式")){
+        if(!getMyVar("SrcJu_调试模式") && !erdataCache){
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
             erLoadData.lineid = lineid;//好像没用到，先放着吧
             erLoadData.pageid = pageid;//好像没用到，先放着吧
-            let nowtime = Date.now();
-            erLoadData.updatetime = nowtime + '';
+            erLoadData.updatetime = Date.now();
             
             let caseData = {
                 type: '二级列表',

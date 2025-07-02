@@ -574,7 +574,8 @@ function erji() {
             detailextra.longClick.push({
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
-                    xlog(MY_RULE);
+                    xlog(MY_URL);
+                    //xlog(MY_RULE);
                     /*
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {

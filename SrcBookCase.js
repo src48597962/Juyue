@@ -122,12 +122,13 @@ function bookCase() {
                         let extraData = it.extraData?JSON.parse(it.extraData):{};
                         let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                         let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
+                        let url = params.url.split(';')[0];
 
                         d.push({
                             title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                             pic_url: it.picUrl,
                             desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
-                            url: params.url.split(';')[0]  + '@rule=' + params.find_rule,
+                            url: url + (url.startsWith('hker://page/')?'':'@rule=' + params.find_rule),
                             col_type: col_type,
                             extra: extra
                         })

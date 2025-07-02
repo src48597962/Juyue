@@ -537,6 +537,15 @@ function searchRecord(lx, input) {
     }
     return;
 }
+// 加入聚阅收藏书架方法
+function addCase(obj) {
+    let casefile = rulepath + 'case.json';
+    eval('let caselist = ' + (fetch(casefile)||'[]'));
+    caselist = caselist.filter(item => item.url != obj.url);
+    caselist.unshift(obj);
+    writeFile(casefile, JSON.stringify(caselist));
+    toast('已加入');
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

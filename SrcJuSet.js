@@ -838,6 +838,7 @@ function jiekousave(urls, mode) {
                 //}
                 
                 delete it['oldid'];
+                delete it['oldversion'];
 
                 if(it.name&&it.url&&it.type){
                     datalist.push(it);

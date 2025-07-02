@@ -552,6 +552,11 @@ function addCase(obj) {
         }
     }
     */
+    if(!obj){
+        let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
+        history = history.filter(v=>v.type=='二级列表');
+        
+    }
     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
     eval('let caselist = ' + (fetch(casefile)||'[]'));
     caselist = caselist.filter(item => item.url != obj.url || !obj.type);

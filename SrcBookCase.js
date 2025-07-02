@@ -1,16 +1,5 @@
 require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuPublic.js');
 
-/*
-function addCase(obj) {
-    let casefile = rulepath + 'case.json';
-    eval('let caselist = ' + (fetch(casefile)||'[]'));
-    caselist = caselist.filter(item => item.url != obj.url);
-    caselist.unshift(obj);
-    writeFile(casefile, JSON.stringify(caselist));
-    toast('已加入');
-}
-*/
-
 function bookCase() {
     addListener("onClose", $.toString(() => {
         clearMyVar('书架收藏列表');

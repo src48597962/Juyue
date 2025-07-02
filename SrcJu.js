@@ -1815,7 +1815,9 @@ function bookCase() {
             try{
                 if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
                     it.type = it.mITitle;
+                    it.title = it.mTitle;
                     delete it.mITitle;
+                    delete it.mTitle;
                     Julist.push(it);
                 }
             }catch(e){
@@ -1842,21 +1844,22 @@ function bookCase() {
                 let params = JSON.parse(it.params);
                 params['params'] = params['params'] || '{}';
                 let extra = JSON.parse(params.params);
-                extra['data'] = extra['data'] || {};
-                extra['pageTitle'] = it.mTitle;
                 
                 let stype = extra['data'].type;
                 if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
-                    extra['cls'] = "caselist";
-                    extra['lineVisible'] = false;
-                    delete extra['id'];
-                    delete extra['data']['extstr'];
-                    let name = it.mTitle.indexOf(extra.name)>-1?extra.name:it.mTitle;
+                    let name = extra.name||it.title;
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                     let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
-                    let url = params.url.split(';')[0];
+                    let url = (params.url||it.url).split(';')[0];
+
+                    extra['cls'] = "caselist";
+                    extra['lineVisible'] = false;
+                    extra['data'] = extra['data'] || {};
+                    extra['pageTitle'] = extra['pageTitle'] || name;
+                    delete extra['id'];
+                    delete extra['data']['extstr'];
 
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,

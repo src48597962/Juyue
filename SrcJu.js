@@ -1214,7 +1214,7 @@ function erji() {
         let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
         setMark(erjiMarkdata);
         //当前二级数据保存到缓存文件，避免二级重复请深圳市
-        if(!getMyVar("SrcJu_调试模式") && !erdataCache){
+        if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
             erLoadData.lineid = lineid;//好像没用到，先放着吧
@@ -1232,6 +1232,7 @@ function erji() {
                     params: MY_PARAMS
                 }
             }
+
             erLoadData.caseData = caseData;
             /*
             let caseobj = {
@@ -1248,7 +1249,13 @@ function erji() {
             
             erLoadData.extra = MY_PARAMS;
             */
-            writeFile(erCacheFile, $.stringify(erLoadData));
+            if(!erdataCache){
+                writeFile(erCacheFile, $.stringify(erLoadData));
+            }
+        }
+        //书架进二级的，刷新书架
+        if(getMyVar('从书架进二级')){
+            addCase(erLoadData.caseData);
         }
         //收藏更新最新章节
         if (parse['最新']) {

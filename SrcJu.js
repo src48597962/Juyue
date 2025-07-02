@@ -1818,6 +1818,8 @@ function bookCase() {
                     it.title = it.mTitle;
                     delete it.mITitle;
                     delete it.mTitle;
+                    it.params = JSON.parse(it.params);
+                    it.params['params'] = JSON.parse(it.params['params'] || '{}');
                     Julist.push(it);
                 }
             }catch(e){
@@ -1845,9 +1847,11 @@ function bookCase() {
     Julist.forEach(it => {
         try{
             if(it.type=='二级列表'){
-                let params = JSON.parse(it.params);
-                params['params'] = params['params'] || '{}';
-                let extra = JSON.parse(params.params);
+                //let params = JSON.parse(it.params);
+                //params['params'] = params['params'] || '{}';
+                //let extra = JSON.parse(params.params);
+                let params = it.params;
+                let extra = params.params;
                 extra['data'] = extra['data'] || {};
                 
                 let stype = extra['data'].type;

@@ -593,7 +593,7 @@ function erji() {
                 desc: erTempData.detail2 || "",
                 pic_url: erTempData.img,
                 url: erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
-                col_type: 'movie_1_vertical_pic_blur',
+                col_type: erLoadData.col_type || 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
 
@@ -1250,12 +1250,9 @@ function erji() {
             erLoadData.extra = MY_PARAMS;
             */
             if(!erdataCache){
+                addCase(erLoadData.caseData, true);
                 writeFile(erCacheFile, $.stringify(erLoadData));
             }
-        }
-        //书架进二级的，刷新书架
-        if(getMyVar('从书架进二级')){
-            addCase(erLoadData.caseData);
         }
         //收藏更新最新章节
         if (parse['最新']) {

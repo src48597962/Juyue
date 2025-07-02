@@ -593,7 +593,7 @@ function erji() {
                 desc: erTempData.detail2 || "",
                 pic_url: erTempData.img,
                 url: erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
-                col_type: erLoadData.col_type || 'movie_1_vertical_pic_blur',
+                col_type: 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
 

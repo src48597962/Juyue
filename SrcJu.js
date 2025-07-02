@@ -1848,6 +1848,7 @@ function bookCase() {
                 let params = JSON.parse(it.params);
                 params['params'] = params['params'] || '{}';
                 let extra = JSON.parse(params.params);
+                extra['data'] = extra['data'] || {};
                 
                 let stype = extra['data'].type;
                 if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
@@ -1860,7 +1861,6 @@ function bookCase() {
 
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;
-                    extra['data'] = extra['data'] || {};
                     extra['pageTitle'] = extra['pageTitle'] || name;
                     delete extra['id'];
                     delete extra['data']['extstr'];

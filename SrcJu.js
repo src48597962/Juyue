@@ -500,24 +500,26 @@ function erji() {
     let sgroup = jkdata.group || jkdata.type;//二级源所在分组
     let sid = jkdata.id;//二级源id
     MY_URL = erjiextra.url;//二级请求url
-
-    let smark = getMark(MY_URL, sid);//足迹记录
-    let lineid = smark.lineid || 0;//线路索引id
-    let pageid = smark.pageid || 0;//分页索引id
-
+    
     if(jkdata.extstr){
         if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
             writeFile(jkdata.url.replace('rules/Src','_cache'), jkdata.extstr);
         }
         delete jkdata.extstr;
     }
+    let parse = getObjCode(jkdata, 'er');
+    if(!MY_URL.startsWith('http') && parse['host']){
+        MY_URL = parse['host'] + MY_URL;
+    }
     
     let d = [];
+    let smark = getMark(MY_URL, sid);//足迹记录
+    let lineid = smark.lineid || 0;//线路索引id
+    let pageid = smark.pageid || 0;//分页索引id
     let erLoadData = {};
     let isload;//是否正确加载
-    let pic;
-    let parse = getObjCode(jkdata, 'er');
     let erdataCache;//是否加载缓存页面数据
+    let pic;
     
     try {
         if (sid&&MY_URL) {

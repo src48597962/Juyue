@@ -538,7 +538,7 @@ function searchRecord(lx, input) {
     return;
 }
 // 加入聚阅收藏书架方法
-function addCase(obj) {
+function addCase(obj, update) {
     if(!obj){
         let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
         history = history.filter(v=>v.type=='二级列表');
@@ -563,6 +563,12 @@ function addCase(obj) {
     }
     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
     eval('let caselist = ' + (fetch(casefile)||'[]'));
+    if(update){
+        if(!caselist.some(v=>v.url==obj.url&&v.title==obj.title)){
+            xlog('不存在');
+            return;
+        }
+    }
     caselist = caselist.filter(item => item.url != obj.url || !obj.type);
     caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));

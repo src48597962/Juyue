@@ -539,9 +539,22 @@ function searchRecord(lx, input) {
 }
 // 加入聚阅收藏书架方法
 function addCase(obj) {
-    let casefile = rulepath + 'case.json';
+    /* 
+    obj = {
+        type: '二级列表',
+        title: '名称',
+        picUrl: '图片',
+        url: MY_URL,
+        params: {
+            url: "",
+            find_rule: "js:(\n() => {\n require(config.聚阅);\n erji();\n}\n)()",//此为演示解析规则，进聚阅二级的
+            params: "就是extra"
+        }
+    }
+    */
+    let casefile = 'hiker://files/rules/Src/Juyue/case.json';
     eval('let caselist = ' + (fetch(casefile)||'[]'));
-    caselist = caselist.filter(item => item.url != obj.url);
+    caselist = caselist.filter(item => item.url != obj.url || !obj.type);
     caselist.unshift(obj);
     writeFile(casefile, JSON.stringify(caselist));
     toast('已加入');

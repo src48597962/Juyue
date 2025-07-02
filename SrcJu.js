@@ -1821,20 +1821,24 @@ function bookCase() {
                     Julist.push(it);
                 }
             }catch(e){
-                xlog("书架加载异常>"+e.message);
+                xlog("收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
             }
         })
     }else{
         let casefile = rulepath + 'case.json';
-        eval('let caselist = ' + (fetch(casefile)||'[]'));
-        let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
-        history = history.filter(v=>v.type=='二级列表');
+        eval('let caselist = ' + (fetch(casefile) || '[]'));
+        let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
+        history = history.filter(v => v.type == '二级列表');
         caselist.forEach(it => {
-            history = history.filter(v=>v.title==it.name&&v.picUrl==it.img);
-            if(history.length==1){
-                it.mask = history[0].lastClick?history[0].lastClick.split('@@')[0]:"";
+            try {
+                history = history.filter(v => v.title == it.name && v.picUrl == it.img);
+                if (history.length == 1) {
+                    it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
+                }
+                Julist.push(it);
+            } catch (e) {
+                xlog("收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
             }
-            Julist.push(it);
         })
     }
 
@@ -1872,7 +1876,7 @@ function bookCase() {
                 }
             }
         }catch(e){
-            xlog("书架加载异常>"+e.message);
+            xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
     })
 

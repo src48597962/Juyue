@@ -1845,16 +1845,15 @@ function bookCase() {
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
                     let url = it.params.url || '';
-                    if(!url.includes('@')){
-                        url = url + (url.startsWith('hiker://page/')?'':it.type=='一级列表'?'@lazyRule=.':'@rule=');
+                    if(!url.includes('@') && !url.startsWith('hiker://page/')){
                         if(it.params.find_rule){
-                            url = url + it.params.find_rule;
+                            url = url + (it.type=='一级列表'?'@lazyRule=.':'@rule=') + it.params.find_rule;
                         }else{
                             let parse = $.require("jiekou").parse(extra.data);
                             let 解析 = it.params.lazy||'解析';
                             if(parse[解析]){
                                 eval("let 解析2 = " + parse[解析]);
-                                url = url + 'js:' + 解析2.call(parse);
+                                url = url + 解析2.call(parse);
                             }
                         }
                     }

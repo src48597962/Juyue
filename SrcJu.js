@@ -1857,7 +1857,6 @@ function bookCase() {
                                 let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                                 eval('let caselist = ' + (fetch(casefile)||'[]'));
                                 caselist = caselist.filter(item => md5(item.title+item.params.url) != caseid);
-                                let casefile = rulepath + 'case.json';
                                 writeFile(casefile, JSON.stringify(caselist));
                                 refreshPage();
                             }, md5(it.title+it.params.url))

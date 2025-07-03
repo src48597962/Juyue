@@ -508,9 +508,11 @@ function erji() {
         delete jkdata.extstr;
     }
     let parse = getObjCode(jkdata, 'er');
+    /*
     if(!MY_URL.startsWith('http') && parse['host']){
         MY_URL = parse['host'] + MY_URL;
     }
+    */
     
     let d = [];
     let smark = getMark(MY_URL, sid);//足迹记录

@@ -1818,7 +1818,7 @@ function bookCase() {
         xlog("历史数量"+ history.length);
         caselist.forEach(it => {
             try {
-                history = history.filter(v => v.title==it.name && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
+                history = history.filter(v => v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
                 xlog("历史数量"+ history.length);
                 if (history.length == 1) {
                     xlog(history[0].lastClick);

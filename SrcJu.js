@@ -1833,7 +1833,7 @@ function bookCase() {
 
     Julist.forEach(it => {
         try{
-            if(it.type=='二级列表'){
+            if(it.type=='二级列表' || it.type=='一级列表'){
                 let extra = it.params.params || {};
                 extra['data'] = extra['data'] || {};
                 

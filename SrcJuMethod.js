@@ -569,7 +569,8 @@ function addBookCase(obj, update) {
                 return;
             }
         }
-        caselist = caselist.filter(item => item.params.url!=obj.params.url&&item.title!=obj.title);
+        let index = caselist.findIndex(v => v.params.url==obj.params.url&&v.title==obj.title);
+        caselist.splice(index, 1);
         caselist.unshift(obj);
         writeFile(casefile, JSON.stringify(caselist));
         return 'toast://已加入';

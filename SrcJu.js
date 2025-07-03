@@ -1805,6 +1805,7 @@ function bookCase() {
                     delete it.mITitle;
                     delete it.mTitle;
                     it.params = JSON.parse(it.params);
+                    it.params.url = (it.params.url||'').split(';')[0];
                     it.params['params'] = JSON.parse(it.params['params'] || '{}');
                     it.mask = it.lastClick?it.lastClick.split('@@')[0]:"";
                     Julist.push(it);
@@ -1843,7 +1844,18 @@ function bookCase() {
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
-                    let url = it.type=='一级列表'?(it.params.url||''):(it.params.url||'').split(';')[0];
+                    let url = it.params.url || '';
+                    if(!url.includes('@')){
+                        url = url + (url.startsWith('hiker://page/')?'':it.type=='一级列表'?'@lazyRule=.':'@rule=');
+                        if(it.params.find_rule){
+                            url = url + it.params.find_rule;
+                        }else{
+                            let lazy = $.require("jiekou").parse(extra.data)[it.params.lazy||'解析'];
+                            if(lazy){
+                                url = url + 'js:' + $.toString(lazy);
+                            }
+                        }
+                    }
 
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;
@@ -1867,7 +1879,7 @@ function bookCase() {
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                         pic_url: it.picUrl,
                         desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.mask||'').substring(0,15)+"\n\n🔘 "+last:last,
-                        url: url + (url.startsWith('hiker://page/')?'':(it.params.find_rule?'@rule='+it.params.find_rule:'')),
+                        url: url,
                         col_type: col_type,
                         extra: extra
                     })

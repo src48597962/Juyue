@@ -558,7 +558,7 @@ function addBookCase(obj, update) {
             }
         }
     }
-    if(!obj.url){
+    if(!obj.params.url){
         return 'toast://数据错误';
     }
     try{

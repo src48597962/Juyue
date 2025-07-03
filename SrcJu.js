@@ -1850,9 +1850,11 @@ function bookCase() {
                         if(it.params.find_rule){
                             url = url + it.params.find_rule;
                         }else{
-                            let lazy = $.require("jiekou").parse(extra.data)[it.params.lazy||'解析'];
-                            if(lazy){
-                                url = url + 'js:' + $.toString(lazy);
+                            let parse = $.require("jiekou").parse(extra.data);
+                            let 解析 = it.params.lazy||'解析';
+                            if(parse[解析]){
+                                eval("let 解析2 = " + parse[解析]);
+                                url = url + 'js:' + 解析2.call(parse);
                             }
                         }
                     }

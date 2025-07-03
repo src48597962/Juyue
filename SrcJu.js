@@ -177,7 +177,7 @@ function yiji(testSource) {
             }
         })
         d.push({
-            title: "书架",
+            title: "收藏",
             url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
                 require(config.聚阅);
                 bookCase();
@@ -759,7 +759,7 @@ function erji() {
                 })
             }else{
                 d.push({
-                    title: "书架/下载",
+                    title: "收藏书架",
                     url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
                         require(config.聚阅);
                         bookCase();

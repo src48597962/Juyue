@@ -539,7 +539,7 @@ function searchRecord(lx, input) {
     return;
 }
 // 加入聚阅收藏书架方法
-function addCase(obj, update) {
+function addBookCase(obj, update) {
     if(!obj){
         let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
         history = history.filter(v=>v.type=='二级列表');
@@ -550,9 +550,8 @@ function addCase(obj, update) {
                 type: data.type,
                 title: data.title,
                 picUrl: data.picUrl,
-                url: data.ruleBaseUrl,
                 params: {
-                    url: params.url,
+                    url: params.url.split(';')[0],
                     find_rule: params.find_rule,
                     params: params.params
                 }
@@ -562,17 +561,21 @@ function addCase(obj, update) {
     if(!obj.url){
         return 'toast://数据错误';
     }
-    let casefile = 'hiker://files/rules/Src/Juyue/case.json';
-    eval('let caselist = ' + (fetch(casefile)||'[]'));
-    if(update){
-        if(!caselist.some(v=>v.url==obj.url&&v.title==obj.title)){
-            return;
+    try{
+        let casefile = 'hiker://files/rules/Src/Juyue/case.json';
+        eval('let caselist = ' + (fetch(casefile)||'[]'));
+        if(update){
+            if(!caselist.some(v=>v.params.url==obj.params.url&&v.title==obj.title)){
+                return;
+            }
         }
+        caselist = caselist.filter(item => !(item.params.url==obj.params.url&&item.title==obj.title) || obj.type);
+        caselist.unshift(obj);
+        writeFile(casefile, JSON.stringify(caselist));
+        return 'toast://已加入';
+    }catch(e){
+        return 'toast://失败>'+e.message;
     }
-    caselist = caselist.filter(item => (item.url!=obj.url&&item.title!=obj.title) || !obj.type);
-    caselist.unshift(obj);
-    writeFile(casefile, JSON.stringify(caselist));
-    return 'toast://已加入';
 }
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){

@@ -1842,6 +1842,8 @@ function bookCase() {
             }
         })
     }
+    let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
+    xlog(history);
 
     Julist.forEach(it => {
         try{

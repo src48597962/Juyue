@@ -1851,10 +1851,14 @@ function bookCase() {
                         }else{
                             let parse = $.require("jiekou").parse(extra.data);
                             let 解析 = it.params.lazy||'解析';
+                            xlog(解析);
                             if(parse[解析]){
+                                xlog('1');
                                 if(it.type=='一级列表'){
+                                    xlog('2');
                                     url = url + parse[解析].call(parse, url);
                                 }else if(it.type=='二级列表'){
+                                    xlog('3');
                                     url = url + $('').rule(parse[解析].call(parse));
                                 }
                             }

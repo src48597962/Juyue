@@ -1852,11 +1852,10 @@ function bookCase() {
                             let parse = $.require("jiekou").parse(extra.data);
                             let 解析 = it.params.lazy||'解析';
                             if(parse[解析]){
-                                eval("let 解析2 = " + parse[解析]);
                                 if(it.type=='一级列表'){
-                                    url = url + 解析2.call(parse, url);
+                                    url = url + parse[解析].call(parse, url);
                                 }else if(it.type=='二级列表'){
-                                    url = url + $('').rule(解析2.call(parse));
+                                    url = url + $('').rule(parse[解析].call(parse));
                                 }
                             }
                         }

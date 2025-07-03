@@ -565,12 +565,12 @@ function addBookCase(obj, update) {
         let casefile = 'hiker://files/rules/Src/Juyue/case.json';
         eval('let caselist = ' + (fetch(casefile)||'[]'));
         if(update){
-            if(!caselist.some(v=>v.params.url==obj.params.url&&v.title==obj.title)){
+            if(!caselist.some(v=>v.params.url.split('@')[0]==obj.params.url.split('@')[0]&&v.title==obj.title)){
                 return;
             }
         }
 
-        let index = caselist.findIndex(v => v.params.url==obj.params.url&&v.title==obj.title);
+        let index = caselist.findIndex(v => v.params.url.split('@')[0]==obj.params.url.split('@')[0]&&v.title==obj.title);
         if(index>-1){
             caselist.splice(index, 1);
         }

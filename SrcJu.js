@@ -1832,7 +1832,7 @@ function bookCase() {
         history = history.filter(v => v.type == '二级列表');
         caselist.forEach(it => {
             try {
-                history = history.filter(v => v.title == it.name && v.picUrl == it.img);
+                history = history.filter(v => v.type=='二级列表' && v.title==it.name && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
                 if (history.length == 1) {
                     it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
                 }
@@ -1842,8 +1842,6 @@ function bookCase() {
             }
         })
     }
-    let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
-    xlog(history);
 
     Julist.forEach(it => {
         try{

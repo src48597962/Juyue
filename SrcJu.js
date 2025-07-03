@@ -1860,7 +1860,7 @@ function bookCase() {
                                     url = url + parse[解析].call(parse, url);
                                 }else if(it.type=='二级列表'){
                                     xlog('3');
-                                    url = url + $('').rule(parse[解析].call(parse));
+                                    url = url + $('').rule(parse[解析]());
                                 }
                             }
                         }

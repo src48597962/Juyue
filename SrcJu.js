@@ -1850,6 +1850,19 @@ function bookCase() {
                     extra['pageTitle'] = extra['pageTitle'] || name;
                     delete extra['id'];
                     delete extra['data']['extstr'];
+                    if(sjType!="软件收藏"){
+                        extra.longClick = [{
+                            title: "去除聚阅收藏",
+                            js: $.toString((caseid) => {
+                                let casefile = 'hiker://files/rules/Src/Juyue/case.json';
+                                eval('let caselist = ' + (fetch(casefile)||'[]'));
+                                caselist = caselist.filter(item => md5(item.title+item.params.url) != caseid);
+                                let casefile = rulepath + 'case.json';
+                                writeFile(casefile, JSON.stringify(caselist));
+                                refreshPage();
+                            }, md5(it.title+it.params.url))
+                        }]
+                    }
 
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,

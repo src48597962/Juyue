@@ -1804,6 +1804,7 @@ function bookCase() {
                     delete it.mTitle;
                     it.params = JSON.parse(it.params);
                     it.params['params'] = JSON.parse(it.params['params'] || '{}');
+                    it.mask = it.lastClick?it.lastClick.split('@@')[0]:"";
                     Julist.push(it);
                 }
             }catch(e){
@@ -1843,7 +1844,6 @@ function bookCase() {
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
-                    let mask = it.lastClick?it.lastClick.split('@@')[0]:"";
                     let url = (it.params.url||'').split(';')[0];
 
                     extra['cls'] = "caselist";
@@ -1855,7 +1855,7 @@ function bookCase() {
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                         pic_url: it.picUrl,
-                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+mask.substring(0,15)+"\n\n🔘 "+last:last,
+                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+it.mask.substring(0,15)+"\n\n🔘 "+last:last,
                         url: url + (url.startsWith('hiker://page/')?'':'@rule=' + it.params.find_rule),
                         col_type: col_type,
                         extra: extra

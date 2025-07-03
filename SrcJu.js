@@ -1855,8 +1855,7 @@ function bookCase() {
                                 if(it.type=='一级列表'){
                                     url = url + parse[解析].call(parse, url);
                                 }else if(it.type=='二级列表'){
-                                    //url = url + $('').rule(parse[解析]);
-                                    url = url + '@rule=js:' + $.toString(parse[解析]);
+                                    url = url + $('').rule(parse[解析]);
                                 }
                             }
                         }

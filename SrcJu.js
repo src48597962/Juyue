@@ -1856,10 +1856,10 @@ function bookCase() {
                             js: $.toString((caseid) => {
                                 let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                                 eval('let caselist = ' + (fetch(casefile)||'[]'));
-                                caselist = caselist.filter(item => md5(item.title+item.params.url) != caseid);
+                                caselist = caselist.filter(item => md5(item.title+item.params.url.split('@')[0]) != caseid);
                                 writeFile(casefile, JSON.stringify(caselist));
                                 refreshPage();
-                            }, md5(it.title+it.params.url))
+                            }, md5(it.title+it.params.url.split('@')[0]))
                         }]
                     }
 

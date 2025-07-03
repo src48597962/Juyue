@@ -572,7 +572,9 @@ function addBookCase(obj, update) {
         xlog(caselist.length);
         let index = caselist.findIndex(v => v.params.url==obj.params.url&&v.title==obj.title);
         xlog(index);
-        caselist.splice(index, 1);
+        if(index>-1){
+            caselist.splice(index, 1);
+        }
         xlog(caselist.length);
         caselist.unshift(obj);
         writeFile(casefile, JSON.stringify(caselist));

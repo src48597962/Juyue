@@ -569,7 +569,7 @@ function addBookCase(obj, update) {
                 return;
             }
         }
-        caselist = caselist.filter(item => !(item.params.url==obj.params.url&&item.title==obj.title));
+        caselist = caselist.filter(item => item.params.url!=obj.params.url&&item.title!=obj.title);
         caselist.unshift(obj);
         writeFile(casefile, JSON.stringify(caselist));
         return 'toast://已加入';

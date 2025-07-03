@@ -1847,13 +1847,17 @@ function bookCase() {
                     let url = it.params.url || '';
                     if(!url.includes('@') && !url.startsWith('hiker://page/')){
                         if(it.params.find_rule){
-                            url = url + (it.type=='一级列表'?'@lazyRule=.':'@rule=') + it.params.find_rule;
+                            url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
                         }else{
                             let parse = $.require("jiekou").parse(extra.data);
                             let 解析 = it.params.lazy||'解析';
                             if(parse[解析]){
                                 eval("let 解析2 = " + parse[解析]);
-                                url = url + 解析2.call(parse, url);
+                                if(it.type=='一级列表'){
+                                    url = url + 解析2.call(parse, url);
+                                }else if(it.type=='二级列表'){
+                                    url = url + $('').rule(解析2);
+                                }
                             }
                         }
                     }

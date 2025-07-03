@@ -1843,7 +1843,7 @@ function bookCase() {
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
-                    let url = (it.params.url||'').split(';')[0];
+                    let url = it.type=='一级列表'?(it.params.url||''):(it.params.url||'').split(';')[0];
 
                     extra['cls'] = "caselist";
                     extra['lineVisible'] = false;

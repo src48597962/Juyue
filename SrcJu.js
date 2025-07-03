@@ -1231,23 +1231,8 @@ function erji() {
                     params: MY_PARAMS
                 }
             }
-
             erLoadData.caseData = caseData;
-            /*
-            let caseobj = {
-                url: MY_RULE.url,
-                find_rule: MY_RULE.find_rule,
-                params: MY_RULE.params,
-                picUrl: MY_PARAMS.img,
-                mTitle: MY_PARAMS.name
-            }
 
-            let history = JSON.parse(fetch("hiker://history?rule="+MY_RULE.title));
-            history = history.filter(v=>v.type=='二级列表');
-            xlog(history[0]);
-            
-            erLoadData.extra = MY_PARAMS;
-            */
             if(!erdataCache){
                 addBookCase(erLoadData.caseData, true);
                 writeFile(erCacheFile, $.stringify(erLoadData));
@@ -1830,10 +1815,13 @@ function bookCase() {
         eval('let caselist = ' + (fetch(casefile) || '[]'));
         let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
         history = history.filter(v => v.type == '二级列表');
+        xlog("历史数量"+ history.length);
         caselist.forEach(it => {
             try {
-                history = history.filter(v => v.type=='二级列表' && v.title==it.name && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
+                history = history.filter(v => v.title==it.name && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
+                xlog("历史数量"+ history.length);
                 if (history.length == 1) {
+                    xlog(history[0].lastClick);
                     it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
                 }
                 Julist.push(it);

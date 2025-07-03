@@ -1853,7 +1853,7 @@ function bookCase() {
                             let 解析 = it.params.lazy||'解析';
                             if(parse[解析]){
                                 eval("let 解析2 = " + parse[解析]);
-                                url = url + 解析2.call(parse);
+                                url = url + 解析2.call(parse, url);
                             }
                         }
                     }

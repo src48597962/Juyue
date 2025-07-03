@@ -1807,7 +1807,7 @@ function themeIconSet() {
         let 编辑d = 编辑组件();
         let datas = [{
             'type': '主页',
-            'name': ['切源', '频道', '搜索', '书架', '管理']
+            'name': ['切源', '频道', '搜索', '收藏', '管理']
         }, {
             'type': '二级',
             'name': ['简介', '书架', '换源', '详情', '搜索']
@@ -1842,7 +1842,7 @@ function themeIconSet() {
                 d.push({
                     title: icon_name,
                     img: icon_img,
-                    col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_2' : 'icon_5',
+                    col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_small_3' : 'icon_5',
                     url: $('#noLoading#').lazyRule((type_name, icon_name, i, inputdesc, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {

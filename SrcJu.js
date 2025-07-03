@@ -1818,13 +1818,10 @@ function bookCase() {
         eval('let caselist = ' + (fetch(casefile) || '[]'));
         let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
         history = history.filter(v => v.type == '二级列表');
-        xlog("历史数量"+ history.length);
         caselist.forEach(it => {
             try {
                 history = history.filter(v => v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
-                xlog("历史数量"+ history.length);
                 if (history.length == 1) {
-                    xlog(history[0].lastClick);
                     it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
                 }
                 Julist.push(it);

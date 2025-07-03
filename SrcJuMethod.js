@@ -553,7 +553,7 @@ function addBookCase(obj, update) {
                 params: {
                     url: params.url.split(';')[0],
                     find_rule: params.find_rule,
-                    params: params.params
+                    params: JSON.parse(params.params)
                 }
             }
         }

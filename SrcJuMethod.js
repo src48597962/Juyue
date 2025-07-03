@@ -465,7 +465,7 @@ function toerji(item, jkdata) {
         }
         let extra = item.extra || {};
         let imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico'];
-        if(item.url && !extra.noDetail && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty' && !imageExtensions.some(ext => item.url.toLowerCase().endsWith(ext))){
+        if(item.url && !extra.noDetail && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty' && !imageExtensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
             extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
             extra.img = extra.img || item.pic_url || item.img;
             extra.pageTitle = extra.pageTitle || extra.name;

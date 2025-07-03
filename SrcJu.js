@@ -1849,6 +1849,7 @@ function bookCase() {
                         if(it.params.find_rule){
                             url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
                         }else{
+                            xlog(it.params);
                             let parse = $.require("jiekou").parse(extra.data);
                             let 解析 = it.params.lazy||'解析';
                             xlog(解析);

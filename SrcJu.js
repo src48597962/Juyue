@@ -1844,7 +1844,7 @@ function bookCase() {
                     let sname = extra.data.name;
                     let extraData = it.extraData?JSON.parse(it.extraData):{};
                     let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
-                    let url = it.params.url || '';
+                    let url = it.params.url+'' || '';
                     if(!url.includes('@') && !url.startsWith('hiker://page/')){
                         if(it.params.find_rule){
                             url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
@@ -1872,10 +1872,10 @@ function bookCase() {
                             js: $.toString((caseid) => {
                                 let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                                 eval('let caselist = ' + (fetch(casefile)||'[]'));
-                                caselist = caselist.filter(item => md5(item.title+item.params.url.split('@')[0]) != caseid);
+                                caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
                                 writeFile(casefile, JSON.stringify(caselist));
                                 refreshPage();
-                            }, md5(it.title+it.params.url.split('@')[0]))
+                            }, md5(it.title+(it.params.url+'').split('@')[0]))
                         }]
                     }
 

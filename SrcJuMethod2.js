@@ -38,7 +38,6 @@ function 图片解密(key, iv, kiType, mode, isBase64Dec) {
                     return CryptoUtil.Data.parseHex(str);
                 case "Base64":
                     return CryptoUtil.Data.parseBase64(str);
-                case "UTF8":
                 default:
                     return CryptoUtil.Data.parseUTF8(str);
             }

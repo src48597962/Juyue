@@ -1069,7 +1069,7 @@ function importConfirm(jsfile) {
                                 }
                             })
                             writeFile(cfgfile, JSON.stringify(Juconfig));
-	                            xlog("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
+                                xlog("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
                             back(false);
                             return "toast://更新同步文件资源完成；";
                         })
@@ -1617,7 +1617,7 @@ function manageSet(){
                 2. 本小程序开源<b>完全免费</b>，如果是付费购买的那你被骗了。<br>
                 3. 本小程序免费无偿使用，不接受任何指责和无理要求。<br>
                 4. 本小程序开发初衷源于兴趣爱好，乐于分享，禁止贩卖。<br>
-	            5. 本小程序仅用于个人学习研究，请于导入24小时内删除！<br>
+                5. 本小程序仅用于个人学习研究，请于导入24小时内删除！<br>
                 <b>开始使用本规则即代表遵守规则条例</b><br>
             </small>`,
         col_type: 'rich_text'
@@ -1698,7 +1698,7 @@ function themeIconSet() {
             longClick: [{
                 title: "删除主题",
                 js: $.toString((libspath,themename) => {
-                    return $("删除主题["+themename+"]，确认？").confirm((libspath)=>{
+                    return $("删除主题["+themename+"]，确认？").confirm((libspath, themename)=>{
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let themeList = storage0.getMyVar('themeList', []);
                         themeList = themeList.filter(v => v.名称 != currentTheme.名称);
@@ -1709,9 +1709,13 @@ function themeIconSet() {
                         }
                         clearMyVar('currentTheme');
                         clearMyVar('themeList');
+                        //删除对应文件夹
+                        //let L = $.require("http://123.56.105.145/weisyr/js/file.js")
+                        //L.deleteFiles('/storage/emulated/0/Android/data/com.example.hikerview/files/Documents/data/聚阅/themes/' + themename)
+
                         refreshPage(true);
                         return 'toast://已保存并生效';
-                    }, libspath)
+                    }, libspath, themename)
                 }, libspath, themename)
             }]
         }
@@ -1720,8 +1724,8 @@ function themeIconSet() {
         let 编辑组件 = () => {
             let d = []
             d.push({
-                title: '图标着色',
-                col_type: 'flex_button',
+                title: '着色',
+                col_type: 'text_3',
                 url: $("", "输入可随主题替换的颜色代码").input(() => {
                     input = input.trim();
                     if(input){
@@ -1732,11 +1736,6 @@ function themeIconSet() {
                         imgs[i] = {img: (imgs[i]||{}).img||undefined, color: input};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);
-                        /*
-                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                            img: input
-                        });
-                        */
                     }
                     return 'hiker://empty';
                 }),
@@ -1746,20 +1745,15 @@ function themeIconSet() {
                 }
             })
             d.push({
-                title: `““””<small><b><font color=#ffffff>本地选择</font></b></small>`,
-                col_type: 'flex_button',
+                title: `““””📂本地`,
+                col_type: 'text_3',
                 url: `fileSelect://`+$.toString(()=>{
-
                     updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                         img: 'file://' + input
                     })
 
                     updateItem("图标编辑input", {
-                        extra: {
-                            defaultValue: 'file://' + input,
-                            id: '图标编辑input',
-                            cls: '图标编辑组件'
-                        }
+                        desc: '已选择本地图',
                     });
                     let imgtype = getMyVar('编辑类别', '主页') + '图标';
                     let currentTheme = storage0.getMyVar('currentTheme', {});
@@ -1775,6 +1769,18 @@ function themeIconSet() {
                     backgroundColor: '#FB9966'
                 }
             })
+            d.push({
+                title: `““””撤销`,
+                col_type: 'text_3',
+                url: $('#noLoading#').lazyRule(() => {
+                    
+                }),
+                extra: {
+                    id: '撤销',
+                    cls: '图标编辑组件',
+                }
+            })
+
             d.push({
                 title: '',
                 desc: '输入图标地址',
@@ -1824,12 +1830,11 @@ function themeIconSet() {
         datas.forEach((data) => {
             let type_name = data.type;
             d.push({
-                title: `““””<b><font color=#B5B5B5>${type_name}图标</font></b>`,
+                title: `““””${type_name}图标`,
                 col_type: 'text_1',
                 url: 'hiker://empty'
             })
             let imgs = currentTheme[type_name + '图标'] || [];
-            let inputdesc = ['pic_1', 'pic_2', 'pic_3', 'pic_4', 'pic_5'];
             imgs = imgs.map((v)=>{
                 return {
                     img: $.type(v)=='object'?v.img:v,
@@ -1843,7 +1848,7 @@ function themeIconSet() {
                     title: icon_name,
                     img: icon_img,
                     col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_small_3' : 'icon_5',
-                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, inputdesc, 编辑d) => {
+                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                             title: getMyVar('按钮名称'),
@@ -1862,18 +1867,16 @@ function themeIconSet() {
                             putMyVar('编辑组件状态', '1');
                         }
 
-                        updateItem("图标编辑着色", {
-                            title: `““””<small><b><font color='gray'>［${icon_name}］着色</font></b></small>`,
-                        });
-                        
-                        updateItem("图标编辑input", {
-                            desc: inputdesc,
-                            extra: {
-                                defaultValue: inputdesc.startsWith('pic_')?'':inputdesc,
-                                id: '图标编辑input',
-                                cls: '图标编辑组件'
-                            }
-                        });
+                        if (getMyVar('按钮索引') != i) {
+                            updateItem("图标编辑input", {
+                                desc: `输入地址修改［${icon_name}］`,
+                                extra: {
+                                    defaultValue: '',
+                                    id: '图标编辑input',
+                                    cls: '图标编辑组件'
+                                }
+                            });
+                        }
                         
                         //修正当前选中按钮图标
                         let font;
@@ -1884,7 +1887,7 @@ function themeIconSet() {
                         }
                         if (getMyVar('编辑组件状态', '1') == '1') {
                             updateItem(type_name + '图标id' + i, {
-                                title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
+                                title: `${font}${icon_name}`,
                             });
                         }
                         
@@ -1915,7 +1918,7 @@ function themeIconSet() {
                         }
                         addItemAfter('icondownid', d);
                         return 'hiker://empty';
-                    }, type_name, icon_name, i, (imgs[i]||{}).img||inputdesc[i], 编辑d),
+                    }, type_name, icon_name, i, 编辑d),
                     extra: {
                         id: type_name + '图标id' + i,
                     }
@@ -1964,7 +1967,7 @@ function themeIconSet() {
         }
     })
     d.push({
-        title: '““””<b><font color=#94B5B0>保存|应用</font></b>',
+        title: '““””保存|应用',
         url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
             let currentTheme = storage0.getMyVar('currentTheme', {});
             if (!themename) {
@@ -2047,7 +2050,7 @@ function themeIconSet() {
 
     })
     d.push({
-        title: "““”” <small><small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效，本地图标无法分享' + "</font></small></small>",
+        title: "““”” " + '着色功能仅对.svg格式图标有效，本地图标无法分享' + "",
         col_type: "text_center_1",
         url: 'hiker://empty',
         extra: {

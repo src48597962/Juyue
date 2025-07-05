@@ -1830,7 +1830,7 @@ function themeIconSet() {
         datas.forEach((data) => {
             let type_name = data.type;
             d.push({
-                title: `““””${type_name}图标`,
+                title: `““””<font color=#B5B5B5>${type_name}图标</font>`,
                 col_type: 'text_1',
                 url: 'hiker://empty'
             })
@@ -1887,7 +1887,7 @@ function themeIconSet() {
                         }
                         if (getMyVar('编辑组件状态', '1') == '1') {
                             updateItem(type_name + '图标id' + i, {
-                                title: `${font}${icon_name}`,
+                                title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
                             });
                         }
                         
@@ -1967,7 +1967,7 @@ function themeIconSet() {
         }
     })
     d.push({
-        title: '““””保存|应用',
+        title: '““””<font color=#94B5B0>保存|应用</font>',
         url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
             let currentTheme = storage0.getMyVar('currentTheme', {});
             if (!themename) {
@@ -2050,7 +2050,7 @@ function themeIconSet() {
 
     })
     d.push({
-        title: "““”” " + '着色功能仅对.svg格式图标有效，本地图标无法分享' + "",
+        title: "““””<small><font color=#bfbfbf>" + '着色功能仅对.svg格式图标有效' + "</font></small>",
         col_type: "text_center_1",
         url: 'hiker://empty',
         extra: {

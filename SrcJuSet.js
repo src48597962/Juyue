@@ -1868,15 +1868,16 @@ function themeIconSet() {
                         }
 
                         if (getMyVar('按钮索引') != i) {
-                            updateItem("图标编辑input", {
-                                desc: `输入地址修改［${icon_name}］`,
-                                extra: {
-                                    defaultValue: '',
-                                    id: '图标编辑input',
-                                    cls: '图标编辑组件'
-                                }
-                            });
+                            
                         }
+                        updateItem("图标编辑input", {
+                            desc: `输入地址修改［${icon_name}］`,
+                            extra: {
+                                defaultValue: '',
+                                id: '图标编辑input',
+                                cls: '图标编辑组件'
+                            }
+                        });
                         
                         //修正当前选中按钮图标
                         let font;

@@ -1759,10 +1759,12 @@ function themeIconSet() {
                     let currentTheme = storage0.getMyVar('currentTheme', {});
                     let imgs = currentTheme[imgtype] || [];
                     let i = parseInt(getMyVar('按钮索引', '0'));
-                    //记录图标上一个状态
-                    let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
-                    图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i].img || '';
-                    storage0.putMyVar('图标临时记录', 图标临时记录);
+                    if(imgs[i]){
+                        //记录图标上一个状态
+                        let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
+                        图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i].img || '';
+                        storage0.putMyVar('图标临时记录', 图标临时记录);
+                    }
                     //更新新图标
                     imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;
@@ -1781,23 +1783,24 @@ function themeIconSet() {
                     //查询图标上一个状态
                     let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
                     let oldimg = 图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] || '';
-
-                    //恢复原图标
-                    updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
-                        img: oldimg
-                    })
-                    updateItem("图标编辑input", {
-                        desc: '已恢复上一个图标',
-                    });
-                    //记录图标
-                    let imgtype = getMyVar('编辑类别', '主页') + '图标';
-                    let currentTheme = storage0.getMyVar('currentTheme', {});
-                    let imgs = currentTheme[imgtype] || [];
-                    let i = parseInt(getMyVar('按钮索引', '0'));
-                    //更新原图标
-                    imgs[i] = {img: oldimg, color: (imgs[i]||{}).color||undefined};
-                    currentTheme[imgtype] = imgs;
-                    storage0.putMyVar('currentTheme', currentTheme);
+                    if(oldimg){
+                        //恢复原图标
+                        updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
+                            img: oldimg
+                        })
+                        updateItem("图标编辑input", {
+                            desc: '已恢复上一个图标',
+                        });
+                        //记录图标
+                        let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                        let currentTheme = storage0.getMyVar('currentTheme', {});
+                        let imgs = currentTheme[imgtype] || [];
+                        let i = parseInt(getMyVar('按钮索引', '0'));
+                        //更新原图标
+                        imgs[i] = {img: oldimg, color: (imgs[i]||{}).color||undefined};
+                        currentTheme[imgtype] = imgs;
+                        storage0.putMyVar('currentTheme', currentTheme);
+                    }
                     return 'hiker://empty';
                 }),
                 extra: {

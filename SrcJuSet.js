@@ -1759,12 +1759,10 @@ function themeIconSet() {
                     let currentTheme = storage0.getMyVar('currentTheme', {});
                     let imgs = currentTheme[imgtype] || [];
                     let i = parseInt(getMyVar('按钮索引', '0'));
-                    if(imgs[i]){
-                        //记录图标上一个状态
-                        let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
-                        图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i].img || '';
-                        storage0.putMyVar('图标临时记录', 图标临时记录);
-                    }
+                    //记录图标上一个状态
+                    let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
+                    图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i]?(imgs[i].img || ''):'';
+                    storage0.putMyVar('图标临时记录', 图标临时记录);
                     //更新新图标
                     imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;

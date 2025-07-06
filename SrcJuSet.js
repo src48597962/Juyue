@@ -1792,7 +1792,7 @@ function themeIconSet() {
                     图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i]?(imgs[i].img || ''):'';
                     storage0.putMyVar('图标临时记录', 图标临时记录);
                     //更新新图标
-                    imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
+                    imgs[i] = {img: 'file://' + input, color: (imgs[i]||{}).color||undefined};
                     currentTheme[imgtype] = imgs;
                     storage0.putMyVar('currentTheme', currentTheme);
                 }),

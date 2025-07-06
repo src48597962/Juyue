@@ -14,6 +14,7 @@ const Runnable = java.lang.Runnable;
 const Bookmark = com.example.hikerview.model.Bookmark;
 
 let BookmarkFolderPopup = com.example.hikerview.ui.home.view.BookmarkFolderPopup;
+let IconAdapter = com.example.hikerview.ui.home.view.BookmarkFolderAdapter;
 
 const InputPopup = com.example.hikerview.ui.view.popup.InputPopup
 const ConfirmPopup = com.example.hikerview.ui.view.popup.ConfirmPopup;

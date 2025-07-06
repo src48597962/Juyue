@@ -178,7 +178,7 @@ function yiji(testSource) {
         })
         d.push({
             title: "收藏",
-            url: $("hiker://empty###noRecordHistory##noHistory#").rule(() => {
+            url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
                 require(config.聚阅);
                 bookCase();
             }),

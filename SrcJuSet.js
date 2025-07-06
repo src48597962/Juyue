@@ -1736,9 +1736,13 @@ function themeIconSet() {
                     if(input){
                         let imgtype = getMyVar('编辑类别', '主页') + '图标';
                         let currentTheme = storage0.getMyVar('currentTheme', {});
+                        xlog(currentTheme);
                         let imgs = currentTheme[imgtype] || [];
+                        xlog(imgs);
                         let i = parseInt(getMyVar('按钮索引', '0'));
+                        xlog(i);
                         let img = (imgs[i]||{}).img;
+                        xlog(img);
 
                         function extractColorsWithRegex(svgString) {
                             const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;

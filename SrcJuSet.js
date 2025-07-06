@@ -2069,22 +2069,32 @@ function themeIconSet() {
                     
 
                     try {
-                        let importTheme = JSON.parse(parsePaste(pasteurl));
-                        Object.keys(importTheme).forEach(it=>{
-                            if($.type(importTheme[it])=='array'){
-                                importTheme[it].forEach(v=>{
-                                    if($.type(v)=='object' && !v.img.startsWith('http') && v.imgb64){
-                                        v.img = 'hiker://files/_cache/Juyue/themes' + importTheme.名称 + v.img.substr(v.img.lastIndexOf('/'));
-                                        saveBase64Image(v.imgb64, v.img);
-                                        delete v.imgb64;
-                                    }
-                                })
-                            }
-                        })
+                        let text;
+                        if(/^http|^云/.test(pasteurl)){
+                            showLoading('获取数据中，请稍后...');
+                            text = parsePaste(pasteurl);
+                            hideLoading();
+                        }
+                        if(text && !/^error/.test(text)){
+                            let importTheme = JSON.parse(gzip.unzip(parsePaste(pasteurl)));
+                            Object.keys(importTheme).forEach(it=>{
+                                if($.type(importTheme[it])=='array'){
+                                    importTheme[it].forEach(v=>{
+                                        if($.type(v)=='object' && !v.img.startsWith('http') && v.imgb64){
+                                            v.img = 'hiker://files/_cache/Juyue/themes' + importTheme.名称 + v.img.substr(v.img.lastIndexOf('/'));
+                                            saveBase64Image(v.imgb64, v.img);
+                                            delete v.imgb64;
+                                        }
+                                    })
+                                }
+                            })
 
-                        storage0.putMyVar('currentTheme', importTheme);
-                        refreshPage();
-                        return 'toast://确定需要，则要保存';
+                            storage0.putMyVar('currentTheme', importTheme);
+                            refreshPage();
+                            return 'toast://确定需要，则要保存';
+                        }else{
+                            return 'toast://获取失败>' + text;
+                        }
                     } catch (e) {
                         return 'toast://口令异常';
                     }
@@ -2117,8 +2127,12 @@ function themeIconSet() {
                             }
                         })
 
-                        let sharetxt = JSON.stringify(currentTheme);
-                        let pasteurl = sharePaste(sharetxt);
+                        let sharetxt = gzip.zip(JSON.stringify(currentTheme));
+                        let pastename = '';
+                        if(sharetxt.length>200000){
+                            pastename = '云剪贴板6';
+                        }
+                        let pasteurl = sharePaste(sharetxt, pastename);
                         if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
                             let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
                             copy(code);

@@ -2026,6 +2026,7 @@ function themeIconSet() {
             themeList.push(currentTheme);
             writeFile(rulepath + 'themes.json', JSON.stringify(themeList));
             storage0.setItem('currentTheme', currentTheme);//保存为当前主题
+            storage0.putMyVar('currentTheme', currentTheme);
             clearMyVar('themeList');
             refreshPage(true);
             return 'toast://已保存并生效';

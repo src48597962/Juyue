@@ -1754,7 +1754,7 @@ function themeIconSet() {
                         if(!img.endsWith('.svg')){
                             return 'toast://非svg格式图标无法着色';
                         }
-                        let colors = extractAllSVGColors(fetch(img)).map(v=>{
+                        let colors = extractColorsFromSVG(fetch(img)).map(v=>{
                             return {
                                 title: v,
                                 icon: v

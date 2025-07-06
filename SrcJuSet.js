@@ -2128,47 +2128,26 @@ function themeIconSet() {
                 try {
                     // 移除可能的base64前缀
                     let pureBase64 = base64Str.replace(/^data:image\/\w+;base64,/, "");
-                    
-                    // 两种解码方式选择（根据你的环境实际情况选择一种）
-                    let bytes;
-                    if (typeof _base64 !== 'undefined') {
-                        // 方式1：使用_base64解码
-                        xlog('方式1');
-                        bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
-                    } else if (typeof window0 !== 'undefined' && window0.atob) {
-                        // 方式2：使用window0.atob解码
-                        xlog('方式2');
-                        let decodedStr = window0.atob(pureBase64);
-                        bytes = java.lang.String(decodedStr).getBytes("ISO-8859-1");
-                    }
-                    
+                    // 解码
+                    let bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
                     // 处理保存路径
-                    let fullPath;
-                    if (typeof getPath !== 'undefined') {
-                        fullPath = getPath(savePath).replace("file://", "");
-                    } else {
-                        fullPath = savePath;
-                    }
-                    
+                    let fullPath = getPath(savePath);//.replace("file://", "")
                     // 确保目录存在
                     let file = new File(fullPath);
                     let parent = file.getParentFile();
                     if (!parent.exists()) {
                         parent.mkdirs();
                     }
-                    
                     // 写入文件
                     let fos = new FileOutputStream(file);
                     fos.write(bytes);
                     fos.close();
-                    
-                    return 'toast://'+savePath;
+                    return;
                 } catch (e) {
-                    xlog("保存图片失败：" + e);
-                    return "";
+                    //xlog("保存图片失败：" + e);
+                    return;
                 }
             }
-
             return saveBase64Image(input, 'hiker://files/data/聚阅/test.png');
         }),
         col_type: "text_2"

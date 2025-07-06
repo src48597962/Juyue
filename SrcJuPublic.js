@@ -627,7 +627,7 @@ function isDarkMode() {
 }
 // 获取主题图标列表
 function getThemeList(isEnable) {
-    let themefile = libspath + 'themes.json';
+    let themefile = rulepath + 'themes.json';
     eval('let themelist = ' + (fetch(themefile) || '[]'));
     
     if(isEnable){

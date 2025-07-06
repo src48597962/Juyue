@@ -1447,7 +1447,11 @@ function manageSet(){
         url: $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             themeIconSet();
-        })
+        }),
+        extra: {
+            newWindow: true,
+            windowId: '聚阅主题图标设置'
+        }
     });
     let colors = [{
         title: '绿意盎然',

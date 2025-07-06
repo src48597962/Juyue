@@ -1739,23 +1739,46 @@ function themeIconSet() {
                     let img = (imgs[i]||{}).img;
 
                     function extractAllSVGColors(svgString) {
-                        // 完全重构的正则表达式
-                        const colorRegex = /(?:fill|stroke|stop-color|flood-color|lighting-color|color)\s*=\s*(["']?)(#[\da-fA-F]{3,8}|(?:rgb|hsl)a?\(\s*\d+\s*(?:,\s*\d+\s*){2}(?:,\s*[\d.]+\s*)?\)|[a-zA-Z]+)\1(?=[\s>\/]|"\/>)/g;
+                        // 所有可能包含颜色值的SVG属性
+                        const colorAttributes = [
+                            'fill', 'stroke', 'stop-color', 'flood-color',
+                            'lighting-color', 'color', 'background', 'background-color'
+                        ];
 
                         const colors = new Set();
-                        let match;
+                        let index = 0;
 
-                        // 重置正则表达式lastIndex以确保完全匹配
-                        colorRegex.lastIndex = 0;
+                        // 遍历所有可能的颜色属性
+                        colorAttributes.forEach(attr => {
+                            index = 0; // 重置索引
+                            while (index < svgString.length) {
+                                // 查找属性出现的位置（支持单引号和双引号）
+                                const attrPos = Math.min(
+                                    svgString.indexOf(`${attr}="`, index),
+                                    svgString.indexOf(`${attr}='`, index)
+                                );
 
-                        while ((match = colorRegex.exec(svgString)) !== null) {
-                            const colorValue = match[2].toLowerCase();
+                                if (attrPos === -1) break; // 没找到该属性
 
-                            if (!['none', 'transparent', 'currentcolor'].includes(colorValue) &&
-                                !colorValue.startsWith('url(')) {
-                                colors.add(colorValue);
+                                // 确定引号类型
+                                const quote = svgString[attrPos + attr.length + 1] === '"' ? '"' : "'";
+                                const start = attrPos + attr.length + 2;
+                                const end = svgString.indexOf(quote, start);
+
+                                if (end === -1) break;
+
+                                const colorValue = svgString.slice(start, end).toLowerCase().trim();
+
+                                // 过滤无效值
+                                if (colorValue &&
+                                    !['none', 'transparent', 'currentcolor'].includes(colorValue) &&
+                                    !colorValue.startsWith('url(')) {
+                                    colors.add(colorValue);
+                                }
+
+                                index = end + 1;
                             }
-                        }
+                        });
 
                         return Array.from(colors);
                     }

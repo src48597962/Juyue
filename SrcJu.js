@@ -532,11 +532,8 @@ function erji() {
                         eval("let cacheJson=" + cacheData + ";");
                         let nowtime = Date.now();
                         let oldtime = cacheJson.updatetime||0;
-                        xlog('读缓取');
-                        xlog(cacheJson.sid);
-                        xlog(sid);
-                        xlog(cacheJson.url);
-                        xlog(MY_URL);
+                        xlog(nowtime.toString());
+                        xlog((oldtime + 1 * 60 * 60 * 1000).toString());
                         if(cacheJson.sid==sid && cacheJson.url==MY_URL && nowtime > (oldtime + 1 * 60 * 60 * 1000)){
                             xlog('读到');
                             erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快，缓存1小时

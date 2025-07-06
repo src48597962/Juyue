@@ -1731,40 +1731,52 @@ function themeIconSet() {
             d.push({
                 title: '着色',
                 col_type: 'text_3',
-                url: $("", "输入可随主题替换的颜色代码").input(() => {
-                    input = input.trim();
-                    if(input){
-                        let imgtype = getMyVar('编辑类别', '主页') + '图标';
-                        let currentTheme = storage0.getMyVar('currentTheme', {});
-                        xlog(currentTheme);
-                        let imgs = currentTheme[imgtype] || [];
-                        xlog(imgs);
-                        let i = parseInt(getMyVar('按钮索引', '0'));
-                        xlog(i);
-                        let img = (imgs[i]||{}).img;
-                        xlog(img);
+                url: $("#noLoading#").lazyRule(() => {
+                    let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                    let currentTheme = storage0.getMyVar('currentTheme', {});
+                    let imgs = currentTheme[imgtype] || [];
+                    let i = parseInt(getMyVar('按钮索引', '0'));
+                    let img = (imgs[i]||{}).img;
 
-                        function extractColorsWithRegex(svgString) {
-                            const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;
-                            const colorSet = new Set();
-                            let match;
+                    function extractColorsWithRegex(svgString) {
+                        const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;
+                        const colorSet = new Set();
+                        let match;
 
-                            while ((match = colorRegex.exec(svgString)) !== null) {
-                                const color = match[2] || match[4];
-                                if (color && color !== 'none' && !color.startsWith('url(')) {
-                                    colorSet.add(color.toLowerCase());
-                                }
+                        while ((match = colorRegex.exec(svgString)) !== null) {
+                            const color = match[2] || match[4];
+                            if (color && color !== 'none' && !color.startsWith('url(')) {
+                                colorSet.add(color.toLowerCase());
                             }
+                        }
 
-                            return Array.from(colorSet);
+                        return Array.from(colorSet);
+                    }
+
+                    if(img){
+                        if(!img.endsWith('.svg')){
+                            return 'toast://非svg格式图标无法着色';
                         }
-                        if(img){
-                            xlog(fetch(img));
-                            xlog(extractColorsWithRegex(fetch(img)));
+                        let colors = extractColorsWithRegex(fetch(img)).map(v=>{
+                            return {
+                                title: v,
+                                icon: v
+                            }
+                        })
+                        if(colors.length==0){
+                            return 'toast://获取svg图标中颜色代码失败';
                         }
-                        imgs[i] = {img: img, color: input};
-                        currentTheme[imgtype] = imgs;
-                        storage0.putMyVar('currentTheme', currentTheme);
+                        return $(colors, 2, '选择随主题替换的颜色代码').select(()=>{
+                            let imgtype = getMyVar('编辑类别', '主页') + '图标';
+                            let currentTheme = storage0.getMyVar('currentTheme', {});
+                            let imgs = currentTheme[imgtype] || [];
+                            let i = parseInt(getMyVar('按钮索引', '0'));
+                            let img = (imgs[i]||{}).img;
+                            imgs[i] = {img: img, color: input};
+                            currentTheme[imgtype] = imgs;
+                            storage0.putMyVar('currentTheme', currentTheme);
+                            return 'toast://已选择：' + input;
+                        })
                     }
                     return 'hiker://empty';
                 }),

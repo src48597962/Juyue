@@ -914,6 +914,7 @@ function ResExtraInputBox({
 
 function selectBottomResIcon({
     click,
+    longClick,
     menuClick,
     title,
     iconList,
@@ -973,13 +974,11 @@ function selectBottomResIcon({
                 log(e.toString());
             }
         });
-    let iconAdapter = new com.example.hikerview.ui.home.view.BookmarkFolderAdapter(getActivityContext(), booksList, (v, i) => {
+    let clickOrLongClick = (click) => (v, i) => {
         let item = booksList.get(i);
         let items = {
             icon: String(item.getIcon()),
-            title: String(item.getTitle()),
-            //url: String(item.getUrl()),
-            data: String(item.getUrl())
+            title: String(item.getTitle())
         };
         let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
         if (noAutoDismiss) {
@@ -987,7 +986,21 @@ function selectBottomResIcon({
         } else {
             custom.dismissWith(func);
         }
-    }, false);
+    }
+    let iconAdapter = new JavaAdapter(IconAdapter, {
+        onBindViewHolder(viewHolder, i) {
+            this.super$onBindViewHolder(viewHolder, i);
+
+
+            if (viewHolder instanceof IconAdapter.TitleHolder) {
+                //viewHolder.item_bg.setOnLongClickListener(clickOrLongClick(longClick));
+
+                //log(Object.keys(titleHolder))
+                let item_bg = viewHolder.itemView.findViewById(R.id.item_bg);
+                item_bg && item_bg.setOnLongClickListener((view) => clickOrLongClick(longClick)(view, viewHolder.getAdapterPosition()) || true);
+            }
+        }
+    }, getActivityContext(), booksList, clickOrLongClick(click), false);
     iconAdapter.setSelectedIndex(getNumberValue(position, v => v < iconList.length && v >= -1, -1));
     let resOptionsManage = {
         setTitle: setTitle,

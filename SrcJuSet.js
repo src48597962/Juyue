@@ -2103,7 +2103,9 @@ function themeIconSet() {
                     } else if (!currentTheme.主页图标) {
                         return 'toast://新建主题没有内容';
                     }
+                    xlog(storage0.getMyVar('themeList', []));
                     let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
+                    xlog(themeList.length);
                     if (themeList.length == 1) {
                         Object.keys(currentTheme).forEach(it=>{
                             if($.type(currentTheme[it])=='array'){

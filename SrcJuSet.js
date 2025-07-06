@@ -2012,12 +2012,16 @@ function themeIconSet() {
             Object.keys(currentTheme).forEach(it=>{
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
+                        try{
                         if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
                             let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect__storage_emulated_0_','');
                             xlog(v.img);
                             xlog(newimg);
                             saveImage(v.img, newimg);
                             v.img = newimg;
+                        }
+                        }catch(e){
+                            xlog(e.message);
                         }
                     })
                 }

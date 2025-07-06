@@ -2039,15 +2039,50 @@ function themeIconSet() {
                 let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
                 let inputname = input.split('￥')[0];
                 if (inputname == '聚阅主题') {
+                    function saveBase64Image(base64Str, savePath) {
+                        const File = java.io.File;
+                        const FileOutputStream = java.io.FileOutputStream;
 
+                        try {
+                            // 移除可能的base64前缀
+                            let pureBase64 = base64Str.replace(/^data:image\/\w+;base64,/, "");
+                            // 解码
+                            let bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
+                            // 处理保存路径
+                            let fullPath = getPath(savePath).replace("file://", "");
+                            // 确保目录存在
+                            let file = new File(fullPath);
+                            let parent = file.getParentFile();
+                            if (!parent.exists()) {
+                                parent.mkdirs();
+                            }
+                            // 写入文件
+                            let fos = new FileOutputStream(file);
+                            fos.write(bytes);
+                            fos.close();
+                            return;
+                        } catch (e) {
+                            //xlog("保存图片失败：" + e);
+                            return;
+                        }
+                    }
                     
 
-
-
-
                     try {
-                        let text = JSON.parse(parsePaste(pasteurl));
-                        storage0.putMyVar('currentTheme', text);
+                        let importTheme = JSON.parse(parsePaste(pasteurl));
+                        Object.keys(importTheme).forEach(it=>{
+                            if($.type(importTheme[it])=='array'){
+                                importTheme[it].forEach(v=>{
+                                    if($.type(v)=='object' && !v.img.startsWith('http') && v.imgb64){
+                                        v.img = 'hiker://files/_cache/Juyue/themes' + importTheme.名称 + v.img.substr(v.img.lastIndexOf('/'));
+                                        saveBase64Image(v.imgb64, v.img);
+                                        delete v.imgb64;
+                                    }
+                                })
+                            }
+                        })
+
+                        storage0.putMyVar('currentTheme', importTheme);
                         refreshPage();
                         return 'toast://确定需要，则要保存';
                     } catch (e) {
@@ -2070,10 +2105,19 @@ function themeIconSet() {
                     }
                     let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
                     if (themeList.length == 1) {
-                        let sharetxt = JSON.stringify(themeList[0]);
+                        Object.keys(currentTheme).forEach(it=>{
+                            if($.type(currentTheme[it])=='array'){
+                                currentTheme[it].forEach(v=>{
+                                    if($.type(v)=='object' && !v.img.startsWith('http')){
+                                        v.imgb64 = convertBase64Image(v.img);
+                                    }
+                                })
+                            }
+                        })
+
+                        let sharetxt = JSON.stringify(currentTheme);
                         let pasteurl = sharePaste(sharetxt);
                         if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
-                            xlog('剪贴板地址>' + pasteurl);
                             let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
                             copy(code);
                             return "toast://分享口令已生成";
@@ -2105,56 +2149,6 @@ function themeIconSet() {
             lineVisible: false
         }
     })
-
-
-
-    
-
-    d.push({
-        title: "转为base64",
-        url: $().lazyRule(()=>{
-            xlog(convertBase64Image('http://123.56.105.145/tubiao/more/25.png'));
-            return 'hiker://empty';
-        }),
-        col_type: "text_2"
-    })
-    d.push({
-        title: "base64保存为图片",
-        url: $('','输入base64').input(()=>{
-            function saveBase64Image(base64Str, savePath) {
-                const File = java.io.File;
-                const FileOutputStream = java.io.FileOutputStream;
-                
-                try {
-                    // 移除可能的base64前缀
-                    let pureBase64 = base64Str.replace(/^data:image\/\w+;base64,/, "");
-                    // 解码
-                    let bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
-                    // 处理保存路径
-                    let fullPath = getPath(savePath).replace("file://", "");
-                    // 确保目录存在
-                    let file = new File(fullPath);
-                    let parent = file.getParentFile();
-                    if (!parent.exists()) {
-                        parent.mkdirs();
-                    }
-                    // 写入文件
-                    let fos = new FileOutputStream(file);
-                    fos.write(bytes);
-                    fos.close();
-                    return;
-                } catch (e) {
-                    //xlog("保存图片失败：" + e);
-                    return;
-                }
-            }
-            return saveBase64Image(input, 'hiker://files/data/聚阅/test.png');
-        }),
-        col_type: "text_2"
-    })
-
-
-
 
     setResult(d);
 }

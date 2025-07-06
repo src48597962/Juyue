@@ -1936,12 +1936,7 @@ function themeIconSet() {
                             putMyVar('编辑组件状态', '1');
                         }
                         updateItem("图标编辑input", {
-                            desc: `输入地址修改［${icon_name}］`,
-                            extra: {
-                                defaultValue: '',
-                                id: '图标编辑input',
-                                cls: '图标编辑组件'
-                            }
+                            desc: `输入地址修改［${icon_name}］`
                         });
                         
                         //修正当前选中按钮图标
@@ -1953,7 +1948,7 @@ function themeIconSet() {
                         }
                         if (getMyVar('编辑组件状态', '1') == '1') {
                             updateItem(type_name + '图标id' + i, {
-                                title: `${font}<big><b><b><font color=#F4A7B9>${icon_name}</font></b></b></big>`,
+                                title: `${font}<b><font color=#F4A7B9>${icon_name}</font></b>`,
                             });
                         }
                         

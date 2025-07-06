@@ -2131,7 +2131,7 @@ function themeIconSet() {
                     // 解码
                     let bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
                     // 处理保存路径
-                    let fullPath = getPath(savePath);//.replace("file://", "")
+                    let fullPath = getPath(savePath).replace("file://", "");
                     // 确保目录存在
                     let file = new File(fullPath);
                     let parent = file.getParentFile();
@@ -2144,7 +2144,7 @@ function themeIconSet() {
                     fos.close();
                     return;
                 } catch (e) {
-                    xlog("保存图片失败：" + e);
+                    //xlog("保存图片失败：" + e);
                     return;
                 }
             }

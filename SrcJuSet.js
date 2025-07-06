@@ -2015,8 +2015,6 @@ function themeIconSet() {
                         try{
                         if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
                             let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect__storage_emulated_0_','');
-                            writeFile(newimg, '');
-                            deleteFile(newimg);
                             saveImage(v.img, newimg);
                             v.img = newimg;
                         }

@@ -1,6 +1,3 @@
-// 定义
-let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-let gzip = $.require(codepath + "plugins/gzip.js");
 // 重定义打印日志
 let xlog = log;
 if (getItem('规则日志打印','1') == "0") {

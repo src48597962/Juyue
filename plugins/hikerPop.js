@@ -14,6 +14,7 @@ const Runnable = java.lang.Runnable;
 const Bookmark = com.example.hikerview.model.Bookmark;
 
 let BookmarkFolderPopup = com.example.hikerview.ui.home.view.BookmarkFolderPopup;
+let IconAdapter = com.example.hikerview.ui.home.view.BookmarkFolderAdapter;
 
 const InputPopup = com.example.hikerview.ui.view.popup.InputPopup
 const ConfirmPopup = com.example.hikerview.ui.view.popup.ConfirmPopup;
@@ -60,6 +61,7 @@ let cannotTouchUI = false;
 if (typeof MY_NAME !== "undefined" && MY_NAME === "嗅觉浏览器") {
     cannotTouchUI = true;
     BookmarkFolderPopup = com.example.hikerview.ui.bookmark.BookmarkFolderPopup;
+    IconAdapter = com.example.hikerview.ui.bookmark.BookmarkFolderAdapter;
 }
 
 function getContext() {
@@ -71,7 +73,7 @@ const startActivity = getContext();
 let useStartActivity = true;
 
 function getArticleListFragment(activity) {
-    //let activity = getCurrentActivity();    
+    //let activity = getCurrentActivity();
     try {
         if (activity instanceof com.example.hikerview.ui.home.MainActivity) {
             let MainActivity = activity.getClass();
@@ -262,11 +264,15 @@ function dealUrlSimply(url, title) {
     if (currentArticleListFragment && typeof MY_POSITION !== "undefined" && MY_POSITION > -1) {
         clickItem(currentArticleListFragment, MY_POSITION, url);
     } else {
-        if (PageParser.isPageUrl(url)) {
-            return toNextPage(url);
-        } else if (!DetailUIHelper.dealUrlSimply(getActivityContext(), null, MY_RULE, null, url || "", null, null) && UrlDetector.isVideoOrMusic(url)) {
-            return toPalyPage(url, typeof title === "string" ? title : url);
-        }
+        simpleRoute(url, title);
+    }
+}
+
+function simpleRoute(url, title) {
+    if (PageParser.isPageUrl(url)) {
+        return toNextPage(url);
+    } else if (!DetailUIHelper.dealUrlSimply(getActivityContext(), null, MY_RULE, null, url || "", null, null) && UrlDetector.isVideoOrMusic(url)) {
+        return toPalyPage(url, typeof title === "string" ? title : url);
     }
 }
 
@@ -557,7 +563,7 @@ function selectBottom({
 }
 
 function IconExtraMenu(click) {
-    this.create = function(parentView, args) {
+    this.create = function (parentView, args) {
         const Gravity = android.view.Gravity;
         const ImageView = android.widget.ImageView;
         const LinearLayout = android.widget.LinearLayout;
@@ -592,7 +598,7 @@ function selectCenterIcon({
     extraMenu
 }) {
     let clickListener = new BookmarkFolderPopup.ClickListener({
-        onLongClick(value, index) {},
+        onLongClick(value, index) { },
         click(value, index) {
             tryCallBack(getDefaultValue(click, "function", null), [value, index]);
         }
@@ -827,7 +833,7 @@ function selectBottomSettingMenu({
     showOnUI(pop);
     return pop;
 }
- 
+
 selectBottomSettingMenu.SettingItem = SettingItem;
 
 
@@ -841,7 +847,7 @@ function ResExtraInputBox({
 }) {
     let search;
     let edit;
-    this.create = function(parentView, args) {
+    this.create = function (parentView, args) {
         args = Array.isArray(args) ? args : [];
         let inputItem = android.view.LayoutInflater.from(getActivityContext()).inflate(R.layout.item_input, parentView, false);
         search = inputItem.findViewById(R.id.search);
@@ -875,8 +881,8 @@ function ResExtraInputBox({
 
         if (typeof onChange === "function") {
             edit.addTextChangedListener(new android.text.TextWatcher({
-                onTextChanged() {},
-                beforeTextChanged() {},
+                onTextChanged() { },
+                beforeTextChanged() { },
                 afterTextChanged(s) {
                     let text;
                     if (s) {
@@ -914,6 +920,7 @@ function ResExtraInputBox({
 
 function selectBottomResIcon({
     click,
+    longClick,
     menuClick,
     title,
     iconList,
@@ -926,8 +933,8 @@ function selectBottomResIcon({
     beforeShow
 }) {
     let clickListener = new CustomCenterRecyclerViewPopup.ClickListener({
-        onLongClick(value, index) {},
-        click(value, index) {}
+        onLongClick(value, index) { },
+        click(value, index) { }
     });
     iconList = getDefaultValue(iconList, "array", []);
     let booksList = getBookList(iconList);
@@ -944,7 +951,7 @@ function selectBottomResIcon({
         }
     };
     let setTitle = title => {
-        if (tv) tv.setText(String(title)); 
+        if (tv) tv.setText(String(title));
     }
     let custom = new CustomBottomRecyclerViewPopup(getActivityContext())
         .withTitle(getDefaultValue(title, "string", "请选择"))
@@ -973,13 +980,11 @@ function selectBottomResIcon({
                 log(e.toString());
             }
         });
-    let iconAdapter = new com.example.hikerview.ui.home.view.BookmarkFolderAdapter(getActivityContext(), booksList, (v, i) => {
+    let clickOrLongClick = (click) => (v, i) => {
         let item = booksList.get(i);
         let items = {
             icon: String(item.getIcon()),
-            title: String(item.getTitle()),
-            //url: String(item.getUrl()),
-            data: String(item.getUrl())
+            title: String(item.getTitle())
         };
         let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
         if (noAutoDismiss) {
@@ -987,7 +992,23 @@ function selectBottomResIcon({
         } else {
             custom.dismissWith(func);
         }
-    }, false);
+    }
+    //let iconAdapter = new com.example.hikerview.ui.home.view.BookmarkFolderAdapter(getActivityContext(), booksList, clickOrLongClick(click), false);
+
+    let iconAdapter = new JavaAdapter(IconAdapter, {
+        onBindViewHolder(viewHolder, i) {
+            this.super$onBindViewHolder(viewHolder, i);
+
+
+            if (viewHolder instanceof IconAdapter.TitleHolder) {
+                //viewHolder.item_bg.setOnLongClickListener(clickOrLongClick(longClick));
+
+                //log(Object.keys(titleHolder))
+                let item_bg = viewHolder.itemView.findViewById(R.id.item_bg);
+                item_bg && item_bg.setOnLongClickListener((view) => clickOrLongClick(longClick)(view, viewHolder.getAdapterPosition()) || true);
+            }
+        }
+    }, getActivityContext(), booksList, clickOrLongClick(click), false);
     iconAdapter.setSelectedIndex(getNumberValue(position, v => v < iconList.length && v >= -1, -1));
     let resOptionsManage = {
         setTitle: setTitle,
@@ -1043,7 +1064,8 @@ function selectBottomRes({
     noAutoDismiss,
     extraInputBox,
     toPosition,
-    beforeShow
+    beforeShow,
+    onDismiss
 }) {
     let clickListener = new CustomCenterRecyclerViewPopup.ClickListener({
         onLongClick(value, index) {
@@ -1116,6 +1138,9 @@ function selectBottomRes({
         beforeShow(basePopupView) {
             scrollToPosition(toPosition);
             tryCallBack(getDefaultValue(beforeShow, "function", null), [pop, resOptionsManage]);
+        },
+        onDismiss(basePopupView) {
+            tryCallBack(getDefaultValue(onDismiss, "function", null), []);
         }
     }));
     pop = pop.moveUpToKeyboard(false).asCustom(custom);
@@ -1139,10 +1164,10 @@ function infoBottom({
     });
 
     let custom = new FileDetailPopup(
-            getActivityContext(),
-            getDefaultValue(title, "string", null),
-            getStringArray(options, [])
-        )
+        getActivityContext(),
+        getDefaultValue(title, "string", null),
+        getStringArray(options, [])
+    )
         .withClickListener(clickListener);
     let pop = builderXPopup()
         .moveUpToKeyboard(false)
@@ -1208,10 +1233,10 @@ function chefSnackbarMake({
     ChefSnackbar.Companion.make(decorView)
         .setText(getDefaultValue(content, "string", ""))
         .setDuration(getDefaultValue(okTitle, "number", 0))
-        .setAction(getDefaultValue(okTitle, "string", "确认"), function() {
+        .setAction(getDefaultValue(okTitle, "string", "确认"), function () {
             tryCallBack(getDefaultValue(confirm, "function", null));
         })
-        .setCancelButton(getDefaultValue(cancelTitle, "string", "取消"), function() {
+        .setCancelButton(getDefaultValue(cancelTitle, "string", "取消"), function () {
             tryCallBack(getDefaultValue(cancel, "function", null));
         })
         .show();
@@ -1271,18 +1296,18 @@ function confirmSync({
     let result = false;
     showOnUI(
         builderXPopup()
-        .dismissOnTouchOutside(!noDismissOnBlank)
-        .dismissOnBackPressed(!noDismissOnBack)
-        .setPopupCallback(newSimpleCallback({
-            onDismiss(basePopupView) {
-                countDownLatch.countDown();
-            }
-        }))
-        .asConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", ""), getDefaultValue(cancelTitle, "string", "取消"), getDefaultValue(okTitle, "string", "确认"), () => {
-            result = true;
-        }, () => {
-            result = false;
-        }, !!hideCancel)
+            .dismissOnTouchOutside(!noDismissOnBlank)
+            .dismissOnBackPressed(!noDismissOnBack)
+            .setPopupCallback(newSimpleCallback({
+                onDismiss(basePopupView) {
+                    countDownLatch.countDown();
+                }
+            }))
+            .asConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", ""), getDefaultValue(cancelTitle, "string", "取消"), getDefaultValue(okTitle, "string", "确认"), () => {
+                result = true;
+            }, () => {
+                result = false;
+            }, !!hideCancel)
     );
     countDownLatch.await();
     return result;
@@ -1304,30 +1329,30 @@ function inputConfirmSync({
     let result = "";
     showOnUI(
         builderXPopup()
-        .autoOpenSoftInput(!noAutoSoft)
-        .autoFocusEditText(!noAutoSoft)
-        .dismissOnTouchOutside(!noDismissOnBlank)
-        .dismissOnBackPressed(!noDismissOnBack)
-        .setPopupCallback(newSimpleCallback({
-            onCreated(basePopupView) {
-                if (hideCancel) {
-                    let cancelTextView = basePopupView.findViewById(R.id.tv_cancel);
-                    if (cancelTextView) {
-                        cancelTextView.setVisibility(8);
+            .autoOpenSoftInput(!noAutoSoft)
+            .autoFocusEditText(!noAutoSoft)
+            .dismissOnTouchOutside(!noDismissOnBlank)
+            .dismissOnBackPressed(!noDismissOnBack)
+            .setPopupCallback(newSimpleCallback({
+                onCreated(basePopupView) {
+                    if (hideCancel) {
+                        let cancelTextView = basePopupView.findViewById(R.id.tv_cancel);
+                        if (cancelTextView) {
+                            cancelTextView.setVisibility(8);
+                        }
+                        let dividerView = basePopupView.findViewById(R.id.xpopup_divider2);
+                        if (dividerView) {
+                            dividerView.setVisibility(8);
+                        }
                     }
-                    let dividerView = basePopupView.findViewById(R.id.xpopup_divider2);
-                    if (dividerView) {
-                        dividerView.setVisibility(8);
-                    }
+                },
+                onDismiss(basePopupView) {
+                    countDownLatch.countDown();
                 }
-            },
-            onDismiss(basePopupView) {
-                countDownLatch.countDown();
-            }
-        }))
-        .asInputConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", null), getDefaultValue(defaultValue, "string", null), getDefaultValue(hint, "string", null), (text) => {
-            result = text;
-        }, null, maxTextarea ? R.layout.xpopup_confirm_input_max : (textarea ? R.layout.xpopup_confirm_input : 0))
+            }))
+            .asInputConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", null), getDefaultValue(defaultValue, "string", null), getDefaultValue(hint, "string", null), (text) => {
+                result = text;
+            }, null, maxTextarea ? R.layout.xpopup_confirm_input_max : (textarea ? R.layout.xpopup_confirm_input : 0))
     );
     countDownLatch.await();
     return result;
@@ -1552,8 +1577,8 @@ function getSeekAndLayout(max, pos, onChange) {
                 titleStart.setText(res);
             }
         },
-        onStartTrackingTouch(seekBar) {},
-        onStopTrackingTouch(seekBar) {}
+        onStartTrackingTouch(seekBar) { },
+        onStopTrackingTouch(seekBar) { }
     }));
     return [seekBar, linearLayout];
 }
@@ -1607,7 +1632,7 @@ function decodeQRCode(path) {
         let binaryBitmap = new com.google.zxing.BinaryBitmap(new com.google.zxing.common.HybridBinarizer(source));
         let decodedResult = new com.google.zxing.MultiFormatReader().decode(binaryBitmap, hints);
         result = String(decodedResult.getText());
-    } catch (e) {}
+    } catch (e) { }
     return result;
 }
 
@@ -1646,5 +1671,6 @@ $.exports = {
     decodeQRCode,
     selectAttachList,
     selectBottomResIcon,
-    updateRecordsBottom
+    updateRecordsBottom,
+    simpleRoute
 };

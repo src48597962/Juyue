@@ -1931,9 +1931,7 @@ function bookCase() {
     setResult(d);
     if(topimg){
         saveImage(topimg, 'hiker://files/cache/Top_H5.jpg');
-    }else{{
-        deleteFile('hiker://files/cache/Top_H5.jpg');
-    }}
+    }
 }
 //版本检测
 function Version() {

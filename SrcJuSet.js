@@ -2013,7 +2013,7 @@ function themeIconSet() {
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
                         if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
-                            let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/'));
+                            let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect__storage_emulated_0_','');
                             saveImage(v.img, newimg);
                             v.img = newimg;
                         }
@@ -2039,6 +2039,12 @@ function themeIconSet() {
                 let pasteurl = aesDecode('Juyue', input.split('￥')[1]);
                 let inputname = input.split('￥')[0];
                 if (inputname == '聚阅主题') {
+
+                    
+
+
+
+
                     try {
                         let text = JSON.parse(parsePaste(pasteurl));
                         storage0.putMyVar('currentTheme', text);
@@ -2099,5 +2105,67 @@ function themeIconSet() {
             lineVisible: false
         }
     })
+
+
+
+    
+
+    d.push({
+        title: "转为base64",
+        url: $().lazyRule(()=>{
+            xlog(convertBase64Image('http://123.56.105.145/tubiao/more/25.png'));
+            return 'hiker://empty';
+        }),
+        col_type: "text_2"
+    })
+    d.push({
+        title: "base64保存为图片",
+        url: $('','输入base64').input(()=>{
+            function saveBase64Image(base64Str, savePath) {
+        const File = java.io.File;
+        const FileOutputStream = java.io.FileOutputStream;
+        let javaImport = new JavaImporter();
+        javaImport.importPackage(Packages.com.example.hikerview.utils);
+        
+        with (javaImport) {
+            try {
+                // 移除base64前缀（如果有）
+                let base64Data = base64Str.split(",")[1] || base64Str;
+                
+                // 解码base64字符串
+                let bytes = _base64.decode(base64Data);
+                
+                // 获取完整保存路径
+                let fullPath = getPath(savePath);
+                
+                // 确保父目录存在
+                let file = new File(fullPath);
+                let parent = file.getParentFile();
+                if (!parent.exists()) {
+                    parent.mkdirs();
+                }
+                
+                // 写入文件
+                let fos = new FileOutputStream(file);
+                fos.write(bytes);
+                fos.close();
+                
+                return savePath; // 返回保存的路径
+            } catch (e) {
+                xlog("保存图片失败：" + e);
+                return "";
+            }
+        }
+        return "";
+    }
+
+            return saveBase64Image(input, 'hiker://files/data/聚阅/test.png');
+        }),
+        col_type: "text_2"
+    })
+
+
+
+
     setResult(d);
 }

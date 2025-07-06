@@ -1731,10 +1731,28 @@ function bookCase() {
         clearMyVar('从书架进二级');
     }));
 
-    setPageTitle('我的收藏书架');
+    setPageTitle('收藏|书架');
     putMyVar('从书架进二级','1');
     
     let d = [];
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+    }
     let sjType = getItem("切换收藏列表", "聚阅收藏");
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({

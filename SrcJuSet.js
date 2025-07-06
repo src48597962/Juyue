@@ -2144,7 +2144,7 @@ function themeIconSet() {
                     fos.close();
                     return;
                 } catch (e) {
-                    //xlog("保存图片失败：" + e);
+                    xlog("保存图片失败：" + e);
                     return;
                 }
             }

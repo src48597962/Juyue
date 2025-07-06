@@ -1738,49 +1738,16 @@ function themeIconSet() {
                     let i = parseInt(getMyVar('按钮索引', '0'));
                     let img = (imgs[i]||{}).img;
 
-                    function extractAllSVGColors(svgString) {
-                        // 所有可能包含颜色值的SVG属性
-                        const colorAttributes = [
-                            'fill', 'stroke', 'stop-color', 'flood-color',
-                            'lighting-color', 'color', 'background', 'background-color'
-                        ];
+                    function extractColorsFromSVG(svgString) {
+                        const colorRegex = /#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\b/g;
+                        const colors = new Set(); // 使用 Set 避免重复
 
-                        const colors = new Set();
-                        let index = 0;
+                        let match;
+                        while ((match = colorRegex.exec(svgString)) !== null) {
+                            colors.add(match[0]); // 添加完整匹配的颜色代码
+                        }
 
-                        // 遍历所有可能的颜色属性
-                        colorAttributes.forEach(attr => {
-                            index = 0; // 重置索引
-                            while (index < svgString.length) {
-                                // 查找属性出现的位置（支持单引号和双引号）
-                                const attrPos = Math.min(
-                                    svgString.indexOf(`${attr}="`, index),
-                                    svgString.indexOf(`${attr}='`, index)
-                                );
-
-                                if (attrPos === -1) break; // 没找到该属性
-
-                                // 确定引号类型
-                                const quote = svgString[attrPos + attr.length + 1] === '"' ? '"' : "'";
-                                const start = attrPos + attr.length + 2;
-                                const end = svgString.indexOf(quote, start);
-
-                                if (end === -1) break;
-
-                                const colorValue = svgString.slice(start, end).toLowerCase().trim();
-
-                                // 过滤无效值
-                                if (colorValue &&
-                                    !['none', 'transparent', 'currentcolor'].includes(colorValue) &&
-                                    !colorValue.startsWith('url(')) {
-                                    colors.add(colorValue);
-                                }
-
-                                index = end + 1;
-                            }
-                        });
-
-                        return Array.from(colors);
+                        return Array.from(colors); // 转成数组返回
                     }
 
                     if(img){

@@ -1738,26 +1738,31 @@ function themeIconSet() {
                     let i = parseInt(getMyVar('按钮索引', '0'));
                     let img = (imgs[i]||{}).img;
 
-                    function extractColorsWithRegex(svgString) {
-                        const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;
-                        const colorSet = new Set();
+                    function extractAllSVGColors(svgString) {
+                        // 改进后的正则表达式，更全面地匹配颜色属性
+                        const colorRegex = /(?:fill|stroke|stop\-color|flood\-color|lighting\-color|color)\s*=\s*["']?(#[0-9a-fA-F]{3,6}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)|hsl\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*\)|hsla\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*,\s*[\d.]+\s*\)|\b[a-zA-Z]+\b)(?=["'\s>\/])/gi;
+
+                        const colors = new Set();
                         let match;
 
                         while ((match = colorRegex.exec(svgString)) !== null) {
-                            const color = match[2] || match[4];
-                            if (color && color !== 'none' && !color.startsWith('url(')) {
-                                colorSet.add(color.toLowerCase());
+                            const colorValue = match[1].toLowerCase();
+
+                            // 过滤掉无效值
+                            if (!['none', 'transparent', 'currentcolor'].includes(colorValue) &&
+                                !colorValue.startsWith('url(')) {
+                                colors.add(colorValue);
                             }
                         }
 
-                        return Array.from(colorSet);
+                        return Array.from(colors);
                     }
 
                     if(img){
                         if(!img.endsWith('.svg')){
                             return 'toast://非svg格式图标无法着色';
                         }
-                        let colors = extractColorsWithRegex(fetch(img)).map(v=>{
+                        let colors = extractAllSVGColors(fetch(img)).map(v=>{
                             return {
                                 title: v,
                                 icon: v

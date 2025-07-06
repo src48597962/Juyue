@@ -2008,7 +2008,7 @@ function themeIconSet() {
             } else if (!currentTheme.主页图标) {
                 return 'toast://新建主题没有内容';
             }
-
+            xlog(currentTheme);
             Object.keys(currentTheme).forEach(it=>{
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
@@ -2020,14 +2020,14 @@ function themeIconSet() {
                     })
                 }
             })
-
+            xlog(currentTheme);
             let themeList = storage0.getMyVar('themeList', []);
             themeList = themeList.filter(v => v.名称 != themename);
             themeList.push(currentTheme);
             writeFile(rulepath + 'themes.json', JSON.stringify(themeList));
             storage0.setItem('currentTheme', currentTheme);//保存为当前主题
             storage0.putMyVar('currentTheme', currentTheme);
-            clearMyVar('themeList');
+            storage0.putMyVar('themeList', themeList);
             refreshPage(true);
             return 'toast://已保存并生效';
         }, rulepath, themename),

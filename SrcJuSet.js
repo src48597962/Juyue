@@ -1739,16 +1739,18 @@ function themeIconSet() {
                     let img = (imgs[i]||{}).img;
 
                     function extractAllSVGColors(svgString) {
-                        // 改进后的终极正则表达式
-                        const colorRegex = /(?:fill|stroke|stop-color|flood-color|lighting-color|color)\s*=\s*(["']?)(#[0-9a-fA-F]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)|hsl\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*\)|hsla\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*,\s*[\d.]+\s*\)|[a-zA-Z]+)\1(?=[\s>\/])/gi;
+                        // 完全重构的正则表达式
+                        const colorRegex = /(?:fill|stroke|stop-color|flood-color|lighting-color|color)\s*=\s*(["']?)(#[\da-fA-F]{3,8}|(?:rgb|hsl)a?\(\s*\d+\s*(?:,\s*\d+\s*){2}(?:,\s*[\d.]+\s*)?\)|[a-zA-Z]+)\1(?=[\s>\/]|"\/>)/g;
 
                         const colors = new Set();
                         let match;
 
+                        // 重置正则表达式lastIndex以确保完全匹配
+                        colorRegex.lastIndex = 0;
+
                         while ((match = colorRegex.exec(svgString)) !== null) {
                             const colorValue = match[2].toLowerCase();
 
-                            // 过滤掉无效值
                             if (!['none', 'transparent', 'currentcolor'].includes(colorValue) &&
                                 !colorValue.startsWith('url(')) {
                                 colors.add(colorValue);

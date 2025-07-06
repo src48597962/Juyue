@@ -1,5 +1,3 @@
-// 代码库路径
-let codePath;
 // 重定义打印日志
 let xlog = log;
 if (getItem('规则日志打印','1') == "0") {

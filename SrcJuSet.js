@@ -2015,14 +2015,8 @@ function themeIconSet() {
                         try{
                         if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
                             let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect__storage_emulated_0_','');
-                            // 处理保存路径
-                            let fullPath = getPath(newimg).replace("file://", "");
-                            // 确保目录存在
-                            let file = new File(fullPath);
-                            let parent = file.getParentFile();
-                            if (!parent.exists()) {
-                                parent.mkdirs();
-                            }
+                            writeFile(newimg, '');
+                            deleteFile(newimg);
                             saveImage(v.img, newimg);
                             v.img = newimg;
                         }

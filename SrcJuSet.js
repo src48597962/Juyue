@@ -1738,6 +1738,7 @@ function themeIconSet() {
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let imgs = currentTheme[imgtype] || [];
                         let i = parseInt(getMyVar('按钮索引', '0'));
+                        let img = (imgs[i]||{}).img;
 
                         function extractColorsWithRegex(svgString) {
                             const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;
@@ -1753,10 +1754,11 @@ function themeIconSet() {
 
                             return Array.from(colorSet);
                         }
-                        if((imgs[i]||{}).img){
-                            xlog(extractColorsWithRegex(fetch((imgs[i]||{}).img)));
+                        if(img){
+                            xlog(fetch(img));
+                            xlog(extractColorsWithRegex(fetch(img)));
                         }
-                        imgs[i] = {img: (imgs[i]||{}).img||undefined, color: input};
+                        imgs[i] = {img: img, color: input};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);
                     }

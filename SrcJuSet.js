@@ -2076,6 +2076,7 @@ function themeIconSet() {
                             hideLoading();
                         }
                         if(text && !/^error/.test(text)){
+                            let gzip = $.require(codePath + "plugins/gzip.js");
                             let importTheme = JSON.parse(gzip.unzip(parsePaste(pasteurl)));
                             Object.keys(importTheme).forEach(it=>{
                                 if($.type(importTheme[it])=='array'){
@@ -2113,9 +2114,8 @@ function themeIconSet() {
                     } else if (!currentTheme.主页图标) {
                         return 'toast://新建主题没有内容';
                     }
-                    xlog(storage0.getMyVar('themeList', []));
+
                     let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);
-                    xlog(themeList.length);
                     if (themeList.length == 1) {
                         Object.keys(currentTheme).forEach(it=>{
                             if($.type(currentTheme[it])=='array'){
@@ -2127,6 +2127,7 @@ function themeIconSet() {
                             }
                         })
 
+                        let gzip = $.require(codePath + "plugins/gzip.js");
                         let sharetxt = gzip.zip(JSON.stringify(currentTheme));
                         let pastename = '';
                         if(sharetxt.length>200000){

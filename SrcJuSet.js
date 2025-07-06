@@ -1738,6 +1738,24 @@ function themeIconSet() {
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let imgs = currentTheme[imgtype] || [];
                         let i = parseInt(getMyVar('按钮索引', '0'));
+
+                        function extractColorsWithRegex(svgString) {
+                            const colorRegex = /(fill|stroke|stop-color|flood-color|lighting-color|color|background(?:-color)?)=["']([^"']+)["']|(fill|stroke|color|background(?:-color)?):\s*([^;]+)/gi;
+                            const colorSet = new Set();
+                            let match;
+
+                            while ((match = colorRegex.exec(svgString)) !== null) {
+                                const color = match[2] || match[4];
+                                if (color && color !== 'none' && !color.startsWith('url(')) {
+                                    colorSet.add(color.toLowerCase());
+                                }
+                            }
+
+                            return Array.from(colorSet);
+                        }
+                        if((imgs[i]||{}).img){
+                            xlog(extractColorsWithRegex(fetch((imgs[i]||{}).img)));
+                        }
                         imgs[i] = {img: (imgs[i]||{}).img||undefined, color: input};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);
@@ -2013,7 +2031,7 @@ function themeIconSet() {
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
                         if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
-                            let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect__storage_emulated_0_','');
+                            let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/')).replace('_fileSelect_','').replace('_storage_emulated_0_','');
                             saveImage(getPath(v.img).replace('file://',''), newimg);
                             v.img = newimg;
                         }

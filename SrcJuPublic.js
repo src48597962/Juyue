@@ -7,7 +7,6 @@ let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-let gzip = $.require(codepath + "plugins/gzip.js");
 
 // 对象转js文本
 function objconvertjs(obj) {

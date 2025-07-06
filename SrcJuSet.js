@@ -1636,6 +1636,10 @@ function themeIconSet() {
     clearMyVar('编辑类别');
     clearMyVar('编辑组件状态');
     clearMyVar('图标临时记录');
+    if(fileExist(libspath + 'themes.json')){
+        writeFile(rulepath + 'themes.json', fetch(libspath + 'themes.json'));
+        deleteFile(libspath + 'themes.json');
+    }
 
     let d = [];
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
@@ -1698,12 +1702,12 @@ function themeIconSet() {
         extra: {
             longClick: [{
                 title: "删除主题",
-                js: $.toString((libspath,themename) => {
-                    return $("删除主题["+themename+"]，确认？").confirm((libspath, themename)=>{
+                js: $.toString((rulepath,themename) => {
+                    return $("删除主题["+themename+"]，确认？").confirm((rulepath, themename)=>{
                         let currentTheme = storage0.getMyVar('currentTheme', {});
                         let themeList = storage0.getMyVar('themeList', []);
                         themeList = themeList.filter(v => v.名称 != currentTheme.名称);
-                        writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+                        writeFile(rulepath + 'themes.json', JSON.stringify(themeList));
 
                         if(storage0.getItem('currentTheme', {}).名称==currentTheme.名称){
                             clearItem('currentTheme');
@@ -1711,13 +1715,13 @@ function themeIconSet() {
                         clearMyVar('currentTheme');
                         clearMyVar('themeList');
                         //删除对应文件夹
-                        //let L = $.require("http://123.56.105.145/weisyr/js/file.js")
-                        //L.deleteFiles('/storage/emulated/0/Android/data/com.example.hikerview/files/Documents/data/聚阅/themes/' + themename)
+                        let L = $.require("http://123.56.105.145/weisyr/js/file.js")
+                        L.deleteFiles(getPath(rulepath + 'themes/' + themename));
 
                         refreshPage(true);
                         return 'toast://已保存并生效';
-                    }, libspath, themename)
-                }, libspath, themename)
+                    }, rulepath, themename)
+                }, rulepath, themename)
             }]
         }
     })
@@ -1798,8 +1802,9 @@ function themeIconSet() {
                         imgs[i] = {img: oldimg, color: (imgs[i]||{}).color||undefined};
                         currentTheme[imgtype] = imgs;
                         storage0.putMyVar('currentTheme', currentTheme);
+                        return 'toast://已恢复';
                     }
-                    return 'hiker://empty';
+                    return 'toast://无记录';
                 }),
                 extra: {
                     id: '撤销',
@@ -1821,7 +1826,7 @@ function themeIconSet() {
                     let i = parseInt(getMyVar('按钮索引', '0'));
                     //记录图标上一个状态
                     let 图标临时记录 = storage0.getMyVar('图标临时记录', {});
-                    图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i].img || '';
+                    图标临时记录[getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引')] = imgs[i]?(imgs[i].img || ''):'';
                     storage0.putMyVar('图标临时记录', 图标临时记录);
                     //更新新图标
                     imgs[i] = {img: input, color: (imgs[i]||{}).color||undefined};
@@ -1982,21 +1987,21 @@ function themeIconSet() {
         extra: {
             longClick: [{
                 title: "清空主题",
-                js: $.toString((libspath) => {
-                    return $("清空本地所有主题，确认？").confirm((libspath)=>{
-                        deleteFile(libspath + 'themes.json');
+                js: $.toString((rulepath) => {
+                    return $("清空本地所有主题，确认？").confirm((rulepath)=>{
+                        deleteFile(rulepath + 'themes.json');
                         clearMyVar('currentTheme');
                         clearMyVar('themeList');
                         refreshPage(true);
                         return 'toast://已清空';
-                    },libspath)
-                },libspath)
+                    },rulepath)
+                },rulepath)
             }]
         }
     })
     d.push({
         title: '““””<font color=#94B5B0>保存|应用</font>',
-        url: !themename ? 'toast://没有主题' : $().lazyRule((libspath, themename) => {
+        url: !themename ? 'toast://没有主题' : $().lazyRule((rulepath, themename) => {
             let currentTheme = storage0.getMyVar('currentTheme', {});
             if (!themename) {
                 return 'toast://没有主题'
@@ -2007,8 +2012,8 @@ function themeIconSet() {
             Object.keys(currentTheme).forEach(it=>{
                 if($.type(currentTheme[it])=='array'){
                     currentTheme[it].forEach(v=>{
-                        if($.type(v)=='object' && !v.img.startsWith(libspath) && !v.img.startsWith('http')){
-                            let newimg = libspath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/'));
+                        if($.type(v)=='object' && !v.img.startsWith(rulepath) && !v.img.startsWith('http')){
+                            let newimg = rulepath+'themes/'+themename+v.img.substr(v.img.lastIndexOf('/'));
                             saveImage(v.img, newimg);
                             v.img = newimg;
                         }
@@ -2019,12 +2024,12 @@ function themeIconSet() {
             let themeList = storage0.getMyVar('themeList', []);
             themeList = themeList.filter(v => v.名称 != themename);
             themeList.push(currentTheme);
-            writeFile(libspath + 'themes.json', JSON.stringify(themeList));
+            writeFile(rulepath + 'themes.json', JSON.stringify(themeList));
             storage0.setItem('currentTheme', currentTheme);//保存为当前主题
             clearMyVar('themeList');
             refreshPage(true);
             return 'toast://已保存并生效';
-        }, libspath, themename),
+        }, rulepath, themename),
         col_type: 'text_3'
     })
     d.push({

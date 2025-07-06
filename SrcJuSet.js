@@ -1688,7 +1688,7 @@ function themeIconSet() {
         title: '新增|删除',
         url: $('', '请输入一个主题名称').input(() => {
             let themeList = storage0.getMyVar('themeList');
-            if (themeList.some(v => v.名称 == input)) {
+            if (themeList.some(v => v.名称 == input) || input=='原生主题') {
                 return 'toast://主题名称已存在';
             } else if (input) {
                 storage0.putMyVar('currentTheme', {
@@ -1739,14 +1739,14 @@ function themeIconSet() {
                     let img = (imgs[i]||{}).img;
 
                     function extractAllSVGColors(svgString) {
-                        // 改进后的正则表达式，更全面地匹配颜色属性
-                        const colorRegex = /(?:fill|stroke|stop\-color|flood\-color|lighting\-color|color)\s*=\s*["']?(#[0-9a-fA-F]{3,6}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)|hsl\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*\)|hsla\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*,\s*[\d.]+\s*\)|\b[a-zA-Z]+\b)(?=["'\s>\/])/gi;
+                        // 改进后的终极正则表达式
+                        const colorRegex = /(?:fill|stroke|stop-color|flood-color|lighting-color|color)\s*=\s*(["']?)(#[0-9a-fA-F]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)|hsl\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*\)|hsla\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*,\s*[\d.]+\s*\)|[a-zA-Z]+)\1(?=[\s>\/])/gi;
 
                         const colors = new Set();
                         let match;
 
                         while ((match = colorRegex.exec(svgString)) !== null) {
-                            const colorValue = match[1].toLowerCase();
+                            const colorValue = match[2].toLowerCase();
 
                             // 过滤掉无效值
                             if (!['none', 'transparent', 'currentcolor'].includes(colorValue) &&
@@ -1771,7 +1771,7 @@ function themeIconSet() {
                         if(colors.length==0){
                             return 'toast://获取svg图标中颜色代码失败';
                         }
-                        return $(colors, 2, '选择随主题替换的颜色代码').select(()=>{
+                        return $(colors, 2, '选择随主题色变化的颜色代码').select(()=>{
                             let imgtype = getMyVar('编辑类别', '主页') + '图标';
                             let currentTheme = storage0.getMyVar('currentTheme', {});
                             let imgs = currentTheme[imgtype] || [];
@@ -1925,7 +1925,7 @@ function themeIconSet() {
                     title: icon_name,
                     img: icon_img,
                     col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_small_3' : 'icon_5',
-                    url: $('#noLoading#').lazyRule((type_name, icon_name, i, 编辑d) => {
+                    url: themename=='原生主题'?'hiker://empty':$('#noLoading#').lazyRule((type_name, icon_name, i, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {
                             title: getMyVar('按钮名称'),

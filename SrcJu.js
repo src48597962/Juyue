@@ -1747,11 +1747,15 @@ function bookCase() {
             })
         }
     }else{
+        /*
         d.push({
             col_type: 'pic_1_full',
             img: "http://123.56.105.145/weisyr/img/TopImg0.png",
             url: 'hiker://empty',
         });
+        */
+        require('http://123.56.105.145/weisyr/Top_H5.js');
+        d.push(Top_H5("http://123.56.105.145/weisyr/img/TopImg0.png", "130"));
     }
     let sjType = getItem("切换收藏列表", "聚阅收藏");
     let sjIcons = getThemeList(true)['书架图标'];
@@ -1924,6 +1928,9 @@ function bookCase() {
         }
     })
     setResult(d);
+    if(Julist.length>0){
+        saveImage(Julist[0].picUrl, 'hiker://files/cache/Top_H5.jpg');
+    }
 }
 //版本检测
 function Version() {

@@ -6,7 +6,6 @@ let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
 let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
-let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
 
 // 对象转js文本
 function objconvertjs(obj) {

@@ -1716,7 +1716,7 @@ function themeIconSet() {
                         clearMyVar('themeList');
                         //删除对应文件夹
                         let L = $.require("http://123.56.105.145/weisyr/js/file.js")
-                        L.deleteFiles(getPath(rulepath + 'themes/' + themename));
+                        L.deleteFiles(getPath(rulepath + 'themes/' + themename).replace('file://',''));
 
                         refreshPage(true);
                         return 'toast://已保存并生效';
@@ -2082,7 +2082,7 @@ function themeIconSet() {
                                 if($.type(importTheme[it])=='array'){
                                     importTheme[it].forEach(v=>{
                                         if($.type(v)=='object' && !v.img.startsWith('http') && v.imgb64){
-                                            v.img = 'hiker://files/_cache/Juyue/themes' + importTheme.名称 + v.img.substr(v.img.lastIndexOf('/'));
+                                            v.img = 'hiker://files/_cache/Juyue/themes/' + importTheme.名称 + v.img.substr(v.img.lastIndexOf('/'));
                                             saveBase64Image(v.imgb64, v.img);
                                             delete v.imgb64;
                                         }

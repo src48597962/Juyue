@@ -2133,9 +2133,11 @@ function themeIconSet() {
                     let bytes;
                     if (typeof _base64 !== 'undefined') {
                         // 方式1：使用_base64解码
+                        xlog('方式1');
                         bytes = _base64.decode(pureBase64, _base64.NO_WRAP);
                     } else if (typeof window0 !== 'undefined' && window0.atob) {
                         // 方式2：使用window0.atob解码
+                        xlog('方式2');
                         let decodedStr = window0.atob(pureBase64);
                         bytes = java.lang.String(decodedStr).getBytes("ISO-8859-1");
                     }
@@ -2160,7 +2162,7 @@ function themeIconSet() {
                     fos.write(bytes);
                     fos.close();
                     
-                    return savePath;
+                    return 'toast://'+savePath;
                 } catch (e) {
                     xlog("保存图片失败：" + e);
                     return "";

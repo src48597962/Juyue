@@ -1735,6 +1735,44 @@ function bookCase() {
     putMyVar('从书架进二级','1');
     
     let d = [];
+    let Julist = [];
+    if(sjType=="软件收藏"){
+        let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
+        collection.forEach(it => {
+            try{
+                if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
+                    it.type = it.mITitle;
+                    it.title = it.mTitle;
+                    delete it.mITitle;
+                    delete it.mTitle;
+                    it.params = JSON.parse(it.params);
+                    it.params.url = (it.params.url||'').split(';')[0];
+                    it.params['params'] = JSON.parse(it.params['params'] || '{}');
+                    it.mask = it.lastClick?it.lastClick.split('@@')[0]:"";
+                    Julist.push(it);
+                }
+            }catch(e){
+                xlog("软件收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
+            }
+        })
+    }else{
+        let casefile = rulepath + 'case.json';
+        eval('let caselist = ' + (fetch(casefile) || '[]'));
+        let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
+        history = history.filter(v => v.type == '二级列表');
+        caselist.forEach(it => {
+            try {
+                history = history.filter(v => v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
+                if (history.length == 1) {
+                    it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
+                }
+                Julist.push(it);
+            } catch (e) {
+                xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
+            }
+        })
+    }
+
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
         for(let i=0;i<2;i++){
             d.push({
@@ -1755,7 +1793,7 @@ function bookCase() {
         });
         */
         require('http://123.56.105.145/weisyr/Top_H5.js');
-        d.push(Top_H5("http://123.56.105.145/weisyr/img/TopImg0.png", "130"));
+        d.push(Top_H5(Julist.length>0?Julist[0].picUrl:"http://123.56.105.145/weisyr/img/TopImg0.png", "110"));
     }
     let sjType = getItem("切换收藏列表", "聚阅收藏");
     let sjIcons = getThemeList(true)['书架图标'];
@@ -1817,44 +1855,6 @@ function bookCase() {
         })
     })
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
-
-    let Julist = [];
-    if(sjType=="软件收藏"){
-        let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
-        collection.forEach(it => {
-            try{
-                if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
-                    it.type = it.mITitle;
-                    it.title = it.mTitle;
-                    delete it.mITitle;
-                    delete it.mTitle;
-                    it.params = JSON.parse(it.params);
-                    it.params.url = (it.params.url||'').split(';')[0];
-                    it.params['params'] = JSON.parse(it.params['params'] || '{}');
-                    it.mask = it.lastClick?it.lastClick.split('@@')[0]:"";
-                    Julist.push(it);
-                }
-            }catch(e){
-                xlog("收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
-            }
-        })
-    }else{
-        let casefile = rulepath + 'case.json';
-        eval('let caselist = ' + (fetch(casefile) || '[]'));
-        let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
-        history = history.filter(v => v.type == '二级列表');
-        caselist.forEach(it => {
-            try {
-                history = history.filter(v => v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
-                if (history.length == 1) {
-                    it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
-                }
-                Julist.push(it);
-            } catch (e) {
-                xlog("收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
-            }
-        })
-    }
 
     Julist.forEach(it => {
         try{
@@ -1928,9 +1928,6 @@ function bookCase() {
         }
     })
     setResult(d);
-    if(Julist.length>0){
-        saveImage(Julist[0].picUrl, 'hiker://files/cache/Top_H5.jpg');
-    }
 }
 //版本检测
 function Version() {

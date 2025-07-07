@@ -207,7 +207,7 @@ function getGroupNames() {
 //获取搜索接口列表
 function getSearchLists(group) {
     let datalist = getDatas('er', 1);
-
+    /*
     let sort = {};
     if(fetch(sortfile)){
         eval("sort = " + fetch(sortfile));
@@ -223,7 +223,7 @@ function getSearchLists(group) {
     datalist.sort((a, b) => {
         return a.sort - b.sort
     })
-
+*/
     if(group){
         return datalist.filter(it=>{
             return group==it.type || (it.group||"").split(',').indexOf(group)>-1;
@@ -665,6 +665,44 @@ function getThemeList(isEnable) {
         return currentTheme;
     }
     return themelist;
+}
+// 设置接口顺序
+function setJkSort(data, so) {
+    let waitlist= [];
+    if($.type(data)=='string'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    let sort = {};
+    if(fetch(sortfile)){
+        eval("sort = " + fetch(sortfile));
+    }
+    waitlist.forEach(it=>{
+        let key;
+        if($.type(it)=="object"){
+            key = it.url;
+        }else if($.type(it)=="string"){
+            key = it;
+        }
+        let jksort = sort[key] || {};
+        if($.type(jksort) != "object"){
+            jksort = {};
+        }
+        if(so.use==0){
+            jksort.use = 0;
+        }else if(so.fail==0){
+            jksort.fail = 0;
+        }else if(so.use){
+            jksort.use = jksort.use || 0;
+            jksort.use++;
+        }else if(so.fail){
+            jksort.fail = jksort.fail || 0;
+            jksort.fail++;
+        }
+        sort[key] = jksort;
+    })
+    writeFile(sortfile, JSON.stringify(sort));
 }
 // 检测依赖
 if(!getVar('SrcJu_config')){

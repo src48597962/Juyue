@@ -147,9 +147,10 @@ function SRCSet() {
     groupNames.unshift("全部");
     let Color = getItem('主题颜色','#3399cc');
     let groupColtype = getItem("groupColtype", "flex_button");
+    let lockgroups = Juconfig["lockgroups"] || [];
     groupNames.forEach(it =>{
         let obj = {
-            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+            title: (getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it) + (lockgroups.indexOf(it)>-1?"🔒":""),
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("selectGroup")!=it){
                     putMyVar("selectGroup",it);
@@ -180,6 +181,31 @@ function SRCSet() {
                         refreshPage(false);
                     })
                 })
+            }]
+        }else{
+            obj.extra.longClick = [{
+                title: lockgroups.indexOf(it)>-1?"解锁":"加锁",
+                js: $.toString((it) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    let lockgroups = Juconfig["lockgroups"] || [];
+                    if(lockgroups.indexOf(it)>-1){
+                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                        if (hikerPop.canBiometric() !== 0) {
+                            return "toast://无法调用生物学验证";
+                        }
+                        lockgroups = lockgroups.filter(item => item !== it);
+                        let pop = hikerPop.checkByBiometric(() => {
+                            Juconfig["lockgroups"] = lockgroups;
+                            writeFile(cfgfile, JSON.stringify(Juconfig));
+                            refreshPage(false);
+                        });
+                    }else{
+                        lockgroups.push(it);
+                        Juconfig["lockgroups"] = lockgroups;
+                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        refreshPage(false);
+                    }
+                },it)
             }]
         }
         d.push(obj);

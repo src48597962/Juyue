@@ -2109,8 +2109,13 @@ function themeIconSet() {
                             hideLoading();
                         }
                         if(text && !/^error/.test(text)){
-                            let gzip = $.require(codePath + "plugins/gzip.js");
-                            let importTheme = JSON.parse(gzip.unzip(parsePaste(pasteurl)));
+                            let importTheme = [];
+                            try{
+                                let gzip = $.require(codePath + "plugins/gzip.js");
+                                importTheme = JSON.parse(gzip.unzip(parsePaste(pasteurl)));
+                            }catch(e){
+                                importTheme = JSON.parse(parsePaste(pasteurl));//兼容一下旧的分享口令
+                            }
                             Object.keys(importTheme).forEach(it=>{
                                 if($.type(importTheme[it])=='array'){
                                     importTheme[it].forEach(v=>{

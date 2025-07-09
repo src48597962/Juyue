@@ -565,15 +565,15 @@ function erji() {
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
-            
+            let detailObj = erLoadData.detailobject || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
             pic = pic&&pic.indexOf("@Referer=") == -1 ? pic + "@Referer=" : pic;
             erjiextra.img = pic;
-            erTempData.img = erjiextra.img || erTempData.img;
-            erTempData.detail1 = erLoadData.detail1 || erTempData.detail1;
-            erTempData.detail2 =  erLoadData.detail2 || erTempData.detail2;
+            erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;
             erTempData.desc = erLoadData.desc || erTempData.desc;
-            let detailextra = erLoadData.detailextra || {};
+            erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;
+            erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
+            let detailextra = detailObj.extra || erLoadData.detailextra || {};
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
@@ -596,7 +596,7 @@ function erji() {
                 title: erTempData.detail1 || "",
                 desc: erTempData.detail2 || "",
                 pic_url: erTempData.img,
-                url: erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
+                url: detailObj.url || erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
                 col_type: 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })

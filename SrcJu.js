@@ -474,15 +474,6 @@ function erji() {
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
         if(getMyVar('从书架进二级')){
-            /*
-            let caselist = storage0.getMyVar('书架收藏列表');
-            let index = caselist.findIndex(item => item.url === caseurl);
-            const [target] = caselist.splice(index, 1);
-            caselist.unshift(target);
-            storage0.putMyVar('书架收藏列表', caselist);
-            let casefile = rulepath + 'case.json';
-            writeFile(casefile, JSON.stringify(caselist));
-            */
             refreshPage(false);
         }
     }));
@@ -597,7 +588,7 @@ function erji() {
                 desc: erTempData.detail2 || "",
                 pic_url: erTempData.img,
                 url: detailObj.url || erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
-                col_type: 'movie_1_vertical_pic_blur',
+                col_type: detailObj.col_type || 'movie_1_vertical_pic_blur',
                 extra: detailextra
             })
 

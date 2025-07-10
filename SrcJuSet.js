@@ -317,7 +317,7 @@ function SRCSet() {
         let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
         d.push({
-            title: it.stop?'❌'+colorTitle(datatitle, 'grey'):datatitle,
+            title: datatitle,
             url: getMyVar('批量选择模式')?$('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');

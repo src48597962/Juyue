@@ -610,10 +610,15 @@ function banner(start, arr, data, cfg){
         unRegisterTask(id)
         return
     }
+    let jkdata = storage0.getMyVar('一级源接口信息');
+    let parse =  $.require("jiekou?rule=聚阅").parse(jkdata);
+    if(parse["二级标识"]){
+        jkdata['erjisign'] = parse['二级标识'];
+    }
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: storage0.getMyVar('一级源接口信息'),
+        info: jkdata,
         xlog: xlog
     };
     registerTask(id, time, $.toString((obj) => {

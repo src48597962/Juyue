@@ -301,7 +301,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: "text_center_1",
                     })
                 } else if (getData.length > 0) {
-                    jkdata.erjisign = parse['二级标识'];
+                    jkdata['erjisign'] = parse['二级标识'];
                     getData.forEach(item => {
                         item = toerji(item, jkdata);
                     })

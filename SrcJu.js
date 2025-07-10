@@ -35,10 +35,6 @@ function yiji(testSource) {
         let index = yxdatalist.findIndex(d => d.id === homeSourceId);
         jkdata = yxdatalist[index] || {};
         if(jkdata.name){
-            let parse = getObjCode(jkdata, 'yi');
-            if(parse["二级标识"]){
-                jkdata['erjisign'] = parse['二级标识'];
-            }
             storage0.putMyVar('一级源接口信息', jkdata);
         }
     }

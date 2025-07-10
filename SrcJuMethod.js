@@ -145,9 +145,17 @@ function getYiData(datatype, jkdata, dd) {
         }catch(e){}
     },datatype));
 
-    jkdata = jkdata || MY_PARAMS.data || storage0.getMyVar('一级源接口信息');
+    let yijkdata = storage0.getMyVar('一级源接口信息');
+    jkdata = jkdata || MY_PARAMS.data || yijkdata;
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
+
+    if(!yijkdata || (yijkdata && parse['二级标识'] && !yijkdata['二级标识'])){
+        if(parse['二级标识']){
+            jkdata['erjisign'] = parse['二级标识'];
+        }
+        storage0.putMyVar('一级源接口信息', jkdata);
+    }
     
     let page = MY_PAGE || 1;
     let sourcemenu = [];
@@ -610,15 +618,11 @@ function banner(start, arr, data, cfg){
         unRegisterTask(id)
         return
     }
-    let jkdata = storage0.getMyVar('一级源接口信息');
-    let parse =  $.require("jiekou?rule=聚阅").parse(jkdata);
-    if(parse["二级标识"]){
-        jkdata['erjisign'] = parse['二级标识'];
-    }
+
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: jkdata,
+        info: storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
     registerTask(id, time, $.toString((obj) => {

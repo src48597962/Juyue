@@ -145,16 +145,9 @@ function getYiData(datatype, jkdata, dd) {
         }catch(e){}
     },datatype));
 
-    let 源接口 = storage0.getMyVar('一级源接口信息');
-    jkdata = jkdata || MY_PARAMS.data || 源接口;
+    jkdata = jkdata || MY_PARAMS.data || storage0.getMyVar('一级源接口信息');
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
-
-    
-    if(!源接口 || (parse["二级标识"] && !源接口['erjisign'])){
-        jkdata['erjisign'] = parse['二级标识'];
-        storage0.putMyVar('一级源接口信息', jkdata);
-    }
     
     let page = MY_PAGE || 1;
     let sourcemenu = [];

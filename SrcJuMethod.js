@@ -293,6 +293,7 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: "text_center_1",
                     })
                 } else if (getData.length > 0) {
+                    jkdata.erjisign = parse['二级标识'];
                     getData.forEach(item => {
                         item = toerji(item, jkdata);
                     })
@@ -471,7 +472,7 @@ function toerji(item, jkdata) {
             extra.pageTitle = extra.pageTitle || extra.name;
             extra.url = item.url.toString().replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
             extra.data = jkdata;
-            item.url = $("hiker://empty?type="+jkdata.type+"#immersiveTheme##autoCache#").rule(() => {
+            item.url = $("hiker://empty?type="+jkdata.type+"#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                 require(config.聚阅);
                 erji();
             })

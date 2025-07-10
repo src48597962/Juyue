@@ -273,11 +273,11 @@ function colorTitle(title, Color) {
     return '<font color="' + Color + '">' + title + '</font>';
 }
 // 获取接口对应的显示标题
-function getDataTitle(data) {
+function getDataTitle(data, ide) {
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-        return data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '</font></small>';
+        return (ide||(getMyVar('批量选择模式')?'○':'')) + data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '</font></small>';
     }else{
-        return data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1" ? " [主页源]" : data.ilk=="2" ? " [搜索源]" : " [完整源]") + '</font></small>';
+        return (ide||(getMyVar('批量选择模式')?'○':'')) + data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1" ? " [主页源]" : data.ilk=="2" ? " [搜索源]" : " [完整源]") + '</font></small>';
     }
 }
 // 接口多选处理方法
@@ -293,11 +293,11 @@ function duoselect(data){
     waitlist.forEach(data=>{
         if(!selectlist.some(item => data.id==item.id)){
             selectlist.push(data);
-            updateItem(data.id, {title: colorTitle(getDataTitle(data),'#3CB371')});
+            updateItem(data.id, {title: colorTitle(getDataTitle(data, '●'),'#3CB371')});
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data),'grey'):getDataTitle(data)});
+            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data, '○'),'grey'):getDataTitle(data)});
         }
     })
     storage0.putMyVar('duodatalist',selectlist);

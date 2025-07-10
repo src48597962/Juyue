@@ -1529,6 +1529,7 @@ function manageSet(){
         title: '主题颜色选择',
         img: getIcon("管理-箭头.svg"),
         url: $(colors, 3).select((colors) => {
+            input = input.replace('√', '');
             if(input=="自定义色"){
                 return $(getItem('自定义色', ''), "输入自定义主题颜色代码").input(()=>{
                     if(!input.startsWith('#')){

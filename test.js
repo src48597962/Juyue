@@ -48,7 +48,7 @@ function header(arr, rule) {
 			imgLongClick: false,
 			showProgress: false,
             js: $.toString((data)=>{
-                var 二级样式数据 =  data;
+                eval('var 二级样式数据 = ' + data);
             }, data),
             jsLoadingInject: true
 		}

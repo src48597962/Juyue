@@ -48,7 +48,7 @@ function header(arr, rule) {
 			imgLongClick: false,
 			showProgress: false,
             js: $.toString((data)=>{
-                fba.putVar('二级样式数据', JSON.stringify(data));
+                var 二级样式数据 =  data;
             }, data),
             jsLoadingInject: true
 		}

@@ -568,7 +568,7 @@ function erji() {
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
-            detailextra.longClick.push({
+            let addCaseObj = [{
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile) => {
                     let cacheData = fetch(erCacheFile);
@@ -582,7 +582,8 @@ function erji() {
                     }
                     return 'toast://失败，未找到数据';
                 }, erCacheFile)
-            })
+            }];
+            detailextra.longClick = detailextra.longClick.concat(addCaseObj);
             d.push({
                 title: erTempData.detail1 || "",
                 desc: erTempData.detail2 || "",
@@ -749,7 +750,8 @@ function erji() {
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                     col_type: 'icon_small_3',
                     extra: {
-                        cls: "Juloadlist"
+                        cls: "Juloadlist",
+                        longClick: addCaseObj
                     }
                 })
             }else{
@@ -773,7 +775,7 @@ function erji() {
                                     return "toast://不支持下载的类型"
                                 }
                             },itype)
-                        }],
+                        }].concat(addCaseObj),
                         chapterList: 列表,
                         "defaultView": "1",
                         "info": {

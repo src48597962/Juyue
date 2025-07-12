@@ -444,8 +444,8 @@ function selectSource(selectGroup) {
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
-                let flist = items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
-                manage.change(flist);
+                items = index_items.items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+                manage.change(items);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {

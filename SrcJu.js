@@ -1209,9 +1209,7 @@ function erji() {
     }
     d.push({
         title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
-        url: $('hiker://empty').lazyRule(()=>{
-            return 'toast://温馨提示：且用且珍惜！';
-        }),
+        url: stype=="小说"?'hiker://empty':'toast://温馨提示：且用且珍惜！',
         col_type: 'text_center_1',
         extra: {
             id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",

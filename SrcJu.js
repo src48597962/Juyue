@@ -795,14 +795,14 @@ function erji() {
             }
             function processChineseText(input) {
                 // 1. 只保留汉字、字母、数字
-                const cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+                let cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
                 if (!cleaned) return "（无）";
 
                 // 2. 计算显示宽度并截取前8宽度
                 let result = '';
                 let currentWidth = 0;
-                for (const char of cleaned) {
-                    const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+                for (let char of cleaned) {
+                    let charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
                     if (currentWidth + charWidth > 8) break;
                     result += char;
                     currentWidth += charWidth;
@@ -810,8 +810,8 @@ function erji() {
 
                 // 3. 只有宽度 <8 时才补齐
                 if (currentWidth < 8) {
-                    const isPureChinese = /^[\u4e00-\u9fa5]+$/.test(result);
-                    const isPureEnglish = /^[a-zA-Z0-9]+$/.test(result);
+                    let isPureChinese = /^[\u4e00-\u9fa5]+$/.test(result);
+                    let isPureEnglish = /^[a-zA-Z0-9]+$/.test(result);
 
                     if (isPureChinese) {
                         // 纯中文：1-2个字中间补，3个字末尾补

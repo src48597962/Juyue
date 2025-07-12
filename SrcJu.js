@@ -792,9 +792,27 @@ function erji() {
                     }
                 })
             }
+            function processChineseText(input) {
+                // 1. 去除所有符号和emoji，只保留汉字
+                const cleaned = input.replace(/[^\u4e00-\u9fa5]/g, '');
 
+                // 2. 截取前4个汉字
+                const truncated = cleaned.slice(0, 4);
+                const length = truncated.length;
+
+                // 3. 根据长度补充空格
+                if (length === 1) {
+                    return ` ${truncated}  `;
+                } else if (length === 2) {
+                    return `${truncated[0]} ${truncated[1]} `;
+                } else if (length === 3) {
+                    return `${truncated} `;
+                } else {
+                    return truncated;
+                }
+            }
             d.push({
-                title: "切换站源",
+                title: sname?processChineseText(sname):"切换站源",
                 url: $("#noLoading#").lazyRule((name,group) => {
                     updateItem("erji_loading2", { 
                         extra: {
@@ -1191,7 +1209,7 @@ function erji() {
     }
     d.push({
         title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
-        url: $('hiker://empty').lazyRule(()=>{
+        url: $('#noLoading#').lazyRule(()=>{
             return 'toast://温馨提示：且用且珍惜！';
         }),
         col_type: 'text_center_1',

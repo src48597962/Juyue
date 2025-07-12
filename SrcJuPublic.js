@@ -456,7 +456,7 @@ function selectSource(selectGroup) {
                     options: selects, 
                     columns: 3, 
                     title: "切换源分组", 
-                    //position: groupNames.indexOf(sourceName),
+                    //position: groupNames.indexOf(sourcename),
                     click(s) {
                         selectGroup = s=='全部'?'':s;
                         inputBox.setTitle(s);
@@ -510,7 +510,7 @@ function selectSource(selectGroup) {
                     } else if (i === 2) {
                         items.reverse();
                         manage.change(items);
-                        let index = items.indexOf(items.filter(d => d.title == sourceName)[0]);
+                        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
                         manage.setSelectedIndex(index);
                         manage.scrollToPosition(index, true);
                     }

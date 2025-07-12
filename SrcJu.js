@@ -711,8 +711,9 @@ function erji() {
                         deleteItemByCls("SrcJudescload");
                     }else{
                         putMyVar('二级简介打开标识',"1");
+                        let Color = getItem('主题颜色','#3399cc');
                         addItemAfter('detailid', [{
-                            title: `<font color="#098AC1">详情简介 </font><small><font color="#f47983"> ::</font></small>`,
+                            title: `<font color="`+Color+`">详情简介 </font>`,
                             col_type: "avatar",
                             url: $("#noLoading#").lazyRule(() => {
                                 clearMyVar('二级简介打开标识');
@@ -794,41 +795,34 @@ function erji() {
             }
             function processChineseText(input) {
                 // 1. 只保留汉字、字母、数字
-                let cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+                const cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
                 if (!cleaned) return "（无）";
 
-                // 2. 截取前8宽度
+                // 2. 计算显示宽度并截取前8宽度
                 let result = '';
                 let currentWidth = 0;
-                for (let char of cleaned) {
-                    let charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+                for (const char of cleaned) {
+                    const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
                     if (currentWidth + charWidth > 8) break;
                     result += char;
                     currentWidth += charWidth;
                 }
 
-                // 3. 不足8宽度时补齐
+                // 3. 只有宽度 <8 时才补齐
                 if (currentWidth < 8) {
-                    let needWidth = 8 - currentWidth;
-                    let chineseSpace = '\u3000';
-                    let normalSpace = ' ';
+                    const isPureChinese = /^[\u4e00-\u9fa5]+$/.test(result);
+                    const isPureEnglish = /^[a-zA-Z0-9]+$/.test(result);
 
-                    // 判断内容类型
-                    let hasChinese = /[\u4e00-\u9fa5]/.test(result);
-                    let chineseCount = (result.match(/[\u4e00-\u9fa5]/g) || []).length;
-
-                    if (hasChinese) {
-                        if (chineseCount <= 2) {
-                            // 1-2个汉字：中间补全角空格
-                            let parts = result.split('');
-                            result = parts.join(chineseSpace) + chineseSpace.repeat(needWidth / 2);
-                        } else {
-                            // 3个汉字：末尾补全角空格
-                            result += chineseSpace.repeat(needWidth / 2);
+                    if (isPureChinese) {
+                        // 纯中文：1-2个字中间补，3个字末尾补
+                        if (result.length <= 2) {
+                            result = result.split('').join('\u3000') + '\u3000'.repeat(4 - result.length);
+                        } else if (result.length === 3) {
+                            result += '\u3000';
                         }
-                    } else {
-                        // 纯字母/数字：末尾补半角空格
-                        result += normalSpace.repeat(needWidth);
+                    } else if (isPureEnglish) {
+                        // 纯英文/数字：末尾补半角空格
+                        result += ' '.repeat(8 - currentWidth);
                     }
                 }
 

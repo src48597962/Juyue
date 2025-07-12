@@ -478,7 +478,7 @@ function selectSource(selectGroup) {
         longClick(s, i) {
             showSelectOptions({
                 title: s.title,
-                options: ["分享", "禁用", "删除"],
+                options: ["分享", "编辑", "禁用", "删除"],
                 col: 2,
                 js: $.toString((data) => {
                     if(input=='分享'){
@@ -487,6 +487,11 @@ function selectSource(selectGroup) {
                         return $(pastes, 2).select((data)=>{
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                             return JYshare(input, data);
+                        }, data)
+                    }else if(input=='编辑'){
+                        return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            return jiekouapi(data);
                         }, data)
                     }else if(input=='禁用'){
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');

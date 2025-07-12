@@ -793,23 +793,30 @@ function erji() {
                 })
             }
             function processChineseText(input) {
-                // 1. 去除所有符号和emoji，只保留汉字
-                const cleaned = input.replace(/[^\u4e00-\u9fa5]/g, '');
+                // 1. 只保留汉字、字母、数字（去除符号和emoji）
+                const cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
 
-                // 2. 截取前4个汉字
-                const truncated = cleaned.slice(0, 4);
-                const length = truncated.length;
+                // 2. 截取前4个字符
+                let result = cleaned.slice(0, 4);
+                const length = result.length;
 
-                // 3. 根据长度补充空格
-                if (length === 1) {
-                    return ` ${truncated}  `;
-                } else if (length === 2) {
-                    return `${truncated[0]} ${truncated[1]} `;
-                } else if (length === 3) {
-                    return `${truncated} `;
-                } else {
-                    return truncated;
+                // 3. 补齐逻辑
+                if (length === 0) {
+                    return "（无）"; // 无有效字符时的回退
+                } else if (length < 4) {
+                    const need = 4 - length;
+                    // 1-2个字：中间补空格（如 "a b "）
+                    if (length <= 2) {
+                        const parts = result.split('');
+                        result = parts.join(' ') + ' '.repeat(need - (length - 1));
+                    }
+                    // 3个字：末尾补空格（如 "abc "）
+                    else if (length === 3) {
+                        result += ' '.repeat(need);
+                    }
                 }
+
+                return result;
             }
             d.push({
                 title: sname?processChineseText(sname):"切换站源",

@@ -476,9 +476,8 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i) {
-            xlog(s);
             showSelectOptions({
-                title: s,
+                title: s.title,
                 options: ["分享", "禁用", "删除"],
                 col: 2,
                 js: $.toString((data) => {

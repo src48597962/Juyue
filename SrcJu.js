@@ -793,26 +793,42 @@ function erji() {
                 })
             }
             function processChineseText(input) {
-                // 1. 只保留汉字、字母、数字（去除符号和emoji）
+                // 1. 只保留汉字、字母、数字
                 const cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+                if (!cleaned) return "（无）";
 
-                // 2. 截取前4个字符
-                let result = cleaned.slice(0, 4);
-                const length = result.length;
+                // 2. 截取前8宽度
+                let result = '';
+                let currentWidth = 0;
+                for (const char of cleaned) {
+                    const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+                    if (currentWidth + charWidth > 8) break;
+                    result += char;
+                    currentWidth += charWidth;
+                }
 
-                // 3. 补齐逻辑
-                if (length === 0) {
-                    return "（无）"; // 无有效字符时的回退
-                } else if (length < 4) {
-                    const need = 4 - length;
-                    // 1-2个字：中间补空格（如 "a b "）
-                    if (length <= 2) {
-                        const parts = result.split('');
-                        result = parts.join(' ') + ' '.repeat(need - (length - 1));
-                    }
-                    // 3个字：末尾补空格（如 "abc "）
-                    else if (length === 3) {
-                        result += ' '.repeat(need);
+                // 3. 不足8宽度时补齐
+                if (currentWidth < 8) {
+                    const needWidth = 8 - currentWidth;
+                    const chineseSpace = '\u3000';
+                    const normalSpace = ' ';
+
+                    // 判断内容类型
+                    const hasChinese = /[\u4e00-\u9fa5]/.test(result);
+                    const chineseCount = (result.match(/[\u4e00-\u9fa5]/g) || []).length;
+
+                    if (hasChinese) {
+                        if (chineseCount <= 2) {
+                            // 1-2个汉字：中间补全角空格
+                            const parts = result.split('');
+                            result = parts.join(chineseSpace) + chineseSpace.repeat(needWidth / 2);
+                        } else {
+                            // 3个汉字：末尾补全角空格
+                            result += chineseSpace.repeat(needWidth / 2);
+                        }
+                    } else {
+                        // 纯字母/数字：末尾补半角空格
+                        result += normalSpace.repeat(needWidth);
                     }
                 }
 

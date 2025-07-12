@@ -478,7 +478,7 @@ function selectSource(selectGroup) {
         longClick(s, i) {
             showSelectOptions({
                 title: s.title,
-                options: ["分享", "编辑", "禁用", "删除"],
+                options: ["分享", "置顶", "禁用", "删除"],
                 col: 2,
                 js: $.toString((data) => {
                     if(input=='分享'){
@@ -488,14 +488,16 @@ function selectSource(selectGroup) {
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                             return JYshare(input, data);
                         }, data)
-                    }else if(input=='编辑'){
-                        return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                            return jiekouapi(data);
-                        }, data)
+                    }else if(input=='置顶'){
+                        if(getItem("sourceListSort", "更新时间") != "更新时间"){
+                            return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
+                        }
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        let sm = dataHandle(data, input);
+                        return 'toast://' + sm;
                     }else if(input=='禁用'){
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        dataHandle(data, '禁用');
+                        dataHandle(data, input);
                         return "toast://已处理";
                     }else if(input=='删除'){
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');

@@ -496,7 +496,7 @@ function selectSource(selectGroup) {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["改变样式", "排序:" + (getItem('sourceListSort') == '接口名称' ? "接口名称" : "更新时间"), "列表倒序"],
+                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称' ? "更新时间" : "接口名称"), "列表倒序"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -505,7 +505,7 @@ function selectSource(selectGroup) {
                         manage.changeColumns(spen);
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
-                        setItem("sourceListSort", getItem('sourceListSort')=='更新时间' ? "接口名称" : "更新时间");
+                        setItem("sourceListSort", getItem('sourceListSort')=='接口名称' ? "更新时间" : "接口名称");
                         toast('下次打开切源列表生效>'+s);
                     } else if (i === 2) {
                         items.reverse();

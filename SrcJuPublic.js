@@ -353,7 +353,7 @@ function changeSource(sourcedata) {
     try {
         refreshX5WebView('about:blank');
     } catch (e) { }
-    let sourceGroup = sourcedata.selectGroup || sourcedata.type;
+    let sourceGroup = sourcedata.selectGroup || ((sourcedata.type==homeGroup||(sourcedata.group||'').includes(homeGroup))?homeGroup:sourcedata.type);
     Juconfig["homeGroup"] = sourceGroup;
     homeSourceS[sourceGroup] = {id: sourcedata.id, name: sourcedata.name};
     Juconfig['homeSourceS'] = homeSourceS;

@@ -476,23 +476,34 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i) {
-            /*
             showSelectOptions({
-                title: "分享视频源",
-                options: ["JS文件分享"].concat(getPastes()),
+                title: "选择操作",
+                options: ["分享", "禁用", "删除"],
                 col: 2,
-                js: $.toString(name => {
-                    
-                }, s.replace(/[’‘]/g, ""))
+                js: $.toString((data) => {
+                    if(input=='分享'){
+                        let pastes = getPastes();
+                        pastes.push('云口令文件');
+                        return $(pastes, 2).select((data)=>{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            return JYshare(input, data);
+                        }, data)
+                    }else if(input=='禁用'){
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        dataHandle(data, '禁用');
+                        return "toast://已处理";
+                    }else if(input=='删除'){
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        deleteData(data);
+                        return "toast://已处理";
+                    }
+                }, items[i])
             });
-            */
         },
         click(item, i, manage) {
             pop.dismiss();
-            xlog(i);
-            xlog(items[i]);
-            xlog(items[i].toString());
-            let sourcedata = JSON.parse(item.data);
+
+            let sourcedata = items[i].data;//JSON.parse(item.data);
             sourcedata['selectGroup'] = selectGroup;
             return changeSource(sourcedata);
         },

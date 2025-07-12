@@ -794,14 +794,14 @@ function erji() {
             }
             function processChineseText(input) {
                 // 1. 只保留汉字、字母、数字
-                const cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
+                let cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');
                 if (!cleaned) return "（无）";
 
                 // 2. 截取前8宽度
                 let result = '';
                 let currentWidth = 0;
-                for (const char of cleaned) {
-                    const charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+                for (let char of cleaned) {
+                    let charWidth = /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
                     if (currentWidth + charWidth > 8) break;
                     result += char;
                     currentWidth += charWidth;
@@ -809,18 +809,18 @@ function erji() {
 
                 // 3. 不足8宽度时补齐
                 if (currentWidth < 8) {
-                    const needWidth = 8 - currentWidth;
-                    const chineseSpace = '\u3000';
-                    const normalSpace = ' ';
+                    let needWidth = 8 - currentWidth;
+                    let chineseSpace = '\u3000';
+                    let normalSpace = ' ';
 
                     // 判断内容类型
-                    const hasChinese = /[\u4e00-\u9fa5]/.test(result);
-                    const chineseCount = (result.match(/[\u4e00-\u9fa5]/g) || []).length;
+                    let hasChinese = /[\u4e00-\u9fa5]/.test(result);
+                    let chineseCount = (result.match(/[\u4e00-\u9fa5]/g) || []).length;
 
                     if (hasChinese) {
                         if (chineseCount <= 2) {
                             // 1-2个汉字：中间补全角空格
-                            const parts = result.split('');
+                            let parts = result.split('');
                             result = parts.join(chineseSpace) + chineseSpace.repeat(needWidth / 2);
                         } else {
                             // 3个汉字：末尾补全角空格

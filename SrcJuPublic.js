@@ -489,7 +489,9 @@ function selectSource(selectGroup) {
         },
         click(item, i, manage) {
             pop.dismiss();
-            xlog(i+'>'+items[i]);
+            xlog(i);
+            xlog(items[i]);
+            xlog(items[i].toString());
             let sourcedata = JSON.parse(item.data);
             sourcedata['selectGroup'] = selectGroup;
             return changeSource(sourcedata);

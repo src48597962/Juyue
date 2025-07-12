@@ -477,13 +477,10 @@ function selectSource(selectGroup) {
         })),
         longClick(s, i) {
             showSelectOptions({
-                title: "选择操作",
+                title: s,
                 options: ["分享", "禁用", "删除"],
                 col: 2,
                 js: $.toString((data) => {
-                    xlog(data);
-                    xlog(input);
-                    return;
                     if(input=='分享'){
                         let pastes = getPastes();
                         pastes.push('云口令文件');
@@ -500,7 +497,7 @@ function selectSource(selectGroup) {
                         deleteData(data);
                         return "toast://已处理";
                     }
-                }, items[i])
+                }, items[i].data)
             });
         },
         click(item, i, manage) {

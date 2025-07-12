@@ -1141,7 +1141,7 @@ function erji() {
                 }
                 d.push({
                     title: reviseTitle(列表[i].title),
-                    url: !列表[i].url?'hiker://empty##toast://链接为空':列表[i].url.includes('@lazyRule=.')? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
+                    url: !列表[i].url?'toast://链接为空':列表[i].url.includes('@lazyRule=.')? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
                     desc: 列表[i].desc,
                     img: 列表[i].img,
                     col_type: 列表[i].col_type || list_col_type,
@@ -1191,7 +1191,7 @@ function erji() {
     }
     d.push({
         title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
-        url: 'toast://温馨提示：且用且珍惜！',
+        url: 'hiker://empty##toast://温馨提示：且用且珍惜！',
         col_type: 'text_center_1',
         extra: {
             id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",

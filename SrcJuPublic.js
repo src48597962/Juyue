@@ -506,7 +506,7 @@ function selectSource(selectGroup) {
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
                         setItem("sourceListSort", getItem('sourceListSort') == '接口名称' ? "更新时间" : "接口名称");
-                        toast('下次打开切源列表生效');
+                        toast('下次打开切源列表生效>'+s);
                     } else if (i === 2) {
                         items.reverse();
                         manage.change(items);

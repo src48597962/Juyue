@@ -506,17 +506,11 @@ function selectSource(selectGroup) {
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
                         setItem("sourceListSort", getItem('sourceListSort') == '接口名称' ? "更新时间" : "接口名称");
-                        let items = getDatas("yi", true).map(v => {
-                            return {title:v.name,icon:v.img};
-                        });
-                        manage.change(items);
-                        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
-                        manage.scrollToPosition(index, true);
-                        manage.setSelectedIndex(index);
+                        toast('下次打开切源列表生效');
                     } else if (i === 2) {
                         items.reverse();
                         manage.change(items);
-                        let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
+                        let index = items.indexOf(items.filter(d => d.title == sourceName)[0]);
                         manage.setSelectedIndex(index);
                         manage.scrollToPosition(index, true);
                     }

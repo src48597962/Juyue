@@ -799,7 +799,15 @@ function jiekouapi(data, look) {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                 yiji(data);
             }, data);
-        }, data)
+        }, data),
+        extra: {
+            longClick: [{
+                title: "开发助手",
+                js: $.toString(() => {
+                    return 'hiker://debug';
+                })
+            }]
+        }
     }); 
     setResult(d);
 }

@@ -435,7 +435,7 @@ function selectSource(selectGroup) {
         iconList: items,
         columns: spen,
         title: "当前:" + hometitle + "  合计:" + items.length,
-        noAutoDismiss: false,
+        noAutoDismiss: true,
         position: index,
         toPosition: index,
         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
@@ -476,6 +476,7 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i) {
+            /*
             hikerPop.selectCenter({
                 options: ["分享", "置顶", "禁用", "删除"],
                 columns: 2,
@@ -486,7 +487,8 @@ function selectSource(selectGroup) {
                     });
                 }
             });
-            /*
+            */
+            
             showSelectOptions({
                 title: s.title,
                 options: ["分享", "置顶", "禁用", "删除"],
@@ -517,7 +519,7 @@ function selectSource(selectGroup) {
                     }
                 }, items[i].data)
             });
-            */
+            
         },
         click(item, i, manage) {
             pop.dismiss();

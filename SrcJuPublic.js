@@ -476,11 +476,22 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i, manage) {
-            hikerPop.selectCenterMark({//selectCenter
+            let pastes = getPastes();
+            pastes.push('云口令文件');
+            showSelectOptions({
+                title: '分享源:' + s.title,
+                options: pastes,
+                col: 2,
+                js: $.toString((data) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                    return JYshare(input, data);
+                }, items[i].data)
+            });
+            /*
+            hikerPop.selectCenter({
                 options: ["分享", "置顶", "禁用", "删除"],
                 columns: 2,
                 title: s.title,
-                icons: new Array(4).fill(hikerPop.icon.main_menu_home),
                 click(input) {
                     let data = items[i].data;
                     if(input=='分享'){
@@ -522,6 +533,7 @@ function selectSource(selectGroup) {
                     }
                 }
             });
+            */
         },
         click(item, i, manage) {
             pop.dismiss();

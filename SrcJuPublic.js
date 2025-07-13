@@ -496,17 +496,21 @@ function selectSource(selectGroup) {
                             }
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             dataHandle(data, input);
+                            index_items.items = index_items.items.filter(x=>!x.id==data.id);
                             const [target] = items.splice(i, 1);
                             items.unshift(target);
+                            index_items.items.unshift(target);
                             manage.change(items);
                         }else if(input=='禁用'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             dataHandle(data, input);
+                            index_items.items = index_items.items.filter(x=>!x.id==data.id);
                             items.splice(i, 1);
                             manage.change(items);
                         }else if(input=='删除'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             deleteData(data);
+                            index_items.items = index_items.items.filter(x=>!x.id==data.id);
                             items.splice(i, 1);
                             manage.change(items);
                         }

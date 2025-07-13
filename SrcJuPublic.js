@@ -490,32 +490,30 @@ function selectSource(selectGroup) {
                             return JYshare(input, data);
                         }, data)
                     }else{
-                        hikerPop.runOnNewThread(() => {
-                            sourceList = getDatas("yi", true);
-                        });
                         if(input=='置顶'){
                             if(getItem("sourceListSort", "更新时间") != "更新时间"){
                                 return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
                             }
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            let sm = dataHandle(data, input);
+                            dataHandle(data, input);
                             const [target] = items.splice(i, 1);
                             items.unshift(target);
                             manage.change(items);
-                            return 'toast://' + sm;
                         }else if(input=='禁用'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             dataHandle(data, input);
                             items.splice(i, 1);
                             manage.change(items);
-                            return "toast://已处理";
                         }else if(input=='删除'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             deleteData(data);
                             items.splice(i, 1);
                             manage.change(items);
-                            return "toast://已处理";
                         }
+                        hikerPop.runOnNewThread(() => {
+                            sourceList = getDatas("yi", true);
+                        });
+                        return "toast://已" + input;
                     }
                 }
             });

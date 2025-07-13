@@ -475,7 +475,7 @@ function selectSource(selectGroup) {
             },
             titleVisible: true
         })),
-        longClick(s, i) {
+        longClick(s, i, manage) {
             hikerPop.selectCenter({
                 options: ["分享", "置顶", "禁用", "删除"],
                 columns: 2,

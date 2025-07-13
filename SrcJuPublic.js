@@ -476,6 +476,17 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i) {
+            hikerPop.selectCenter({
+                options: ["分享", "置顶", "禁用", "删除"],
+                columns: 2,
+                title: s.title,
+                click(a) {
+                    hikerPop.runOnNewThread(() => {
+                        return "toast://\u4f60\u9009\u4e86" + a;
+                    });
+                }
+            });
+            /*
             showSelectOptions({
                 title: s.title,
                 options: ["分享", "置顶", "禁用", "删除"],
@@ -506,6 +517,7 @@ function selectSource(selectGroup) {
                     }
                 }, items[i].data)
             });
+            */
         },
         click(item, i, manage) {
             pop.dismiss();

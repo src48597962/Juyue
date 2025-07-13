@@ -481,6 +481,9 @@ function selectSource(selectGroup) {
                 columns: 2,
                 title: s.title,
                 click(input) {
+                    hikerPop.runOnNewThread(() => {
+                        return "toast://\u4f60\u9009\u4e86" + input;
+                    });
                     let data = items[i].data;
                     if(input=='分享'){
                         let pastes = getPastes();
@@ -505,9 +508,7 @@ function selectSource(selectGroup) {
                         deleteData(data);
                         return "toast://已处理";
                     }
-                    hikerPop.runOnNewThread(() => {
-                        return "toast://\u4f60\u9009\u4e86" + a;
-                    });
+                    
                 }
             });
             /*

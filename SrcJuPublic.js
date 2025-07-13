@@ -476,10 +476,11 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i, manage) {
-            hikerPop.selectCenter({
+            hikerPop.selectCenterMark({//selectCenter
                 options: ["分享", "置顶", "禁用", "删除"],
                 columns: 2,
                 title: s.title,
+                icons: new Array(3).fill(hikerPop.icon.main_menu_home),
                 click(input) {
                     let data = items[i].data;
                     if(input=='分享'){

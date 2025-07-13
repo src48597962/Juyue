@@ -476,19 +476,41 @@ function selectSource(selectGroup) {
             titleVisible: true
         })),
         longClick(s, i) {
-            /*
             hikerPop.selectCenter({
                 options: ["分享", "置顶", "禁用", "删除"],
                 columns: 2,
                 title: s.title,
-                click(a) {
+                click(input) {
+                    let data = items[i].data;
+                    if(input=='分享'){
+                        let pastes = getPastes();
+                        pastes.push('云口令文件');
+                        return $(pastes, 2).select((data)=>{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            return JYshare(input, data);
+                        }, data)
+                    }else if(input=='置顶'){
+                        if(getItem("sourceListSort", "更新时间") != "更新时间"){
+                            return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
+                        }
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        let sm = dataHandle(data, input);
+                        return 'toast://' + sm;
+                    }else if(input=='禁用'){
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        dataHandle(data, input);
+                        return "toast://已处理";
+                    }else if(input=='删除'){
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        deleteData(data);
+                        return "toast://已处理";
+                    }
                     hikerPop.runOnNewThread(() => {
                         return "toast://\u4f60\u9009\u4e86" + a;
                     });
                 }
             });
-            */
-            
+            /*
             showSelectOptions({
                 title: s.title,
                 options: ["分享", "置顶", "禁用", "删除"],
@@ -519,7 +541,7 @@ function selectSource(selectGroup) {
                     }
                 }, items[i].data)
             });
-            
+            */
         },
         click(item, i, manage) {
             pop.dismiss();

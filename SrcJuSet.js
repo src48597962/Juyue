@@ -563,7 +563,7 @@ function jiekouapi(data, look) {
             groupNames.push('自定义');
             let tags = selectTag.split(',');
             //const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-            const hikerPop = $.require("hikerPop.js?rule=聚阅");
+            const hikerPop = $.require("hikerPop.js?rule=hikerPop");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
             let pop = hikerPop.FlexMenuBottom({

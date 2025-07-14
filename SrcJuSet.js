@@ -560,8 +560,8 @@ function jiekouapi(data, look) {
             let pop = hikerPop.FlexMenuBottom({
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
-                    title: "ok",
-                    defaultValue: "test",
+                    title: "确定",
+                    defaultValue: "",
                     click(s, pop) {
                         pop.setTitle(s);
                     }

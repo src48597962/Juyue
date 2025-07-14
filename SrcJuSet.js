@@ -574,6 +574,7 @@ function jiekouapi(data, look) {
                     }else{
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
+                    inputBox.setText(button.title);
 
                     //pop.addButton(null, null, "d");
                     return ("toast://你点击了:" + sectionIndex + "," + i);

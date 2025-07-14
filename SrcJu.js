@@ -42,7 +42,7 @@ function yiji(testSource) {
     let d = [];
     if(MY_PAGE==1){
         let longClick = [{
-            title: "分享当前源",
+            title: "分享",
             js: $.toString((data) => {
                 if(!data.url){
                     return "toast://当前源无效，无法分享";
@@ -57,7 +57,7 @@ function yiji(testSource) {
         }];
         if(!testSource){
             longClick.push({
-                title: "编辑当前源",
+                title: "编辑",
                 js: $.toString((data) => {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
@@ -65,27 +65,27 @@ function yiji(testSource) {
                     }, data)
                 },jkdata)
             },{
-                title: "删除当前源",
-                js: $.toString((data) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    deleteData(data);
-                    return "toast://已处理";
-                }, jkdata)
-            },{
-                title: "禁用当前源",
-                js: $.toString((data) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    dataHandle(data, '禁用');
-                    return "toast://已处理";
-                }, jkdata)
-            },{
-                title: "打开代码文件",
+                title: "代码",
                 js: $.toString((ruleurl) => {
                     if(!ruleurl || !fetch(ruleurl)){
                         return 'toast://代码文件不存在';
                     }
                     return 'openFile://'+ ruleurl;
                 }, jkdata.url)
+            },{
+                title: "删除",
+                js: $.toString((data) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    deleteData(data);
+                    return "toast://已处理";
+                }, jkdata)
+            },{
+                title: "禁用",
+                js: $.toString((data) => {
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    dataHandle(data, '禁用');
+                    return "toast://已处理";
+                }, jkdata)
             })
         }
         let homeIcons = getThemeList(true)['主页图标'];

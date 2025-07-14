@@ -551,6 +551,7 @@ function jiekouapi(data, look) {
                 selectGroupPage();
             },selectGroupPage)
             */
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             let groupNames = getGroupNames();
             groupNames.push('自定义');
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");

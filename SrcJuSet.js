@@ -545,14 +545,16 @@ function jiekouapi(data, look) {
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
         url: $('#noLoading#').lazyRule(()=>{
+            let selectTag = getMyVar('apigroup','').split(',');
+
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             let groupNames = getGroupNames();
             groupNames.forEach(it=>{
-                if(selectTag.includes(it)){
+                if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
                 }
             })
-            let selectTag = getMyVar('apigroup','').split(',');
+            
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;

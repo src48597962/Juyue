@@ -548,12 +548,11 @@ function jiekouapi(data, look) {
             let selectTag = getMyVar('apigroup','').split(',').filter(item => item !== '');
 
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-            let groupNames = getGroupNames();
-            groupNames.forEach(it=>{
+            let groupNames = getGroupNames().map(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
-                    xlog(it);
                 }
+                return it;
             })
             
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");

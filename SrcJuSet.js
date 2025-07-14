@@ -551,27 +551,31 @@ function jiekouapi(data, look) {
                 selectGroupPage();
             },selectGroupPage)
             */
+            let groupNames = getGroupNames();
+            groupNames.push('自定义');
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
             let pop = hikerPop.FlexMenuBottom({
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                    hint: "你好",
+                    hint: "已选择的分组标签",
                     title: "ok",
-                    onChange(s, pop) {
-                        log("onChange:" + s);
-                    },
                     defaultValue: "test",
                     click(s, pop) {
                         pop.setTitle(s);
                     }
                 })), 
-                sections: [new FlexSection("测试0", [1, 2, 4, 6, 78888, 293838, 6665, 98877, 555, 99]), new FlexSection("测试2", [8, 29, 4, 6, 7], "ok", () => "#FFA500")], 
+                sections: [new FlexSection("选择分组标签", groupNames)], //, new FlexSection("测试2", [8, 29, 4, 6, 7], "ok", () => "#FFA500")
                 title: "FlexMenuBottom", 
                 click(button, sectionIndex, i) {
-                    pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title)
+                    if(button.title.includes('‘‘’’')){
+                        pop.updateButtonTitle(sectionIndex, i, button.title.replace('‘‘’’<span style="color:red">',''));
+                    }else{
+                        pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                    }
+
                     //pop.addButton(null, null, "d");
-                    return ("toast://你点击了:" + button.title + ",属于:" + sectionIndex + "," + i);
+                    return ("toast://你点击了:" + sectionIndex + "," + i);
                 }
             });
             return "hiker://empty";

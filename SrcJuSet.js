@@ -581,11 +581,11 @@ function jiekouapi(data, look) {
                 click(button, sectionIndex, i) {
                     if(button.title.includes('‘‘’’')){
                         let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
-                        pop.updateButtonTitle(sectionIndex, i, newtitle);
                         tags = tags.filter(x=>x!=newtitle);
+                        pop.updateButtonTitle(sectionIndex, i, newtitle);
                     }else{
-                        pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                         tags.push(button.title);
+                        pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
                     //inputBox.setDefaultValue(tags.join(','));
 

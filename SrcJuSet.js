@@ -485,7 +485,7 @@ function jiekouapi(data, look) {
                         pop.dismiss();
                     }
                 })), 
-                sections: [new FlexSection("选择分组标签", groupNames)], 
+                sections: [new FlexSection("", groupNames)], 
                 title: "选择分组标签", 
                 click(button, sectionIndex, i) {
                     if(button.title.includes('‘‘’’')){

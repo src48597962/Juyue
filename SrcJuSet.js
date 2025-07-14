@@ -450,97 +450,6 @@ function jiekouapi(data, look) {
             //lineVisible: false
         }
     });
-    function selectGroupPage(){
-        addListener("onClose", $.toString(() => {
-            clearMyVar('selectTag');
-        }));
-        setPageTitle('选择分组标签');
-        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-        var d = [];
-        d.push({
-            title: '选择源接口对应的自定义分组标签',
-            col_type: "rich_text"
-        });
-        d.push({
-            col_type: "line"
-        });
-        d.push({
-            title: '清除',
-            col_type: 'input',
-            desc: '已选择分组标签',
-            extra: {
-                titleVisible: false,
-                defaultValue: getMyVar('selectTag', ''),
-                onChange: $.toString(() => {
-                    if(input=="" && getMyVar('selectTag')){//有些手机会一直刷新，所以加上判断从有到无时再执行
-                        refreshPage(false);
-                        clearMyVar('selectTag');
-                    }
-                })
-            }
-        });
-        d.push({
-            title: '选择对应的分组标签>',
-            col_type: "rich_text"
-        });
-        d.push({
-            col_type: "line_blank"
-        });
-        let groupNames = getGroupNames();
-        groupNames.push('自定义');
-        groupNames.forEach(it=>{
-            d.push({
-                title:getMyVar('selectTag', '').indexOf(it)>-1?'‘‘’’<span style="color:red">'+it:it,
-                col_type:'text_4',
-                url: it=="自定义"?$("", "自定义分组标签").input((runTypes)=>{
-                        input = input.trim();
-                        if(!input){
-                            return "hiker://empty";
-                        }
-                        let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
-                        if(selectTag.indexOf(input)>-1 || runTypes.indexOf(input)>-1){
-                            return "toast://不能重复录入";
-                        }
-                        selectTag.push(input);
-                        putMyVar('selectTag',selectTag.join(','));
-                        refreshPage(false);
-                        return 'hiker://empty';
-                }, runTypes):$('#noLoading#').lazyRule((tag)=>{
-                        let selectTag = getMyVar('selectTag')?getMyVar('selectTag','').replace(/,|，/g,",").split(','):[];
-                        if(selectTag.indexOf(tag)==-1){
-                            selectTag.push(tag);
-                        }else{
-                            function removeByValue(arr, val) {
-                                for(var i = 0; i < arr.length; i++) {
-                                    if(arr[i] == val) {
-                                    arr.splice(i, 1);
-                                    break;
-                                    }
-                                }
-                            }
-                            removeByValue(selectTag, tag);
-                        }
-                        putMyVar('selectTag',selectTag.join(','));
-                        refreshPage(false);
-                        return 'hiker://empty';
-                }, it)
-            })
-        })
-        d.push({
-            col_type: "line_blank"
-        });
-        d.push({
-            title:'选择好了，点此返回',
-            col_type:'text_center_1',
-            url: $('#noLoading#').lazyRule(()=>{
-                let selectTag = getMyVar('selectTag','');
-                putMyVar('apigroup', selectTag);
-                back(true);
-                return "hiker://empty";
-            })
-        });
-        setHomeResult(d);
-    }
     d.push({
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
@@ -548,7 +457,13 @@ function jiekouapi(data, look) {
             let selectTag = getMyVar('apigroup','').split(',').filter(item => item !== '');
 
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-            let groupNames = getGroupNames().map(it=>{
+            let groupNames = getGroupNames();
+            selectTag.forEach(it=>{
+                if(groupNames.indexOf(it)==-1){
+                    groupNames.push(it);
+                }
+            })
+            groupNames = groupNames.map(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
                 }
@@ -564,7 +479,8 @@ function jiekouapi(data, look) {
                     title: "确定",
                     defaultValue: getMyVar('apigroup',''),
                     click(s, pop) {
-                        putMyVar('apigroup', s);
+                        s = s.replace(/，/g, ',');
+                        putMyVar('apigroup', s.split(',').filter(item => item !== '').join(','));
                         refreshPage();
                         pop.dismiss();
                     }

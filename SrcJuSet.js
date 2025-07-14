@@ -546,7 +546,7 @@ function jiekouapi(data, look) {
         col_type: 'text_1',
         url: $('#noLoading#').lazyRule(()=>{
             let selectTag = getMyVar('apigroup','').split(',');
-
+            xlog(selectTag.length);
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             let groupNames = getGroupNames();
             groupNames.forEach(it=>{
@@ -573,9 +573,11 @@ function jiekouapi(data, look) {
                     if(button.title.includes('‘‘’’')){
                         let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
                         selectTag = selectTag.filter(x=>x!=newtitle);
+                        xlog(selectTag.length);
                         pop.updateButtonTitle(sectionIndex, i, newtitle);
                     }else{
                         selectTag.push(button.title);
+                        xlog(selectTag.length);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
                     inputBox.setDefaultValue(selectTag.join(','));

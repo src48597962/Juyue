@@ -562,10 +562,11 @@ function jiekouapi(data, look) {
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
                     title: "确定",
-                    defaultValue: "",
+                    defaultValue: getMyVar('apigroup',''),
                     click(s, pop) {
                         putMyVar('apigroup', s);
                         refreshPage();
+                        pop.dismiss();
                     }
                 })), 
                 sections: [new FlexSection("选择分组标签", groupNames)], 

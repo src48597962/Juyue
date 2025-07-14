@@ -587,7 +587,7 @@ function jiekouapi(data, look) {
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                         tags.push(button.title);
                     }
-                    inputBox.setDefaultValue(tags.join(','));
+                    //inputBox.setDefaultValue(tags.join(','));
 
                     //pop.addButton(null, null, "d");
                     return ("toast://"+tags.join(',')+":" + sectionIndex + "," + i);

@@ -552,6 +552,7 @@ function jiekouapi(data, look) {
             groupNames.forEach(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
+                    xlog(it);
                 }
             })
             

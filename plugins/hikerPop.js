@@ -3,6 +3,7 @@
 // 已知问题，用弹窗播放视频链接，不会有播放记录。进入子页面有历史记录，但没有足迹。
 //引入Java类
 const XPopup = com.lxj.xpopup.XPopup;
+const XPopupUtils = com.lxj.xpopup.util.XPopupUtils
 const XPopupCallback = com.lxj.xpopup.interfaces.XPopupCallback;
 const DetailUIHelper = com.example.hikerview.ui.detail.DetailUIHelper;
 const DisplayUtil = com.example.hikerview.utils.DisplayUtil;
@@ -43,12 +44,20 @@ const AlertDialog = Packages.androidx.appcompat.app.AlertDialog;
 const DialogUtil = com.example.hikerview.utils.view.DialogUtil;
 const HeavyTaskUtil = com.example.hikerview.utils.HeavyTaskUtil;
 
+const GridLayoutManager = Packages.androidx.recyclerview.widget.GridLayoutManager;
+const LinearLayout = android.widget.LinearLayout;
+
+
 const BiometricManager = Packages.androidx.biometric.BiometricManager;
 const BiometricPrompt = Packages.androidx.biometric.BiometricPrompt;
 const ContextCompat = Packages.androidx.core.content.ContextCompat;
 const Build = android.os.Build;
 let JSContext = org.mozilla.javascript.Context;
 let JSContextVer = JSContext.getCurrentContext().getLanguageVersion();
+const RecyclerView = Packages.androidx.recyclerview.widget.RecyclerView;
+const LayoutInflater = android.view.LayoutInflater;
+const TextViewUtils = com.example.hikerview.ui.view.util.TextViewUtils;
+const View = android.view.View;
 
 if (typeof MY_RULE === "undefined") {
     MY_RULE = null;
@@ -318,8 +327,7 @@ function getBookList(arr) {
         let bookmark = new Bookmark();
         bookmark.setTitle(it.title || "");
         bookmark.setDir(false);
-        //bookmark.setUrl(it.url || it.title || "");
-        bookmark.setUrl(JSON.stringify(it.data||{})); //魔改，聚阅专用
+        bookmark.setUrl(it.url || it.title || "");
         bookmark.setIcon(it.icon || "");
         list.add(bookmark);
     }
@@ -347,13 +355,343 @@ function runOnUI(func) {
         }
     }));
 }
+
 const showOnUI = cannotTouchUI ? pop => runOnUI(() => pop.show()) : pop => pop.show();
+
+function isDarkMode() {
+    const Configuration = android.content.res.Configuration;
+    let cx = getCurrentActivity();
+
+    let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+    return theme == Configuration.UI_MODE_NIGHT_YES;
+
+}
+
+function FlexSectionButton(button) {
+    if (typeof button === "object" && !(button instanceof java.lang.String)) {
+        this.title = button.button;
+        this.extra = button.extra;
+    } else {
+        this.title = String(button);
+    }
+}
+
+function FlexSection(title, buttons, desc, getBackgroundColor) {
+    this.title = title;
+    this.buttons = Array.isArray(buttons) ? buttons.map((v, i) => new FlexSectionButton(v)) : [];
+    this.desc = desc;
+    this.getBackgroundColorFunc = getDefaultValue(getBackgroundColor, "function", null);
+    this.hasBackgroundColor = !!getBackgroundColor;
+
+}
+Object.assign(FlexSection.prototype, {
+    getSectionTitle() {
+
+        return String(this.title || "")
+    },
+    getButtons() {
+
+        return this.buttons;
+    },
+    getSectionDesc() {
+        return String(this.desc || "")
+    },
+    getBackgroundColor(i, button) {
+        return tryCallBack(this.getBackgroundColorFunc, [i, this.buttons[i]], true);
+    },
+    setSectionTitle(title) {
+        this.title = title;
+        return this;
+    },
+    updateButtonTitle(index, title) {
+        let button = this.buttons.at(index);
+        button && (button.title = title);
+
+        return this;
+    },
+    removeButton(index) {
+        this.buttons.splice(index, 1);
+        return this;
+    }
+
+});
+
+function FlexMenuBottom({
+    sections,
+    title,
+    click,
+    longClick,
+    height,
+    extraInputBox
+}) {
+    function newClickListener(value, index, index2) {
+
+        return {
+            onLongClick() {
+                tryCallBack(getDefaultValue(longClick, "function", null), [value, index, index2]);
+            },
+            click() {
+                tryCallBack(getDefaultValue(click, "function", null), [value, index, index2]);
+            }
+        };
+    }
+    height = getNumberValue(height, v => v <= 1 && v > 0, 0.75);
+    let complexMenuPopup = new JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
+        sections: Array.isArray(sections) ? sections.filter(v => v instanceof FlexSection) : [],
+        mainTitle: getDefaultValue(title, "string", null),
+        getImplLayoutId() {
+            return isDarkMode() ? R.layout.pop_custom_center_recycler_view_dark :
+                R.layout.pop_custom_center_recycler_view;
+        },
+        getPopupHeight() {
+            try {
+                return XPopupUtils.getScreenHeight(getActivityContext()) * height;
+            } catch (e) {
+                log(e.toString())
+                return this.super$getPopupHeight();
+            }
+        },
+        onCreate() {
+            this.super$onCreate();
+            let titleView = this.findViewById(R.id.title);
+            if (this.mainTitle != null) {
+                titleView.setText(this.mainTitle);
+            }
+            this.titleView = titleView;
+            // 配置RecyclerView
+            this.recyclerView = this.findViewById(R.id.recyclerView);
+            //Packages.androidx.core.view.ViewCompat.setBackground(this.recyclerView, Packages.androidx.core.content.ContextCompat.getDrawable(getActivityContext(), R.drawable.bg_round_all_rice));
+            this.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+            this.adapter = newSectionAdapter(getActivityContext(), this.sections, newClickListener);
+            this.recyclerView.setAdapter(this.adapter);
+            let linearLayout = this.recyclerView.getParent();
+            if (linearLayout && extraInputBox instanceof ResExtraInputBox) {
+                let inputItem = extraInputBox.create(linearLayout, [this]);
+                let params = inputItem.getLayoutParams();
+                params.setMargins(35, 0, 35, 0);
+                inputItem.setLayoutParams(params);
+                linearLayout.addView(inputItem, 1);
+            }
+        },
+        setTitle(title) {
+            if (this.titleView) {
+                this.titleView.setText(String(title));
+            }
+        },
+        removeSection(index) {
+            if (index >= 0 && index < this.sections.length) {
+                this.sections.splice(index, 1);
+                if (this.adapter != null) {
+                    // 计算RecyclerView位置 (每个section占2个位置)
+                    let startPosition = index * 2;
+                    this.adapter.notifyItemRangeRemoved(startPosition, 2);
+                    this.adapter.notifyItemRangeChanged(startPosition, this.adapter.getItemCount() - startPosition);
+                }
+            }
+        },
+        updateSectionTitle(index, newTitle) {
+            if (index >= 0 && index < this.sections.length) {
+                this.sections.at(index).setSectionTitle(newTitle);
+                if (this.adapter != null) {
+                    // 标题位置 = index * 2
+                    this.adapter.notifyItemChanged(index * 2);
+                }
+            }
+        },
+        updateButtonTitle(sectionIndex, buttonIndex, newTitle) {
+            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
+                this.sections.at(sectionIndex).updateButtonTitle(buttonIndex, newTitle);
+                if (this.adapter != null) {
+                    // 按钮组位置 = sectionIndex * 2 + 1
+                    this.adapter.notifyItemChanged(sectionIndex * 2 + 1);
+                }
+            }
+        },
+        removeButton(sectionIndex, buttonIndex) {
+            if (sectionIndex >= 0 && sectionIndex < sections.length) {
+                this.sections.at(sectionIndex).removeButton(buttonIndex);
+                if (this.adapter != null) {
+                    // 按钮组位置 = sectionIndex * 2 + 1
+                    this.adapter.notifyItemChanged(sectionIndex * 2 + 1);
+                }
+            }
+        },
+        addSection(index, section) {
+            index = index === null ? this.sections.length : index;
+            if (index >= 0 && index <= this.sections.length && section instanceof FlexSection) {
+                this.sections.splice(index, 0, section);
+                if (this.adapter != null) {
+                    let startPosition = index * 2;
+                    this.adapter.notifyItemRangeInserted(startPosition, 2);
+
+                }
+            }
+
+        },
+
+        addButton(sectionIndex, buttonIndex, button) {
+            sectionIndex = sectionIndex === null ? this.sections.length - 1 : sectionIndex;
+
+            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
+                let section = this.sections.at(sectionIndex);
+                buttonIndex = buttonIndex === null ? section.getButtons().length : buttonIndex;
+
+                section.getButtons().splice(buttonIndex, 0, new FlexSectionButton(button));
+                if (this.adapter != null) {
+                    // 按钮组位置 = sectionIndex * 2 + 1
+                    this.adapter.notifyItemChanged(sectionIndex * 2 + 1);
+                }
+            }
+        }
+    }, getActivityContext());
+
+    let pop = new builderXPopup().moveUpToKeyboard(false).asCustom(complexMenuPopup);
+    showOnUI(pop);
+    return pop;
+}
+FlexMenuBottom.FlexSection = FlexSection;
+
+function newSectionAdapter(context, sections, newClickListener) {
+    function newSectionViewHolder(itemView, type) {
+
+        if (type == 0) {
+
+            let title = itemView.findViewById(R.id.movie_one_title);
+            let desc = itemView.findViewById(R.id.movie_one_desc);
+            let resultBg = itemView.findViewById(R.id.result_bg);
+            return new JavaAdapter(RecyclerView.ViewHolder, {
+                getType() {
+                    return type;
+                },
+                getTitleView() {
+                    return title;
+                },
+                getDescView() {
+                    return desc;
+                },
+                getResultBg() {
+                    return resultBg;
+                }
+            }, itemView);
+
+        } else if (type == 1) {
+
+            let flexboxLayout = itemView.findViewById(R.id.flexboxLayout);
+            return new JavaAdapter(RecyclerView.ViewHolder, {
+
+                getType() {
+                    return type;
+                },
+                getFlexboxLayout() {
+                    return flexboxLayout;
+                }
+            }, itemView);
+        }
+    }
+    let sectionAdapter = new JavaAdapter(RecyclerView.Adapter, {
+
+        onCreateViewHolder(parent, viewType) {
+            return newSectionViewHolder(LayoutInflater.from(context)
+                .inflate(viewType == 1 ? R.layout.item_flex_box : R.layout.item_movie_one_col_nopic, parent, false), viewType)
+        },
+        getItemCount() {
+            return sections.length * 2;
+        },
+        getItemViewType(position) {
+            // 偶数位置是标题，奇数位置是按钮组
+            return position % 2 == 0 ? 0 : 1;
+        },
+        onBindViewHolder(holder, position) {
+            // 计算当前所在的Section索引
+            let sectionIndex = Math.floor(position / 2);
+            let section = sections.at(sectionIndex);
+            if (!(section instanceof FlexSection)) {
+                return;
+            }
+            let type = holder.getType();
+            if (type == 0) {
+
+                let titleView = holder.getTitleView();
+                let descView = holder.getDescView();
+                titleView.setTextColor(context.getResources().getColor(R.color.blackText));
+
+                TextViewUtils.setSpanText(titleView, section.getSectionTitle());
+                if (section.getSectionDesc()) {
+                    descView.setVisibility(0);
+                    TextViewUtils.setSpanText(descView, section.getSectionDesc());
+                } else {
+                    descView.setVisibility(8);
+                }
+                holder.getResultBg().setBackground(context.getResources().getDrawable(R.drawable.ripple_trans2));
+
+            } else if (type == 1) {
+
+                // 清除现有按钮
+                let flexboxLayout = holder.getFlexboxLayout();
+                flexboxLayout.removeAllViews();
+
+                // 添加新按钮
+                let dpToPx = DisplayUtil.dpToPx(context, 2);
+                let i = 0;
+                for (let button of section.getButtons()) {
+                    if (!(button instanceof FlexSectionButton)) continue;
+                    let buttonText = button.title;
+                    let buttonView = LayoutInflater.from(context).inflate(R.layout.item_article_flex_btn_item, null);
+                    let layoutParams = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(-2, -2));
+
+                    layoutParams.setMargins(dpToPx, 0, dpToPx, 0);
+                    buttonView.setLayoutParams(layoutParams);
+                    let textView = buttonView.findViewById(R.id.item_chapter_jishu);
+                    TextViewUtils.setSpanText(textView, buttonText);
+                    try {
+                        let backgroundColor;
+                        if (section.hasBackgroundColor && (backgroundColor = section.getBackgroundColor(i))) {
+                            let parseColor = android.graphics.Color.parseColor(backgroundColor);
+                            let gradientDrawable = new android.graphics.drawable.GradientDrawable();
+                            gradientDrawable.setShape(0);
+                            gradientDrawable.setCornerRadius(DisplayUtil.dpToPx(context, 8));
+                            gradientDrawable.setColor(parseColor);
+                            textView.setBackground(new android.graphics.drawable.RippleDrawable(context.getResources().getColorStateList(R.color.grey_black), gradientDrawable, null));
+                        } else {
+
+                            textView.setBackground(context.getResources().getDrawable(R.drawable.ripple_gray_corners));
+                        }
+                    } catch (e) {
+                        log(e.toString());
+                        textView.setBackground(context.getResources().getDrawable(R.drawable.ripple_gray_corners));
+                    }
+                    let clickListener = newClickListener(button, sectionIndex, i);
+
+                    buttonView.setOnLongClickListener(new View.OnLongClickListener({
+                        onLongClick(v) {
+                            clickListener.onLongClick();
+                            return true;
+                        },
+                        onLongClickUseDefaultHapticFeedback(v) {
+                            return false;
+                        }
+                    }));
+
+                    buttonView.setOnClickListener((v) => {
+                        clickListener.click();
+                    });
+                    flexboxLayout.addView(buttonView);
+                    i++;
+                }
+            }
+        }
+    });
+    return sectionAdapter;
+}
+
+function test() {
+
+}
 
 function updateRecordsBottom(records) {
     const DefaultItemAnimator = Packages.androidx.recyclerview.widget.DefaultItemAnimator;
     const MyStatusBarUtil = com.example.hikerview.utils.MyStatusBarUtil;
     const UpdateRecordsAdapter = com.example.hikerview.ui.setting.updaterecords.UpdateRecordsAdapter;
-    const GridLayoutManager = Packages.androidx.recyclerview.widget.GridLayoutManager;
     const RecordDetail = com.example.hikerview.ui.setting.updaterecords.RecordDetail;
 
     let myRecordDetail = new JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
@@ -566,7 +904,6 @@ function IconExtraMenu(click) {
     this.create = function (parentView, args) {
         const Gravity = android.view.Gravity;
         const ImageView = android.widget.ImageView;
-        const LinearLayout = android.widget.LinearLayout;
 
         let menuIcon = new ImageView(getActivityContext());
         let menuIconLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 65);
@@ -985,7 +1322,7 @@ function selectBottomResIcon({
         let items = {
             icon: String(item.getIcon()),
             title: String(item.getTitle()),
-            data: String(item.getUrl()) //魔改，聚阅专用
+            url: String(item.getUrl()),
         };
         let func = () => tryCallBack(getDefaultValue(click, "function", null), [items, Number(i), resOptionsManage]);
         if (noAutoDismiss) {
@@ -1673,5 +2010,7 @@ $.exports = {
     selectAttachList,
     selectBottomResIcon,
     updateRecordsBottom,
-    simpleRoute
+    simpleRoute,
+    test,
+    FlexMenuBottom
 };

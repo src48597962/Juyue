@@ -562,11 +562,11 @@ function jiekouapi(data, look) {
             })
             groupNames.push('自定义');
             let tags = selectTag.split(',');
-            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+            //const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+            const hikerPop = $.require("hikerPop.js?rule=聚阅");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
             let pop = hikerPop.FlexMenuBottom({
-                /*
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
                     title: "确定",
@@ -575,7 +575,6 @@ function jiekouapi(data, look) {
                         pop.setTitle(s);
                     }
                 })), 
-                */
                 sections: [new FlexSection("选择分组标签", groupNames), new FlexSection("确定", ['选择好了，确定返回'])], 
                 title: "FlexMenuBottom", 
                 click(button, sectionIndex, i) {
@@ -587,7 +586,7 @@ function jiekouapi(data, look) {
                         tags.push(button.title);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
-                    //inputBox.setDefaultValue(tags.join(','));
+                    inputBox.setDefaultValue(tags.join(','));
 
                     //pop.addButton(null, null, "d");
                     return ("toast://"+tags.join(',')+":" + sectionIndex + "," + i);

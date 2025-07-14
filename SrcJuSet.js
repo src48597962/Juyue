@@ -544,15 +544,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '接口分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
-        url: $('#noLoading#').lazyRule((selectGroupPage)=>{
-            let selectTag = getMyVar('apigroup','');
-
-            /*
-            putMyVar('selectTag', getMyVar('apigroup',''));
-            return $('hiker://empty#noRecordHistory##noHistory#').rule((selectGroupPage) => {
-                selectGroupPage();
-            },selectGroupPage)
-            */
+        url: $('#noLoading#').lazyRule(()=>{
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             let groupNames = getGroupNames();
             groupNames.forEach(it=>{
@@ -560,10 +552,8 @@ function jiekouapi(data, look) {
                     it = '‘‘’’<span style="color:red">' + it;
                 }
             })
-            groupNames.push('自定义');
-            let tags = selectTag.split(',');
-            //const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
-            const hikerPop = $.require("hikerPop.js?rule=hikerPop");
+            let selectTag = getMyVar('apigroup','').split(',');
+            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
             let pop = hikerPop.FlexMenuBottom({
@@ -575,25 +565,22 @@ function jiekouapi(data, look) {
                         pop.setTitle(s);
                     }
                 })), 
-                sections: [new FlexSection("选择分组标签", groupNames), new FlexSection("确定", ['选择好了，确定返回'])], 
+                sections: [new FlexSection("选择分组标签", groupNames)], 
                 title: "FlexMenuBottom", 
                 click(button, sectionIndex, i) {
                     if(button.title.includes('‘‘’’')){
                         let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
-                        tags = tags.filter(x=>x!=newtitle);
+                        selectTag = selectTag.filter(x=>x!=newtitle);
                         pop.updateButtonTitle(sectionIndex, i, newtitle);
                     }else{
-                        tags.push(button.title);
+                        selectTag.push(button.title);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
-                    inputBox.setDefaultValue(tags.join(','));
-
-                    //pop.addButton(null, null, "d");
-                    return ("toast://"+tags.join(',')+":" + sectionIndex + "," + i);
+                    inputBox.setDefaultValue(selectTag.join(','));
                 }
             });
             return "hiker://empty";
-        },selectGroupPage),
+        }),
         extra: {
             //lineVisible: false
         }

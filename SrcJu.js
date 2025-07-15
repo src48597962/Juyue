@@ -639,7 +639,9 @@ function erji() {
             }
 
             let 列表 = 列表s[lineid] || [];
-            if(列表.length>0){
+
+            //线路名除评论的线路选集修正排序
+            if(列表.length>0 && 线路s[lineid]!='评论'){
                 function checkAndReverseArray(arr) {
                     const numbers = [];
                     arr.slice(0, 50).forEach(it=>{
@@ -672,10 +674,12 @@ function erji() {
                 }catch(e){
                     //xlog('强制修正选集顺序失败>'+e.message)
                 }
+
+                if (getMyVar(sname + 'sort') == '1') {
+                    列表.reverse();
+                }
             }
-            if (getMyVar(sname + 'sort') == '1') {
-                列表.reverse();
-            }
+            
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             let dataObj = {

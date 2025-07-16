@@ -1171,6 +1171,9 @@ function erji() {
             }
             // 修正列表选集标题
             function reviseTitle(str){
+                if(!str){
+                    return '';
+                }
                 if(reviseLiTitle == "1"){
                     return str.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
                 }

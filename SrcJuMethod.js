@@ -473,8 +473,8 @@ function toerji(item, jkdata) {
             jkdata = storage0.getMyVar('一级源接口信息');
         }
         let extra = item.extra || {};
-        let imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico'];
-        if(item.url && !extra.noDetail && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty' && !imageExtensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
+        let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
+        if(item.url && !extra.noDetail && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty' && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
             extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
             extra.img = extra.img || item.pic_url || item.img;
             extra.pageTitle = extra.pageTitle || extra.name;

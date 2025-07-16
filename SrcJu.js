@@ -618,11 +618,22 @@ function erji() {
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
                         let 分页s = erLoadData.page;
-                        if(pageid > 分页s.length){
-                            pageid = 0;
-                        }
+                        
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
-                        let 分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                        let 分页选集 = [];
+                        if(分页s.length==1 && 分页s[0].title=='自动页码'){
+                            pageid = 0;
+                            for(let i=0;i<2;i++){
+                                let 分页page = 分页s[0].url.replace(/fypage/g, pageid+1);
+                                分页选集.push(分页选集动态解析.call(parse, 分页page));
+                                pageid++;
+                            }
+                        }else{
+                            if(pageid > 分页s.length){
+                                pageid = 0;
+                            }
+                            分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                        }
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;
@@ -1027,7 +1038,7 @@ function erji() {
             //分页定义
             let partpage = storage0.getItem('partpage') || {};
             if(erLoadData.page && erLoadData.pageparse){//原网站有分页，不执行自定义分页
-                let 分页s = erLoadData.page
+                let 分页s = erLoadData.page;
                 let 分页链接 = [];
                 let 分页名 = [];
                 分页s.forEach((it,i)=>{

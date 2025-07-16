@@ -617,11 +617,11 @@ function erji() {
             if(erLoadData.page && erLoadData.pageparse){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
-                        let 分页s = erLoadData.page;
+                        let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];
                         
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
                         let 分页选集 = [];
-                        if(分页s.length==1 && 分页s[0].title=='自动页码'){
+                        if(线路s[lineid]=='评论' && 分页s.length==1 && 分页s[0].title=='自动页码'){
                             pageid = 0;
                             for(let i=0;i<2;i++){
                                 let 分页page = 分页s[0].url.replace(/fypage/g, pageid+1);
@@ -634,6 +634,17 @@ function erji() {
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
                         }
+
+                        /*
+                        let 分页s = erLoadData.page;
+                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
+
+                        if(pageid > 分页s.length){
+                            pageid = 0;
+                        }
+                        let 分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                        分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                        */
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;

@@ -621,10 +621,10 @@ function erji() {
                         
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
                         let 分页选集 = [];
-                        if(线路s[lineid]=='评论' && 分页s.length==1 && 分页s[0].title=='自动页码'){
+                        if(线路s[lineid]=='评论' && 分页s.length==1 && 分页s[lineid].title=='自动页码'){
                             pageid = 0;
                             for(let i=0;i<2;i++){
-                                let 分页page = 分页s[0].url.replace(/fypage/g, pageid+1);
+                                let 分页page = 分页s[lineid].url.replace(/fypage/g, pageid+1);
                                 分页选集.push(分页选集动态解析.call(parse, 分页page));
                                 pageid++;
                             }

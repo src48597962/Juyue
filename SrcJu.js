@@ -614,11 +614,10 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
-            xlog(列表s);
             if(erLoadData.page && erLoadData.pageparse){//网站分页显示列表的，需要动态解析获取
-            xlog('1111');
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
+                        /*
                         let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];
                         
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
@@ -636,8 +635,8 @@ function erji() {
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
                         }
-
-                        /*
+                        */
+                        
                         let 分页s = erLoadData.page;
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
 
@@ -646,7 +645,7 @@ function erji() {
                         }
                         let 分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
                         分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
-                        */
+                        
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;

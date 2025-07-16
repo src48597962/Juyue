@@ -614,7 +614,9 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
+            xlog(列表s);
             if(erLoadData.page && erLoadData.pageparse){//网站分页显示列表的，需要动态解析获取
+            xlog('1111');
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
                         let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];

@@ -132,8 +132,8 @@ function createClass(d, obj) {
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
         
         function extractFypageParams(str) {
-            // 修正后的正则表达式，支持带运算符的参数
-            const regex = /fypage@((?:[+\-*/]?[^@;[\]]+@)+)(?=[;[\]]|$)/;
+            // 修正后的正则表达式，仅支持 +、-、* 运算符
+            const regex = /fypage@((?:[+\-*]?[^@;[\]]+@)+)(?=[;[\]]|$)/;
             const match = str.match(regex);
             if (!match) return null;
 
@@ -145,15 +145,14 @@ function createClass(d, obj) {
         function calculateOffset(params, currentPage) {
             let result = currentPage;
             for (const param of params || []) {
-                const op = param.match(/^([+\-*/])/)?.[1] || '+';
-                const valueStr = param.replace(/^[+\-*/]/, '');
+                const op = param.match(/^([+\-*])/)?.[1] || '+';
+                const valueStr = param.replace(/^[+\-*]/, '');
                 const value = parseInt(valueStr) || 0;
 
                 switch (op) {
                     case '+': result += value; break;
                     case '-': result -= value; break;
                     case '*': result *= value; break;
-                    case '/': result = Math.floor(result / value); break; // 使用整数除法
                 }
             }
             return result;
@@ -173,7 +172,7 @@ function createClass(d, obj) {
             if (params) {
                 const newPage = calculateOffset(params, page);
                 // 修正后的替换正则表达式
-                const fypageRegex = /fypage@(?:[+\-*/]?[^@;[\]]+@)+(?=[;[\]]|$)/;
+                const fypageRegex = /fypage@(?:[+\-*]?[^@;[\]]+@)+(?=[;[\]]|$)/;
                 resultUrl = resultUrl.replace(fypageRegex, newPage.toString());
             } else {
                 // 简单替换纯fypage的情况

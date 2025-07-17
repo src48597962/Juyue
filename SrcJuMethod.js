@@ -129,9 +129,41 @@ function createClass(d, obj) {
                 })
             }
         }
+        MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
+        
+        function generatePageUrl(url, page) {
+            // 1. 处理首页特殊规则（优先级最高）
+            if (page === 1 && url.includes('[firstPage=')) {
+                const firstPageMatch = url.match(/\[firstPage=(.*?)\]/);
+                if (firstPageMatch) return firstPageMatch[1];
+            }
 
-        let fypage = MY_PAGE;
-        MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort).replace(/fypage/g, fypage);
+            let resultUrl = url.replace(/\[firstPage=.*?\]/, '');
+            // 2. 处理分页规则（修正解构赋值）
+            const pageRuleMatch = resultUrl.match(/fypage@(-?\d+)(@\*(\d+)@)?/);
+            if (pageRuleMatch) {
+                const [fullMatch, offset, , step] = pageRuleMatch; // 正确解构
+                let calculatedValue;
+
+                if (page === 1) {
+                    // 第一页：1 + 修正值
+                    calculatedValue = 1 + parseInt(offset);
+                } else if (step) {
+                    // 第二页起：步长 × (页码-1)
+                    calculatedValue = parseInt(step) * (page - 1);
+                } else {
+                    // 无步长规则：直接使用页码
+                    calculatedValue = page;
+                }
+
+                resultUrl = resultUrl.replace(fullMatch, calculatedValue.toString());
+            }
+            
+            return resultUrl;
+        }
+        //let fypage = MY_PAGE;
+        //MY_URL = MY_URL.replace(/fypage/g, fypage);
+        MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

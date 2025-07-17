@@ -170,11 +170,9 @@ function createClass(d, obj) {
 
             // 3. 提取fypage的运算参数并计算
             const fypageParams = extractFypageParams(resultUrl);
-            xlog(fypageParams);
             if (fypageParams) {
                 // 计算目标页码对应的偏移值
                 const offset = calculateOffset(fypageParams, page);
-                xlog(offset);
                 // 替换 fypage@...@ 为计算结果
                 resultUrl = resultUrl.replace(/fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/, offset.toString());
             } else {
@@ -187,9 +185,7 @@ function createClass(d, obj) {
 
         //let fypage = MY_PAGE;
         //MY_URL = MY_URL.replace(/fypage/g, fypage);
-        xlog(MY_URL);
         MY_URL = generatePageUrl(MY_URL, MY_PAGE);
-        xlog(MY_URL);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

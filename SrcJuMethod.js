@@ -156,7 +156,7 @@ function createClass(d, obj) {
                 const match = param.match(/^([+\-*])?([0-9]+)$/);
                 if (!match) continue;
                 const op = match[1] || '+';  // 默认加法
-                const value = parseInt(match[2], 10) || 0;
+                const value = parseInt(match[2]) || 0;
                 // 执行运算
                 switch (op) {
                     case '+':

@@ -131,20 +131,76 @@ function createClass(d, obj) {
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
 
+        /**
+         * 从URL中提取fypage的计算参数（如 [+-*]数值 ）
+         * @param {string} str - 包含fypage规则的URL
+         * @returns {Array|null} 提取的运算参数数组（如 [-1, *20]），无则返回null
+         */
+        function extractFypageParams(str) {
+            // 匹配 fypage@...@ 格式，支持 +、-、* 运算符，@分隔参数
+            const regex = /fypage@((?:[+\-*]\d+@)+)(?=[;\]]|$)/;
+            const match = str.split(';')[0].split('[')[0].match(regex);
+            if (!match) return null;
+            // 拆分参数并过滤空值（如末尾可能的空字符串）
+            return match[1].split('@').filter(param => param);
+        }
+
+        /**
+         * 根据参数计算分页偏移值
+         * @param {Array} params - 运算参数数组（如 [-1, *20]）
+         * @param {number} currentPage - 当前页码
+         * @returns {number} 计算后的结果
+         */
+        function calculateOffset(params, currentPage) {
+            let result = currentPage;
+            for (let param of params) {
+                // 提取运算符（默认+）和数值
+                let op = param[0] === '+' || param[0] === '-' || param[0] === '*' ? param[0] : '+';
+                let value = parseInt(op === '+' ? param : param.slice(1), 10) || 0;
+
+                // 执行运算
+                switch (op) {
+                    case '+': result += value; break;
+                    case '-': result -= value; break;
+                    case '*': result *= value; break;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * 生成目标页码的URL
+         * @param {string} url - 包含分页规则的基础URL（支持 [firstPage=...] 和 fypage@...@）
+         * @param {number} page - 目标页码
+         * @returns {string} 计算后的分页URL
+         */
         function generatePageUrl(url, page) {
-            // 处理首页特殊规则
-            let firstPageMatch = url.match(/\[firstPage=(.*?)\]/);
+            // 1. 处理首页特殊规则（[firstPage=xxx]）
+            const firstPageMatch = url.match(/\[firstPage=(.*?)\]/);
             if (page === 1 && firstPageMatch) {
-                return firstPageMatch[1];
+                return firstPageMatch[1]; // 直接返回首页URL
             }
 
-            let resultUrl = url.replace(/\[firstPage=(.*?)\]/, '');
+            // 2. 移除首页标记，处理其他页码
+            let resultUrl = url.replace(/\[firstPage=.*?\]/, '');
+
+            // 3. 提取fypage的运算参数并计算
+            const fypageParams = extractFypageParams(resultUrl);
+            if (fypageParams) {
+                // 计算目标页码对应的偏移值（如 page=2 时，[-1, *20] → (2-1)*20=20）
+                const offset = calculateOffset(fypageParams, page);
+                // 替换 fypage@...@ 为计算结果
+                resultUrl = resultUrl.replace(/fypage@(?:[+\-*]\d+@)+(?=[;\]]|$)/, offset.toString());
+            } else {
+                // 4. 无复杂规则时，直接替换纯fypage为页码
+                resultUrl = resultUrl.replace(/fypage(?![@;])/g, page.toString());
+            }
 
             return resultUrl;
         }
 
-        let fypage = MY_PAGE;
-        MY_URL = MY_URL.replace(/fypage/g, fypage);
+        //let fypage = MY_PAGE;
+        //MY_URL = MY_URL.replace(/fypage/g, fypage);
         MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }

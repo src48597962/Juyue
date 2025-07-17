@@ -131,6 +131,39 @@ function createClass(d, obj) {
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
         
+        function extractFypageParams(str) {
+            const regex = /fypage@(?:([^@\[;]+)@)+([^@\[;]*)(?=[\[;]|$)/;
+            const match = str.match(regex);
+
+            if (!match) return null;
+
+            // 提取所有捕获组（忽略第一个完整匹配）
+            const params = [];
+            for (let i = 1; i < match.length; i++) {
+                if (match[i] !== undefined) {
+                    params.push(match[i]);
+                }
+            }
+            return params.filter(p => p);
+        }
+        function calculateOffset(params, currentPage) {
+            if (!params || params.length === 0) return currentPage;
+            let result = currentPage;
+            for (const param of params) {
+                // 解析运算符和值
+                const op = param.match(/^([+\-*/])/)?.[1] || '+';
+                const valueStr = param.replace(/^[+\-*/]/, '');
+                const value = parseInt(valueStr) || 0;
+                // 执行运算
+                switch (op) {
+                    case '+': result += value; break;
+                    case '-': result -= value; break;
+                    case '*': result *= value; break;
+                    case '/': result /= value; break;
+                }
+            }
+            return result;
+        }
         function generatePageUrl(url, page) {
             // 1. 处理首页特殊规则（优先级最高）
             if (page === 1 && url.includes('[firstPage=')) {
@@ -140,23 +173,12 @@ function createClass(d, obj) {
 
             let resultUrl = url.replace(/\[firstPage=.*?\]/, '');
             // 2. 处理分页规则（修正解构赋值）
-            const pageRuleMatch = resultUrl.match(/fypage@(-?\d+)(@\*(\d+)@)?/);
-            if (pageRuleMatch) {
-                const [fullMatch, offset, , step] = pageRuleMatch; // 正确解构
-                let calculatedValue;
-
-                if (page === 1) {
-                    // 第一页：1 + 修正值
-                    calculatedValue = 1 + parseInt(offset);
-                } else if (step) {
-                    // 第二页起：步长 × (页码-1)
-                    calculatedValue = parseInt(step) * (page - 1);
-                } else {
-                    // 无步长规则：直接使用页码
-                    calculatedValue = page;
-                }
-
-                resultUrl = resultUrl.replace(fullMatch, calculatedValue.toString());
+            if (resultUrl.includes("fypage@")) {
+                let params = extractFypageParams(resultUrl);
+                let newpage = calculateOffset(params, page);
+                resultUrl = resultUrl.replace(/fypage@(?:([^@\[;]+)@)+([^@\[;]*)(?=[\[;]|$)/, newpage);
+            }else{
+                resultUrl = resultUrl.replace(/fypage/g, page.toString());
             }
             
             return resultUrl;

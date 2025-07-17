@@ -130,52 +130,6 @@ function createClass(d, obj) {
             }
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
-        
-        function extractFypageParams(str) {
-            // 修正后的正则表达式，仅支持 +、-、* 运算符
-            let regex = /fypage@((?:[+\-*]?[^@;[\]]+@)+)(?=[;[\]]|$)/;
-            let match = str.match(regex);
-            if (!match) return null;
-
-            let paramStr = match[1]; // 获取参数部分（含多个@）
-            let params = paramStr.split('@').filter(Boolean); // 拆分成数组并过滤空值
-            return params;
-        }
-
-        function calculateOffset(params, currentPage) {
-            // 确保currentPage是有效数字
-            let result = typeof currentPage === 'number' ? currentPage : 1;
-
-            // 确保params是数组
-            if (!Array.isArray(params)) {
-                return result;
-            }
-
-            for (let param of params) {
-                // 确保param是字符串
-                if (typeof param !== 'string') continue;
-                // 提取运算符和值（更健壮的正则）
-                let match = param.match(/^([+\-*])?([0-9]+)$/);
-                if (!match) continue;
-                let op = match[1] || '+';  // 默认加法
-                let value = parseInt(match[2]) || 0;
-                // 执行运算
-                switch (op) {
-                    case '+':
-                        result += value;
-                        break;
-                    case '-':
-                        result -= value;
-                        break;
-                    case '*':
-                        result *= value;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return result;
-        }
 
         function generatePageUrl(url, page) {
             // 处理首页特殊规则
@@ -186,23 +140,11 @@ function createClass(d, obj) {
 
             let resultUrl = url.replace(/\[firstPage=(.*?)\]/, '');
 
-            // 提取并处理 fypage@...@ 的参数
-            let params = extractFypageParams(resultUrl);
-            if (params) {
-                let newPage = calculateOffset(params, page);
-                // 修正后的替换正则表达式
-                let fypageRegex = /fypage@(?:[+\-*]?[^@;[\]]+@)+(?=[;[\]]|$)/;
-                resultUrl = resultUrl.replace(fypageRegex, newPage.toString());
-            } else {
-                // 简单替换纯fypage的情况
-                resultUrl = resultUrl.replace(/fypage(?![^;[\]]*@)/g, page.toString());
-            }
-
             return resultUrl;
         }
 
-        //let fypage = MY_PAGE;
-        //MY_URL = MY_URL.replace(/fypage/g, fypage);
+        let fypage = MY_PAGE;
+        MY_URL = MY_URL.replace(/fypage/g, fypage);
         MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }

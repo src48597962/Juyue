@@ -131,26 +131,13 @@ function createClass(d, obj) {
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
 
-        /**
-         * 从URL中提取fypage的计算参数（如 [+-*]数值 ）
-         * @param {string} str - 包含fypage规则的URL
-         * @returns {Array|null} 提取的运算参数数组（如 [-1, *20]），无则返回null
-         */
         function extractFypageParams(str) {
-            // 匹配 fypage@...@ 格式，支持 +、-、* 运算符，@分隔参数
-            const regex = /fypage@((?:[+\-*]\d+@)+)(?=[;\]]|$)/;
+            const regex = /fypage@((?:[+\-*]?\d+@)+)(?=[;\]]|$)/;
             const match = str.split(';')[0].split('[')[0].match(regex);
             if (!match) return null;
-            // 拆分参数并过滤空值（如末尾可能的空字符串）
             return match[1].split('@').filter(param => param);
         }
 
-        /**
-         * 根据参数计算分页偏移值
-         * @param {Array} params - 运算参数数组（如 [-1, *20]）
-         * @param {number} currentPage - 当前页码
-         * @returns {number} 计算后的结果
-         */
         function calculateOffset(params, currentPage) {
             let result = currentPage;
             for (let param of params) {
@@ -168,12 +155,6 @@ function createClass(d, obj) {
             return result;
         }
 
-        /**
-         * 生成目标页码的URL
-         * @param {string} url - 包含分页规则的基础URL（支持 [firstPage=...] 和 fypage@...@）
-         * @param {number} page - 目标页码
-         * @returns {string} 计算后的分页URL
-         */
         function generatePageUrl(url, page) {
             // 1. 处理首页特殊规则（[firstPage=xxx]）
             const firstPageMatch = url.match(/\[firstPage=(.*?)\]/);

@@ -172,11 +172,11 @@ function createClass(d, obj) {
             const fypageParams = extractFypageParams(resultUrl);
             xlog(fypageParams);
             if (fypageParams) {
-                // 计算目标页码对应的偏移值（如 page=2 时，[-1, *20] → (2-1)*20=20）
+                // 计算目标页码对应的偏移值
                 const offset = calculateOffset(fypageParams, page);
                 xlog(offset);
                 // 替换 fypage@...@ 为计算结果
-                resultUrl = resultUrl.replace(/fypage@(?:[+\-*]\d+@)+(?=[;\]]|$)/, offset.toString());
+                resultUrl = resultUrl.replace(/fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/, offset.toString());
             } else {
                 // 4. 无复杂规则时，直接替换纯fypage为页码
                 resultUrl = resultUrl.replace(/fypage/g, page.toString());

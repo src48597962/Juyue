@@ -141,7 +141,7 @@ function createClass(d, obj) {
             const params = paramStr.split('@').filter(Boolean); // 拆分成数组并过滤空值
             return params;
         }
-
+/*
         function calculateOffset(params, currentPage) {
             let result = currentPage;
             for (const param of params || []) {
@@ -181,10 +181,10 @@ function createClass(d, obj) {
 
             return resultUrl;
         }
-        
-        //let fypage = MY_PAGE;
-        //MY_URL = MY_URL.replace(/fypage/g, fypage);
-        MY_URL = generatePageUrl(MY_URL, MY_PAGE);
+        */
+        let fypage = MY_PAGE;
+        MY_URL = MY_URL.replace(/fypage/g, fypage);
+        //MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

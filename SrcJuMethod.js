@@ -132,14 +132,12 @@ function createClass(d, obj) {
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
 
         function extractFypageParams(str) {
-            // 匹配 fypage@ 开头，子值必须带 +、-、* 运算符，@ 分隔，且在 ; 或 [ 之前结束
-            const regex = /fypage@((?:[+\-*]\d+@)+)(?=[;\]]|$)/;
+            const regex = /fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/;
             const match = str.match(regex);
             if (!match) return null;
 
-            // 拆分后仅保留带运算符的子值（过滤空值和无效格式）
             return match[1].split('@').filter(param =>
-                param && /^[+\-*]\d+$/.test(param) // 严格校验：必须以运算符开头+数字
+                param && /^[+\-*]\d+$/.test(param)
             );
         }
 

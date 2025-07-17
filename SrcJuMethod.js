@@ -144,7 +144,8 @@ function createClass(d, obj) {
 
         function calculateOffset(params, currentPage) {
             let result = currentPage;
-            for (let param of params || []) {
+            params = params || [];
+            for (let param of params) {
                 let op = param.match(/^([+\-*])/)?.[1] || '+';
                 let valueStr = param.replace(/^[+\-*]/, '');
                 let value = parseInt(valueStr) || 0;

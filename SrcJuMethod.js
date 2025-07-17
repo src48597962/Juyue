@@ -131,9 +131,61 @@ function createClass(d, obj) {
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
         
-        let fypage = MY_PAGE;
-        MY_URL = MY_URL.replace(/fypage/g, fypage);
-        //MY_URL = generatePageUrl(MY_URL, MY_PAGE);
+        function extractFypageParams(str) {
+            // 修正后的正则表达式，支持带运算符的参数
+            const regex = /fypage@((?:[+\-*/]?[^@;[\]]+@)+)(?=[;[\]]|$)/;
+            const match = str.match(regex);
+            if (!match) return null;
+
+            const paramStr = match[1]; // 获取参数部分（含多个@）
+            const params = paramStr.split('@').filter(Boolean); // 拆分成数组并过滤空值
+            return params;
+        }
+
+        function calculateOffset(params, currentPage) {
+            let result = currentPage;
+            for (const param of params || []) {
+                const op = param.match(/^([+\-*/])/)?.[1] || '+';
+                const valueStr = param.replace(/^[+\-*/]/, '');
+                const value = parseInt(valueStr) || 0;
+
+                switch (op) {
+                    case '+': result += value; break;
+                    case '-': result -= value; break;
+                    case '*': result *= value; break;
+                    case '/': result = Math.floor(result / value); break; // 使用整数除法
+                }
+            }
+            return result;
+        }
+
+        function generatePageUrl(url, page) {
+            // 处理首页特殊规则
+            const firstPageMatch = url.match(/\[firstPage=(.*?)\]/);
+            if (page === 1 && firstPageMatch) {
+                return firstPageMatch[1];
+            }
+
+            let resultUrl = url.replace(/\[firstPage=(.*?)\]/, '');
+
+            // 提取并处理 fypage@...@ 的参数
+            const params = extractFypageParams(resultUrl);
+            if (params) {
+                const newPage = calculateOffset(params, page);
+                // 修正后的替换正则表达式
+                const fypageRegex = /fypage@(?:[+\-*/]?[^@;[\]]+@)+(?=[;[\]]|$)/;
+                resultUrl = resultUrl.replace(fypageRegex, newPage.toString());
+            } else {
+                // 简单替换纯fypage的情况
+                resultUrl = resultUrl.replace(/fypage(?![^;[\]]*@)/g, page.toString());
+            }
+
+            return resultUrl;
+        }
+        
+        //let fypage = MY_PAGE;
+        //MY_URL = MY_URL.replace(/fypage/g, fypage);
+        MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

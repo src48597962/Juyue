@@ -143,17 +143,35 @@ function createClass(d, obj) {
         }
 
         function calculateOffset(params, currentPage) {
-            let result = currentPage;
-            params = params || [];
-            for (let param of params) {
-                let op = param.match(/^([+\-*])/)?.[1] || '+';
-                let valueStr = param.replace(/^[+\-*]/, '');
-                let value = parseInt(valueStr) || 0;
+            // 确保currentPage是有效数字
+            let result = typeof currentPage === 'number' ? currentPage : 1;
 
+            // 确保params是数组
+            if (!Array.isArray(params)) {
+                return result;
+            }
+
+            for (let param of params) {
+                // 确保param是字符串
+                if (typeof param !== 'string') continue;
+                // 提取运算符和值（更健壮的正则）
+                let match = param.match(/^([+\-*])?([0-9]+)$/);
+                if (!match) continue;
+                let op = match[1] || '+';  // 默认加法
+                let value = parseInt(match[2]) || 0;
+                // 执行运算
                 switch (op) {
-                    case '+': result += value; break;
-                    case '-': result -= value; break;
-                    case '*': result *= value; break;
+                    case '+':
+                        result += value;
+                        break;
+                    case '-':
+                        result -= value;
+                        break;
+                    case '*':
+                        result *= value;
+                        break;
+                    default:
+                        break;
                 }
             }
             return result;

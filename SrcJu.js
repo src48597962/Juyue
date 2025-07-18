@@ -499,11 +499,6 @@ function erji() {
         delete jkdata.extstr;
     }
     let parse = getObjCode(jkdata, 'er');
-    /*
-    if(!MY_URL.startsWith('http') && parse['host']){
-        MY_URL = parse['host'] + MY_URL;
-    }
-    */
     
     let d = [];
     let smark = getMark(MY_URL, sid);//足迹记录
@@ -614,7 +609,9 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
-            if(erLoadData.page && erLoadData.pageparse){//网站分页显示列表的，需要动态解析获取
+            let 分页s = erLoadData.page && erLoadData.pageparse ? $.type(erLoadData.page)=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+            let 分页 = 分页s&&分页s.length==线路s.length?分页s[lineid]:undefined;
+            if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){
                         /*
@@ -637,14 +634,14 @@ function erji() {
                         }
                         */
                         
-                        let 分页s = erLoadData.page;
+                        //let 分页s = erLoadData.page;
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
 
-                        if(pageid > 分页s.length){
+                        if(pageid > 分页.length){
                             pageid = 0;
                         }
-                        let 分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
-                        分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                        let 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
+                        分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
@@ -1049,11 +1046,11 @@ function erji() {
             }
             //分页定义
             let partpage = storage0.getItem('partpage') || {};
-            if(erLoadData.page && erLoadData.pageparse){//原网站有分页，不执行自定义分页
-                let 分页s = erLoadData.page;
+            if(分页){//原网站有分页，不执行自定义分页
+                //let 分页s = erLoadData.page;
                 let 分页链接 = [];
                 let 分页名 = [];
-                分页s.forEach((it,i)=>{
+                分页.forEach((it,i)=>{
                     分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                             if(nowid != newid){
                                 putMyVar(pageurl, newid);
@@ -1119,9 +1116,9 @@ function erji() {
                         }
                         return newArray;
                     }
-                    let 分页s = getNewArray(列表, 每页数量);//按每页数据切割成小数组
+                    分页 = getNewArray(列表, 每页数量);//按每页数据切割成小数组
 
-                    分页s.forEach((it,i)=>{
+                    分页.forEach((it,i)=>{
                         分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                                 if(nowid != newid){
                                     putMyVar(pageurl, newid);
@@ -1167,7 +1164,7 @@ function erji() {
                             cls: "Juloadlist"
                         }
                     })
-                    列表 = 分页s[pageid];//取当前分页的选集列表
+                    列表 = 分页[pageid];//取当前分页的选集列表
                 }
             }
             // 修正列表选集标题

@@ -131,33 +131,6 @@ function createClass(d, obj) {
         }
         MY_URL = obj.url.replace(/fyAll/g, fyAll).replace(/fyclass/g, fyclass).replace(/fyarea/g, fyarea).replace(/fyyear/g, fyyear).replace(/fysort/g, fysort);
 
-        function extractFypageParams(str) {
-            const regex = /fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/;
-            const match = str.match(regex);
-            if (!match) return null;
-
-            return match[1].split('@').filter(param =>
-                param && /^[+\-*]\d+$/.test(param)
-            );
-        }
-
-        function calculateOffset(params, currentPage) {
-            let result = currentPage;
-            for (let param of params) {
-                // 提取运算符（默认+）和数值
-                let op = param[0] === '+' || param[0] === '-' || param[0] === '*' ? param[0] : '+';
-                let value = parseInt(op === '+' ? param : param.slice(1), 10) || 0;
-
-                // 执行运算
-                switch (op) {
-                    case '+': result += value; break;
-                    case '-': result -= value; break;
-                    case '*': result *= value; break;
-                }
-            }
-            return result;
-        }
-
         function generatePageUrl(url, page) {
             // 1. 处理首页特殊规则（[firstPage=xxx]）
             const firstPageMatch = url.match(/\[firstPage=(.*?)\]/);
@@ -169,18 +142,6 @@ function createClass(d, obj) {
             let resultUrl = url.replace(/\[firstPage=.*?\]/, '');
 
             // 3. 提取fypage的运算参数并计算
-            /*
-            const fypageParams = extractFypageParams(resultUrl);
-            if (fypageParams) {
-                // 计算目标页码对应的偏移值
-                const offset = calculateOffset(fypageParams, page);
-                // 替换 fypage@...@ 为计算结果
-                resultUrl = resultUrl.replace(/fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/, offset.toString());
-            } else {
-                // 4. 无复杂规则时，直接替换纯fypage为页码
-                resultUrl = resultUrl.replace(/fypage/g, page.toString());
-            }
-            */
             if (resultUrl.includes("fypage@")) {
                 // 分割字符串获取运算部分
                 let strings = resultUrl.split("fypage@");
@@ -203,7 +164,7 @@ function createClass(d, obj) {
                 }
 
                 // 拼接最终URL（前缀 + 计算后的值 + 后缀）
-                resultUrl = strings[0] + page + pages[pages.length - 1];
+                resultUrl = strings[0] + page.toString() + pages[pages.length - 1];
             } else {
                 // 直接替换fypage为page值
                 resultUrl = resultUrl.replace(/fypage/g, page.toString());
@@ -212,8 +173,6 @@ function createClass(d, obj) {
             return resultUrl;
         }
 
-        //let fypage = MY_PAGE;
-        //MY_URL = MY_URL.replace(/fypage/g, fypage);
         MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }

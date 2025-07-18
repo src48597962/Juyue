@@ -169,6 +169,7 @@ function createClass(d, obj) {
             let resultUrl = url.replace(/\[firstPage=.*?\]/, '');
 
             // 3. 提取fypage的运算参数并计算
+            /*
             const fypageParams = extractFypageParams(resultUrl);
             if (fypageParams) {
                 // 计算目标页码对应的偏移值
@@ -177,6 +178,34 @@ function createClass(d, obj) {
                 resultUrl = resultUrl.replace(/fypage@((?:[+\-*]\d+@)*[+\-*]\d+@?)(?=[;&\]]|$)/, offset.toString());
             } else {
                 // 4. 无复杂规则时，直接替换纯fypage为页码
+                resultUrl = resultUrl.replace(/fypage/g, page.toString());
+            }
+            */
+            if (resultUrl.includes("fypage@")) {
+                // 分割字符串获取运算部分
+                const strings = resultUrl.split("fypage@");
+                const pages = strings[1].split("@");
+
+                // 遍历执行运算
+                for (let i = 0; i < pages.length - 1; i++) {
+                    const current = pages[i];
+                    xlog(current);
+                    const num = parseInt(current.slice(1)); // 获取操作数
+                    if (current.startsWith("-")) {
+                        page = page - num;
+                    } else if (current.startsWith("+")) {
+                        page = page + num;
+                    } else if (current.startsWith("*")) {
+                        page = page * num;
+                    } else if (current.startsWith("/")) {
+                        page = page / num;
+                    }
+                }
+
+                // 拼接最终URL（前缀 + 计算后的值 + 后缀）
+                resultUrl = strings[0] + page + pages[pages.length - 1];
+            } else {
+                // 直接替换fypage为page值
                 resultUrl = resultUrl.replace(/fypage/g, page.toString());
             }
 

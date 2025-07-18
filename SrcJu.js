@@ -609,7 +609,7 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
-            let 分页s = erLoadData.page && erLoadData.pageparse ? $.type(erLoadData.page)=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+            let 分页s = erLoadData.page && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
             xlog(分页s);
             let 分页 = 分页s&&分页s.length==线路s.length?分页s[lineid]:undefined;
             xlog(分页);

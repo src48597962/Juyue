@@ -185,7 +185,7 @@ function createClass(d, obj) {
                 // 分割字符串获取运算部分
                 const strings = resultUrl.split("fypage@");
                 const pages = strings[1].split("@");
-
+                xlog(pages);
                 // 遍历执行运算
                 for (let i = 0; i < pages.length - 1; i++) {
                     const current = pages[i];

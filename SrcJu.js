@@ -610,7 +610,9 @@ function erji() {
                 }
             }
             let 分页s = erLoadData.page && erLoadData.pageparse ? $.type(erLoadData.page)=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+            xlog(分页s);
             let 分页 = 分页s&&分页s.length==线路s.length?分页s[lineid]:undefined;
+            xlog(分页);
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){

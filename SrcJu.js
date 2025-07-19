@@ -1046,13 +1046,13 @@ function erji() {
                 if(分页.length==1 && 分页[0].url.includes('fypage')){//自动页码
                     d.push({
                         title: "下一页⏭️",
-                        url: $().lazyRule((pageurl, 分页url, pageparse)=>{
+                        url: $().lazyRule((pageurl, 分页url, pageparse, jkdata)=>{
                             let pageid = parseInt(getMyVar(pageurl, '0'));
                             eval("let 分页选集动态解析 = " + pageparse.toString());
                             let parse = getObjCode(jkdata, 'er');
                             let 分页选集 = 分页选集动态解析.call(parse, 分页url.replace(/fypage/g, pageid+1));
                             addItemBefore('listEnding', 分页选集);
-                        }, "SrcJu_"+MY_URL+"_page", 分页[0].url, erLoadData.pageparse),
+                        }, "SrcJu_"+MY_URL+"_page", 分页[0].url, erLoadData.pageparse, jkdata),
                         col_type: 'text_center_1',
                         extra: {
                             cls: "Juloadlist"

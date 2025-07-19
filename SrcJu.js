@@ -620,7 +620,7 @@ function erji() {
             }
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
-                    if(((erdataCache && pageid != erLoadData.pageid) || !erdataCache) && !列表s[lineid]){
+                    if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && !列表s[lineid])){
                         /*
                         let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];
                         

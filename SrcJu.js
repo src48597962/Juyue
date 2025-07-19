@@ -1297,9 +1297,9 @@ function erji() {
             erLoadData.caseData = caseData;
 
             if(!erdataCache){
-                addBookCase(erLoadData.caseData, true);
-                writeFile(erCacheFile, $.stringify(erLoadData));
+                addBookCase(erLoadData.caseData, true);//更新收藏书架数据
             }
+            writeFile(erCacheFile, $.stringify(erLoadData));
         }
         //收藏更新最新章节
         if (parse['最新']) {

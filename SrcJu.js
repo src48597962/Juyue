@@ -624,6 +624,7 @@ function erji() {
                     if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
+                        /*
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
                             分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1)));
                         }else{
@@ -632,13 +633,12 @@ function erji() {
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         }
-                        
-                       /*
+                        */
                         if(pageid > 分页.length){
                             pageid = 0;
                         }
                         分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
-                        */
+
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;
@@ -1043,69 +1043,52 @@ function erji() {
             //分页定义
             let partpage = storage0.getItem('partpage') || {};
             if(分页){//原网站有分页，不执行自定义分页
-                if(分页.length==1 && 分页[0].url.includes('fypage')){//自动页码
+                let 分页链接 = [];
+                let 分页名 = [];
+                分页.forEach((it,i)=>{
+                    分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                            if(nowid != newid){
+                                putMyVar(pageurl, newid);
+                                refreshPage(false);
+                            }
+                            return 'hiker://empty'
+                        }, "SrcJu_"+MY_URL+"_page", pageid, i)
+                    )
+                    分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+it.title:it.title)
+                })
+                if(分页名.length>0){
                     d.push({
-                        title: "下一页⏭️",
-                        url: $().lazyRule((pageurl, 分页url, pageparse, jkdata)=>{
-                            let pageid = parseInt(getMyVar(pageurl, '0'));
-                            eval("let 分页选集动态解析 = " + pageparse.toString());
-                            let parse = getObjCode(jkdata, 'er');
-                            let 分页选集 = 分页选集动态解析.call(parse, 分页url.replace(/fypage/g, pageid+1));
-                            addItemBefore('listEnding', 分页选集);
-                        }, "SrcJu_"+MY_URL+"_page", 分页[0].url, erLoadData.pageparse, jkdata),
-                        col_type: 'text_center_1',
+                        col_type: "blank_block",
+                        extra: {
+                            cls: "Juloadlist"
+                        }
+                    });
+                    d.push({
+                        title: pageid==0?"↪️尾页":"⏮️上页",
+                        url: pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
+                        col_type: 'text_4',
                         extra: {
                             cls: "Juloadlist"
                         }
                     })
-                }else{
-                    let 分页链接 = [];
-                    let 分页名 = [];
-                    分页.forEach((it,i)=>{
-                        分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
-                                if(nowid != newid){
-                                    putMyVar(pageurl, newid);
-                                    refreshPage(false);
-                                }
-                                return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_page", pageid, i)
-                        )
-                        分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+it.title:it.title)
+                    d.push({
+                        title: 分页名[pageid] || ("第"+pageid+1+"页"),
+                        url: $(分页名, 2).select((分页名,分页链接) => {
+                            return 分页链接[分页名.indexOf(input)];
+                        },分页名,分页链接),
+                        col_type: 'text_2',
+                        extra: {
+                            cls: "Juloadlist"
+                        }
                     })
-                    if(分页名.length>0){
-                        d.push({
-                            col_type: "blank_block",
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        });
-                        d.push({
-                            title: pageid==0?"↪️尾页":"⏮️上页",
-                            url: pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                        d.push({
-                            title: 分页名[pageid] || ("第"+pageid+1+"页"),
-                            url: $(分页名, 2).select((分页名,分页链接) => {
-                                return 分页链接[分页名.indexOf(input)];
-                            },分页名,分页链接),
-                            col_type: 'text_2',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                        d.push({
-                            title: pageid==分页名.length-1?"首页↩️":"下页⏭️",
-                            url: pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                    }
+                    d.push({
+                        title: pageid==分页名.length-1?"首页↩️":"下页⏭️",
+                        url: pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
+                        col_type: 'text_4',
+                        extra: {
+                            cls: "Juloadlist"
+                        }
+                    })
                 }
             }else if(partpage.ispage){//启用分页
                 let 每页数量 = partpage.pagenum || 40; // 分页的每页数量       

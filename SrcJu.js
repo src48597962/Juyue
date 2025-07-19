@@ -618,28 +618,20 @@ function erji() {
                     xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                 }
             }
-            xlog(分页);
+
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
-                    xlog(列表s[lineid]);
                     if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
-
-                        xlog(分页);
-                        xlog(分页[0].title);
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
-                            pageid = 0;
                             分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1)));
-                            pageid++;
-                            xlog(分页选集);
                         }else{
-                            if(pageid > 分页s.length){
+                            if(pageid > 分页.length){
                                 pageid = 0;
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         }
-                        
                         
                        /*
                         if(pageid > 分页.length){
@@ -667,38 +659,38 @@ function erji() {
             //线路名除评论的线路选集修正排序
             if(列表.length>0 && 线路s[lineid]!='评论'){
                 function checkAndReverseArray(arr) {
-                    const numbers = [];
-                    arr.slice(0, 50).forEach(it=>{
-                        const digits = it.title.match(/\d+/);
-                        if (digits) {
-                            numbers.push(parseInt(digits[0]));
-                        }
-                    })
+                    try{
+                        const numbers = [];
+                        arr.slice(0, 50).forEach(it=>{
+                            const digits = it.title.match(/\d+/);
+                            if (digits) {
+                                numbers.push(parseInt(digits[0]));
+                            }
+                        })
 
-                    if (numbers.length < 3) {
-                        return arr;
-                    }
-                    let increasingCount = 0;
-                    let decreasingCount = 0;
-                    for (let i = 1; i < numbers.length; i++) {
-                        if (numbers[i] > numbers[i - 1]) {
-                            increasingCount++;
-                        } else if (numbers[i] < numbers[i - 1]) {
-                            decreasingCount++;
+                        if (numbers.length < 3) {
+                            return arr;
                         }
-                    }
-                    if (increasingCount > decreasingCount) {
-                        return arr;
-                    } else {
-                        return arr.reverse();
+                        let increasingCount = 0;
+                        let decreasingCount = 0;
+                        for (let i = 1; i < numbers.length; i++) {
+                            if (numbers[i] > numbers[i - 1]) {
+                                increasingCount++;
+                            } else if (numbers[i] < numbers[i - 1]) {
+                                decreasingCount++;
+                            }
+                        }
+                        if (increasingCount > decreasingCount) {
+                            return arr;
+                        } else {
+                            return arr.reverse();
+                        }
+                    }catch(e){
+                        //xlog('强制修正选集顺序失败>'+e.message)
                     }
                 }
-                try{
-                    列表 = checkAndReverseArray(列表);
-                }catch(e){
-                    //xlog('强制修正选集顺序失败>'+e.message)
-                }
-
+                
+                列表 = checkAndReverseArray(列表);
                 if (getMyVar(sname + 'sort') == '1') {
                     列表.reverse();
                 }

@@ -624,7 +624,8 @@ function erji() {
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
 
-                        
+                        xlog(分页);
+                        xlog(分页[0].title);
                         if(分页.length==1 && 分页[0].title=='自动页码'){
                             pageid = 0;
                             for(let i=0;i<2;i++){
@@ -632,6 +633,7 @@ function erji() {
                                 分页选集.push(分页选集动态解析.call(parse, 分页url));
                                 pageid++;
                             }
+                            xlog(分页选集);
                             分页选集.push({
                                 title: '下一页',
                                 url: 'hiker://empty',

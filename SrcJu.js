@@ -612,7 +612,7 @@ function erji() {
             let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
             let 分页;
             if(分页s){
-                if(分页s.length==线路s.length){
+                if(分页s.length==线路s.length && !列表s[lineid]){
                     分页 = 分页s[lineid];
                 }else{
                     xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
@@ -641,7 +641,6 @@ function erji() {
                         }
                         */
                         
-                        //let 分页s = erLoadData.page;
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
 
                         if(pageid > 分页.length){
@@ -1054,7 +1053,6 @@ function erji() {
             //分页定义
             let partpage = storage0.getItem('partpage') || {};
             if(分页){//原网站有分页，不执行自定义分页
-                //let 分页s = erLoadData.page;
                 let 分页链接 = [];
                 let 分页名 = [];
                 分页.forEach((it,i)=>{
@@ -1222,7 +1220,7 @@ function erji() {
                 isload = 1;
             }else if(列表.length==0){
                 d.push({
-                    title: "‘‘’’<font color=grey>选集列表为空，请更换其他源</font>",
+                    title: "‘‘’’<font color=grey><small>当前源路线选集列表为空</small></font>",
                     url: 'hiker://empty',
                     col_type: 'text_center_1',
                     extra: {

@@ -622,7 +622,7 @@ function erji() {
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     xlog(列表s[lineid]);
-                    if((erdataCache && pageid != erdataCache.pageid) || (!erdataCache && !列表s[lineid])){
+                    if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
 

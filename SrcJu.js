@@ -618,8 +618,10 @@ function erji() {
                     xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                 }
             }
+            xlog(分页);
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
+                    xlog(列表s[lineid]);
                     if((erdataCache && pageid != erdataCache.pageid) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];

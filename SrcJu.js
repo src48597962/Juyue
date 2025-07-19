@@ -609,10 +609,15 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
-            let 分页s = erLoadData.page && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
-            xlog(分页s);
-            let 分页 = 分页s&&分页s.length==线路s.length?分页s[lineid]:undefined;
-            xlog(分页);
+            let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+            let 分页;
+            if(分页s){
+                if(分页s.length==线路s.length){
+                    分页 = 分页s[lineid];
+                }else{
+                    xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
+                }
+            }
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && pageid>0)){

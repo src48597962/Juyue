@@ -620,7 +620,7 @@ function erji() {
             }
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
-                    if((erdataCache && pageid != erLoadData.pageid) || (!erdataCache && !列表s[lineid])){
+                    if((erdataCache && pageid != erdataCache.pageid) || (!erdataCache && !列表s[lineid])){
                         /*
                         let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];
                         
@@ -647,7 +647,6 @@ function erji() {
                             pageid = 0;
                         }
                         let 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
-                        分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
@@ -1281,8 +1280,8 @@ function erji() {
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
-            erLoadData.lineid = lineid;//好像没用到，先放着吧
-            erLoadData.pageid = pageid;//好像没用到，先放着吧
+            erLoadData.lineid = lineid;
+            erLoadData.pageid = pageid;
             erLoadData.updatetime = Date.now();
             
             let caseData = {

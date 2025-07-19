@@ -630,7 +630,8 @@ function erji() {
                         xlog(分页[0].title);
                         if(分页.length==1 && 分页[0].title=='自动页码'){
                             pageid = 0;
-                            分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页url));
+
+                            分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页[0].replace(/fypage/g, pageid+1)));
                             分页选集.push({
                                 title: '下一页',
                                 url: 'hiker://empty',

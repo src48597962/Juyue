@@ -397,6 +397,12 @@ function selectSource2(selectGroup) {
 }
 //封装选择主页源方法
 function selectSource(selectGroup) {
+    let nowtime = Date.now();
+    let oldtime = parseInt(getMyVar('切源时间','0'))||0;
+    if(nowtime < (oldtime + 2 * 1000)){
+        return;//2秒内节流
+    }
+    putMyVar('切源时间', nowtime + '');
     if(getItem("选择主页源插件")=="原生组件"){
         return selectSource2(selectGroup);
     }

@@ -621,33 +621,36 @@ function erji() {
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && pageid != erdataCache.pageid) || (!erdataCache && !列表s[lineid])){
-                        /*
-                        let 分页s = erLoadData.line?erLoadData.page:[erLoadData.page];
-                        
-                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
+                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
-                        if(线路s[lineid]=='评论' && 分页s.length==1 && 分页s[lineid].title=='自动页码'){
+
+                        
+                        if(分页.length==1 && 分页[0].title=='自动页码'){
                             pageid = 0;
                             for(let i=0;i<2;i++){
-                                let 分页page = 分页s[lineid].url.replace(/fypage/g, pageid+1);
-                                分页选集.push(分页选集动态解析.call(parse, 分页page));
+                                let 分页url = 分页[0].url.replace(/fypage/g, pageid+1);
+                                分页选集.push(分页选集动态解析.call(parse, 分页url));
                                 pageid++;
                             }
+                            分页选集.push({
+                                title: '下一页',
+                                url: 'hiker://empty',
+                                col_type: 'text_center_1'
+                            });
                         }else{
                             if(pageid > 分页s.length){
                                 pageid = 0;
                             }
-                            分页选集 = 分页选集动态解析.call(parse, 分页s[pageid].url);
+                            分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         }
-                        */
                         
-                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString())
-
+                        
+                       /*
                         if(pageid > 分页.length){
                             pageid = 0;
                         }
-                        let 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
-                        
+                        分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
+                        */
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;

@@ -632,7 +632,7 @@ function erji() {
                             pageid = 0;
                             for(let i=0;i<2;i++){
                                 let 分页url = 分页[0].url.replace(/fypage/g, pageid+1);
-                                分页选集.push(分页选集动态解析.call(parse, 分页url));
+                                分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页url));
                                 pageid++;
                             }
                             xlog(分页选集);

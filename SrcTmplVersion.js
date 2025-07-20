@@ -4,8 +4,7 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V0.9",
         records: [
-            "优化：二级选集分页支持未知页码，动态自动页码",
-            "优化：兼容调用α模板生成动态分类setPreResult"
+            "优化：二级选集分页支持未知页码，动态自动页码"
         ]
     },{
         title: "2025/07/20 V0.8",

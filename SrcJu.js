@@ -621,13 +621,15 @@ function erji() {
             let 自动页码; //当前线路是否自动下一页
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
+                    if(分页.length==1 && 分页[0].url.includes('fypage')){
+                        自动页码 = 分页[0].url;
+                    }
                     if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
                         
-                        if(分页.length==1 && 分页[0].url.includes('fypage')){
+                        if(自动页码){
                             分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
-                            自动页码 = 分页[0].url;
                         }else{
                             if(pageid > 分页.length){
                                 pageid = 0;
@@ -1066,7 +1068,13 @@ function erji() {
                     });
                     d.push({
                         title: pageid==0?"↪️尾页":"⏮️上页",
-                        url: pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
+                        url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                            if(nowid != newid){
+                                putMyVar(pageurl, newid);
+                                refreshPage(false);
+                            }
+                            return 'hiker://empty'
+                        }, "SrcJu_"+MY_URL+"_page", pageid, pageid-1):pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
                         col_type: 'text_4',
                         extra: {
                             cls: "Juloadlist"
@@ -1083,7 +1091,7 @@ function erji() {
                         }
                     })
                     d.push({
-                        title: 自动页码?"下一页":pageid==分页名.length-1?"首页↩️":"下页⏭️",
+                        title: 自动页码?"下页⏭️":pageid==分页名.length-1?"首页↩️":"下页⏭️",
                         url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                             if(nowid != newid){
                                 putMyVar(pageurl, newid);

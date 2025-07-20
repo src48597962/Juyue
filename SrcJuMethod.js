@@ -204,7 +204,7 @@ function getYiData(datatype, jkdata, dd) {
     let d = dd || [];
 
     try {
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1' && !(parse[datatype]||"").toString().includes('dtfl?rule=α')) {
             let num = 1;
             if(datatype!='主页'){
                 num = 4;

@@ -618,27 +618,28 @@ function erji() {
                     xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                 }
             }
-
+            let 自动页码; //当前线路是否自动下一页
             if(分页){//网站分页显示列表的，需要动态解析获取
                 try{
                     if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                         eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                         let 分页选集 = [];
-                        /*
+                        
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
-                            分页选集 = 分页选集.concat(分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1)));
+                            分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, '1'));
+                            自动页码 = 分页[0].url;
                         }else{
                             if(pageid > 分页.length){
                                 pageid = 0;
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                         }
-                        */
+                        /*
                         if(pageid > 分页.length){
                             pageid = 0;
                         }
                         分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
-
+                        */
                         if($.type(分页选集)=="array"){
                             列表s[lineid] = 分页选集;
                             erLoadData.list = erLoadData.line?列表s:分页选集;
@@ -1082,8 +1083,14 @@ function erji() {
                         }
                     })
                     d.push({
-                        title: pageid==分页名.length-1?"首页↩️":"下页⏭️",
-                        url: pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
+                        title: 自动页码?"下一页":pageid==分页名.length-1?"首页↩️":"下页⏭️",
+                        url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                            if(nowid != newid){
+                                putMyVar(pageurl, newid);
+                                refreshPage(false);
+                            }
+                            return 'hiker://empty'
+                        }, "SrcJu_"+MY_URL+"_page", pageid, pageid+1):pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
                         col_type: 'text_4',
                         extra: {
                             cls: "Juloadlist"
@@ -1205,13 +1212,7 @@ function erji() {
                     extra: extra
                 });
             }
-            d.push({
-                col_type: "blank_block",
-                extra: {
-                    id: "listEnding",
-                    cls: "Juloadlist"
-                }
-            });
+
             if(列表.length>0){
                 isload = 1;
             }else if(列表.length==0){

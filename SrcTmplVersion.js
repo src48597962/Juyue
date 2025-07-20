@@ -2,7 +2,7 @@ var newVersion = {
     "SrcJu": "0.8",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
-        title: "2025/07/20 V0.8",
+        title: "beta V0.9",
         records: [
             "优化：二级选集分页支持未知页码，动态自动页码",
             "优化：兼容调用α模板生成动态分类setPreResult"

@@ -282,10 +282,8 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        xlog((parse[datatype]||"").toString());
-        xlog((parse[datatype]||"").toString().includes('dtfl?rule=α'));
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1' && !(parse[datatype]||"").toString().includes('dtfl?rule=α')) {
-            xlog('进来了');
+
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1' && !(parse[datatype]||"").toString().includes('dtfl?rule=u03b1')) {
             let num = 1;
             if(datatype!='主页'){
                 num = 4;

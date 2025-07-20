@@ -204,35 +204,6 @@ function getYiData(datatype, jkdata, dd) {
     let d = dd || [];
 
     try {
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1' && !(parse[datatype]||"").toString().includes('dtfl?rule=α')) {
-            let num = 1;
-            if(datatype!='主页'){
-                num = 4;
-            }
-            for(let i=0;i<num;i++){
-                d.push({
-                    title: "",
-                    url: "hiker://empty",
-                    col_type: "text_1",
-                    extra: {
-                        lineVisible: false,
-                        cls: "loading_gif"
-                    }
-                })
-            }
-            d.push({
-                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
-                col_type: "pic_1_center",
-                url: "hiker://empty",
-                extra: {
-                    cls: "loading_gif"
-                }
-            })
-            setPreResult(d);
-            d = [];
-            putMyVar(datatype+'动态加载loading', '1');
-        }
-
         let 页码 = parse["页码"] || {};
         if(!页码[datatype] && page>1){
             setResult([]);
@@ -310,6 +281,34 @@ function getYiData(datatype, jkdata, dd) {
                     d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||"130"));
                 }
             }
+        }
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=α')
+            let num = 1;
+            if(datatype!='主页'){
+                num = 4;
+            }
+            for(let i=0;i<num;i++){
+                d.push({
+                    title: "",
+                    url: "hiker://empty",
+                    col_type: "text_1",
+                    extra: {
+                        lineVisible: false,
+                        cls: "loading_gif"
+                    }
+                })
+            }
+            d.push({
+                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+                col_type: "pic_1_center",
+                url: "hiker://empty",
+                extra: {
+                    cls: "loading_gif"
+                }
+            })
+            setPreResult(d);
+            d = [];
+            putMyVar(datatype+'动态加载loading', '1');
         }
 
         if(parse['host']){

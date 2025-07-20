@@ -282,7 +282,7 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=α')
+        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1' && !(parse[datatype]||"").toString().includes('dtfl?rule=α')) {
             let num = 1;
             if(datatype!='主页'){
                 num = 4;

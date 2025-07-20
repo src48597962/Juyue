@@ -256,6 +256,7 @@ function getYiData(datatype, jkdata, dd) {
                     itname = it.名称;
                     iticon = it.图标;
                     itcol = it.样式;
+                    itide = it.标识;
                 }else{
                     itname = it;
                 }

@@ -626,7 +626,7 @@ function erji() {
                         let 分页选集 = [];
                         
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
-                            分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, '1'));
+                            分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
                             自动页码 = 分页[0].url;
                         }else{
                             if(pageid > 分页.length){
@@ -1073,7 +1073,7 @@ function erji() {
                         }
                     })
                     d.push({
-                        title: 分页名[pageid] || ("第"+pageid+1+"页"),
+                        title: 分页名[pageid] || ("第"+(pageid+1)+"页"),
                         url: $(分页名, 2).select((分页名,分页链接) => {
                             return 分页链接[分页名.indexOf(input)];
                         },分页名,分页链接),

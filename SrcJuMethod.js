@@ -251,7 +251,7 @@ function getYiData(datatype, jkdata, dd) {
             let channel = [];
 
             (parse["频道"].包含项 || [z1,z2,z3]).forEach(it=>{
-                let itname,iticon,itcol;
+                let itname,iticon,itcol,itide;
                 if($.type(it)=="object"){
                     itname = it.名称;
                     iticon = it.图标;
@@ -260,7 +260,7 @@ function getYiData(datatype, jkdata, dd) {
                     itname = it;
                 }
                 if(itname && itname!="主页" && parse[itname]){
-                    channel.push({name: itname, icon: iticon, col: itcol});
+                    channel.push({name: itname, icon: iticon, col: itcol, ide: itide});
                 }
             })
             let col_type = channel.length>5?"scroll_button":channel.length==5?"text_5":channel.length==4?"text_4":channel.length==3?"text_3":"text_2";
@@ -270,7 +270,7 @@ function getYiData(datatype, jkdata, dd) {
             channel.forEach((it, i)=>{
                 sourcemenu.push({
                     title: it.name,
-                    url: rulePage(it.name, 页码[it.name], ide),
+                    url: rulePage(it.name, 页码[it.name], it.ide||ide),
                     pic_url: it.icon || (imgs?imgs[i]:""),
                     col_type: it.col || col_type,
                     extra: {

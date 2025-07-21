@@ -2153,19 +2153,19 @@ function themeIconSet() {
 
                         let gzip = $.require(codePath + "plugins/gzip.js");
                         let sharetxt = gzip.zip(JSON.stringify(currentTheme));
-                        let pastename = '';
-                        if(sharetxt.length>200000){
-                            pastename = '云剪贴板6';
-                        }
-                        let pasteurl = sharePaste(sharetxt, pastename);
-                        if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
-                            let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
-                            copy(code);
-                            return "toast://分享口令已生成";
-                        } else {
-                            xlog('分享失败>' + pasteurl);
-                            return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
-                        }
+
+                        let pastes = getPastes();
+                        return $(pastes,2).select((sharetxt,themename)=>{
+                            let pasteurl = sharePaste(sharetxt, input);
+                            if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
+                                let code = '聚阅主题￥' + aesEncode('Juyue', pasteurl) + '￥' + themename;
+                                copy(code);
+                                return "toast://分享口令已生成";
+                            } else {
+                                xlog('分享失败>' + pasteurl);
+                                return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
+                            }
+                        }, sharetxt, themename)
                     }
                     return 'toast://异常';
                 }, themename)

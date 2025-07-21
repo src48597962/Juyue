@@ -2137,6 +2137,8 @@ function themeIconSet() {
                         return 'toast://没有主题'
                     } else if (!currentTheme.主页图标) {
                         return 'toast://新建主题没有内容';
+                    } else if (themename=='原生主题') {
+                        return 'toast://原生主题无法分享';
                     }
 
                     let themeList = storage0.getMyVar('themeList', []).filter(v => v.名称 == themename);

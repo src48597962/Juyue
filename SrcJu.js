@@ -1061,7 +1061,8 @@ function erji() {
                                 }
                                 return 'hiker://empty'
                             }, "SrcJu_"+MY_URL+"_line", lineid, i),
-                            desc: line_other.col_type || '',
+                            desc: line_other.desc || '',
+                            img: line_other.img || line_other.pic || line_other.pic_url || '',
                             col_type: line_other.col_type || line_col_type,
                             extra: extra
                         })

@@ -309,7 +309,7 @@ function SRCSet() {
             }),
             col_type: 'scroll_button'
         })
-        
+        /*
         d.push({
             title: "批量检测",
             url: $('#noLoading#').lazyRule(() => {
@@ -403,6 +403,7 @@ function SRCSet() {
                                     }
                                 }
                                 */
+                                /*
                                 data.message = desc;
 
                                 return {error:error, data:data}
@@ -664,7 +665,7 @@ function SRCSet() {
                             id: "schedule_er"
                         }
                     });
-                    */
+                    *//*
                     d.push({
                         col_type: "line_blank"
                     });
@@ -698,7 +699,7 @@ function SRCSet() {
                 }]
             }
         })
-        
+        */
     }
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;

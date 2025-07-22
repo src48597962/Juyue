@@ -596,11 +596,11 @@ function erji() {
 
             let 线路s = ["线路"];
             let 列表s = [[]];
-            let 线路s_other = {};
+            let 线路s_other;
             try{
                 let 线路line = erLoadData.line;
                 if(线路line && $.type(线路line)=='array' && 线路line.length>0 && $.type(线路line[0])=='object'){
-                    线路s_other = Object.assign({}, erLoadData.line);
+                    线路s_other = erLoadData.line;
                     线路line = 线路line.map(v=>v.title);
                 }
                 线路s = erLoadData.line?线路line:["线路"];
@@ -1047,7 +1047,9 @@ function erji() {
                 if(线路s.length>0 && 线路s[0] !="线路"){
                     let Color = getItem('主题颜色','#3399cc');
                     线路s.forEach((it,i)=>{
-                        let extra = 线路s_other[i].extra || {};
+                        let line_others = 线路s_other || [];
+                        let line_other = line_others[i] || {};
+                        let extra = line_other.extra || {};
                         extra.cls = "Juloadlist";
                         extra.backgroundColor = lineid==i?(extra.backgroundColor||"#20" + Color.replace('#','')):"";
                         d.push({
@@ -1059,8 +1061,8 @@ function erji() {
                                 }
                                 return 'hiker://empty'
                             }, "SrcJu_"+MY_URL+"_line", lineid, i),
-                            desc: 线路s_other[i].col_type || '',
-                            col_type: 线路s_other[i].col_type || line_col_type,
+                            desc: line_other.col_type || '',
+                            col_type: line_other.col_type || line_col_type,
                             extra: extra
                         })
                     })

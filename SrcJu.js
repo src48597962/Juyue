@@ -551,6 +551,7 @@ function erji() {
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
+            let noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
             pic = pic&&pic.indexOf("@Referer=") == -1 ? pic + "@Referer=" : pic;
@@ -578,15 +579,17 @@ function erji() {
                     return 'toast://失败，未找到数据';
                 }, erCacheFile)
             }];
-            detailextra.longClick = detailextra.longClick.concat(addCaseObj);
-            d.push({
-                title: erTempData.detail1 || "",
-                desc: erTempData.detail2 || "",
-                pic_url: erTempData.img,
-                url: detailObj.url || erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
-                col_type: detailObj.col_type || 'movie_1_vertical_pic_blur',
-                extra: detailextra
-            })
+            if(!noShow.封面){
+                detailextra.longClick = detailextra.longClick.concat(addCaseObj);
+                d.push({
+                    title: erTempData.detail1 || "",
+                    desc: erTempData.detail2 || "",
+                    pic_url: erTempData.img,
+                    url: detailObj.url || erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
+                    col_type: detailObj.col_type || 'movie_1_vertical_pic_blur',
+                    extra: detailextra
+                })
+            }
 
             lineid = parseInt(getMyVar("SrcJu_"+MY_URL+"_line", lineid.toString()));
             pageid = parseInt(getMyVar("SrcJu_"+MY_URL+"_page", pageid.toString()));
@@ -615,52 +618,55 @@ function erji() {
                     列表s[lineid] = 线路选集;
                 }
             }
-            let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+            
             let 分页;
-            if(分页s){
-                if(分页s.length==线路s.length){
-                    分页 = 分页s[lineid];
-                }else{
-                    xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
-                }
-            }
-            let 自动页码; //当前线路是否自动下一页
-            if(分页){//网站分页显示列表的，需要动态解析获取
-                try{
-                    if(分页.length==1 && 分页[0].url.includes('fypage')){
-                        自动页码 = 分页[0].url;
+            if(!noShow.选集){
+                let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+                if(分页s){
+                    if(分页s.length==线路s.length){
+                        分页 = 分页s[lineid];
+                    }else{
+                        xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                     }
-                    if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
-                        eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
-                        let 分页选集 = [];
-                        
-                        if(自动页码){
-                            分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
-                        }else{
+                }
+                let 自动页码; //当前线路是否自动下一页
+                if(分页){//网站分页显示列表的，需要动态解析获取
+                    try{
+                        if(分页.length==1 && 分页[0].url.includes('fypage')){
+                            自动页码 = 分页[0].url;
+                        }
+                        if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
+                            eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
+                            let 分页选集 = [];
+                            
+                            if(自动页码){
+                                分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
+                            }else{
+                                if(pageid > 分页.length){
+                                    pageid = 0;
+                                }
+                                分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
+                            }
+                            /*
                             if(pageid > 分页.length){
                                 pageid = 0;
                             }
                             分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
+                            */
+                            if($.type(分页选集)=="array"){
+                                列表s[lineid] = 分页选集;
+                                erLoadData.list = erLoadData.line?列表s:分页选集;
+                            }
                         }
-                        /*
-                        if(pageid > 分页.length){
-                            pageid = 0;
-                        }
-                        分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
-                        */
-                        if($.type(分页选集)=="array"){
-                            列表s[lineid] = 分页选集;
-                            erLoadData.list = erLoadData.line?列表s:分页选集;
-                        }
+                    }catch(e){
+                        xlog(sname+'分页选集处理失败>'+e.message);
                     }
-                }catch(e){
-                    xlog(sname+'分页选集处理失败>'+e.message);
                 }
-            }
-            
-            if(lineid > 列表s.length-1){
-                toast('选择的线路无选集，将显示第1线路');
-                lineid = 0;
+                
+                if(lineid > 列表s.length-1){
+                    toast('选择的线路无选集，将显示第1线路');
+                    lineid = 0;
+                }
             }
 
             let 列表 = 列表s[lineid] || [];
@@ -731,8 +737,8 @@ function erji() {
                     return "toast://没找到解析方法";
                 }
             }, jkdata);
-            let noDisplay = erLoadData.noDisplay || {};//定义不显示的组件
-            if(!noDisplay.简介){
+            
+            if(!noShow.简介){
                 let erIcons = getThemeList(true)['二级图标'];
                 d.push({
                     title: "详情简介",
@@ -912,7 +918,7 @@ function erji() {
                     })
                 }
             }
-            if(!noDisplay.排序){
+            if(!noShow.排序){
                 if (line_col_type == 'scroll_button' && addmoreitems == 0) {
                     for (let i = 0; i < 10; i++) {
                         d.push({
@@ -1037,7 +1043,7 @@ function erji() {
                 })
             }
             
-            if(!noDisplay.线路){
+            if(!noShow.线路){
                 if(线路s.length>0 && 线路s[0] !="线路"){
                     let Color = getItem('主题颜色','#3399cc');
                     线路s.forEach((it,i)=>{
@@ -1060,7 +1066,7 @@ function erji() {
                     })
                 }
             }
-            if(!noDisplay.选集){
+            if(!noShow.选集){
                 //分页定义
                 let partpage = storage0.getItem('partpage') || {};
                 if(分页){//原网站有分页，不执行自定义分页

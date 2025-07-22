@@ -416,7 +416,7 @@ function SRCSet() {
                                 return {
                                     func: task,
                                     param: item,
-                                    id: item.url
+                                    id: item.id
                                 }
                             });
 
@@ -446,7 +446,7 @@ function SRCSet() {
                                                 }, data),
                                                 col_type: "text_1",
                                                 extra: {
-                                                    id: "failSource-" + data.url,
+                                                    id: "failSource-" + data.id,
                                                     cls: "failSource",
                                                     longClick: [{
                                                         title: "禁用",
@@ -460,7 +460,7 @@ function SRCSet() {
                                                                 failSource.splice(index, 1);
                                                                 storage0.putMyVar("批量检测_失败列表", failSource);
                                                             }
-                                                            deleteItem("failSource-" + data.url);
+                                                            deleteItem("failSource-" + data.id);
                                                             require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
                                                             let sm = dataHandle('jk', data, "禁用");
                                                             return "toast://" + sm;
@@ -477,7 +477,7 @@ function SRCSet() {
                                                                 failSource.splice(index, 1);
                                                                 storage0.putMyVar("批量检测_失败列表", failSource);
                                                             }
-                                                            deleteItem("failSource-" + data.url);
+                                                            deleteItem("failSource-" + data.id);
                                                             require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
                                                             deleteData('jk', data);
                                                             return "toast://已删除";
@@ -494,7 +494,7 @@ function SRCSet() {
                                                                 failSource.splice(index, 1);
                                                                 storage0.putMyVar("批量检测_失败列表", failSource);
                                                             }
-                                                            deleteItem("failSource-" + data.url);
+                                                            deleteItem("failSource-" + data.id);
                                                             return "toast://已保留，不处理";
                                                         }, data)
                                                     }]
@@ -502,7 +502,7 @@ function SRCSet() {
                                             });
                                         }else{
                                             success++;
-                                            let index = checkSourceList.indexOf(checkSourceList.filter(d => taskResult.data.url==d.url )[0]);
+                                            let index = checkSourceList.indexOf(checkSourceList.filter(d => taskResult.data.id==d.id )[0]);
                                             checkSourceList[index] = taskResult.data;
                                         }
                                         
@@ -540,9 +540,9 @@ function SRCSet() {
                                                 let failSourceList = storage0.getMyVar("批量检测_失败列表") || [];
                                                 let checkSourceList = storage0.getMyVar("批量检测_待检列表") || [];
                                                 failSourceList.forEach(it=>{
-                                                    let index = checkSourceList.indexOf(checkSourceList.filter(d => it.url==d.url )[0]);
+                                                    let index = checkSourceList.indexOf(checkSourceList.filter(d => it.id==d.id )[0]);
                                                     checkSourceList.splice(index, 1);
-                                                    deleteItem("failSource-" + it.url);
+                                                    deleteItem("failSource-" + it.id);
                                                 })
                                                 storage0.putMyVar("批量检测_待检列表",checkSourceList);
 
@@ -572,12 +572,12 @@ function SRCSet() {
                                         let recheckList = storage0.getMyVar("批量检测_复检列表") || [];
                                         let failSourceList = storage0.getMyVar("批量检测_失败列表") || [];
                                         failSourceList.forEach(it=>{
-                                            if(recheckList.indexOf(it.url)==-1){
-                                                recheckList.push(it.url);
+                                            if(recheckList.indexOf(it.id)==-1){
+                                                recheckList.push(it.id);
                                             }
                                         })
                                         let checkSourceList = storage0.getMyVar("批量检测_待检列表") || [];
-                                        checkSourceList = checkSourceList.filter(v=>recheckList.indexOf(v.url)>-1);
+                                        checkSourceList = checkSourceList.filter(v=>recheckList.indexOf(v.id)>-1);
                                         if(checkSourceList.length==0){
                                             deleteItem("recheckSource");
                                             return "toast://没有需复检的源";
@@ -613,8 +613,8 @@ function SRCSet() {
                                             let recheckList = storage0.getMyVar("批量检测_复检列表") || [];
                                             let failSourceList = storage0.getMyVar("批量检测_失败列表") || [];
                                             failSourceList.forEach(it=>{
-                                                if(recheckList.indexOf(it.url)==-1){
-                                                    recheckList.push(it.url);
+                                                if(recheckList.indexOf(it.id)==-1){
+                                                    recheckList.push(it.id);
                                                 }
                                             })
                                             storage0.putMyVar("批量检测_复检列表", recheckList);
@@ -643,18 +643,19 @@ function SRCSet() {
                     let schedule = getMyVar("批量检测_当前进度","1");
                     d.push({
                         title: (schedule=="1"?"👉":"👌") + '一级列表',
-                        col_type: 'text_3',
+                        col_type: 'text_2',
                         url: "hiker://empty"
                     });
                     d.push({
                         title: (schedule=="1"?"":schedule=="2"?"👉":"👌") + '搜索测试',
-                        col_type: 'text_3',
+                        col_type: 'text_2',
                         url: $().lazyRule(()=>{
                             putMyVar("批量检测_当前进度","2");
                             refreshPage();
                             return "toast://跳过一级检测";
                         })
                     });
+                    /*
                     d.push({
                         title: (schedule=="1"||schedule=="2"?"":schedule=="3"?"👉":"👌") + '二级选集',
                         col_type: 'text_3',
@@ -663,6 +664,7 @@ function SRCSet() {
                             id: "schedule_er"
                         }
                     });
+                    */
                     d.push({
                         col_type: "line_blank"
                     });

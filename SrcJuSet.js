@@ -309,7 +309,7 @@ function SRCSet() {
             }),
             col_type: 'scroll_button'
         })
-        /*
+        
         d.push({
             title: "批量检测",
             url: $('#noLoading#').lazyRule(() => {
@@ -363,17 +363,8 @@ function SRCSet() {
                                 let error = 0;
                                 if(schedule=="1"){
                                     if(data.ilk != "2"){
-                                        let setResult = function(d) { resultd = d; };
-                                        getYiData('主页', data);
-                                        if(setResult.length>0){
-                                            if(yidata.vodlists && yidata.vodlists.length>1){
-                                                data.erurl = yidata.vodlists[0].vod_url;
-                                                data.ername = yidata.vodlists[0].vod_name;
-                                                desc += "一级列表检测正常";
-                                            }else{
-                                                error = 1;
-                                                desc += "一级列表检测失败";
-                                            }
+                                        if(getYiData('testSource', data)){
+                                            desc += "一级列表检测正常";
                                         }else{
                                             error = 1;
                                             desc += "一级列表检测失败";
@@ -381,7 +372,9 @@ function SRCSet() {
                                     }else{
                                         desc += "仅搜索源，跳过一级列表检测";
                                     }
-                                }else if(schedule=="2"){
+                                }
+                                /*
+                                else if(schedule=="2"){
                                     if(data.searchable!='0'){
                                         let ssdata = getSsData("我的", data, 1);
                                         if(ssdata.error){
@@ -409,6 +402,7 @@ function SRCSet() {
                                         desc += "\n未获取到二级链接，跳过二级选集检测";
                                     }
                                 }
+                                */
                                 data.message = desc;
 
                                 return {error:error, data:data}
@@ -702,7 +696,7 @@ function SRCSet() {
                 }]
             }
         })
-        */
+        
     }
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;

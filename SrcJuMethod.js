@@ -178,6 +178,9 @@ function createClass(d, obj) {
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
+    let istest = datatype=='testSource'?1:0;
+    datatype = 'testSource'?'主页':datatype;
+
     addListener('onRefresh', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading');
     },datatype));
@@ -344,6 +347,9 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: "text_center_1",
                     })
                 } else if (getData.length > 0) {
+                    if(istest){
+                        return 1;//测试，返回成功
+                    }
                     jkdata['erjisign'] = parse['二级标识'];
                     getData.forEach(item => {
                         item = toerji(item, jkdata);
@@ -370,6 +376,9 @@ function getYiData(datatype, jkdata, dd) {
     } catch (e) {
         toast(datatype + "执行获取代码报错，请查看日志");
         xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+    }
+    if(istest){
+        return 0;//测试，返回失败
     }
     setResult(d);
     if(datatype=="主页"){

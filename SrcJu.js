@@ -519,7 +519,7 @@ function erji() {
                         let nowtime = Date.now();
                         let oldtime = cacheJson.updatetime||0;
                         if(cacheJson.sid==sid && cacheJson.url==MY_URL && nowtime < (oldtime + 1 * 60 * 60 * 1000)){
-                            erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和样式时加快，缓存1小时
+                            erdataCache = cacheJson;//本地缓存接口+链接对得上则取本地，用于切换排序和线路时加快，缓存1小时
                         }
                     }catch(e){
                         //xlog('读取二级缓存失败>' + e.message);

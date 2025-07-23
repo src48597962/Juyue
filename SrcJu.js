@@ -815,7 +815,7 @@ function erji() {
                                 },itype)
                             }].concat(addCaseObj),
                             chapterList: function(){
-                                let list = storage0.getMyVar('聚阅二级列表') || [];
+                                let list = storage0.getVar('聚阅二级列表') || [];
                                 log(list.length);
                                 return list;
                             },//列表,
@@ -1265,7 +1265,7 @@ function erji() {
                         }
                     });
                 }
-                storage0.putMyVar('聚阅二级列表', 列表);
+                storage0.putVar('聚阅二级列表', 列表);
                 log(列表.length);
             }
             if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){

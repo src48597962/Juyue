@@ -814,11 +814,7 @@ function erji() {
                                     }
                                 },itype)
                             }].concat(addCaseObj),
-                            chapterList: function(){
-                                let list = storage0.getVar('聚阅二级列表') || [];
-                                log(list.length);
-                                return list;
-                            },//列表,
+                            chapterList: storage0.getVar('聚阅二级列表') || [],//列表,
                             "defaultView": "1",
                             "info": {
                                 "bookName": name,

@@ -619,6 +619,7 @@ function erji() {
                 }
             }
             
+            let 列表 = [];
             let 分页;
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
@@ -667,47 +668,46 @@ function erji() {
                     toast('选择的线路无选集，将显示第1线路');
                     lineid = 0;
                 }
-            }
 
-            let 列表 = 列表s[lineid] || [];
+                列表 = 列表s[lineid] || [];
+                //线路名除评论的线路选集修正排序
+                if(列表.length>0 && 线路s[lineid]!='评论'){
+                    function checkAndReverseArray(arr) {
+                        try{
+                            const numbers = [];
+                            arr.slice(0, 50).forEach(it=>{
+                                const digits = it.title.match(/\d+/);
+                                if (digits) {
+                                    numbers.push(parseInt(digits[0]));
+                                }
+                            })
 
-            //线路名除评论的线路选集修正排序
-            if(列表.length>0 && 线路s[lineid]!='评论'){
-                function checkAndReverseArray(arr) {
-                    try{
-                        const numbers = [];
-                        arr.slice(0, 50).forEach(it=>{
-                            const digits = it.title.match(/\d+/);
-                            if (digits) {
-                                numbers.push(parseInt(digits[0]));
+                            if (numbers.length < 3) {
+                                return arr;
                             }
-                        })
-
-                        if (numbers.length < 3) {
-                            return arr;
-                        }
-                        let increasingCount = 0;
-                        let decreasingCount = 0;
-                        for (let i = 1; i < numbers.length; i++) {
-                            if (numbers[i] > numbers[i - 1]) {
-                                increasingCount++;
-                            } else if (numbers[i] < numbers[i - 1]) {
-                                decreasingCount++;
+                            let increasingCount = 0;
+                            let decreasingCount = 0;
+                            for (let i = 1; i < numbers.length; i++) {
+                                if (numbers[i] > numbers[i - 1]) {
+                                    increasingCount++;
+                                } else if (numbers[i] < numbers[i - 1]) {
+                                    decreasingCount++;
+                                }
                             }
+                            if (increasingCount > decreasingCount) {
+                                return arr;
+                            } else {
+                                return arr.reverse();
+                            }
+                        }catch(e){
+                            //xlog('强制修正选集顺序失败>'+e.message)
                         }
-                        if (increasingCount > decreasingCount) {
-                            return arr;
-                        } else {
-                            return arr.reverse();
-                        }
-                    }catch(e){
-                        //xlog('强制修正选集顺序失败>'+e.message)
                     }
-                }
-                
-                列表 = checkAndReverseArray(列表);
-                if (getMyVar(sname + 'sort') == '1') {
-                    列表.reverse();
+                    
+                    列表 = checkAndReverseArray(列表);
+                    if (getMyVar(sname + 'sort') == '1') {
+                        列表.reverse();
+                    }
                 }
             }
             
@@ -814,7 +814,7 @@ function erji() {
                                     }
                                 },itype)
                             }].concat(addCaseObj),
-                            chapterList: storage0.getVar('聚阅二级列表') || [],//列表,
+                            chapterList: 列表,
                             "defaultView": "1",
                             "info": {
                                 "bookName": name,
@@ -1261,8 +1261,6 @@ function erji() {
                         }
                     });
                 }
-                storage0.putVar('聚阅二级列表', 列表);
-                log(列表.length);
             }
             if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
                 let extenditems = erLoadData.extenditems;

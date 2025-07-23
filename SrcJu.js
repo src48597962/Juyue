@@ -566,18 +566,22 @@ function erji() {
             detailextra.longClick = detailextra.longClick || [];
             let addCaseObj = [{
                 title: "加入收藏书架🗄",
-                js: $.toString((erCacheFile) => {
+                js: $.toString((erCacheFile, erUrl) => {
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
                             eval("let cacheJson=" + cacheData + ";");
-                            return addBookCase(cacheJson.caseData);
+                            if(cacheJson.url==erUrl){
+                                return addBookCase(cacheJson.caseData);
+                            }else{
+                                return 'toast://未获取到数据';
+                            }
                         }catch(e){
                             xlog('加入收藏处理异常>' + e.message);
                         }
                     }
                     return 'toast://失败，未找到数据';
-                }, erCacheFile)
+                }, erCacheFile, MY_URL)
             }];
             if(!noShow.封面){
                 detailextra.longClick = detailextra.longClick.concat(addCaseObj);

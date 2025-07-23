@@ -531,6 +531,14 @@ function erji() {
             MY_PARAMS = erjiextra;
             if(erdataCache){
                 erLoadData = erdataCache;
+                xlog('使用二级缓存数据');
+                try {
+                    if (parse['预处理']) {
+                        parse['预处理'].call(parse);
+                    }
+                } catch (e) {
+                    xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                }
             }else{
                 storage0.putMyVar('二级源接口信息', jkdata);
                 xlog('开始获取二级数据');

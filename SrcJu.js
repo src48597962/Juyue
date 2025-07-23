@@ -1300,24 +1300,21 @@ function erji() {
     });
     setResult(d);
 
-    if (isload) {
+    if (isload || noShow.选集) {
         //更换收藏封面
         if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
             setPagePicUrl(erTempData.img);
         }
-        //二级详情简介临时信息
+        //二级海报等详情临时保存
         storage0.putMyVar('二级详情临时对象',erTempData);
-        //二级源浏览记录保存
-        let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
-        setMark(erjiMarkdata);
-        //当前二级数据保存到缓存文件，避免二级重复请深圳市
+        //当前二级数据保存到缓存文件，避免二级重复请求
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
             let savec;
             if(erLoadData.lineid != lineid || erLoadData.pageid != pageid){
-                erLoadData.lineid = lineid;
-                erLoadData.pageid = pageid;
+                //erLoadData.lineid = lineid;
+                //erLoadData.pageid = pageid;
                 savec = 1;
             }
             
@@ -1342,33 +1339,39 @@ function erji() {
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存
             }
         }
-        //收藏更新最新章节
-        if (parse['最新']) {
-            setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
-                MY_URL = url;
-                let parse = getObjCode(jkdata, 'zx');
-                if (parse['预处理']) {
-                    parse['预处理'].call(parse);
-                }
-                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
-                eval("let 最新2 = " + 最新str);
-                try{
-                    let zx = 最新2.call(parse, url) || "";
-                    setResult(jkdata.name + " | " + (zx||""));
-                }catch(e){
-                    setResult(jkdata.name + " | 最新获取失败");
-                }
-            }, MY_URL, jkdata, {}))
-        }else if(parse['二级']){
-            setLastChapterRule('js:' + $.toString((sname) => {
-                setResult(sname + " | 作者没写最新");
-            }, sname))
-        }
         //切换源时更新收藏数据，以及分享时附带接口
         if (typeof (setPageParams) != "undefined") {
             if ((MY_URL && oldMY_PARAMS.url!=MY_URL) || !oldMY_PARAMS.data.extstr) {
                 erjiextra.data.extstr = objconvertjs(parse);
                 setPageParams(erjiextra);
+            }
+        }
+        
+        if (isload) {//有选集的才保存或更新最新
+            //二级源浏览记录保存
+            let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
+            setMark(erjiMarkdata);
+            //收藏更新最新章节
+            if (parse['最新']) {
+                setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
+                    MY_URL = url;
+                    let parse = getObjCode(jkdata, 'zx');
+                    if (parse['预处理']) {
+                        parse['预处理'].call(parse);
+                    }
+                    let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
+                    eval("let 最新2 = " + 最新str);
+                    try{
+                        let zx = 最新2.call(parse, url) || "";
+                        setResult(jkdata.name + " | " + (zx||""));
+                    }catch(e){
+                        setResult(jkdata.name + " | 最新获取失败");
+                    }
+                }, MY_URL, jkdata, {}))
+            }else if(parse['二级']){
+                setLastChapterRule('js:' + $.toString((sname) => {
+                    setResult(sname + " | 作者没写最新");
+                }, sname))
             }
         }
     }

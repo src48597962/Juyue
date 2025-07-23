@@ -309,7 +309,7 @@ function SRCSet() {
             }),
             col_type: 'scroll_button'
         })
-        /*
+
         d.push({
             title: "批量检测",
             url: $('#noLoading#').lazyRule(() => {
@@ -403,7 +403,7 @@ function SRCSet() {
                                     }
                                 }
                                 */
-                                /*
+                                
                                 data.message = desc;
 
                                 return {error:error, data:data}
@@ -462,8 +462,8 @@ function SRCSet() {
                                                                 storage0.putMyVar("批量检测_失败列表", failSource);
                                                             }
                                                             deleteItem("failSource-" + data.id);
-                                                            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
-                                                            let sm = dataHandle('jk', data, "禁用");
+                                                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                                            let sm = dataHandle(data, "禁用");
                                                             return "toast://" + sm;
                                                         }, data)
                                                     },{
@@ -479,8 +479,8 @@ function SRCSet() {
                                                                 storage0.putMyVar("批量检测_失败列表", failSource);
                                                             }
                                                             deleteItem("failSource-" + data.id);
-                                                            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
-                                                            deleteData('jk', data);
+                                                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                                            deleteData(data);
                                                             return "toast://已删除";
                                                         }, data)
                                                     },{
@@ -547,7 +547,7 @@ function SRCSet() {
                                                 })
                                                 storage0.putMyVar("批量检测_待检列表",checkSourceList);
 
-                                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
+                                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                                                 deleteData("jk", failSourceList);
                                                 clearMyVar("批量检测_失败列表");
                                                 deleteItem("deleteAllFail");
@@ -665,7 +665,7 @@ function SRCSet() {
                             id: "schedule_er"
                         }
                     });
-                    *//*
+                    */
                     d.push({
                         col_type: "line_blank"
                     });
@@ -699,7 +699,7 @@ function SRCSet() {
                 }]
             }
         })
-        */
+        
     }
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;

@@ -507,6 +507,7 @@ function erji() {
     let erLoadData = {};
     let isload;//是否正确加载
     let erdataCache;//是否加载缓存页面数据
+    let noShow;//定义二级哪些项不显示
     let pic;
     
     try {
@@ -551,7 +552,7 @@ function erji() {
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
-            let noShow = erLoadData.noShow || {};//定义不显示的组件
+            noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
             pic = pic&&pic.indexOf("@Referer=") == -1 ? pic + "@Referer=" : pic;

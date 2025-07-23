@@ -814,7 +814,9 @@ function erji() {
                                     }
                                 },itype)
                             }].concat(addCaseObj),
-                            chapterList: 列表,
+                            chapterList: function(){
+                                return storage0.getMyVar('聚阅二级列表') || [];
+                            },//列表,
                             "defaultView": "1",
                             "info": {
                                 "bookName": name,
@@ -1261,6 +1263,7 @@ function erji() {
                         }
                     });
                 }
+                storage0.putMyVar('聚阅二级列表', 列表);
             }
             if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
                 let extenditems = erLoadData.extenditems;

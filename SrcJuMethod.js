@@ -179,7 +179,7 @@ function createClass(d, obj) {
 // 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
     let istest = datatype=='testSource'?1:0;
-    datatype = 'testSource'?'主页':datatype;
+    datatype = istest?'主页':datatype;
 
     addListener('onRefresh', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading');

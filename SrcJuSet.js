@@ -309,7 +309,7 @@ function SRCSet() {
             }),
             col_type: 'scroll_button'
         })
-
+/*
         d.push({
             title: "批量检测",
             url: $('#noLoading#').lazyRule(() => {
@@ -370,25 +370,24 @@ function SRCSet() {
                                             desc += "一级列表检测失败";
                                         }
                                     }else{
-                                        desc += "仅搜索源，跳过一级列表检测";
+                                        desc += "搜索源，跳过一级列表检测";
                                     }
-                                }
-                                /*
-                                else if(schedule=="2"){
+                                }else if(schedule=="2"){
                                     if(data.searchable!='0'){
                                         let ssdata = getSsData("我的", data, 1);
                                         if(ssdata.error){
                                             desc += "\n搜索 ‘我的’ 检测出错";
                                             error = 1;
                                         }else if(ssdata.vodlists.length>0 && !data.erurl){
-                                            data.erurl = ssdata.vodlists[0].vod_url;
-                                            data.ername = ssdata.vodlists[0].vod_name;
+                                            data.erurl = ssdata.vodlists[0].url;
+                                            data.ername = ssdata.vodlists[0].title;
                                             desc += "\n搜索 ‘我的’ 结果获取到>" + ssdata.vodlists.length;
                                         }
                                     }else{
                                         desc += "不支持搜索源，跳过搜索检测";
                                     }
-                                }else if(schedule=="3"){
+                                }
+                                /*else if(schedule=="3"){
                                     if(data.erurl){
                                         let erdata = getErData(data, data.erurl);
                                         let lists = erdata.lists || [];
@@ -403,7 +402,7 @@ function SRCSet() {
                                     }
                                 }
                                 */
-                                
+                                /*
                                 data.message = desc;
 
                                 return {error:error, data:data}
@@ -665,7 +664,7 @@ function SRCSet() {
                             id: "schedule_er"
                         }
                     });
-                    */
+                    *//*
                     d.push({
                         col_type: "line_blank"
                     });
@@ -699,7 +698,7 @@ function SRCSet() {
                 }]
             }
         })
-        
+        */
     }
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;

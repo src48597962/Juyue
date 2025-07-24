@@ -89,7 +89,7 @@ function yiji(testSource) {
             })
         }
         let homeIcons = getThemeList(true)['主页图标'];
-        let icon_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';
+        let icon5_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';
         d.push({
             title: jkdata.name || "切源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
@@ -97,7 +97,7 @@ function yiji(testSource) {
                 return selectSource();
             }),
             pic_url: getIcon(homeIcons[0].img, false, homeIcons[0].color),
-            col_type: icon_col,
+            col_type: icon5_col,
             extra: {
                 longClick: longClick
             }
@@ -123,7 +123,7 @@ function yiji(testSource) {
                 }
             }),
             pic_url: getIcon(homeIcons[1].img, false, homeIcons[1].color),
-            col_type: icon_col,
+            col_type: icon5_col,
             extra: {
                 id: "sourcemenu"
             }
@@ -167,7 +167,7 @@ function yiji(testSource) {
                 }
             }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
-            col_type: icon_col,
+            col_type: icon5_col,
             extra: {
                 longClick: [{
                     title: '新搜索页',
@@ -184,7 +184,7 @@ function yiji(testSource) {
                 bookCase();
             }),
             pic_url: getIcon(homeIcons[3].img, false, homeIcons[3].color),
-            col_type: icon_col
+            col_type: icon5_col
         })
         d.push({
             title: "管理",
@@ -219,7 +219,7 @@ function yiji(testSource) {
                 }
             }),
             pic_url: getIcon(homeIcons[4].img, false, homeIcons[4].color),
-            col_type: icon_col
+            col_type: icon5_col
         })
         
         if(getItem('显示快速分组')=="1" && !testSource){

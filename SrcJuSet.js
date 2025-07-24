@@ -2268,9 +2268,9 @@ function themeIconSet() {
         }, {
             'type': '接口',
             'name': ['增加', '操作', '导入', '分享']
-        }
-        ]
+        }]
 
+        let icon5_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';
         datas.forEach((data) => {
             let type_name = data.type;
             d.push({
@@ -2291,7 +2291,7 @@ function themeIconSet() {
                 d.push({
                     title: icon_name,
                     img: icon_img,
-                    col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_small_3' : 'icon_5',
+                    col_type: type_name == '接口' ? 'icon_small_4' : type_name == '二级' ? 'icon_small_3' : type_name == '书架' ? 'icon_small_3' : icon5_col,
                     url: themename=='原生主题'?'hiker://empty':$('#noLoading#').lazyRule((type_name, icon_name, i, 编辑d) => {
                         //还原上一个图标名称
                         updateItem(getMyVar('编辑类别') + '图标id' + getMyVar('按钮索引'), {

@@ -347,13 +347,16 @@ function getYiData(datatype, jkdata, dd) {
                         col_type: "text_center_1",
                     })
                 } else if (getData.length > 0) {
-                    if(istest){
-                        return 1;//测试，返回成功
-                    }
                     jkdata['erjisign'] = parse['二级标识'];
                     getData.forEach(item => {
                         item = toerji(item, jkdata);
                     })
+                    if(istest){
+                        return {
+                            error: 0,
+                            vodlists: getData
+                        };//测试，返回成功
+                    }
                 }
                 d = d.concat(getData);
             } catch (e) {
@@ -378,7 +381,7 @@ function getYiData(datatype, jkdata, dd) {
         xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
     }
     if(istest){
-        return 0;//测试，返回失败
+        return {error: 1};//测试，返回失败
     }
     setResult(d);
     if(datatype=="主页"){

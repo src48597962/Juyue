@@ -419,7 +419,7 @@ function yiji(testSource) {
         if(!jkdata.name){
             d.push({
                 title: homeGroup + " 主页源不存在\n需先选择配置主页源",
-                desc: "点此或上面按钮皆可选择",
+                desc: "点此或上面切源按钮皆可",
                 url: $('#noLoading#').lazyRule((input) => {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     return selectSource(input);

@@ -309,7 +309,7 @@ function SRCSet() {
             }),
             col_type: 'scroll_button'
         })
-/*
+
         d.push({
             title: "批量检测",
             url: $('#noLoading#').lazyRule(() => {
@@ -386,8 +386,7 @@ function SRCSet() {
                                     }else{
                                         desc += "不支持搜索源，跳过搜索检测";
                                     }
-                                }
-                                /*else if(schedule=="3"){
+                                }else if(schedule=="3"){
                                     if(data.erurl){
                                         let erdata = getErData(data, data.erurl);
                                         let lists = erdata.lists || [];
@@ -401,8 +400,7 @@ function SRCSet() {
                                         desc += "\n未获取到二级链接，跳过二级选集检测";
                                     }
                                 }
-                                */
-                                /*
+                                
                                 data.message = desc;
 
                                 return {error:error, data:data}
@@ -643,19 +641,18 @@ function SRCSet() {
                     let schedule = getMyVar("批量检测_当前进度","1");
                     d.push({
                         title: (schedule=="1"?"👉":"👌") + '一级列表',
-                        col_type: 'text_2',
+                        col_type: 'text_3',
                         url: "hiker://empty"
                     });
                     d.push({
                         title: (schedule=="1"?"":schedule=="2"?"👉":"👌") + '搜索测试',
-                        col_type: 'text_2',
+                        col_type: 'text_3',
                         url: $().lazyRule(()=>{
                             putMyVar("批量检测_当前进度","2");
                             refreshPage();
                             return "toast://跳过一级检测";
                         })
                     });
-                    /*
                     d.push({
                         title: (schedule=="1"||schedule=="2"?"":schedule=="3"?"👉":"👌") + '二级选集',
                         col_type: 'text_3',
@@ -664,7 +661,6 @@ function SRCSet() {
                             id: "schedule_er"
                         }
                     });
-                    *//*
                     d.push({
                         col_type: "line_blank"
                     });
@@ -698,7 +694,6 @@ function SRCSet() {
                 }]
             }
         })
-        */
     }
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;
@@ -1390,7 +1385,7 @@ function importConfirm(jsfile) {
         //云口令导入
         let input = fetch(importfile);
         if(input.includes('云口令：')){
-            input = input.split('云口令：')[1].split('@import=js:')[0];
+            input = input.split('云口令：')[1].split('@import=')[0];
         }
         try{
             code = aesDecode('Juyue', input.split('￥')[1]);
@@ -1460,7 +1455,7 @@ function importConfirm(jsfile) {
                     sm = "接口";
                     lx = "jk";
                 }else{
-                    toast("聚阅：无法识别的口令");
+                    toast("聚阅：无法识别的口令>" + name);
                 }
                 importdatas = storage0.getMyVar('importConfirm', []);
                 if(importdatas.length==0){

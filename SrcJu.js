@@ -634,7 +634,8 @@ function erji() {
             }
             
             let 列表 = [];
-            let 分页;
+            let 自动页码; //当前线路是否自动下一页
+            let 分页; //网站分页显示列表的
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
@@ -644,7 +645,7 @@ function erji() {
                         xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                     }
                 }
-                let 自动页码; //当前线路是否自动下一页
+                
                 if(分页){//网站分页显示列表的，需要动态解析获取
                     try{
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
@@ -1098,9 +1099,7 @@ function erji() {
                                 return 'hiker://empty'
                             }, "SrcJu_"+MY_URL+"_page", pageid, i)
                         )
-                        xlog(it.title);
                         分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+it.title:it.title);
-                        xlog('123');
                     })
                     if(分页名.length>0){
                         d.push({

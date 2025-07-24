@@ -312,7 +312,7 @@ function SRCSet() {
 
         d.push({
             title: "批量检测",
-            url: !config.聚阅.includes('1300')?"toast://暂未上线":$('#noLoading#').lazyRule(() => {
+            url: !config.聚阅.includes('000')?"toast://暂未上线":$('#noLoading#').lazyRule(() => {
                 let nowtime = Date.now();
                 let checkSourcetime = getItem('checkSourcetime','0');
                 let oldtime = parseInt(checkSourcetime.split('|')[0]);

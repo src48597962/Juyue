@@ -165,7 +165,10 @@ function yiji(testSource) {
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
                 }
-            }) : 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅',
+            }) : $("#noLoading#").lazyRule(() => {
+                toast('三针科兴短剧，越看越有趣\n顺佬出品，必属精品');
+                return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
+            }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {
@@ -180,15 +183,10 @@ function yiji(testSource) {
                     js: $.toString(()=>{
                         if(getItem('切换搜索按钮')=='短剧'){
                             clearItem('切换搜索按钮');
-                            updateItem('ssbtnid', {
-                                title: '搜索'
-                            })
                         }else{
                             setItem('切换搜索按钮', '短剧');
-                            updateItem('ssbtnid', {
-                                title: '短剧'
-                            })
                         }
+                        refreshPage();
                         return `toast://已切换为` + getItem('切换搜索按钮','搜索');
                     })
                 }]

@@ -169,18 +169,25 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {
+                id: 'ssbtnid',
                 longClick: [{
                     title: '新搜索页',
                     js: $.toString(()=>{
                         return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
                     })
                 },{
-                    title: '切换为'+getItem('切换搜索按钮','搜索'),
+                    title: '切换为'+(getItem('切换搜索按钮','搜索')==='搜索'?'短剧':'搜索'),
                     js: $.toString(()=>{
                         if(getItem('切换搜索按钮')=='短剧'){
                             clearItem('切换搜索按钮');
+                            updateItem('ssbtnid', {
+                                title: '搜索'
+                            })
                         }else{
                             setItem('切换搜索按钮', '短剧');
+                            updateItem('ssbtnid', {
+                                title: '短剧'
+                            })
                         }
                         return `toast://已切换为` + getItem('切换搜索按钮','搜索');
                     })

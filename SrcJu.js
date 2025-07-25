@@ -654,7 +654,6 @@ function erji() {
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
-                    xlog(分页s);
                     if(分页s.length==线路s.length){
                         分页 = 分页s[lineid];
                     }else{
@@ -667,6 +666,7 @@ function erji() {
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
                             自动页码 = 分页[0].url;
                         }
+                        xlog(自动页码);
                         if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];

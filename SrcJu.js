@@ -660,14 +660,14 @@ function erji() {
                         xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                     }
                 }
-                xlog(分页);
+
                 if(分页){//网站分页显示列表的，需要动态解析获取
                     try{
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
                             自动页码 = 分页[0].url;
                         }
-                        xlog(自动页码);
-                        if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && !列表s[lineid])){
+
+                        if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && (!列表s[lineid]||pageid>0))){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
                             
@@ -677,7 +677,7 @@ function erji() {
                                 if(pageid > 分页.length){
                                     pageid = 0;
                                 }
-                                xlog('来了' + pageid);
+
                                 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                             }
                             /*

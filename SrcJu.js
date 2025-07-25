@@ -140,8 +140,8 @@ function yiji(testSource) {
         searchModeS.push('显示搜索数');
 
         d.push({
-            title: "搜索",
-            url: $(searchModeS, 2, '主页搜索框设定').select(()=>{
+            title: getItem('切换搜索按钮','搜索'),
+            url: getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -165,7 +165,7 @@ function yiji(testSource) {
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
                 }
-            }),
+            }) : 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅',
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {
@@ -173,6 +173,16 @@ function yiji(testSource) {
                     title: '新搜索页',
                     js: $.toString(()=>{
                         return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                    })
+                },{
+                    title: '切换为'+getItem('切换搜索按钮','搜索'),
+                    js: $.toString(()=>{
+                        if(getItem('切换搜索按钮')=='短剧'){
+                            clearItem('切换搜索按钮');
+                        }else{
+                            setItem('切换搜索按钮', '短剧');
+                        }
+                        return `toast://已切换为` + getItem('切换搜索按钮','搜索');
                     })
                 }]
             }

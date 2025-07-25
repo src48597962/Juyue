@@ -676,6 +676,7 @@ function erji() {
                                 if(pageid > 分页.length){
                                     pageid = 0;
                                 }
+                                xlog('来了' + pageid);
                                 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                             }
                             /*

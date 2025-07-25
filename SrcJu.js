@@ -654,13 +654,14 @@ function erji() {
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
+                    xlog(分页s);
                     if(分页s.length==线路s.length){
                         分页 = 分页s[lineid];
                     }else{
                         xlog(sname+'>线路数'+线路s.length+'和分页数'+分页s.length+'不相等');
                     }
                 }
-                
+                xlog(分页);
                 if(分页){//网站分页显示列表的，需要动态解析获取
                     try{
                         if(分页.length==1 && 分页[0].url.includes('fypage')){

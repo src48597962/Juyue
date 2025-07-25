@@ -166,7 +166,7 @@ function yiji(testSource) {
                     return "toast://搜索方式设置为："+input;
                 }
             }) : $("#noLoading#").lazyRule(() => {
-                toast('三针科兴短剧，越看越有趣\n   顺佬出品，必属精品');
+                toast('三针科兴短剧，越看越有趣\n     顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
             }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),

@@ -153,10 +153,17 @@ function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
     let noShowType = getItem('noShowType','')=='1'?1:0;
     datas = datas.filter(it=>{
+        /*
         if(noShowType&&!it.group){
             it.group = '未分组';
         }
         return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
+        */
+        if(noShowType){
+            return !k || (k==it.type&&!it.group) || (it.group||"").split(',').indexOf(k)>-1;
+        }else{
+            return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
+        }
     })
 
     return datas;
@@ -177,7 +184,10 @@ function getJkGroups(datas, isgroup) {
                 }
             })
         }else if(getItem('noShowType','')=='1'){
-            nogroup = 1;
+            //nogroup = 1;
+            if (groupNames.indexOf(it.type)==-1){
+                groupNames.push(it.type);
+            }
         }
     })
     groupNames.sort((a, b) =>

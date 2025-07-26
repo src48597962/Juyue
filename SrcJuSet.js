@@ -1192,7 +1192,6 @@ function jiekousave(urls, mode) {
                     if(datalist[i].id==it.id || datalist[i].id==it.oldid){
                         if(mode==1 && datalist[i].group){
                             it.group = datalist[i].group;
-                            xlog(it.group);
                         }
                         datalist.splice(i,1);
                         break;

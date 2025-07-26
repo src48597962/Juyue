@@ -151,7 +151,11 @@ function getDatas(lx, isyx) {
 // 获取分组接口列表
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
+    let noShowType = getItem('noShowType','')=='1'?1:0;
     datas = datas.filter(it=>{
+        if(noShowType&&!it.group){
+            it.group = '未分组';
+        }
         return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
     })
 
@@ -161,6 +165,7 @@ function getGroupLists(datas, k) {
 function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
+    let nogroup;
     datas.forEach(it => {
         if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
             typeNames.push(it.type);
@@ -171,8 +176,8 @@ function getJkGroups(datas, isgroup) {
                     groupNames.push(group);
                 }
             })
-        }else if(getItem('noShowType','')=='1' && groupNames.indexOf('未分组')==-1){
-            groupNames.push('未分组');
+        }else if(getItem('noShowType','')=='1'){
+            nogroup = 1;
         }
     })
     groupNames.sort((a, b) =>
@@ -183,6 +188,9 @@ function getJkGroups(datas, isgroup) {
     );
     if(isgroup){
         return groupNames;
+    }
+    if(nogroup){
+        groupNames.push('未分组');
     }
     let yxTypes = [];
     runTypes.forEach(it=>{

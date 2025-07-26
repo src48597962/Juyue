@@ -162,14 +162,18 @@ function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
     datas.forEach(it => {
-        if (typeNames.indexOf(it.type)==-1 && (getItem('noShowType')!='1' || !it.group)){
+        if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
             typeNames.push(it.type);
         }
-        (it.group || "").split(',').forEach(group=>{
-            if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
-                groupNames.push(group);
-            }
-        })
+        if(it.group){
+            (it.group || "").split(',').forEach(group=>{
+                if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
+                    groupNames.push(group);
+                }
+            })
+        }else if(getItem('noShowType','')=='1' && groupNames.indexOf('未分组')==-1){
+            groupNames.push('未分组');
+        }
     })
     groupNames.sort((a, b) =>
         a.localeCompare(b, 'zh-CN', {

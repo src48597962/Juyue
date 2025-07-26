@@ -162,7 +162,7 @@ function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
     datas.forEach(it => {
-        if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
+        if (typeNames.indexOf(it.type)==-1 && (getItem('noShowType')!='1' || !it.group)){
             typeNames.push(it.type);
         }
         (it.group || "").split(',').forEach(group=>{

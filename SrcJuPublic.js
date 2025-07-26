@@ -565,8 +565,10 @@ function selectSource(selectGroup) {
                         items.reverse();
                         manage.change(items);
                         let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
-                        manage.setSelectedIndex(index);
-                        manage.scrollToPosition(index, true);
+                        if(index>-1){
+                            manage.setSelectedIndex(index);
+                            manage.scrollToPosition(index, true);
+                        }
                     } else if (i === 3) {
                         if(getItem('noShowType')=='1'){
                             clearItem('noShowType');

@@ -162,7 +162,7 @@ function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
     datas.forEach(it => {
-        if (typeNames.indexOf(it.type)==-1){
+        if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
             typeNames.push(it.type);
         }
         (it.group || "").split(',').forEach(group=>{
@@ -550,7 +550,7 @@ function selectSource(selectGroup) {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称' ? "更新时间" : "接口名称"), "列表倒序"],
+                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", getItem('noShowType')=='1'?"显示分类":"不显示分类"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -567,6 +567,12 @@ function selectSource(selectGroup) {
                         let index = items.indexOf(items.filter(d => d.title == sourcename)[0]);
                         manage.setSelectedIndex(index);
                         manage.scrollToPosition(index, true);
+                    } else if (i === 3) {
+                        if(getItem('noShowType')=='1'){
+                            clearItem('noShowType');
+                        }else{
+                            setItem('noShowType', '1');
+                        }
                     }
                 }
             });

@@ -1190,6 +1190,9 @@ function jiekousave(urls, mode) {
             if(it.oldid || mode==1){//覆盖已存在接口
                 for(let i=0;i<datalist.length;i++){
                     if(datalist[i].id==it.id || datalist[i].id==it.oldid){
+                        if(mode==1 && !datalist[i].group){
+                            it.group = datalist[i].group;
+                        }
                         datalist.splice(i,1);
                         break;
                     }

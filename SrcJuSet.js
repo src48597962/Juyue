@@ -181,6 +181,16 @@ function SRCSet() {
                         refreshPage(false);
                     })
                 })
+            },{
+                title: getItem('noShowType')=='1'?"显示分类":"不显示分类",
+                js: $.toString(() => {
+                    if(getItem('noShowType')=='1'){
+                        clearItem('noShowType');
+                    }else{
+                        setItem('noShowType', '1');
+                    }
+                    return 'toast://已切换，切源列表、快速分组、接口列表同时生效';
+                })
             }]
         }else{
             obj.extra.longClick = [{

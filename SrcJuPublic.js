@@ -573,6 +573,7 @@ function selectSource(selectGroup) {
                         }else{
                             setItem('noShowType', '1');
                         }
+                        toast('已切换，切源列表、快速分组、接口列表同时生效');
                     }
                 }
             });

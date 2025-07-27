@@ -28,7 +28,7 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有","分组排序"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
@@ -60,6 +60,42 @@ function SRCSet() {
                 }
                 refreshPage(false);
                 return "toast://"+sm;
+            }else if(input=="分组排序"){
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let groupNames = getGroupNames();
+
+                const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                hikerPop.setUseStartActivity(false);
+
+                let inputBox;
+                let pop = hikerPop.selectBottomRes({
+                    options: groupNames,
+                    columns: 3,
+                    title: "长按调整，最后确定",
+                    noAutoDismiss: true,
+                    extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                        hint: "",
+                        title: '确定',
+                        onChange(s, manage) {
+
+                        },
+                        defaultValue: groupNames || "",
+                        click(s, manage) {
+                            
+                            //inputBox.setHint("提示");
+                        },
+                        titleVisible: true
+                    })),
+                    longClick(s, i, manage) {
+
+                    },
+                    click(s, i, manage) {
+                        pop.dismiss();
+
+                        
+                    }
+                });
+                return 'hiker://empty';
             }
         }),
         img: getIcon(jkIcons[1].img, false, jkIcons[1].color),

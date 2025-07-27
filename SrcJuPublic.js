@@ -157,6 +157,34 @@ function getGroupLists(datas, k) {
 
     return datas;
 }
+//b数组参照a数组的顺序
+function sortBWithNonAAtEnd(a, b) {
+    // 创建a中元素的顺序映射
+    var aOrder = {};
+    for (var i = 0; i < a.length; i++) {
+        aOrder[a[i]] = i;
+    }
+
+    // 分离存在于a和不存在于a的元素
+    var elementsInA = [];
+    var elementsNotInA = [];
+
+    for (var j = 0; j < b.length; j++) {
+        if (b[j] in aOrder) {
+            elementsInA.push(b[j]);
+        } else {
+            elementsNotInA.push(b[j]);
+        }
+    }
+
+    // 对存在于a的元素按a的顺序排序
+    elementsInA.sort(function (x, y) {
+        return aOrder[x] - aOrder[y];
+    });
+
+    // 合并结果：先放存在于a的元素，再放不存在于a的元素
+    return elementsInA.concat(elementsNotInA);
+}
 //获取指定接口组的分组名arry
 function getJkGroups(datas, isgroup) {
     let typeNames = [];
@@ -171,12 +199,17 @@ function getJkGroups(datas, isgroup) {
             }
         })
     })
-    groupNames.sort((a, b) =>
-        a.localeCompare(b, 'zh-CN', {
-            sensitivity: 'accent', // 忽略大小写但区分音调
-            ignorePunctuation: true // 忽略标点符号
-        })
-    );
+    if(Juconfig['groupSort']){
+        groupNames = sortBWithNonAAtEnd(Juconfig['groupSort'].join(','), groupNames);
+    }else{
+        groupNames.sort((a, b) =>
+            a.localeCompare(b, 'zh-CN', {
+                sensitivity: 'accent', // 忽略大小写但区分音调
+                ignorePunctuation: true // 忽略标点符号
+            })
+        );
+    }
+    
     if(isgroup){
         return groupNames;
     }

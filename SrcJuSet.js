@@ -80,6 +80,7 @@ function SRCSet() {
                             Juconfig['groupSort'] = s;
                             writeFile(cfgfile, JSON.stringify(Juconfig));
                             pop.dismiss();
+                            refreshPage(false);
                         },
                         titleVisible: true
                     })),

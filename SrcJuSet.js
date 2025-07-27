@@ -84,7 +84,34 @@ function SRCSet() {
                         titleVisible: true
                     })),
                     longClick(s, i, manage) {
-
+                        hikerPop.selectCenter({
+                            options: ["进位", "退位", "置顶", "置底"],
+                            columns: 2,
+                            title: '选择调整动作',
+                            click(input) {
+                                if ((i == 0 && (input == "进位" || input == "置顶")) || (i == groupNames.length - 1 && (input == "退位" || input == "置底"))) {
+                                    return 'toast://位置移动无效';
+                                } else {
+                                    if (input == "进位" || input == "退位") {
+                                        let newindex = input == "进位" ? i - 1 : i + 1;
+                                        groupNames.splice(newindex, 0, groupNames.splice(i, 1)[0]);
+                                    } else {
+                                        groupNames.splice(i, 1);
+                                        if (input == "置顶") {
+                                            groupNames.unshift(s);
+                                        } else {
+                                            groupNames.push(s);
+                                        }
+                                    }
+                                    manage.list.length = 0;
+                                    groupNames.forEach(x => {
+                                        manage.list.push(x);
+                                    });
+                                    manage.change();
+                                    inputBox.setDefaultValue(groupNames.join(','));
+                                }
+                            }
+                        });
                     }
                 });
                 return 'hiker://empty';

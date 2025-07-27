@@ -1272,7 +1272,7 @@ function erji() {
                     }
                     d.push({
                         title: reviseTitle(列表[i].title),
-                        url: !列表[i].url?'toast://链接为空':列表[i].url.includes('@lazyRule=.')? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
+                        url: !列表[i].url?'toast://链接为空':(列表[i].url.includes('@lazyRule=')||列表[i].url.includes('@rule='))? 列表[i].url :(isrule?"hiker://empty##":"") + 列表[i].url + lazy,
                         desc: 列表[i].desc,
                         img: 列表[i].img,
                         col_type: 列表[i].col_type || list_col_type,

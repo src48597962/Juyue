@@ -200,7 +200,7 @@ function getJkGroups(datas, isgroup) {
         })
     })
     if(Juconfig['groupSort']){
-        groupNames = sortBWithNonAAtEnd(Juconfig['groupSort'].join(','), groupNames);
+        groupNames = sortBWithNonAAtEnd(Juconfig['groupSort'].split(','), groupNames);
     }else{
         groupNames.sort((a, b) =>
             a.localeCompare(b, 'zh-CN', {

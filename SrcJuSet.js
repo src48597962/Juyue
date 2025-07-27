@@ -74,25 +74,17 @@ function SRCSet() {
                     title: "长按调整，最后确定",
                     noAutoDismiss: true,
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                        hint: "",
                         title: '确定',
-                        onChange(s, manage) {
-
-                        },
-                        defaultValue: groupNames || "",
+                        defaultValue: groupNames.join(',') || "",
                         click(s, manage) {
                             
                             //inputBox.setHint("提示");
+                            pop.dismiss();
                         },
                         titleVisible: true
                     })),
                     longClick(s, i, manage) {
 
-                    },
-                    click(s, i, manage) {
-                        pop.dismiss();
-
-                        
                     }
                 });
                 return 'hiker://empty';

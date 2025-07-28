@@ -22,8 +22,7 @@ let juItem = {
         return items;
     },
     'put': function(key, s, id){
-        //id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-        id = id || MY_RULE.id;
+        id = id || MY_RULE.id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         toast(id.toString());
         /*
         let items = juItem.items();
@@ -358,7 +357,6 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
             try {
-                MY_RULE.id = jkdata.id;
                 let sourcename = jkdata.name;
                 let getData = [];
                 if (parse['预处理1'] && !getMyVar('执行预处理1')) {

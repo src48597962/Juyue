@@ -481,9 +481,6 @@ function getSsData(name, jkdata, page) {
             if(resultd&&getData.length==0){
                 getData = resultd;
             }
-            getData.forEach(it=>{
-                it.title = juItem.get() +'-'+ it.title;
-            })
         }
     } catch (e) {
         error = e.message;

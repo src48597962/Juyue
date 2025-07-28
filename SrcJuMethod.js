@@ -23,7 +23,7 @@ let juItem = {
     },
     'put': function(key, s, id){
         //id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-        id = id || parse.id;
+        id = id || MY_RULE.id;
         toast(id.toString());
         /*
         let items = juItem.items();
@@ -36,6 +36,7 @@ let juItem = {
     'get': function(s){
         //let item = juItem.iditem();
         //return item[s] || '';
+        toast(MY_RULE.id);
     },
     'clear': function(s){
 

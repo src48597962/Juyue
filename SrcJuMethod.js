@@ -25,7 +25,7 @@ let juItem = {
         id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         xlog(id);
         //xlog(parse.id);
-        xlog(jkdata.id);
+        //xlog(jkdata.id);
         xlog(this.id);
         let items = juItem.items();
         let item = items[id];

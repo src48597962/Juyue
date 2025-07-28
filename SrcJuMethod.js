@@ -22,7 +22,7 @@ let juItem = {
         return items;
     },
     'put': function(key, s, id){
-        id = id || MY_RULE.id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+        id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         toast(id.toString());
         /*
         let items = juItem.items();

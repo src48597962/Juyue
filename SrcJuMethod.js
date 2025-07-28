@@ -29,7 +29,10 @@ let juItem = {
             item[key] = s;
             items[id] = item;
             writeFile(juItem.file, JSON.stringify(items));
-        }catch(e){}
+            xlog(key+'>'+s);
+        }catch(e){
+            xlog(e.message);
+        }
     },
     'get': function(s){
         let item = juItem.iditem();

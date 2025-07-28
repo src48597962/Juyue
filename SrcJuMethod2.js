@@ -16,6 +16,7 @@ function readData(jkdata){
                 delete parse[it];
             })
         }catch(e){}
+        parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         return parse;
     }else{

@@ -36,7 +36,7 @@ let juItem = {
     'get': function(s){
         //let item = juItem.iditem();
         //return item[s] || '';
-        toast(MY_RULE.id);
+        xlog(MY_RULE.id);
     },
     'clear': function(s){
 

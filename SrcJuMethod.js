@@ -21,18 +21,12 @@ let juItem = {
         }
         return items;
     },
-    'put': function(key, s){
-        try{
-            let id = jkdata.id;
-            let items = juItem.items();
-            let item = items[id];
-            item[key] = s;
-            items[id] = item;
-            writeFile(juItem.file, JSON.stringify(items));
-            xlog(key+'>'+s);
-        }catch(e){
-            xlog(e.message);
-        }
+    'put': function(id, key, s){
+        let items = juItem.items();
+        let item = items[id];
+        item[key] = s;
+        items[id] = item;
+        writeFile(juItem.file, JSON.stringify(items));
     },
     'get': function(s){
         let item = juItem.iditem();
@@ -516,6 +510,7 @@ function getObjCode(jkdata, key) {
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         //jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(jkstr);
+        parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
         if(key){

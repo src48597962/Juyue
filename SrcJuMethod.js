@@ -10,7 +10,35 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
+// 聚阅全局自定义存储变量方法
+let juItem = {
+    'file': 'hiker://files/rules/Src/Juyue/juItem.json',
+    'items': function(){
+        let items = {};
+        let itemsstr = fetch(itemfile);
+        if (itemsstr != "") {
+            eval("items=" + itemsstr + ";");
+        }
+        return items;
+    },
+    'put': function(key, s){
+        try{
+            let id = jkdata.id;
+            let items = juItem.items();
+            let item = items[id];
+            item[key] = s;
+            items[id] = item;
+            writeFile(juItem.file, JSON.stringify(items));
+        }catch(e){}
+    },
+    'get': function(s){
+        let item = juItem.iditem();
+        return item[s] || '';
+    },
+    'clear': function(s){
 
+    }
+}
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

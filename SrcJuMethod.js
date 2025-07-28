@@ -11,7 +11,7 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 // 聚阅全局自定义存储变量方法
-let juItem = {
+eval(`let juItem = {
     'file': 'hiker://files/rules/Src/Juyue/juItem.json',
     'items': function(){
         let items = {};
@@ -23,6 +23,7 @@ let juItem = {
     },
     'put': function(key, s, id){
         xlog(this.id);
+        xlog(jkdata.id);
         id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         let items = juItem.items();
         let item = items[id];
@@ -37,7 +38,7 @@ let juItem = {
     'clear': function(s){
 
     }
-}
+}`)
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

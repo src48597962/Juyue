@@ -1561,16 +1561,15 @@ function erjisousuo(name,group,datas,sstype) {
         }
 
         let task = function (obj) {
-            return (function(MY_RULE) {
+            return (function() {
                 try {
-                    MY_RULE.id = obj.data.name;
                     let lists = obj.search(obj.name, obj.type, obj.data);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
                     return {result:[], success:0, type: obj.type, name: obj.data.name};
                 }
-            })(MY_RULE);
+            })();
         }
         let list = ssdatalist.map((item) => {
             return {

@@ -22,20 +22,20 @@ let juItem = {
         return items;
     },
     'put': function(key, s, id){
-        id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-        xlog(id);
-        xlog($.extends);
-        //xlog(jkdata.id);
-        xlog(this.id);
+        //id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+        id = id || parse.id;
+        toast(id.toString());
+        /*
         let items = juItem.items();
         let item = items[id] || {};
         item[key] = s;
         items[id] = item;
         writeFile(juItem.file, JSON.stringify(items));
+        */
     },
     'get': function(s){
-        let item = juItem.iditem();
-        return item[s] || '';
+        //let item = juItem.iditem();
+        //return item[s] || '';
     },
     'clear': function(s){
 

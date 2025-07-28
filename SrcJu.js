@@ -549,7 +549,10 @@ function erji() {
                 erLoadData = erdataCache;
                 xlog('使用二级缓存数据');
                 try {
-                    if (parse['预处理']) {
+                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+                        parse['预处理1'].call(parse);
+                        putMyVar('执行预处理1', '1');
+                    }else if (parse['预处理']) {
                         parse['预处理'].call(parse);
                     }
                 } catch (e) {
@@ -560,7 +563,10 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 try {
-                    if (parse['预处理']) {
+                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+                        parse['预处理1'].call(parse);
+                        putMyVar('执行预处理1', '1');
+                    }else if (parse['预处理']) {
                         parse['预处理'].call(parse);
                     }
                     if(parse['二级']){
@@ -1386,7 +1392,10 @@ function erji() {
                 setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                     MY_URL = url;
                     let parse = getObjCode(jkdata, 'zx');
-                    if (parse['预处理']) {
+                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+                        parse['预处理1'].call(parse);
+                        putMyVar('执行预处理1', '1');
+                    }else if (parse['预处理']) {
                         parse['预处理'].call(parse);
                     }
                     let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');

@@ -358,6 +358,7 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
             try {
+                MY_RULE.id = jkdata.id;
                 let sourcename = jkdata.name;
                 let getData = [];
                 if (parse['预处理1'] && !getMyVar('执行预处理1')) {

@@ -15,14 +15,14 @@ let juItem = {
     'file': 'hiker://files/rules/Src/Juyue/juItem.json',
     'items': function(){
         let items = {};
-        let itemsstr = fetch(itemfile);
+        let itemsstr = fetch(juItem.file);
         if (itemsstr != "") {
             eval("items=" + itemsstr + ";");
         }
         return items;
     },
     'put': function(key, s, id){
-        id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id
+        id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         let items = juItem.items();
         let item = items[id];
         item[key] = s;

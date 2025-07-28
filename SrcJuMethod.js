@@ -24,11 +24,11 @@ let juItem = {
     'put': function(key, s, id){
         id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
         xlog(id);
-        //xlog(parse.id);
+        xlog($.extends);
         //xlog(jkdata.id);
         xlog(this.id);
         let items = juItem.items();
-        let item = items[id];
+        let item = items[id] || {};
         item[key] = s;
         items[id] = item;
         writeFile(juItem.file, JSON.stringify(items));

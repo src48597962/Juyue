@@ -329,7 +329,10 @@ function getYiData(datatype, jkdata, dd) {
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
-                if (parse['预处理']) {
+                if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+                    parse['预处理1'].call(parse);
+                    putMyVar('执行预处理1', '1');
+                }else if (parse['预处理']) {
                     parse['预处理'].call(parse);
                 }
                 let resultd;
@@ -435,7 +438,10 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
-            if (parse['预处理']) {
+            if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+                parse['预处理1'].call(parse);
+                putMyVar('执行预处理1', '1');
+            }else if (parse['预处理']) {
                 parse['预处理'].call(parse);
             }
             let resultd;

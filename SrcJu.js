@@ -1258,10 +1258,8 @@ function erji() {
                     extra.cls = "Juloadlist playlist";
                     if(stype=="视频"||stype=="音频"||stype=="聚合"){
                         extra.jsLoadingInject = true;
-                        if(!extra.blockRules){
-                            extra.blockRules = ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com'];
-                        }
-                        extra.videoExcludeRules = ['m3u8.js','?url='];
+                        extra.blockRules = extra.blockRules || ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com'];
+                        extra.videoExcludeRules = extra.videoExcludeRules || ['m3u8.js','?url='];
                     }
 
                     let isrule;

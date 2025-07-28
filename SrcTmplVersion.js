@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "0.9",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V1.0",
+        records: [
+            "新增：parse增加预处理1，只需要执行一次的用"
+        ]
+    },{
         title: "2025/07/28 V0.9",
         records: [
             "优化：二级选集分页支持未知页码，动态自动页码",

@@ -35,7 +35,7 @@ let juItem = {
     'get': function(s){
         //let item = juItem.iditem();
         //return item[s] || '';
-        xlog(MY_RULE.id);
+        return MY_RULE.id;
     },
     'clear': function(s){
 
@@ -481,6 +481,9 @@ function getSsData(name, jkdata, page) {
             if(resultd&&getData.length==0){
                 getData = resultd;
             }
+            getData.forEach(it=>{
+                it.title = juItem.get() +'-'+ it.title;
+            })
         }
     } catch (e) {
         error = e.message;

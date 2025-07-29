@@ -312,7 +312,7 @@ function SRCSet() {
             url: $('#noLoading#').lazyRule(()=>{
                     let selectlist = storage0.getMyVar('duodatalist') || [];
                     if(selectlist.length>0){
-                        return $("","选定的"+selectlist.length+"个接口新分组名").input((selectlist)=>{
+                        return $("","选定的"+selectlist.length+"个接口新分组名，留空则清空").input((selectlist)=>{
                             input = input.trim();
                             if(input=="全部"){
                                 return "toast://分组名不能为：全部";

@@ -908,7 +908,7 @@ function jiekouapi(data, look) {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             let groupNames = getGroupNames();
             selectTag.forEach(it=>{
-                if(groupNames.indexOf(it)==-1){
+                if(groupNames.indexOf(it)==-1 && runTypes.indexOf(it)==-1){
                     groupNames.push(it);
                 }
             })
@@ -929,7 +929,7 @@ function jiekouapi(data, look) {
                     defaultValue: getMyVar('apigroup',''),
                     click(s, pop) {
                         s = s.replace(/，/g, ',');
-                        putMyVar('apigroup', s.split(',').filter(item => item !== '').join(','));
+                        putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
                         refreshPage();
                         pop.dismiss();
                     }

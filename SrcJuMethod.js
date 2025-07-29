@@ -473,6 +473,7 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
+            let juItem = juItemF(jkdata.id);
             if (parse['预处理1'] && !getMyVar('执行预处理1')) {
                 parse['预处理1'].call(parse);
                 putMyVar('执行预处理1', '1');
@@ -486,6 +487,10 @@ function getSsData(name, jkdata, page) {
             if(resultd&&getData.length==0){
                 getData = resultd;
             }
+
+            getData.forEach(it=>{
+                it.title = juItem.get()+'-'+it.title
+            })
         }
     } catch (e) {
         error = e.message;

@@ -26,8 +26,6 @@ let parse = {
                             toast(`找到可访问网址：https://` + foundUrl);
                             juItem.set("发布link", fburl);
                             juItem.set("吃瓜link", 'https://' + foundUrl);
-                            log(fburl);
-                            log(foundUrl);
                             break;
                         }
                     }
@@ -65,139 +63,135 @@ let parse = {
         "sort_url": ""
     },
     "主页": function() {
-            var d = []
-            if (parse.作者 == "King") {
-                var tlazy = $('').image(() => {
-                    const CryptoUtil = $.require("hiker://assets/crypto-java.js");
-                    let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
-                    let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
-                    let textData = CryptoUtil.Data.parseInputStream(input);
-                    let encrypted = CryptoUtil.AES.decrypt(textData, key, {
-                        mode: "AES/CBC/PKCS7Padding",
-                        iv: iv
-                    });
-                    return encrypted.toInputStream();
-                })
-                let host = juItem.get('吃瓜link');
-                log(host)
-                //var host=parse.host
-                var url = host + MY_URL.split("##")[1];
-                log(url)
-                var html = fetchPC(url);
-                if (/archives/.test(MY_URL)) {
-                    var list = pdfa(html, '#archives-content&&.brick')
-                    list.forEach(item => {
-                        d.push({
+        let d = []
+        if (parse.作者 == "King") {
+            let tlazy = $('').image(() => {
+                const CryptoUtil = $.require("hiker://assets/crypto-java.js");
+                let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
+                let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
+                let textData = CryptoUtil.Data.parseInputStream(input);
+                let encrypted = CryptoUtil.AES.decrypt(textData, key, {
+                    mode: "AES/CBC/PKCS7Padding",
+                    iv: iv
+                });
+                return encrypted.toInputStream();
+            })
+            let host = juItem.get('吃瓜link');
+            let url = host + MY_URL.split("##")[1];
+            log('请求吃瓜link:'+url);
+            let html = fetchPC(url);
+            if (/archives/.test(MY_URL)) {
+                let list = pdfa(html, '#archives-content&&.brick')
+                list.forEach(item => {
+                    d.push({
+                        title: pdfh(item, 'a&&Text'),
+                        url: pdfh(item, 'a&&href'),
+                        extra: {
                             title: pdfh(item, 'a&&Text'),
+                            //img: img + tlazy,
+                            desc: "",
                             url: pdfh(item, 'a&&href'),
-                            extra: {
-                                title: pdfh(item, 'a&&Text'),
-                                //img: img + tlazy,
-                                desc: "",
-                                url: pdfh(item, 'a&&href'),
-                            },
-                            col_type: 'text_1',
-                        })
+                        },
+                        col_type: 'text_1',
                     })
-                } else if (/tags/.test(MY_URL)) {
-                    var lazy = $('').rule(() => {
-                        var d = []
-                        var tlazy = $('').image(() => {
-                            const CryptoUtil = $.require("hiker://assets/crypto-java.js");
-                            let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
-                            let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
-                            let textData = CryptoUtil.Data.parseInputStream(input);
-                            let encrypted = CryptoUtil.AES.decrypt(textData, key, {
-                                mode: "AES/CBC/PKCS7Padding",
-                                iv: iv
-                            });
-                            return encrypted.toInputStream();
-                        })
-                        html = getResCode()
-                        var list2 = pdfa(html, 'body&&article:not(.no-mask)')
-                        list2.forEach(item => {
-                            var title = pdfh(item, 'h2&&Text')
-                            var img = item.match(/http.*?jpeg|http.*?jpg/)
-                            if (img) {
-                                d.push(toerji({
-                                    title: '‘‘’’\n\n\n\n' + title + '<small>\n' + pdfh(item, '.post-card-info&&Text') + '</small>',
-                                    //  desc: pdfh(item, '.post-card-info&&Text'),
-                                    desc: '0',
+                })
+            } else if (/tags/.test(MY_URL)) {
+                let lazy = $('').rule(() => {
+                    let d = []
+                    let tlazy = $('').image(() => {
+                        const CryptoUtil = $.require("hiker://assets/crypto-java.js");
+                        let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
+                        let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
+                        let textData = CryptoUtil.Data.parseInputStream(input);
+                        let encrypted = CryptoUtil.AES.decrypt(textData, key, {
+                            mode: "AES/CBC/PKCS7Padding",
+                            iv: iv
+                        });
+                        return encrypted.toInputStream();
+                    })
+                    html = getResCode()
+                    let list2 = pdfa(html, 'body&&article:not(.no-mask)')
+                    list2.forEach(item => {
+                        let title = pdfh(item, 'h2&&Text')
+                        let img = item.match(/http.*?jpeg|http.*?jpg/)
+                        if (img) {
+                            d.push(toerji({
+                                title: '‘‘’’\n\n\n\n' + title + '<small>\n' + pdfh(item, '.post-card-info&&Text') + '</small>',
+                                //  desc: pdfh(item, '.post-card-info&&Text'),
+                                desc: '0',
+                                img: img + tlazy,
+                                url: pdfh(item, 'a&&href'),
+                                extra: {
+                                    title: title,
                                     img: img + tlazy,
+                                    desc: "",
                                     url: pdfh(item, 'a&&href'),
-                                    extra: {
-                                        title: title,
-                                        img: img + tlazy,
-                                        desc: "",
-                                        url: pdfh(item, 'a&&href'),
-                                    },
-                                    col_type: "card_pic_1"
-                                }))
-                            }
-                        })
-                        setResult(d)
-                    });
-                    var 第一项 = 100 * (MY_PAGE - 1) + 1; //log(第一项)
-                    var 最后项 = 100 * MY_PAGE; //log(最后项)                                   
-                    var html = fetch(host + "/tags.html")
-                    if (MY_PAGE == 1) {
-                        var list1 = pdfa(html, '#archives-tags&&a,1:50')
-                    } else if (MY_PAGE == 2) {
-                        var list1 = pdfa(html, '#archives-tags&&a,51:100')
-                    } else if (MY_PAGE == 3) {
-                        var list1 = pdfa(html, '#archives-tags&&a,101:150')
-                    }
-                    var listk = ["富二代", "韩国", "主播", "母狗"]
-                    listk.forEach(item => {
-                        d.push({
-                            title: pdfh(item, 'Text'),
-                            url: host + "/tag/" + pdfh(item, 'Text') + "/fypage/" + lazy,
-                            col_type: "text_4"
-                        })
-                    });
-                    list1.forEach(item => {
-                        d.push({
-                            title: pdfh(item, 'a&&Text'),
-                            url: host + pdfh(item, 'a&&href') + "fypage/" + lazy,
-                            col_type: "text_4"
-                        })
-                    });
+                                },
+                                col_type: "card_pic_1"
+                            }))
+                        }
+                    })
+                    setResult(d)
+                });
+                let 第一项 = 100 * (MY_PAGE - 1) + 1; //log(第一项)
+                let 最后项 = 100 * MY_PAGE; //log(最后项)                                   
+                let html = fetch(host + "/tags.html")
+                let list1 = [];
+                if (MY_PAGE == 1) {
+                    list1 = pdfa(html, '#archives-tags&&a,1:50')
+                } else if (MY_PAGE == 2) {
+                    list1 = pdfa(html, '#archives-tags&&a,51:100')
+                } else if (MY_PAGE == 3) {
+                    list1 = pdfa(html, '#archives-tags&&a,101:150')
+                }
+                let listk = ["富二代", "韩国", "主播", "母狗"]
+                listk.forEach(item => {
+                    d.push({
+                        title: pdfh(item, 'Text'),
+                        url: host + "/tag/" + pdfh(item, 'Text') + "/fypage/" + lazy,
+                        col_type: "text_4"
+                    })
+                });
+                list1.forEach(item => {
+                    d.push({
+                        title: pdfh(item, 'a&&Text'),
+                        url: host + pdfh(item, 'a&&href') + "fypage/" + lazy,
+                        col_type: "text_4"
+                    })
+                });
 
-                } else {
-                    var list = pdfa(html, 'body&&article:not(:has(meta[content=广告])):not(:matches(在线选妃|杏吧直播|无忧直播|开云体育|同城约​炮|随时可约|无色无味无记忆|复制网址用浏览器|私密发货|开云体育|扫描图中|点击扫码|免费体验|开元棋牌|迷奸同事|注册即送|恋人直播|名姿直播))');
-                    for (var j in list) {
-                        var title = pdfh(list[j], 'h2&&Text');
-                        var img = pdfh(list[j], 'script&&Html').split("'")[1];
-                        var desc = pdfh(list[j], '.post-card-info&&Text'); //.match(/\d+\s年\s\d+\s月\s\d+\s日/);
-                        if (title != '热搜 HOT' && title != '') {
-                            d.push({
+            } else {
+                let list = pdfa(html, 'body&&article:not(:has(meta[content=广告])):not(:matches(在线选妃|杏吧直播|无忧直播|开云体育|同城约​炮|随时可约|无色无味无记忆|复制网址用浏览器|私密发货|开云体育|扫描图中|点击扫码|免费体验|开元棋牌|迷奸同事|注册即送|恋人直播|名姿直播))');
+                for (let j in list) {
+                    let title = pdfh(list[j], 'h2&&Text');
+                    let img = pdfh(list[j], 'script&&Html').split("'")[1];
+                    let desc = pdfh(list[j], '.post-card-info&&Text'); //.match(/\d+\s年\s\d+\s月\s\d+\s日/);
+                    if (title != '热搜 HOT' && title != '') {
+                        d.push({
+                            title: title,
+                            img: img + tlazy,
+                            desc: desc,
+                            url: pdfh(list[j], 'a&&href'),
+                            extra: {
                                 title: title,
                                 img: img + tlazy,
                                 desc: desc,
                                 url: pdfh(list[j], 'a&&href'),
-                                extra: {
-                                    title: title,
-                                    img: img + tlazy,
-                                    desc: desc,
-                                    url: pdfh(list[j], 'a&&href'),
-                                },
-                                col_type: 'movie_2'
-                            });
-                        }
+                            },
+                            col_type: 'movie_2'
+                        });
                     }
                 }
-
-            } else {
-                d.push({
-                    title: '请勿修改作者名',
-                    url: 'hiker://empty',
-                    col_type: 'text_center_1'
-                })
             }
-            return d
+        } else {
+            d.push({
+                title: '请勿修改作者名',
+                url: 'hiker://empty',
+                col_type: 'text_center_1'
+            })
         }
-
-        ,
+        return d
+    },
     "搜索": function(name) {
         let d = [];
         let tlazy = $('').image(() => {
@@ -240,14 +234,11 @@ let parse = {
         })
         return d
     },
-    二级: function(surl) { //surl为详情页链接
-        //自行实现代码
-        log(surl)
-        var host = getItem('吃瓜link')
-        var url = host + "/archives/" + surl.split("archives")[1].match(/\d+/)[0];
-        log(url)
+    二级: function(surl) {
+        let host = juItem.get('吃瓜link');
+        let url = host + "/archives/" + surl.split("archives")[1].match(/\d+/)[0];
         let html = fetchPC(url);
-        var tlazy = $('').image(() => {
+        let tlazy = $('').image(() => {
             const CryptoUtil = $.require("hiker://assets/crypto-java.js");
             let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
             let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
@@ -270,7 +261,7 @@ let parse = {
             return 选集列表;
         })
 
-        var d = []
+        let d = []
         d.push({
             col_type: 'line',
         });
@@ -290,11 +281,11 @@ let parse = {
         });
 
         //正文
-        var texts = pdfa(html, 'body&&.post-content>p:not(:has(.content-file)):not(p:matches(复制以下链接分享给朋友)~p):not(:matches(复制以下链接分享给朋友)):not(:matches(在线选妃|杏吧直播|无忧直播|开云体育|同城约​炮|随时可约|无色无味无记忆|复制网址用浏览器|私密发货|开云体育|扫描图中|点击扫码|免费体验|开元棋牌|迷奸同事|评论和转发|九游娱乐))');
+        let texts = pdfa(html, 'body&&.post-content>p:not(:has(.content-file)):not(p:matches(复制以下链接分享给朋友)~p):not(:matches(复制以下链接分享给朋友)):not(:matches(在线选妃|杏吧直播|无忧直播|开云体育|同城约​炮|随时可约|无色无味无记忆|复制网址用浏览器|私密发货|开云体育|扫描图中|点击扫码|免费体验|开元棋牌|迷奸同事|评论和转发|九游娱乐))');
         texts.forEach((item, index) => {
             if (pdfh(item, 'p&&Text')) {
-                var url = pdfh(item, 'a&&href')
-                var title = pdfh(item, 'p&&Text').replace("简要描述：", "")
+                let url = pdfh(item, 'a&&href')
+                let title = pdfh(item, 'p&&Text').replace("简要描述：", "")
                 d.push({
                     title: /archive/.test(url) ? '‘‘’’<font color="' + '#FF0000' + '">' + title + '</font>' : title,
                     url: url, //+ $('').rule($.require("jiekou").parse().二级),
@@ -307,7 +298,7 @@ let parse = {
 
                 });
             }
-            var imgs = pdfa(item, 'p&&img').map(h => pdfh(h, 'img&&data-xkrkllgl'));
+            let imgs = pdfa(item, 'p&&img').map(h => pdfh(h, 'img&&data-xkrkllgl'));
             imgs.filter(it => it.length > 0).forEach(item2 => {
                 d.push({
                     title: '',
@@ -319,7 +310,7 @@ let parse = {
         });
 
         //视频
-        var list = parseDomForArray(html, '#post&&.dplayer');
+        let list = parseDomForArray(html, '#post&&.dplayer');
         for (let j in list) {
             d.push({
                 title: '““视频””' + (Number(j) + 1),
@@ -338,11 +329,10 @@ let parse = {
                 简介: true,
                 排序: true
             },
-
             desc: 简介,
             img: 图片,
             list: 选集,
             extenditems: d,
-        } //按格式返回
+        }
     }
-};
+}

@@ -63,7 +63,8 @@ let evalPublicStr = `
     }else if (parse['预处理']) {
         parse['预处理'].call(parse);
     }
-    let setResult = function(d) { getData = d; };
+    let resultd;
+    let setResult = function(d) { resultd = d; };
 `
 // 静态分类调用生成方法
 function createClass(d, obj) {
@@ -496,6 +497,9 @@ function getSsData(name, jkdata, page) {
             eval(evalPublicStr);
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
+            if(resultd&&getData.length==0){
+                getData = resultd;
+            }
 
             getData.forEach(it=>{
                 it.title = juItem.get()+'-'+it.title

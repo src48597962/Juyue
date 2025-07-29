@@ -194,11 +194,12 @@ function sortBWithNonAAtEnd(a, b) {
 function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
+    let noShowType = getItem('noShowType', '');
     datas.forEach(it => {
-        if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
+        if (typeNames.indexOf(it.type)==-1 && noShowType!='1'){
             typeNames.push(it.type);
         }
-        if(getItem('noShowType','')=='1' && !it.group){
+        if(noShowType=='1' && !it.group){
             typeNames.push(it.type);
         }
         (it.group || "").split(',').forEach(group=>{
@@ -497,7 +498,7 @@ function selectSource(selectGroup) {
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
-                let groupNames = getTypeNames('主页',sourceList);
+                let groupNames = getTypeNames('主页', sourceList);
                 let selects = ['全部'].concat(groupNames);
                 //inputBox.setHint("提示");
                 hikerPop.selectCenter({

@@ -473,7 +473,7 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
-            let juItem = juItemF(jkdata.id);
+            let juItem = juItemF(jkdata.name);
             if (parse['预处理1'] && !getMyVar('执行预处理1')) {
                 parse['预处理1'].call(parse);
                 putMyVar('执行预处理1', '1');

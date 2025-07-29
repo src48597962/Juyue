@@ -5,59 +5,38 @@ let parse = {
     页码: {
         "主页": 1
     },
-    host: 'https://hx7sz3.yajzacf.top',
-    预处理1: function() {
-        if (!getItem('吃瓜link') && !getItem('执行预处理')) {
-            setItem('吃瓜link', 'https://barely.vssgrmd.top')
-            setItem('发布link', "https://51cga24.com")
-        }
-        var host = getItem('吃瓜link')
-        var html = fetch(host)
-        if (!/吃瓜/.test(html) && !getItem('执行预处理')) {
-            let baseUrl = "https://51cga";
-            let start = 24;
-            let end = 35;
+    预处理: function() {
+        let host = juItem.get('吃瓜link');
+
+        if (!host || !/吃瓜/.test(fetch(host))) {
             let foundUrl = "";
 
-            // 获取当天日期（几号）作为标识，和原代码保持一致的时间判断逻辑
-            let time = new Date().getDate().toString();
-
-            // 先判断是否当天未执行过检测，和原逻辑保持时间校验
-            if (getItem("time") !== time) {
-                // 遍历网址逻辑
-                for (let i = start; i <= end; i++) {
-                    let currentUrl = `${baseUrl}${i}.com`;
-                    // 这里假设存在一个自定义的网络可达检测方法，不同环境实现不同，以下用 try - catch + fetch 模拟
-                    try {
-                        // 尝试请求网址，通过是否抛错判断可达性，实际可根据返回状态码等细化
-                        let response = fetch(currentUrl);
-                        if (response) {
-                            foundUrl = pdfh(response, "a&&href");
-                            toast(`找到可访问网址：${foundUrl}`);
-                            setItem("发布link", foundUrl); // 保存找到的网址到本地存储
-                            setItem("time", time); // 更新时间标识，当天不再重复检测
-                            break; // 找到就停止遍历
-                        }
-                    } catch (error) {
-                        toast(`${currentUrl} 不可访问`);
+            let 发布页s = [];
+            发布页s.push(juItem.get('发布link') || "https://51cga24.com");
+            for (let i = 24; i <= 35; i++) {
+                发布页s.push(`https://51cga${i}.com`);
+            }
+            // 遍历网址逻辑
+            for (let fburl of 发布页s) {
+                try {
+                    let html = fetchCodeByWebView(fburl, {timeout: 5000});
+                    if (html) {
+                        let urls = pdfa(html, ".box&&.btnLink").map(item => pdfh(item, "Text"));
+                        foundUrl = findReachableIP(urls, 5000);
+                        toast(`找到可访问网址：${foundUrl}`);
+                        juItem.set("发布link", fburl);
+                        juItem.set("吃瓜link", foundUrl);
+                        log(fburl);
+                        log(foundUrl);
+                        break;
                     }
-                }
-                if (!foundUrl) {
-                    toast("未找到可访问的网址");
+                } catch (error) {
+                    toast(`${fburl} 不可访问`);
                 }
             }
-
-            var 发布 = getItem('发布link')
-            var html = fetchCodeByWebView(发布)
-            //log(html)
-            var urls = pdfa(html, ".box&&.btnLink")
-            let links = urls.map(item => pdfh(item, "Text"));
-            log(links)
-            let link = findReachableIP(links, 5000)
-            log("更新：" + link)
-            setItem('吃瓜link', "https://" + link);
-            setItem('执行预处理', '1');
-            refreshPage();
+            if (!foundUrl) {
+                toast("未找到可访问的网址");
+            }
         }
     },
 

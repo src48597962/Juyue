@@ -6,9 +6,10 @@ let parse = {
         "主页": 1
     },
     预处理: function() {
+        log('执行预处理');
         let host = juItem.get('吃瓜link');
-
         if (!host || !/吃瓜/.test(fetch(host))) {
+            log('开始获取吃瓜link');
             let foundUrl = "";
             let 发布页s = [];
             发布页s.push(juItem.get('发布link') || "https://51cga24.com");

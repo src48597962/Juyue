@@ -4,7 +4,9 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V1.0",
         records: [
-            "新增：parse增加预处理1，只需要执行一次的用"
+            "优化：选源分组不显示分类时逻辑优化调整",
+            "新增：parse增加预处理1，只需要执行一次的用",
+            "新增：内置一个变量存储读取操作方法juItem"
         ]
     },{
         title: "2025/07/28 V0.9",

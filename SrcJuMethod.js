@@ -35,14 +35,14 @@ function juItemF(id){
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
-            let item = items[id];
+            let item = items[id] || {};
             return item[key] || '';
         },
         'clear': function (key, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
-            let item = items[id];
+            let item = items[id] || {};
             if(item[key]){
                 delete item[key];
                 items[id] = item;

@@ -22,24 +22,29 @@ function juItemF(id){
             }
             return items;
         },
-        'put': function (key, s, id2) {//MY_TYPE-search
+        'put': function (key, str, id2) {//MY_TYPE-search
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            toast(id.toString());
-            /*
             let items = juItem.items();
             let item = items[id] || {};
-            item[key] = s;
+            item[key] = str;
             items[id] = item;
             writeFile(juItem.file, JSON.stringify(items));
-            */
         },
-        'get': function (s) {
-            //let item = juItem.iditem();
-            //return item[s] || '';
-            return id;
+        'get': function (key, id2) {
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            let items = juItem.items();
+            let item = items[id];
+            return item[key] || '';
         },
-        'clear': function (s) {
-
+        'clear': function (key, id2) {
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            let items = juItem.items();
+            let item = items[id];
+            if(item[key]){
+                delete item[key];
+                items[id] = item;
+                writeFile(juItem.file, JSON.stringify(items));
+            }
         }
     }
     return juItemO;

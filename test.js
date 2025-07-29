@@ -5,7 +5,7 @@ let parse = {
     页码: {
         "主页": 1
     },
-    预处理: function() {
+    预处理1: function() {
         log('执行预处理');
         let host = juItem.get('吃瓜link');
         if (!host || !/吃瓜/.test(fetch(host))) {

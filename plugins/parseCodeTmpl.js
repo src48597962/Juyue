@@ -4,7 +4,7 @@ let parse = {
     host: '网站域名',//会写入MY_URL，也可以不写，只是方便this.host调用
     /*//海阔的四大金刚写法
     "静态分类": {
-        "type": "主页",//静态分类要显示在哪个页面，主页或分类之类
+        "type": "主页",//静态分类要显示在哪个页面，主页或分类之类，不传则不自动生成
         "url": "https://comic.mkzcdn.com/search/filter/?audience=0&order=fysort&page_num=fypage&page_size=18&theme_id=fyclass",
         "class_name": "全部&修真&霸总&恋爱&校园&冒险&搞笑&生活&热血&架空&后宫&玄幻&悬疑&恐怖&灵异&动作&科幻&战争&古风&穿越&竞技&励志&同人&真人",
         "class_url": "0&2&1&3&4&5&6&7&8&9&10&12&13&14&15&16&17&18&19&20&21&23&24&26",

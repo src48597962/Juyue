@@ -151,10 +151,15 @@ function getDatas(lx, isyx) {
 // 获取分组接口列表
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
-    datas = datas.filter(it=>{
-        return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
-    })
-
+    if(getItem('noShowType')!='1'){//显示分类时输出列表，默认
+        datas = datas.filter(it=>{
+            return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
+        })
+    }else{
+        datas = datas.filter(it=>{
+            return !k || (k==it.type&&!it.group) || (it.group||"").split(',').indexOf(k)>-1;
+        })
+    }
     return datas;
 }
 //b数组参照a数组的顺序
@@ -193,7 +198,11 @@ function getJkGroups(datas, isgroup) {
         if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
             typeNames.push(it.type);
         }
-        (it.group || "").split(',').forEach(group=>{
+        let group = it.group || "";
+        if(getItem('noShowType','')=='1'){
+            group = it.group || it.type;
+        }
+        group.split(',').forEach(group=>{
             if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
                 groupNames.push(group);
             }
@@ -223,12 +232,12 @@ function getJkGroups(datas, isgroup) {
     return yxTypes.concat(groupNames);
 }
 //获取不同场景分组分类名称arry
-function getTypeNames(s) {
+function getTypeNames(s, datas) {
     let snames = [];
     if (s == "搜索页") {
         snames = ["漫画", "小说", "音频", "视频", "聚合"];
     } else if (s == "主页") {
-        snames = getJkGroups(getDatas('yi', 1));
+        snames = getJkGroups(datas || getDatas('yi', 1));
     } else {
         snames = runTypes;
     }
@@ -489,7 +498,7 @@ function selectSource(selectGroup) {
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),
             click(s, manage) {
-                let groupNames = getJkGroups(sourceList);
+                let groupNames = getTypeNames('主页',sourceList);
                 let selects = ['全部'].concat(groupNames);
                 //inputBox.setHint("提示");
                 hikerPop.selectCenter({

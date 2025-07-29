@@ -198,11 +198,10 @@ function getJkGroups(datas, isgroup) {
         if (typeNames.indexOf(it.type)==-1 && getItem('noShowType')!='1'){
             typeNames.push(it.type);
         }
-        let group = it.group || "";
-        if(getItem('noShowType','')=='1' && !isgroup){
-            group = it.group || it.type;
+        if(getItem('noShowType','')=='1' && !it.group){
+            typeNames.push(it.type);
         }
-        group.split(',').forEach(group=>{
+        (it.group || "").split(',').forEach(group=>{
             if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
                 groupNames.push(group);
             }

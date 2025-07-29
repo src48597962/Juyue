@@ -22,7 +22,7 @@ function juItemF(id){
             }
             return items;
         },
-        'put': function (key, str, id2) {
+        'set': function (key, str, id2) {
             if(!key || !str) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();

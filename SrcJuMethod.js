@@ -11,36 +11,41 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 // 聚阅全局自定义存储变量方法
-let juItem = {
-    'file': 'hiker://files/rules/Src/Juyue/juItem.json',
-    'items': function(){
-        let items = {};
-        let itemsstr = fetch(juItem.file);
-        if (itemsstr != "") {
-            eval("items=" + itemsstr + ";");
-        }
-        return items;
-    },
-    'put': function(key, s, id){
-        id = id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-        toast(id.toString());
-        /*
-        let items = juItem.items();
-        let item = items[id] || {};
-        item[key] = s;
-        items[id] = item;
-        writeFile(juItem.file, JSON.stringify(items));
-        */
-    },
-    'get': function(s){
-        //let item = juItem.iditem();
-        //return item[s] || '';
-        return MY_RULE.id;
-    },
-    'clear': function(s){
+function juItemF(id){
+    let juItemO = {
+        'file': 'hiker://files/rules/Src/Juyue/juItem.json',
+        'items': function () {
+            let items = {};
+            let itemsstr = fetch(juItem.file);
+            if (itemsstr != "") {
+                eval("items=" + itemsstr + ";");
+            }
+            return items;
+        },
+        'put': function (key, s, id2) {//MY_TYPE-search
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            toast(id.toString());
+            /*
+            let items = juItem.items();
+            let item = items[id] || {};
+            item[key] = s;
+            items[id] = item;
+            writeFile(juItem.file, JSON.stringify(items));
+            */
+        },
+        'get': function (s) {
+            //let item = juItem.iditem();
+            //return item[s] || '';
+            return id;
+        },
+        'clear': function (s) {
 
+        }
     }
+    return juItemO;
 }
+let juItem = juItemF();
+
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){

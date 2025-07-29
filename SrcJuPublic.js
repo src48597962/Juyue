@@ -199,7 +199,7 @@ function getJkGroups(datas, isgroup) {
             typeNames.push(it.type);
         }
         let group = it.group || "";
-        if(getItem('noShowType','')=='1'){
+        if(getItem('noShowType','')=='1' && !isgroup){
             group = it.group || it.type;
         }
         group.split(',').forEach(group=>{

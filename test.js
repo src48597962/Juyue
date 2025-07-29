@@ -10,7 +10,6 @@ let parse = {
 
         if (!host || !/吃瓜/.test(fetch(host))) {
             let foundUrl = "";
-
             let 发布页s = [];
             发布页s.push(juItem.get('发布link') || "https://51cga24.com");
             for (let i = 24; i <= 35; i++) {
@@ -23,12 +22,14 @@ let parse = {
                     if (html) {
                         let urls = pdfa(html, ".box&&.btnLink").map(item => pdfh(item, "Text"));
                         foundUrl = findReachableIP(urls, 5000);
-                        toast(`找到可访问网址：${foundUrl}`);
-                        juItem.set("发布link", fburl);
-                        juItem.set("吃瓜link", foundUrl);
-                        log(fburl);
-                        log(foundUrl);
-                        break;
+                        if(foundUrl){
+                            toast(`找到可访问网址：https://` + foundUrl);
+                            juItem.set("发布link", fburl);
+                            juItem.set("吃瓜link", 'https://' + foundUrl);
+                            log(fburl);
+                            log(foundUrl);
+                            break;
+                        }
                     }
                 } catch (error) {
                     toast(`${fburl} 不可访问`);
@@ -77,7 +78,7 @@ let parse = {
                     });
                     return encrypted.toInputStream();
                 })
-                var host = getItem('吃瓜link')
+                let host = juItem.get('吃瓜link');
                 log(host)
                 //var host=parse.host
                 var url = host + MY_URL.split("##")[1];
@@ -163,7 +164,6 @@ let parse = {
                     });
 
                 } else {
-
                     var list = pdfa(html, 'body&&article:not(:has(meta[content=广告])):not(:matches(在线选妃|杏吧直播|无忧直播|开云体育|同城约​炮|随时可约|无色无味无记忆|复制网址用浏览器|私密发货|开云体育|扫描图中|点击扫码|免费体验|开元棋牌|迷奸同事|注册即送|恋人直播|名姿直播))');
                     for (var j in list) {
                         var title = pdfh(list[j], 'h2&&Text');
@@ -199,8 +199,8 @@ let parse = {
 
         ,
     "搜索": function(name) {
-        var d = [];
-        var tlazy = $('').image(() => {
+        let d = [];
+        let tlazy = $('').image(() => {
             const CryptoUtil = $.require("hiker://assets/crypto-java.js");
             let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
             let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
@@ -211,22 +211,19 @@ let parse = {
             });
             return encrypted.toInputStream();
         })
-        var host = getItem('吃瓜link')
-        log(host)
-        //var host=parse.host        
-        if (page == 1) {
-            var url = host + '/search/' + name + '/'
-        } else {
-            var url = host + '/search/' + name + '/' + page + '/';
+        let host = juItem.get('吃瓜link');
+        let url = host + '/search/' + name + '/';
+        if (page > 1) {
+            url = url + page + '/';
         }
-        log(url)
-        var html = fetchPC(url);
-        var list = pdfa(html, 'body&&article')
+
+        let html = fetchPC(url);
+        let list = pdfa(html, 'body&&article')
         list.forEach(item => {
-            var img = pdfh(item, 'script&&Html').split("'")[1]
-            var url = pdfh(item, 'a&&href')
-            var title = pdfh(item, 'h2&&Text')
-            var desc = pdfh(item, '.post-card-info&&Text')
+            let img = pdfh(item, 'script&&Html').split("'")[1]
+            let url = pdfh(item, 'a&&href')
+            let title = pdfh(item, 'h2&&Text')
+            let desc = pdfh(item, '.post-card-info&&Text')
             d.push({
                 title: title,
                 desc: desc,

@@ -50,7 +50,18 @@ function juItemF(id){
     return juItemO;
 }
 let juItem = juItemF();
-
+// 全局公共执行代码前需要加载的
+let evalPublicStr = `
+    let juItem = juItemF(jkdata.name);
+    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
+        parse['预处理1'].call(parse);
+        putMyVar('执行预处理1', '1');
+    }else if (parse['预处理']) {
+        parse['预处理'].call(parse);
+    }
+    let resultd;
+    let setResult = function(d) { resultd = d; };
+`
 // 静态分类调用生成方法
 function createClass(d, obj) {
     if($.type(d)=="array" && $.type(obj)=="object" && obj.url){
@@ -478,15 +489,7 @@ function getSsData(name, jkdata, page) {
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
-            let juItem = juItemF(jkdata.name);
-            if (parse['预处理1'] && !getMyVar('执行预处理1')) {
-                parse['预处理1'].call(parse);
-                putMyVar('执行预处理1', '1');
-            }else if (parse['预处理']) {
-                parse['预处理'].call(parse);
-            }
-            let resultd;
-            let setResult = function(d) { resultd = d; };
+            eval(evalPublicStr);
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
             if(resultd&&getData.length==0){
@@ -506,6 +509,7 @@ function getSsData(name, jkdata, page) {
         error: error
     };
 }
+
 //打开指定类型的新页面
 function rulePage(datatype, ispage, ide) {
     /*

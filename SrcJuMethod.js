@@ -62,8 +62,6 @@ let evalPublicStr = `
     }else if (parse['预处理']) {
         parse['预处理'].call(parse);
     }
-    let resultd;
-    let setResult = function(d) { resultd = d; };
 `
 // 静态分类调用生成方法
 function createClass(d, obj) {
@@ -384,6 +382,8 @@ function getYiData(datatype, jkdata, dd) {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
+                let resultd;
+                let setResult = function(d) { resultd = d; };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
@@ -486,6 +486,8 @@ function getSsData(name, jkdata, page) {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
             eval(evalPublicStr);
+            let resultd;
+            let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
             if(resultd&&getData.length==0){

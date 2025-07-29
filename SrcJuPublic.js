@@ -202,7 +202,7 @@ function getJkGroups(datas, isgroup) {
             typeNames.push(it.type);
         }
         (it.group || "").split(',').forEach(group=>{
-            if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1){
+            if (group && groupNames.indexOf(group)==-1 && typeNames.indexOf(group)==-1 && runTypes.indexOf(group)==-1){
                 groupNames.push(group);
             }
         })

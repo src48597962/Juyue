@@ -22,7 +22,8 @@ function juItemF(id){
             }
             return items;
         },
-        'put': function (key, str, id2) {//MY_TYPE-search
+        'put': function (key, str, id2) {
+            if(!key || !str) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
             let item = items[id] || {};
@@ -32,12 +33,14 @@ function juItemF(id){
         },
         'get': function (key, id2) {
             return id;
+            if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
             let item = items[id];
             return item[key] || '';
         },
         'clear': function (key, id2) {
+            if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
             let item = items[id];
@@ -53,15 +56,14 @@ function juItemF(id){
 let juItem = juItemF();
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
-    let juItem = juItemF(jkdata.name);
+    let juItem = juItemF(jkdata.id);
     if (parse['预处理1'] && !getMyVar('执行预处理1')) {
         parse['预处理1'].call(parse);
         putMyVar('执行预处理1', '1');
     }else if (parse['预处理']) {
         parse['预处理'].call(parse);
     }
-    let resultd;
-    let setResult = function(d) { resultd = d; };
+    let setResult = function(d) { getData = d; };
 `
 // 静态分类调用生成方法
 function createClass(d, obj) {
@@ -381,6 +383,7 @@ function getYiData(datatype, jkdata, dd) {
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
+
                 if (parse['预处理1'] && !getMyVar('执行预处理1')) {
                     parse['预处理1'].call(parse);
                     putMyVar('执行预处理1', '1');
@@ -493,9 +496,6 @@ function getSsData(name, jkdata, page) {
             eval(evalPublicStr);
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
-            if(resultd&&getData.length==0){
-                getData = resultd;
-            }
 
             getData.forEach(it=>{
                 it.title = juItem.get()+'-'+it.title

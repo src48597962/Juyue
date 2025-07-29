@@ -32,7 +32,6 @@ function juItemF(id){
             writeFile(juItem.file, JSON.stringify(items));
         },
         'get': function (key, id2) {
-            return id;
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
@@ -384,15 +383,7 @@ function getYiData(datatype, jkdata, dd) {
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
-
-                if (parse['预处理1'] && !getMyVar('执行预处理1')) {
-                    parse['预处理1'].call(parse);
-                    putMyVar('执行预处理1', '1');
-                }else if (parse['预处理']) {
-                    parse['预处理'].call(parse);
-                }
-                let resultd;
-                let setResult = function(d) { resultd = d; };
+                eval(evalPublicStr);
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
@@ -500,10 +491,6 @@ function getSsData(name, jkdata, page) {
             if(resultd&&getData.length==0){
                 getData = resultd;
             }
-
-            getData.forEach(it=>{
-                it.title = juItem.get()+'-'+it.title
-            })
         }
     } catch (e) {
         error = e.message;

@@ -543,33 +543,21 @@ function erji() {
                     }
                 }
             }
+
+            storage0.putMyVar('二级源接口信息', jkdata);
             //方便换源时二级代码中使用MY_PARAMS
             MY_PARAMS = erjiextra;
+            
             if(erdataCache){
                 erLoadData = erdataCache;
                 xlog('使用二级缓存数据');
-                try {
-                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
-                        parse['预处理1'].call(parse);
-                        putMyVar('执行预处理1', '1');
-                    }else if (parse['预处理']) {
-                        parse['预处理'].call(parse);
-                    }
-                } catch (e) {
-                    xlog('执行预处理报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-                }
+                eval(evalPublicStr);//调用执行公共加载代码，预处理等
             }else{
-                storage0.putMyVar('二级源接口信息', jkdata);
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 try {
-                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
-                        parse['预处理1'].call(parse);
-                        putMyVar('执行预处理1', '1');
-                    }else if (parse['预处理']) {
-                        parse['预处理'].call(parse);
-                    }
                     if(parse['二级']){
+                        eval(evalPublicStr);
                         eval("let 二级获取 = " + parse['二级'])
                         erLoadData = 二级获取.call(parse, MY_URL);
                     }else{
@@ -1392,15 +1380,10 @@ function erji() {
                 setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {
                     MY_URL = url;
                     let parse = getObjCode(jkdata, 'zx');
-                    if (parse['预处理1'] && !getMyVar('执行预处理1')) {
-                        parse['预处理1'].call(parse);
-                        putMyVar('执行预处理1', '1');
-                    }else if (parse['预处理']) {
-                        parse['预处理'].call(parse);
-                    }
                     let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
                     eval("let 最新2 = " + 最新str);
                     try{
+                        eval(evalPublicStr);
                         let zx = 最新2.call(parse, url) || "";
                         setResult(jkdata.name + " | " + (zx||""));
                     }catch(e){

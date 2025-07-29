@@ -314,9 +314,7 @@ function SRCSet() {
                     if(selectlist.length>0){
                         return $("","选定的"+selectlist.length+"个接口新分组名").input((selectlist)=>{
                             input = input.trim();
-                            if(input==""){
-                                return "hiker://empty";
-                            }else if(input=="全部"){
+                            if(input=="全部"){
                                 return "toast://分组名不能为：全部";
                             }else if(input.includes('[') || input.includes(']')){
                                 return "toast://分组名不能包含：[]";

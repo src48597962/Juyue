@@ -31,6 +31,7 @@ function juItemF(id){
             writeFile(juItem.file, JSON.stringify(items));
         },
         'get': function (key, id2) {
+            return id;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
             let item = items[id];

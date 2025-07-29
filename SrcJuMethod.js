@@ -13,7 +13,7 @@ if (getItem('接口日志打印') != "1") {
 // 聚阅全局自定义存储变量方法
 function juItemF(id){
     let juItemO = {
-        'file': 'hiker://files/rules/Src/Juyue/juItem.json',
+        'file': 'hiker://files/data/聚阅/juItem.json',
         'items': function () {
             let items = {};
             let itemsstr = fetch(juItem.file);

@@ -1208,7 +1208,7 @@ function erji() {
                             }
                         });
                         d.push({
-                            title: 分页页码==1?"↪️尾页":"◀︎上页",
+                            title: 分页页码==1?"尾页":"上页",
                             url: 分页页码==1?分页链接[分页名.length-1]:分页链接[pageid-1],
                             col_type: 'text_4',
                             extra: {
@@ -1226,7 +1226,7 @@ function erji() {
                             }
                         })
                         d.push({
-                            title: 分页页码==分页名.length?"首页↩️":"下页▶︎",
+                            title: 分页页码==分页名.length?"首页":"下页",
                             url: 分页页码==分页名.length?分页链接[0]:分页链接[pageid+1],
                             col_type: 'text_4',
                             extra: {

@@ -665,21 +665,21 @@ function erji() {
                         if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && (!列表s[lineid]||pageid>0))){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
+                            let pagelist = erLoadData.pagelist || [];
                             
                             if(自动页码){
-                                分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
-
+                                分页选集 = pagelist[pageid] || 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
                             }else{
                                 if(pageid > 分页.length){
                                     pageid = 0;
                                 }
-                                分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
+                                分页选集 = pagelist[pageid] || 分页选集动态解析.call(parse, 分页[pageid].url);
                             }
 
                             if($.type(分页选集)=="array"){
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
-                                let pagelist = erLoadData.pagelist || [];
+                                
                                 pagelist[pageid] = 分页选集;
                                 erLoadData.pagelist = pagelist;
                             }
@@ -1099,6 +1099,9 @@ function erji() {
                 if(分页){//原网站有分页，不执行自定义分页
                     let 分页链接 = [];
                     let 分页名 = [];
+                    if(自动页码){
+                        分页 = (erLoadData.pagelist||[]).map((it,i)=>i+1);
+                    }
                     分页.forEach((it,i)=>{
                         分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                                 if(nowid != newid){

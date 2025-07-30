@@ -524,6 +524,7 @@ function erji() {
     let isload;//是否正确加载
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
+    let Color = getItem('主题颜色','#3399cc');
     let pic;
     
     try {
@@ -1071,7 +1072,6 @@ function erji() {
             
             if(!noShow.线路){
                 if(线路s.length>0 && 线路s[0] !="线路"){
-                    let Color = getItem('主题颜色','#3399cc');
                     线路s.forEach((it,i)=>{
                         let line_others = 线路s_other || [];
                         let line_other = line_others[i] || {};
@@ -1110,7 +1110,7 @@ function erji() {
                                 return 'hiker://empty'
                             }, "SrcJu_"+MY_URL+"_page", pageid, i)
                         )
-                        分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+it.title:it.title);
+                        分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+it.title:it.title);
                     })
                     if(分页名.length>0){
                         d.push({
@@ -1120,7 +1120,7 @@ function erji() {
                             }
                         });
                         d.push({
-                            title: !自动页码&&pageid==0?"↪️尾页":"⏮️上页",
+                            title: !自动页码&&pageid==0?"尾页":"上页",
                             url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                                 if(nowid==0){
                                     return 'toast://已经到顶了';
@@ -1137,7 +1137,7 @@ function erji() {
                             }
                         })
                         d.push({
-                            title: 分页名[pageid] || ("第"+(pageid+1)+"页"),
+                            title: 分页名[pageid] || ('““””<span style="color: '+Color+'">'+"第"+(pageid+1)+"页"),
                             url: $(分页名, 2).select((分页名,分页链接) => {
                                 return 分页链接[分页名.indexOf(input)];
                             },分页名,分页链接),
@@ -1147,7 +1147,7 @@ function erji() {
                             }
                         })
                         d.push({
-                            title: 自动页码?"下页⏭️":pageid==分页名.length-1?"首页↩️":"下页⏭️",
+                            title: 自动页码?"下页":pageid==分页名.length-1?"首页":"下页",
                             url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                                 if(nowid != newid){
                                     putMyVar(pageurl, newid);
@@ -1196,7 +1196,7 @@ function erji() {
                             let start = i * 每页数量 + 1;
                             let end = i * 每页数量 + it.length;
                             let title = start + ' - ' + end;
-                            分页名.push(pageid==i?'““””<span style="color: #87CEFA">'+title:title)
+                            分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+title:title)
                         })
                         d.push({
                             col_type: "blank_block",
@@ -1205,7 +1205,7 @@ function erji() {
                             }
                         });
                         d.push({
-                            title: 分页页码==1?"↪️尾页":"⏮️上页",
+                            title: 分页页码==1?"尾页":"上页",
                             url: 分页页码==1?分页链接[分页名.length-1]:分页链接[pageid-1],
                             col_type: 'text_4',
                             extra: {

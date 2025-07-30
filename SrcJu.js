@@ -662,11 +662,11 @@ function erji() {
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
                             自动页码 = 分页[0].url;
                         }
-
-                        if((erdataCache && (pageid!=erdataCache.pageid || lineid!=erdataCache.lineid)) || (!erdataCache && (!列表s[lineid]||pageid>0))){
+                        let pagelist = erLoadData.pagelist || [列表s[lineid]];
+                        if(!pagelist[pageid]){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
-                            let pagelist = erLoadData.pagelist || [];
+                            
                             
                             if(自动页码){
                                 分页选集 = pagelist[pageid] || 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
@@ -682,9 +682,9 @@ function erji() {
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
                                 
                                 pagelist[pageid] = 分页选集;
-                                erLoadData.pagelist = pagelist;
                             }
                         }
+                        erLoadData.pagelist = pagelist;
                     }catch(e){
                         xlog(sname+'分页选集处理失败>'+e.message);
                     }
@@ -1101,11 +1101,9 @@ function erji() {
                     let 分页链接 = [];
                     let 分页名 = [];
                     if(自动页码){
-                        xlog(分页);
-                        分页 = 分页.concat(erLoadData.pagelist||[]).map((it,i)=>{
+                        分页 = erLoadData.pagelist.map((it,i)=>{
                             return {title: (i+1).toString()}
                         });
-                        xlog(分页);
                     }
                     分页.forEach((it,i)=>{
                         分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {

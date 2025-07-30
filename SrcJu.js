@@ -1100,7 +1100,9 @@ function erji() {
                     let 分页链接 = [];
                     let 分页名 = [];
                     if(自动页码){
-                        分页 = (erLoadData.pagelist||[]).map((it,i)=>i+1);
+                        分页 = (erLoadData.pagelist||[]).map((it,i)=>{
+                            return {title: (i+1).toString()}
+                        });
                     }
                     分页.forEach((it,i)=>{
                         分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {

@@ -1340,7 +1340,7 @@ function erji() {
             if(erLoadData.lineid != lineid || erLoadData.pageid != pageid){
                 //erLoadData.lineid = lineid;
                 //erLoadData.pageid = pageid;
-                savec = 1;
+                //savec = 1;
             }
             
             erLoadData.updatetime = Date.now();

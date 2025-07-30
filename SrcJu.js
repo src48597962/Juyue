@@ -1336,11 +1336,9 @@ function erji() {
         if(!getMyVar("SrcJu_调试模式")){
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
-            let savec;
-            if(erLoadData.lineid != lineid || erLoadData.pageid != pageid){
-                //erLoadData.lineid = lineid;
-                //erLoadData.pageid = pageid;
-                //savec = 1;
+            let saveCache;
+            if(smark.pageid != pageid){
+                saveCache = 1;
             }
             
             erLoadData.updatetime = Date.now();
@@ -1360,7 +1358,7 @@ function erji() {
             if(!erdataCache){
                 addBookCase(erLoadData.caseData, true);//更新收藏书架数据
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
-            }else if(savec){
+            }else if(saveCache){
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存
             }
         }

@@ -1101,7 +1101,7 @@ function erji() {
                     let 分页链接 = [];
                     let 分页名 = [];
                     if(自动页码){
-                        分页 = (erLoadData.pagelist||[]).map((it,i)=>{
+                        分页 = (erLoadData.pagelist||分页).map((it,i)=>{
                             return {title: (i+1).toString()}
                         });
                     }

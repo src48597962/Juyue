@@ -1101,9 +1101,11 @@ function erji() {
                     let 分页链接 = [];
                     let 分页名 = [];
                     if(自动页码){
+                        xlog(分页);
                         分页 = 分页.concat(erLoadData.pagelist||[]).map((it,i)=>{
-                            return {title: i.toString()}
+                            return {title: (i+1).toString()}
                         });
+                        xlog(分页);
                     }
                     分页.forEach((it,i)=>{
                         分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {

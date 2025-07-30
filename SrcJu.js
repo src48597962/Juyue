@@ -525,7 +525,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let pic;
+    let pic,linename;
     
     try {
         if (sid&&MY_URL) {
@@ -632,6 +632,7 @@ function erji() {
                 if(线路s.length != 列表s.length){
                     xlog(sname+'>源接口返回的线路数'+线路s.length+'和列表数'+列表s.length+'不相等');
                 }
+                linename = 线路s[lineid];//当前线路名
             }catch(e){
                 xlog(sname+">线路或列表返回数据有误>"+e.message);
             }
@@ -1377,8 +1378,11 @@ function erji() {
         
         if (isload) {//有选集的才保存或更新最新
             //二级源浏览记录保存
-            let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
-            setMark(erjiMarkdata);
+            if(linename != '评论'){
+                let erjiMarkdata = { sid: jkdata.id, url: MY_URL, lineid: lineid, pageid: pageid };
+                setMark(erjiMarkdata);
+            }
+
             //收藏更新最新章节
             if (parse['最新']) {
                 setLastChapterRule('js:' + $.toString((url,jkdata,参数) => {

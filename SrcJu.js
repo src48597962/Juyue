@@ -1102,7 +1102,7 @@ function erji() {
                     let 分页名 = [];
                     if(自动页码){
                         分页 = 分页.concat(erLoadData.pagelist||[]).map((it,i)=>{
-                            return {title: (i+1).toString()}
+                            return {title: i.toString()}
                         });
                     }
                     分页.forEach((it,i)=>{

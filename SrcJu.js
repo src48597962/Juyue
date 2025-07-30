@@ -1120,8 +1120,11 @@ function erji() {
                             }
                         });
                         d.push({
-                            title: pageid==0?"↪️尾页":"⏮️上页",
+                            title: !自动页码&&pageid==0?"↪️尾页":"⏮️上页",
                             url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                                if(nowid==0){
+                                    return 'toast://已经到顶了';
+                                }
                                 if(nowid != newid){
                                     putMyVar(pageurl, newid);
                                     refreshPage(false);

@@ -1154,13 +1154,16 @@ function erji() {
                         })
                         d.push({
                             title: 自动页码?"下页":pageid==分页名.length-1?"首页":"下页",
-                            url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                            url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid,listlength) => {
+                                if(nowid>0 && listlength==0){
+                                    return 'toast://到底了'
+                                }
                                 if(nowid != newid){
                                     putMyVar(pageurl, newid);
                                     refreshPage(false);
                                 }
                                 return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_page", pageid, pageid+1):pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
+                            }, "SrcJu_"+MY_URL+"_page", pageid, pageid+1, 列表.length):pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
                             col_type: 'text_4',
                             extra: {
                                 cls: "Juloadlist"

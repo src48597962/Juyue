@@ -1343,7 +1343,7 @@ function erji() {
             erLoadData.sid = jkdata.id;
             erLoadData.url = MY_URL;
             let saveCache;
-            if(smark.pageid != pageid){
+            if(smark.pageid != pageid || smark.lineid != lineid){
                 saveCache = 1;
             }
             

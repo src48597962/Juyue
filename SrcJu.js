@@ -663,6 +663,8 @@ function erji() {
                             自动页码 = 分页[0].url;
                         }
                         let pagelist = erLoadData.pagelist || [列表s[lineid]];
+                        xlog(pageid);
+                        xlog(pagelist[pageid]);
                         if(!pagelist[pageid]){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];

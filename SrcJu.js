@@ -1144,7 +1144,7 @@ function erji() {
                         })
                         d.push({
                             title: 自动页码?('““””<span style="color: '+Color+'">'+"第"+(pageid+1)+"页"):分页名[pageid],
-                            url: $(分页名, 2).select((分页名,分页链接) => {
+                            url: $(分页名, 自动页码&&分页名.length>10?3:2).select((分页名,分页链接) => {
                                 return 分页链接[分页名.indexOf(input)];
                             },分页名,分页链接),
                             col_type: 'text_2',

@@ -666,12 +666,10 @@ function erji() {
                         if(!pagelist[pageid]){//分页数组不存在，则走动态获取
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
-                            xlog('a');
+
                             if(自动页码){
-                                xlog('b');
                                 分页选集 = 分页选集动态解析.call(parse, 分页[0].url.replace(/fypage/g, pageid+1));
                             }else{
-                                xlog('c');
                                 if(pageid > 分页.length){
                                     pageid = 0;
                                 }
@@ -679,14 +677,12 @@ function erji() {
                             }
 
                             if($.type(分页选集)=="array"){
-                                xlog('d');
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
 
                                 pagelist[pageid] = 分页选集;
                             }
                         }else{//分页数组存在，则赋值给当前列表
-                            xlog('e');
                             列表s[lineid] = pagelist[pageid];
                         }
                         erLoadData.pagelist = pagelist;//分页数组缓存本地
@@ -701,7 +697,7 @@ function erji() {
                 }
 
                 列表 = 列表s[lineid] || [];
-                xlog(列表);
+
                 //线路名除评论的线路选集修正排序
                 if(列表.length>0 && 线路s[lineid]!='评论'){
                     function checkAndReverseArray(arr) {

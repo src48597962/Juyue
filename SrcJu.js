@@ -1288,7 +1288,7 @@ function erji() {
                     isload = 1;
                 }else if(列表.length==0){
                     d.push({
-                        title: "‘‘’’<font color=grey><small>当前源路线选集列表为空</small></font>",
+                        title: "‘‘’’<font color=grey><small>"+(pageid==0?"线路列表为空":"分页到底了")+"</small></font>",
                         url: 'hiker://empty',
                         col_type: 'text_center_1',
                         extra: {

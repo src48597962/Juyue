@@ -675,11 +675,11 @@ function erji() {
                                 }
                                 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                             }
-                            xlog(分页选集);
+
                             if($.type(分页选集)=="array"){
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
-                                
+                                xlog('进来了'+pageid);
                                 pagelist[pageid] = 分页选集;
                             }
                         }

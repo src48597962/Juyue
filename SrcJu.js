@@ -684,6 +684,7 @@ function erji() {
                             }
                         }
                         erLoadData.pagelist = pagelist;
+                        xlog(erLoadData.pagelist);
                     }catch(e){
                         xlog(sname+'分页选集处理失败>'+e.message);
                     }

@@ -604,7 +604,9 @@ function erji() {
                 }, erCacheFile, MY_URL)
             }];
             if(!noShow.封面){
-                detailextra.longClick = detailextra.longClick.concat(addCaseObj);
+                if(!erdataCache){
+                    detailextra.longClick = detailextra.longClick.concat(addCaseObj);
+                }
                 d.push({
                     title: erTempData.detail1 || "",
                     desc: erTempData.detail2 || "",
@@ -1254,7 +1256,7 @@ function erji() {
                 }
                 let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
                 let list_col_type = getItem('SrcJuList_col_type', '自动')=='自动'?(列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2'):getItem('SrcJuList_col_type'); //列表默认样式
-
+                xlog(列表);
                 for(let i=0; i<列表.length; i++) {
                     let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
                     try{

@@ -662,8 +662,8 @@ function erji() {
                         if(分页.length==1 && 分页[0].url.includes('fypage')){
                             自动页码 = 分页[0].url;
                         }
-                        let pagelist = erLoadData.pagelist || [列表s[lineid]];
-                        if(!pagelist[pageid]){
+                        let pagelist = erLoadData.pagelist || [列表s[lineid]];//优先取本地缓存的分页数据，没有则取二级返回的
+                        if(!pagelist[pageid]){//分页数组不存在，则走动态获取
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
                             xlog('a');
@@ -685,11 +685,11 @@ function erji() {
 
                                 pagelist[pageid] = 分页选集;
                             }
-                        }else{
+                        }else{//分页数组存在，则赋值给当前列表
                             xlog('e');
-                            列表s = pagelist;
+                            列表s[lineid] = pagelist[pageid];
                         }
-                        erLoadData.pagelist = pagelist;
+                        erLoadData.pagelist = pagelist;//分页数组缓存本地
                     }catch(e){
                         xlog(sname+'分页选集处理失败>'+e.message);
                     }

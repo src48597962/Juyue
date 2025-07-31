@@ -679,12 +679,13 @@ function erji() {
                             if($.type(分页选集)=="array"){
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
-                                xlog('进来了'+pageid);
+
                                 pagelist[pageid] = 分页选集;
                             }
+                        }else{
+                            列表s = pagelist;
                         }
                         erLoadData.pagelist = pagelist;
-                        xlog(erLoadData.pagelist);
                     }catch(e){
                         xlog(sname+'分页选集处理失败>'+e.message);
                     }

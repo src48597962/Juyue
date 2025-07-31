@@ -663,8 +663,6 @@ function erji() {
                             自动页码 = 分页[0].url;
                         }
                         let pagelist = erLoadData.pagelist || [列表s[lineid]];
-                        xlog(pageid);
-                        xlog(pagelist[pageid]);
                         if(!pagelist[pageid]){
                             eval("let 分页选集动态解析 = " + erLoadData.pageparse.toString());
                             let 分页选集 = [];
@@ -677,7 +675,7 @@ function erji() {
                                 }
                                 分页选集 = 分页选集动态解析.call(parse, 分页[pageid].url);
                             }
-
+                            xlog(分页选集);
                             if($.type(分页选集)=="array"){
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;

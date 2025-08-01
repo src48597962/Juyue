@@ -1568,6 +1568,15 @@ function importConfirm(jsfile) {
             }
             it.id = it.id.toString();
         })
+        importdatas.sort((a, b) => {
+            let hasA = a.oldversion;
+            let hasB = b.oldversion;
+
+            if (hasA && !hasB) return -1;
+            if (!hasA && hasB) return 1;
+            return 0;
+        });
+        
         let oldnum = importdatas.length - newdatas.length;
         let Color = getItem('主题颜色','#3399cc');
         d.push({

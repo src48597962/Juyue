@@ -267,8 +267,10 @@ function yiji(testSource) {
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
             deleteItemByCls('homesousuolist');
             searchRecord('put', input);
-            putVar("keyword", input);
-            if(!jkdata.name){
+            putVar("keyword", input.split('  ')[0]);
+            if(input.includes('  ')){
+                return 'hiker://search?s='+input.split('  ')[1]+'&rule='+MY_RULE.title;
+            }else if(!jkdata.name){
                 return 'toast://当前无接口数据';
             }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
                 require(config.聚阅); 

@@ -1569,8 +1569,9 @@ function importConfirm(jsfile) {
             it.id = it.id.toString();
         })
         let oldnum = importdatas.length - newdatas.length;
+        let Color = getItem('主题颜色','#3399cc');
         d.push({
-            title: "““””<big><b><font color="+getItem('主题颜色','#3399cc')+">📲 云口令导入  </font></b></big>",
+            title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
             desc: (sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
             url: "hiker://empty",
             col_type: 'text_center_1'
@@ -1640,7 +1641,7 @@ function importConfirm(jsfile) {
             }
             let ittitle,itimg,itcol;
             if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.version?"-V"+it.version:"");
+                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.oldversion?"-V"+it.oldversion:"");
                 itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
                 itcol = "icon_1_left_pic";
             }else{
@@ -1740,7 +1741,7 @@ function importConfirm(jsfile) {
                         }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
-                desc: isnew?"新增加"+(it.version?"-V"+it.version:""):"已存在"+(it.oldversion?"-V"+it.oldversion:""),
+                desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在")+"</font></b>" + (it.version?"-V"+it.version:""),
                 img: itimg,
                 col_type: itcol,
                 extra: {

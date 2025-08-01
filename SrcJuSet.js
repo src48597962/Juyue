@@ -1568,9 +1568,10 @@ function importConfirm(jsfile) {
             }
             it.id = it.id.toString();
         })
+        const prop = 'oldversion';
         importdatas.sort((a, b) => {
-            let hasA = a.oldversion;
-            let hasB = b.oldversion;
+            let hasA = prop in a;
+            let hasB = prop in b;
 
             if (hasA && !hasB) return -1;
             if (!hasA && hasB) return 1;

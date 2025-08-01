@@ -1418,21 +1418,40 @@ function erji() {
 
 //搜索页面
 function sousuo() {
-    let k = MY_URL.split('##')[1];
-    let name = k.trim();
+    let name = MY_URL.split('##')[1];
 
     setResult([{
         title: "点我一下，视界聚搜",
-        url: "hiker://search?s=" + name,
+        url: "hiker://search?s=" + name.split('  ')[0].trim(),
         extra: {
             delegateOnlySearch: true,
             rules: $.toString((name) => {
+                let info = storage0.getMyVar('一级源接口信息') || {};
+                let keyword2;
+                if(name.indexOf('  ')>-1){
+                    keyword2 = name.split('  ')[1].trim() || info.name;
+                }
+
                 let ssdatalist = [];
                 try{
-                    if(storage0.getMyVar('搜索临时搜索数据')){
+                    if(storage0.getMyVar('搜索临时搜索数据')){//主界面上搜索当前接口
                         ssdatalist.push(storage0.getMyVar('搜索临时搜索数据'));
                         clearMyVar('搜索临时搜索数据');
-                    }else{
+                    }else if(keyword2){//软件搜索有+2空格传指定
+                        if(keyword2==info.name){//搜当前源
+                            ssdatalist = [info];
+                        }else{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                            let lists = getSearchLists(group);
+                            if(getJkGroups(lists).indexOf(keyword2)>-1){//搜指定分组
+                                ssdatalist = getGroupLists(lists, keyword2);
+                            }else{//搜指定源名
+                                ssdatalist = lists.filter(it=>{
+                                    return it.name.includes(keyword2);
+                                });
+                            }
+                        }
+                    }else{//主界面上或软件搜索当前源所在分组
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let group = getMyVar('搜索临时搜索分组','') || homeGroup;
                         ssdatalist = getSearchLists(group);
@@ -1441,13 +1460,14 @@ function sousuo() {
                 }catch(e){
                     //xlog(e.message);
                 }
-                
+
+                let keyword = name.split('  ')[0].trim();
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     judata.push({
                         "title": it.name,
                         "search_url": "hiker://empty##fypage",
-                        "searchFind": `js: require(config.聚阅); let d = search('` + name + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
+                        "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
                     });
                 })
                 return JSON.stringify(judata);

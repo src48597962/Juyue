@@ -1443,9 +1443,12 @@ function sousuo() {
                         }else{
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             let lists = getSearchLists(group);
+                            xlog('a');
                             if(getJkGroups(lists).indexOf(keyword2)>-1){//搜指定分组
+                                xlog('b');
                                 ssdatalist = getGroupLists(lists, keyword2);
                             }else{//搜指定源名
+                                xlog('c');
                                 ssdatalist = lists.filter(it=>{
                                     return it.name.includes(keyword2);
                                 });

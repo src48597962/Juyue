@@ -579,11 +579,11 @@ function toerji(item, jkdata) {
         }
         let extra = item.extra || {};
         let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
-        if(item.url && !extra.noDetail && !/js:|select:|=>|@|toast:|hiker:\/\/page|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && item.url!='hiker://empty' && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
+        if(item.url && !extra.noDetail && !/select:|@|toast:|hiker:\/\/|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
             extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
             extra.img = extra.img || item.pic_url || item.img;
             extra.pageTitle = extra.pageTitle || extra.name;
-            extra.url = item.url.toString().replace(/hiker:\/\/empty|#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+            extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
             extra.data = jkdata;
             item.url = $("hiker://empty?type="+jkdata.type+"#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                 require(config.聚阅);

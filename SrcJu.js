@@ -1890,15 +1890,14 @@ function newSearchPage(keyword, searchtype) {
             keyword2 = name.split('  ')[1].trim();
         }
 
-        let ssdatalist = [];
+        let ssdatas = [];
         try{
             if(keyword2){//搜索有+2空格传指定
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let lists = getSearchLists(keyword2);
                 if(lists.length>0){//搜指定分组
-                    ssdatalist = lists;
+                    ssdatas = lists;
                 }else{//搜指定源名
-                    ssdatalist = getSearchLists().filter(it=>{
+                    ssdatas = getSearchLists().filter(it=>{
                         return it.name.includes(keyword2);
                     });
                 }
@@ -1906,7 +1905,7 @@ function newSearchPage(keyword, searchtype) {
         }catch(e){
             //xlog(e.message);
         }
-        erjisousuo(name,group,ssdatalist.length==0?false:ssdatalist,"newSearch");
+        erjisousuo(name,group,ssdatas.length==0?false:ssdatas,"newSearch");
     }
 }
 //书架

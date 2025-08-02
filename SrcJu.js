@@ -1730,6 +1730,13 @@ function newSearchPage(keyword, searchtype) {
     let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
     setPageTitle("聚合搜索 | 聚阅");
 
+    let keyword = name.split('  ')[0].trim();
+    let keyword2;
+    if(name.indexOf('  ')>-1){
+        keyword2 = name.split('  ')[1].trim();
+        group = keyword2;
+    }
+
     let d = [];
     let descarr = ['可快速切换下面类型','1个空格显示搜索历史','+2空格+指定源名或分组','搜你想要的...'];
     if(MY_PAGE==1){
@@ -1883,13 +1890,8 @@ function newSearchPage(keyword, searchtype) {
     });
     setResult(d);
     
-    if(name){
+    if(keyword){
         deleteItemByCls('searchrecord');
-        let keyword = name.split('  ')[0].trim();
-        let keyword2;
-        if(name.indexOf('  ')>-1){
-            keyword2 = name.split('  ')[1].trim();
-        }
 
         let ssdatas = [];
         try{

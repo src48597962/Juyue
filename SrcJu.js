@@ -1585,7 +1585,6 @@ function erjisousuo(name,group,datas,sstype) {
             return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
-                    xlog(lists);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
@@ -1886,6 +1885,7 @@ function newSearchPage(keyword, searchtype) {
     
     if(name){
         deleteItemByCls('searchrecord');
+        let keyword = name.split('  ')[0].trim();
         let keyword2;
         if(name.indexOf('  ')>-1){
             keyword2 = name.split('  ')[1].trim();
@@ -1906,7 +1906,7 @@ function newSearchPage(keyword, searchtype) {
         }catch(e){
             //xlog(e.message);
         }
-        erjisousuo(name,group,ssdatas.length==0?false:ssdatas,"newSearch");
+        erjisousuo(keyword,group,ssdatas.length==0?false:ssdatas,"newSearch");
     }
 }
 //书架

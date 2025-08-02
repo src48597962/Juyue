@@ -320,7 +320,7 @@ function yiji(testSource) {
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
-        let descarr = ['搜你想要的...','1个空格显示搜索历史','结尾+2空格互换方式','+2空格+搜索指定源或组'];
+        let descarr = ['搜你想要的...','1个空格显示搜索历史','结尾+2空格互换方式','+2空格+指定源名或分组'];
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
@@ -1731,7 +1731,7 @@ function newSearchPage(keyword, searchtype) {
     setPageTitle("聚合搜索 | 聚阅");
 
     let d = [];
-    let descarr = ['可快速切换下面类型','1空格显示搜索历史','搜你想要的...'];
+    let descarr = ['可快速切换下面类型','1个空格显示搜索历史','+2空格+指定源名或分组','搜你想要的...'];
     if(MY_PAGE==1){
         if(getItem('不显示沉浸图')=='1'){
             for(let i=0;i<2;i++){
@@ -1750,7 +1750,7 @@ function newSearchPage(keyword, searchtype) {
         }
         let searchurl = $('#noLoading#').lazyRule(() => {
             putMyVar('SrcJu_sousuoName',input);
-            putVar('keyword',input);
+            putVar('keyword',input.split('  ')[0]);
             searchRecord('put', input);
             refreshPage(true);
             return 'hiker://empty';
@@ -1885,7 +1885,28 @@ function newSearchPage(keyword, searchtype) {
     
     if(name){
         deleteItemByCls('searchrecord');
-        erjisousuo(name,group,false,"newSearch");
+        let keyword2;
+        if(name.indexOf('  ')>-1){
+            keyword2 = name.split('  ')[1].trim();
+        }
+
+        let ssdatalist = [];
+        try{
+            if(keyword2){//搜索有+2空格传指定
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let lists = getSearchLists(keyword2);
+                if(lists.length>0){//搜指定分组
+                    ssdatalist = lists;
+                }else{//搜指定源名
+                    ssdatalist = getSearchLists().filter(it=>{
+                        return it.name.includes(keyword2);
+                    });
+                }
+            }
+        }catch(e){
+            //xlog(e.message);
+        }
+        erjisousuo(name,group,ssdatalist.length==0?false:ssdatalist,"newSearch");
     }
 }
 //书架

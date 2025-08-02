@@ -1585,6 +1585,7 @@ function erjisousuo(name,group,datas,sstype) {
             return (function() {
                 try {
                     let lists = obj.search(obj.name, obj.type, obj.data);
+                    xlog(lists);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);

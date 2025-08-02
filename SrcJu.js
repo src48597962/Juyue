@@ -268,10 +268,10 @@ function yiji(testSource) {
             deleteItemByCls('homesousuolist');
             searchRecord('put', input);
             putVar("keyword", input.split('  ')[0]);
-            if(input.includes('  ') && !input.endsWith('  ')){
-                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(!jkdata.name){
+            if(!jkdata.name){
                 return 'toast://当前无接口数据';
+            }else if(input.includes('  ') && !input.endsWith('  ')){//+2空格搜索指定源名或分组
+                return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
                 require(config.聚阅); 
                 showLoading('搜索中');
@@ -320,7 +320,7 @@ function yiji(testSource) {
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup']);
-        let descarr = ['搜你想要的...','1空格显示搜索历史','结尾2空格互换方式'];
+        let descarr = ['搜你想要的...','1个空格显示搜索历史','结尾+2空格互换方式','+2空格+搜索指定源或组'];
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {

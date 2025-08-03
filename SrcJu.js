@@ -569,10 +569,10 @@ function erji() {
                 } catch (e) {
                     xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
-                erLoadData.author = jkdata.author || parse['作者'];
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
+            erLoadData.author = jkdata.author || parse['作者'];
             noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";

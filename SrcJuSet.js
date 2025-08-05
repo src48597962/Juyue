@@ -28,7 +28,7 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有","分组排序",getMyVar('similarTitles')?"查看全部":"查看相似"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有","分组排序",getMyVar('similarTitles')?"退出相似":"查看相似"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
@@ -49,7 +49,7 @@ function SRCSet() {
                     refreshPage(false);
                     return 'toast://已全部清空';
                 })
-            }else if(input=="查看禁用"||input=="查看全部"){
+            }else if(input=="查看禁用"||input=="退出禁用"){
                 let sm;
                 if(getMyVar('onlyStopJk')){
                     clearMyVar('onlyStopJk');
@@ -116,11 +116,11 @@ function SRCSet() {
                     }
                 });
                 return 'hiker://empty';
-            }else if(input=="查看相似"||input=="查看全部"){
+            }else if(input=="查看相似"||input=="退出相似"){
                 let sm;
                 if(getMyVar('similarTitles')){
                     clearMyVar('similarTitles');
-                    sm = "显示全部接口列表";
+                    sm = "退出仅显示相似列表";
                 }else{
                     putMyVar('similarTitles','1');
                     sm = "进入仅显示相似列表";

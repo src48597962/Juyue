@@ -2730,8 +2730,8 @@ function similarTitles(items, similarityThreshold) {
             if (i === j || visited[j]) continue;
 
             var sim = similarity(
-                items[i].title.toLowerCase(),
-                items[j].title.toLowerCase()
+                items[i].name.toLowerCase(),
+                items[j].name.toLowerCase()
             );
 
             if (sim >= similarityThreshold) {

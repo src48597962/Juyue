@@ -8,6 +8,7 @@ function SRCSet() {
         clearMyVar('jkdatalist');
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
+        clearMyVar('similarTitles');
         clearMyVar('selectGroup');
     }));
 

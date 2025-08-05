@@ -2674,7 +2674,7 @@ function themeIconSet() {
 // 只显示名称相近的接口
 function similarTitles(items, similarityThreshold) {
     // 设置默认相似度阈值
-    similarityThreshold = similarityThreshold || 0.6;
+    similarityThreshold = similarityThreshold || 0.8;
     
     // 计算两个字符串的相似度（0~1）
     function similarity(s1, s2) {

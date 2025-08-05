@@ -28,7 +28,7 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有","分组排序"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"查看全部":"查看禁用","清空所有","分组排序",getMyVar('similarTitles')?"查看全部":"查看相似"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
@@ -116,6 +116,17 @@ function SRCSet() {
                     }
                 });
                 return 'hiker://empty';
+            }else if(input=="查看相似"||input=="查看全部"){
+                let sm;
+                if(getMyVar('similarTitles')){
+                    clearMyVar('similarTitles');
+                    sm = "显示全部接口列表";
+                }else{
+                    putMyVar('similarTitles','1');
+                    sm = "进入仅显示相似列表";
+                }
+                refreshPage(false);
+                return "toast://"+sm;
             }
         }),
         img: getIcon(jkIcons[1].img, false, jkIcons[1].color),
@@ -140,7 +151,9 @@ function SRCSet() {
     pastes.push('云口令文件');
     
     let datalist = getDatas('all');
-    if(getMyVar('onlyStopJk')){
+    if(getMyVar('similarTitles')){
+        datalist = similarTitles(datalist);
+    }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }
 
@@ -2657,4 +2670,89 @@ function themeIconSet() {
     })
 
     setResult(d);
+}
+// 只显示名称相近的接口
+function similarTitles(items, similarityThreshold) {
+    // 设置默认相似度阈值
+    similarityThreshold = similarityThreshold || 0.6;
+    
+    // 计算两个字符串的相似度（0~1）
+    function similarity(s1, s2) {
+        var longer = s1.length > s2.length ? s1 : s2;
+        var shorter = s1.length > s2.length ? s2 : s1;
+        var longerLength = longer.length;
+        if (longerLength === 0) return 1.0;
+        
+        var distance = levenshteinDistance(longer, shorter);
+        return (longerLength - distance) / longerLength;
+    }
+
+    // Levenshtein 距离计算
+    function levenshteinDistance(s, t) {
+        if (s === t) return 0;
+        if (s.length === 0) return t.length;
+        if (t.length === 0) return s.length;
+
+        var dp = [];
+        for (var i = 0; i <= s.length; i++) {
+            dp[i] = [];
+            dp[i][0] = i;
+        }
+        for (var j = 0; j <= t.length; j++) {
+            dp[0][j] = j;
+        }
+
+        for (i = 1; i <= s.length; i++) {
+            for (j = 1; j <= t.length; j++) {
+                var cost = s[i - 1] === t[j - 1] ? 0 : 1;
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,     // 删除
+                    dp[i][j - 1] + 1,     // 插入
+                    dp[i - 1][j - 1] + cost // 替换
+                );
+            }
+        }
+        return dp[s.length][t.length];
+    }
+
+    // 1. 先分组
+    var groups = [];
+    var visited = {};
+
+    for (var i = 0; i < items.length; i++) {
+        if (visited[i]) continue;
+
+        var currentGroup = [items[i]];
+        visited[i] = true;
+
+        // 查找所有与当前对象相似的
+        for (var j = 0; j < items.length; j++) {
+            if (i === j || visited[j]) continue;
+
+            var sim = similarity(
+                items[i].title.toLowerCase(),
+                items[j].title.toLowerCase()
+            );
+
+            if (sim >= similarityThreshold) {
+                currentGroup.push(items[j]);
+                visited[j] = true;
+            }
+        }
+
+        // 只保留相似项≥2的组
+        if (currentGroup.length >= 2) {
+            groups.push(currentGroup);
+        }
+    }
+
+    // 2. 扁平化分组
+    var result = [];
+    for (var g = 0; g < groups.length; g++) {
+        for (var k = 0; k < groups[g].length; k++) {
+            result.push(groups[g][k]);
+        }
+    }
+
+    return result;
 }

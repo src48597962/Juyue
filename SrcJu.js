@@ -1915,94 +1915,38 @@ function newSearchPage(keyword, searchtype) {
 function bookCase() {
     addListener("onClose", $.toString(() => {
         clearMyVar('从书架进二级');
+        clearMyVar('书架动态加载loading');
     }));
 
     setPageTitle('收藏|书架');
     putMyVar('从书架进二级','1');
-    
     let d = [];
-    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
-        for(let i=0;i<2;i++){
+    if (typeof (setPreResult) != "undefined" && getMyVar('书架动态加载loading') != '1'){
+        for(let i=0;i<4;i++){
             d.push({
                 title: "",
                 url: "hiker://empty",
                 col_type: "text_1",
                 extra: {
-                    lineVisible: false
+                    lineVisible: false,
+                    cls: "loading_gif"
                 }
             })
         }
-    }else{
-        /*
         d.push({
-            col_type: 'pic_1_full',
-            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
-            url: 'hiker://empty',
-        });
-        */
-        require('http://123.56.105.145/weisyr/Top_H5.js');
-        d.push(Top_H5("80"));
-    }
-    let sjType = getItem("切换收藏列表", "聚阅收藏");
-    let sjIcons = getThemeList(true)['书架图标'];
-    d.push({
-        title: '本地下载',
-        url: getMyVar("SrcJu_bookCaseType","全部")=="全部"?"hiker://page/Main.view?rule=本地资源管理":"hiker://page/Bookrack.view?rule=本地资源管理&ruleName="+MY_RULE.title+"&type="+(getMyVar("SrcJu_bookCaseType")=="漫画"?"comic":"novel"),
-        img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
-        col_type: "icon_small_3"
-    });
-    d.push({
-        title: '切换样式',
-        url: $('#noLoading#').lazyRule(() => {
-            if(getItem("bookCase_col_type")=="movie_3_marquee"){
-                clearItem("bookCase_col_type");
-            }else{
-                setItem("bookCase_col_type", "movie_3_marquee");
-            }
-            refreshPage(false);
-            return 'hiker://empty';
-        }),
-        img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
-        col_type: "icon_small_3"
-    });
-    d.push({
-        title: sjType,
-        url: $('#noLoading#').lazyRule(() => {
-            if(getItem("切换收藏列表")=="软件收藏"){
-                clearItem("切换收藏列表");
-            }else{
-                setItem("切换收藏列表", "软件收藏");
-            }
-            clearMyVar('书架收藏列表');
-            refreshPage(false);
-            return 'hiker://empty';
-        }),
-        img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
-        col_type: "icon_small_3"
-    });
-    for (let i = 0; i < 3; i++) {
-        d.push({
-            col_type: "blank_block"
-        })
-    }
-    let Color = getItem('主题颜色','#3399cc');
-    let typebtn = getTypeNames();
-    typebtn.unshift("全部");
-    typebtn.forEach(it =>{
-        d.push({
-            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
-            url: $('#noLoading#').lazyRule((it) => {
-                putMyVar("SrcJu_bookCaseType",it);
-                refreshPage(false);
-                return "hiker://empty";
-            },it),
-            col_type: 'scroll_button',
+            pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+            col_type: "pic_1_center",
+            url: "hiker://empty",
             extra: {
-                backgroundColor: getMyVar("SrcJu_bookCaseType","全部")==it?"#20" + Color.replace('#',''):""
+                cls: "loading_gif"
             }
         })
-    })
-    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
+        setPreResult(d);
+        d = [];
+        putMyVar('书架动态加载loading', '1');
+    }
+
+    let sjType = getItem("切换收藏列表", "聚阅收藏");
     let Julist = [];
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
@@ -2045,7 +1989,97 @@ function bookCase() {
             }
         })
     }
-    let topimg;
+    
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        /*
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+        */
+        require('http://123.56.105.145/weisyr/Top_H5.js');
+        let topimg;
+        if(Julist.length>0){
+            topimg = Julist[0].picUrl.split('@Referer=')[0];
+        }
+        d.push(Top_H5("80", topimg));
+    }
+    
+    let sjIcons = getThemeList(true)['书架图标'];
+    d.push({
+        title: '本地下载',
+        url: getMyVar("SrcJu_bookCaseType","全部")=="全部"?"hiker://page/Main.view?rule=本地资源管理":"hiker://page/Bookrack.view?rule=本地资源管理&ruleName="+MY_RULE.title+"&type="+(getMyVar("SrcJu_bookCaseType")=="漫画"?"comic":"novel"),
+        img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '切换样式',
+        url: $('#noLoading#').lazyRule(() => {
+            if(getItem("bookCase_col_type")=="movie_3_marquee"){
+                clearItem("bookCase_col_type");
+            }else{
+                setItem("bookCase_col_type", "movie_3_marquee");
+            }
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
+        img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: sjType,
+        url: $('#noLoading#').lazyRule(() => {
+            if(getItem("切换收藏列表")=="软件收藏"){
+                clearItem("切换收藏列表");
+            }else{
+                setItem("切换收藏列表", "软件收藏");
+            }
+            clearMyVar('书架收藏列表');
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
+        img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
+        col_type: "icon_small_3"
+    });
+    /*
+    for (let i = 0; i < 3; i++) {
+        d.push({
+            col_type: "blank_block"
+        })
+    }
+    */
+    let Color = getItem('主题颜色','#3399cc');
+    let typebtn = getTypeNames();
+    typebtn.unshift("全部");
+    typebtn.forEach(it =>{
+        d.push({
+            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+            url: $('#noLoading#').lazyRule((it) => {
+                putMyVar("SrcJu_bookCaseType",it);
+                refreshPage(false);
+                return "hiker://empty";
+            },it),
+            col_type: 'scroll_button',
+            extra: {
+                backgroundColor: getMyVar("SrcJu_bookCaseType","全部")==it?"#20" + Color.replace('#',''):""
+            }
+        })
+    })
+    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
+    
+    //let topimg;
     Julist.forEach(it => {
         try{
             if(it.type=='二级列表' || it.type=='一级列表'){
@@ -2108,7 +2142,7 @@ function bookCase() {
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
     })
-
+    deleteItemByCls("loading_gif");
     d.push({
         title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="软件收藏"?"右上角♥加入软件收藏":"长按二级封面加入聚阅收藏"):"",
         url: "hiker://empty",
@@ -2119,11 +2153,13 @@ function bookCase() {
         }
     })
     setResult(d);
+    /*
     if(topimg){
         saveImage(topimg.split('@Referer=')[0], 'hiker://files/cache/Top_H5.jpg');
     }else{
         deleteFile('hiker://files/cache/Top_H5.jpg');
     }
+    */
 }
 //版本检测
 function Version() {

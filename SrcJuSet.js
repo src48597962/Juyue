@@ -887,7 +887,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '源接口作者：'+ getMyVar('apiauthor',''),
         col_type: 'text_1',
-        url: 'hiker://empyt',/*$(getMyVar('apiauthor',''), "源接口作者").input(() => {
+        url: 'toast://保存代码文件时自动获取，作者:',/*$(getMyVar('apiauthor',''), "源接口作者").input(() => {
             putMyVar('apiauthor',input);
             refreshPage(false);
             return 'toast://源接口作者已设置为：' + input;
@@ -899,7 +899,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '源版本号：'+ getMyVar('apiversion',''),
         col_type: 'text_1',
-        url: 'hiker://empyt'
+        url: 'toast://保存代码文件时自动获取，版本:'
     });
     d.push({
         title: '接口类型：'+ getMyVar('apitype',''),
@@ -1034,9 +1034,9 @@ function jiekouapi(data, look) {
         ilkindex = parseInt(getMyVar('apiilk')) -1;
     }
     d.push({
-        title: '选择源种类：'+ (ilkindex>-1?ilks[ilkindex]:''),
+        title: '选择源类型：'+ (ilkindex>-1?ilks[ilkindex]:''),
         col_type: 'text_1',
-        url: $(ilks, 3, "选择源种类：").select(() => {
+        url: $(ilks, 3, "选择源类型：").select(() => {
             if(input=="主页源"){
                 putMyVar('apiilk','1');
             }else if(input=="搜索源"){
@@ -1087,6 +1087,9 @@ function jiekouapi(data, look) {
                 if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
+                if (!getMyVar('apiversion')) {
+                    return "toast://源版本号不能为空";
+                }
                 if (!getMyVar('apitype')) {
                     return "toast://类型没有选择";
                 }
@@ -1094,7 +1097,7 @@ function jiekouapi(data, look) {
                     return "toast://规则文件不存在";
                 }
                 if (!getMyVar('apiilk')) {
-                    return "toast://源种类没有选择";
+                    return "toast://源类型没有选择";
                 }
             
                 let name = getMyVar('apiname');

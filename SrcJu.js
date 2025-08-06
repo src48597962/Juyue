@@ -2034,7 +2034,7 @@ function bookCase() {
                     return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
                 });
                 if (his.length == 1) {
-                    it.mask = history[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
+                    it.mask = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
                 Julist.push(it);
             } catch (e) {

@@ -1941,7 +1941,7 @@ function bookCase() {
         });
         */
         require('http://123.56.105.145/weisyr/Top_H5.js');
-        d.push(Top_H5("110"));
+        d.push(Top_H5("90"));
     }
     let sjType = getItem("切换收藏列表", "聚阅收藏");
     let sjIcons = getThemeList(true)['书架图标'];
@@ -2030,15 +2030,11 @@ function bookCase() {
         history = history.filter(v => v.type == '二级列表');
         caselist.forEach(it => {
             try {
-                history = history.filter((v) => {
-                    if(v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url){
-                        xlog(v.lastClick ? v.lastClick.split('@@')[0] : "");
-                    }
+                let his = history.filter((v) => {
                     return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
                 });
-                xlog(history);
-                if (history.length == 1) {
-                    it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
+                if (his.length == 1) {
+                    it.mask = history[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
                 Julist.push(it);
             } catch (e) {

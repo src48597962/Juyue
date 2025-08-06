@@ -1985,7 +1985,7 @@ function bookCase() {
                 if (his.length == 1) {
                     it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
-                it.extra = JSON.parse(it.params['params'] || '{}');
+                it.extra = it.params['params'] || {};
                 typebtns.push(it.extra['data'].type);
                 delete it.params['params'];
                 Julist.push(it);

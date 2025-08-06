@@ -2120,8 +2120,7 @@ function bookCase() {
     })
     setResult(d);
     if(topimg){
-        xlog(topimg);
-        saveImage(topimg, 'hiker://files/cache/Top_H5.jpg');
+        saveImage(topimg.split('@Refere=')[0], 'hiker://files/cache/Top_H5.jpg');
     }else{{
         deleteFile('hiker://files/cache/Top_H5.jpg');
     }}

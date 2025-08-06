@@ -1947,6 +1947,7 @@ function bookCase() {
     }
 
     let sjType = getItem("切换收藏列表", "聚阅收藏");
+    let typebtns = [];
     let Julist = [];
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
@@ -1959,11 +1960,12 @@ function bookCase() {
                     delete it.mTitle;
                     it.params = JSON.parse(it.params);
                     it.params.url = (it.params.url||'').split(';')[0];
-                    it.params['params'] = JSON.parse(it.params['params'] || '{}');
                     it.lastClick = it.lastClick?it.lastClick.split('@@')[0]:"";
                     let extraData = JSON.parse(it.extraData || '{}');
-                    let last = extraData.lastChapterStatus || "";
-                    it.lastChapter = last;
+                    it.lastChapter = extraData.lastChapterStatus || "";
+                    it.extra = JSON.parse(it.params['params'] || '{}');
+                    typebtns.push(it.extra['data'].type);
+                    delete it.params['params'];
                     Julist.push(it);
                 }
             }catch(e){
@@ -1983,6 +1985,9 @@ function bookCase() {
                 if (his.length == 1) {
                     it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
+                it.extra = JSON.parse(it.params['params'] || '{}');
+                typebtns.push(it.extra['data'].type);
+                delete it.params['params'];
                 Julist.push(it);
             } catch (e) {
                 xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
@@ -1990,6 +1995,13 @@ function bookCase() {
         })
     }
     
+    if(getMyVar("SrcJu_bookCaseType","全部")!="全部"){
+        Julist = Julist.filter(it=>{
+            let stype = it.extra['data'].type;
+            return getMyVar("SrcJu_bookCaseType")==stype;
+        })
+    }
+
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
         for(let i=0;i<2;i++){
             d.push({
@@ -2013,8 +2025,10 @@ function bookCase() {
         let topimg;
         if(Julist.length>0){
             topimg = Julist[0].picUrl.split('@Referer=')[0];
+        }else{
+            deleteFile('hiker://files/cache/Top_H5.jpg');
         }
-        d.push(Top_H5("80", topimg));
+        d.push(Top_H5("90", topimg));
     }
     
     let sjIcons = getThemeList(true)['书架图标'];
@@ -2053,19 +2067,13 @@ function bookCase() {
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
         col_type: "icon_small_3"
     });
-    /*
-    for (let i = 0; i < 3; i++) {
-        d.push({
-            col_type: "blank_block"
-        })
-    }
-    */
+
     let Color = getItem('主题颜色','#3399cc');
-    let typebtn = getTypeNames();
+    let typebtn = typebtns;//getTypeNames();
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
         d.push({
-            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+            title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: ` + Color + `">` + it + `</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
                 putMyVar("SrcJu_bookCaseType",it);
                 refreshPage(false);
@@ -2079,65 +2087,59 @@ function bookCase() {
     })
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     
-    //let topimg;
     Julist.forEach(it => {
         try{
-            if(it.type=='二级列表' || it.type=='一级列表'){
-                let extra = it.params.params || {};
-                extra['data'] = extra['data'] || {};
-                
-                let stype = extra['data'].type;
-                if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
-                    let name = extra.name||it.title;
-                    let sname = extra.data.name;
-                    let lastChapter = it.lastChapter || "";
-                    let url = it.params.url+'' || '';
-                    if(!url.includes('@') && !url.startsWith('hiker://page/')){
-                        if(it.params.find_rule){
-                            url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
-                        }else{
-                            let parse = $.require("jiekou").parse(extra.data);
-                            let 解析 = it.params.lazy||'解析';
-                            if(parse[解析]){
-                                if(it.type=='一级列表'){
-                                    url = url + parse[解析].call(parse, url);
-                                }else if(it.type=='二级列表'){
-                                    url = url + $('').rule(parse[解析]);
-                                }
+            let extra = it.extra; //it.params.params || {};
+            //extra['data'] = extra['data'] || {};
+            
+            //let stype = extra['data'].type;
+            //if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
+                let name = extra.name||it.title;
+                let sname = extra.data.name;
+                let lastChapter = it.lastChapter || "";
+                let url = it.params.url+'' || '';
+                if(!url.includes('@') && !url.startsWith('hiker://page/')){
+                    if(it.params.find_rule){
+                        url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
+                    }else{
+                        let parse = $.require("jiekou").parse(extra.data);
+                        let 解析 = it.params.lazy||'解析';
+                        if(parse[解析]){
+                            if(it.type=='一级列表'){
+                                url = url + parse[解析].call(parse, url);
+                            }else if(it.type=='二级列表'){
+                                url = url + $('').rule(parse[解析]);
                             }
                         }
                     }
-
-                    extra['cls'] = "caselist";
-                    extra['lineVisible'] = false;
-                    extra['pageTitle'] = extra['pageTitle'] || name;
-                    delete extra['id'];
-                    delete extra['data']['extstr'];
-                    if(sjType!="软件收藏"){
-                        extra.longClick = [{
-                            title: "去除聚阅收藏",
-                            js: $.toString((caseid) => {
-                                let casefile = 'hiker://files/rules/Src/Juyue/case.json';
-                                eval('let caselist = ' + (fetch(casefile)||'[]'));
-                                caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
-                                writeFile(casefile, JSON.stringify(caselist));
-                                refreshPage();
-                            }, md5(it.title+(it.params.url+'').split('@')[0]))
-                        }]
-                    }
-                    d.push({
-                        title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
-                        pic_url: it.picUrl,
-                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
-                        url: url,
-                        col_type: col_type,
-                        extra: extra
-                    })
-                    if(!topimg){
-                        topimg = it.picUrl;
-                    }
                 }
-            }
+
+                extra['cls'] = "caselist";
+                extra['lineVisible'] = false;
+                extra['pageTitle'] = extra['pageTitle'] || name;
+                delete extra['id'];
+                delete extra['data']['extstr'];
+                if(sjType!="软件收藏"){
+                    extra.longClick = [{
+                        title: "去除聚阅收藏",
+                        js: $.toString((caseid) => {
+                            let casefile = 'hiker://files/rules/Src/Juyue/case.json';
+                            eval('let caselist = ' + (fetch(casefile)||'[]'));
+                            caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
+                            writeFile(casefile, JSON.stringify(caselist));
+                            refreshPage();
+                        }, md5(it.title+(it.params.url+'').split('@')[0]))
+                    }]
+                }
+                d.push({
+                    title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
+                    pic_url: it.picUrl,
+                    desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
+                    url: url,
+                    col_type: col_type,
+                    extra: extra
+                })
+            //}
         }catch(e){
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
@@ -2153,13 +2155,6 @@ function bookCase() {
         }
     })
     setResult(d);
-    /*
-    if(topimg){
-        saveImage(topimg.split('@Referer=')[0], 'hiker://files/cache/Top_H5.jpg');
-    }else{
-        deleteFile('hiker://files/cache/Top_H5.jpg');
-    }
-    */
 }
 //版本检测
 function Version() {

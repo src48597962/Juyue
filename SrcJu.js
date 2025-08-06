@@ -2092,7 +2092,7 @@ function bookCase() {
             let extra = it.extra; //it.params.params || {};
             //extra['data'] = extra['data'] || {};
             
-            //let stype = extra['data'].type;
+            let stype = extra['data'].type;
             //if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                 let name = extra.name||it.title;
                 let sname = extra.data.name;

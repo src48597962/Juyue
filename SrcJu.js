@@ -1941,7 +1941,7 @@ function bookCase() {
         });
         */
         require('http://123.56.105.145/weisyr/Top_H5.js');
-        d.push(Top_H5("90"));
+        d.push(Top_H5("80"));
     }
     let sjType = getItem("切换收藏列表", "聚阅收藏");
     let sjIcons = getThemeList(true)['书架图标'];
@@ -1980,7 +1980,7 @@ function bookCase() {
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
         col_type: "icon_small_3"
     });
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 3; i++) {
         d.push({
             col_type: "blank_block"
         })
@@ -2120,10 +2120,11 @@ function bookCase() {
     })
     setResult(d);
     if(topimg){
+        xlog(topimg.split('@Refere=')[0]);
         saveImage(topimg.split('@Refere=')[0], 'hiker://files/cache/Top_H5.jpg');
-    }else{{
+    }else{
         deleteFile('hiker://files/cache/Top_H5.jpg');
-    }}
+    }
 }
 //版本检测
 function Version() {

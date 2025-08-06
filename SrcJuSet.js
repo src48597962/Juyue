@@ -1768,7 +1768,7 @@ function importConfirm(jsfile) {
                         }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
-                desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在") + "</font></b>" + (it.version?(it.version==it.oldversion?"":"<font color="+Color+">")+"-云V"+it.version:""),
+                desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在") + "</font></b>" + (it.version?(it.version==it.oldversion?"":"<font color="+Color+"00>")+"-云V"+it.version:""),
                 img: itimg,
                 col_type: itcol,
                 extra: {

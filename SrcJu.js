@@ -576,7 +576,7 @@ function erji() {
             noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
-            pic = pic&&pic.indexOf("@") == -1 ? pic + "@Referer=" : pic;
+
             erjiextra.img = pic;
             erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;
             erTempData.desc = erLoadData.desc || erTempData.desc;
@@ -2120,8 +2120,7 @@ function bookCase() {
     })
     setResult(d);
     if(topimg){
-        xlog(topimg.split('@Refere=')[0]);
-        saveImage(topimg.split('@Refere=')[0], 'hiker://files/cache/Top_H5.jpg');
+        saveImage(topimg.split('@Referer=')[0], 'hiker://files/cache/Top_H5.jpg');
     }else{
         deleteFile('hiker://files/cache/Top_H5.jpg');
     }

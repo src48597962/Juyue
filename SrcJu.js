@@ -2030,7 +2030,13 @@ function bookCase() {
         history = history.filter(v => v.type == '二级列表');
         caselist.forEach(it => {
             try {
-                history = history.filter(v => v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url);
+                history = history.filter((v) => {
+                    xlog(v.title);
+                    xlog(it.title);
+                    xlog((MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]));
+                    xlog(it.params.url);
+                    return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
+                });
                 if (history.length == 1) {
                     it.mask = history[0].lastClick ? history[0].lastClick.split('@@')[0] : "";
                 }

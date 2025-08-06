@@ -1947,7 +1947,6 @@ function bookCase() {
     }
 
     let sjType = getItem("切换收藏列表", "聚阅收藏");
-    let typebtns = [];
     let Julist = [];
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
@@ -1964,7 +1963,6 @@ function bookCase() {
                     let extraData = JSON.parse(it.extraData || '{}');
                     it.lastChapter = extraData.lastChapterStatus || "";
                     it.extra = JSON.parse(it.params['params'] || '{}');
-                    typebtns.push(it.extra['data'].type);
                     delete it.params['params'];
                     Julist.push(it);
                 }
@@ -1986,7 +1984,6 @@ function bookCase() {
                     it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
                 it.extra = it.params['params'] || {};
-                typebtns.push(it.extra['data'].type);
                 delete it.params['params'];
                 Julist.push(it);
             } catch (e) {
@@ -1994,13 +1991,18 @@ function bookCase() {
             }
         })
     }
-    
-    if(getMyVar("SrcJu_bookCaseType","全部")!="全部"){
-        Julist = Julist.filter(it=>{
-            let stype = it.extra['data'].type;
-            return getMyVar("SrcJu_bookCaseType")==stype;
-        })
-    }
+    let typebtn = [];
+    let datalist = [];
+    Julist.forEach(it=>{
+        let data = it.extra['data'] || {};
+        let type = data.type || '';
+        if(type && typebtn.indexOf(type)==-1){
+            typebtn.push(type);
+        }
+        if(getMyVar("SrcJu_bookCaseType","全部")=="全部" || getMyVar("SrcJu_bookCaseType")==type){
+            datalist.push(it);
+        }
+    })
 
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
         for(let i=0;i<2;i++){
@@ -2023,8 +2025,8 @@ function bookCase() {
         */
         require('http://123.56.105.145/weisyr/Top_H5.js');
         let topimg;
-        if(Julist.length>0){
-            topimg = Julist[0].picUrl.split('@Referer=')[0];
+        if(datalist.length>0){
+            topimg = datalist[0].picUrl.split('@Referer=')[0];
         }else{
             deleteFile('hiker://files/cache/Top_H5.jpg');
         }
@@ -2069,7 +2071,6 @@ function bookCase() {
     });
 
     let Color = getItem('主题颜色','#3399cc');
-    let typebtn = typebtns;//getTypeNames();
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
         d.push({
@@ -2087,11 +2088,10 @@ function bookCase() {
     })
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     
-    Julist.forEach(it => {
+    datalist.forEach(it => {
         try{
-            let extra = it.extra; //it.params.params || {};
-            //extra['data'] = extra['data'] || {};
-            
+            let extra = it.extra;
+            extra['data'] = extra['data'] || {};
             let stype = extra['data'].type;
             //if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                 let name = extra.name||it.title;

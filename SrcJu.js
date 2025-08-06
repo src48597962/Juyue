@@ -2016,7 +2016,10 @@ function bookCase() {
                     it.params = JSON.parse(it.params);
                     it.params.url = (it.params.url||'').split(';')[0];
                     it.params['params'] = JSON.parse(it.params['params'] || '{}');
-                    it.mask = it.lastClick?it.lastClick.split('@@')[0]:"";
+                    it.lastClick = it.lastClick?it.lastClick.split('@@')[0]:"";
+                    let extraData = JSON.parse(it.extraData || '{}');
+                    let last = extraData.lastChapterStatus || "";
+                    it.lastChapter = last;
                     Julist.push(it);
                 }
             }catch(e){
@@ -2034,7 +2037,7 @@ function bookCase() {
                     return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
                 });
                 if (his.length == 1) {
-                    it.mask = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
+                    it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                 }
                 Julist.push(it);
             } catch (e) {
@@ -2053,8 +2056,7 @@ function bookCase() {
                 if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
                     let name = extra.name||it.title;
                     let sname = extra.data.name;
-                    let extraData = it.extraData?JSON.parse(it.extraData):{};
-                    let last = extraData.lastChapterStatus?extraData.lastChapterStatus:"";
+                    let lastChapter = it.lastChapter || "";
                     let url = it.params.url+'' || '';
                     if(!url.includes('@') && !url.startsWith('hiker://page/')){
                         if(it.params.find_rule){
@@ -2092,7 +2094,7 @@ function bookCase() {
                     d.push({
                         title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                         pic_url: it.picUrl,
-                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.mask||'').substring(0,15)+"\n\n🔘 "+last:last,
+                        desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
                         url: url,
                         col_type: col_type,
                         extra: extra

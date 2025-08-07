@@ -264,7 +264,7 @@ function yiji(testSource) {
                 d.push(item);
             })
         }
-        let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup) => {
+        let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup, isTest) => {
             deleteItemByCls('homesousuolist');
             searchRecord('put', input);
             putVar("keyword", input.split('  ')[0]);
@@ -272,7 +272,7 @@ function yiji(testSource) {
                 return 'toast://当前无接口数据';
             }else if(input.includes('  ') && !input.endsWith('  ')){//+2空格搜索指定源名或分组
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if(getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')){
+            }else if((getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
@@ -319,7 +319,7 @@ function yiji(testSource) {
                 }
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
-        }, jkdata, Juconfig['homeGroup']);
+        }, jkdata, Juconfig['homeGroup'], testSource?1:0);
         let descarr = ['搜你想要的...','1个空格显示搜索历史','结尾+2空格互换方式','+2空格+指定源名或分组'];
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',

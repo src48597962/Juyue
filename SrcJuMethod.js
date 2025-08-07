@@ -198,11 +198,10 @@ function createClass(d, obj) {
                 // 分割字符串获取运算部分
                 let strings = resultUrl.split("fypage@");
                 let pages = strings[1].split("@");
-                xlog(pages);
+
                 // 遍历执行运算
                 for (let i = 0; i < pages.length - 1; i++) {
                     let current = pages[i];
-                    xlog(current);
                     let num = parseInt(current.slice(1)); // 获取操作数
                     if (current.startsWith("-")) {
                         page = page - num;
@@ -378,7 +377,7 @@ function getYiData(datatype, jkdata, dd) {
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
-            xlog(执行str);
+
             try {
                 let sourcename = jkdata.name;
                 let getData = [];

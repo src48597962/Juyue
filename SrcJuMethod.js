@@ -378,6 +378,7 @@ function getYiData(datatype, jkdata, dd) {
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+            xlog(执行str);
             try {
                 let sourcename = jkdata.name;
                 let getData = [];

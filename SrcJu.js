@@ -527,7 +527,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let pic,linename;
+    let pic,linename,lastChapter;
     
     try {
         if (sid&&MY_URL) {
@@ -737,6 +737,7 @@ function erji() {
                     }
                     
                     列表 = checkAndReverseArray(列表);
+                    lastChapter = 列表[列表.length-1].title;
                     if (getMyVar(sname + 'sort') == '1') {
                         列表.reverse();
                     }
@@ -1367,7 +1368,8 @@ function erji() {
                     url: MY_RULE.url.split(';')[0],
                     find_rule: MY_RULE.find_rule,
                     params: MY_PARAMS
-                }
+                },
+                lastChapter: lastChapter
             }
             erLoadData.caseData = caseData;
 
@@ -1990,6 +1992,7 @@ function bookCase() {
                 xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
             }
         })
+
     }
     let typebtn = [];
     let datalist = [];
@@ -2093,53 +2096,51 @@ function bookCase() {
             let extra = it.extra;
             extra['data'] = extra['data'] || {};
             let stype = extra['data'].type;
-            //if(getMyVar("SrcJu_bookCaseType")==stype || getMyVar("SrcJu_bookCaseType","全部")=="全部"){
-                let name = extra.name||it.title;
-                let sname = extra.data.name;
-                let lastChapter = it.lastChapter || "";
-                let url = it.params.url+'' || '';
-                if(!url.includes('@') && !url.startsWith('hiker://page/')){
-                    if(it.params.find_rule){
-                        url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
-                    }else{
-                        let parse = $.require("jiekou").parse(extra.data);
-                        let 解析 = it.params.lazy||'解析';
-                        if(parse[解析]){
-                            if(it.type=='一级列表'){
-                                url = url + parse[解析].call(parse, url);
-                            }else if(it.type=='二级列表'){
-                                url = url + $('').rule(parse[解析]);
-                            }
+            let name = extra.name||it.title;
+            let sname = extra.data.name;
+            let lastChapter = it.lastChapter || "";
+            let url = it.params.url+'' || '';
+            if(!url.includes('@') && !url.startsWith('hiker://page/')){
+                if(it.params.find_rule){
+                    url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
+                }else{
+                    let parse = $.require("jiekou").parse(extra.data);
+                    let 解析 = it.params.lazy||'解析';
+                    if(parse[解析]){
+                        if(it.type=='一级列表'){
+                            url = url + parse[解析].call(parse, url);
+                        }else if(it.type=='二级列表'){
+                            url = url + $('').rule(parse[解析]);
                         }
                     }
                 }
+            }
 
-                extra['cls'] = "caselist";
-                extra['lineVisible'] = false;
-                extra['pageTitle'] = extra['pageTitle'] || name;
-                delete extra['id'];
-                delete extra['data']['extstr'];
-                if(sjType!="软件收藏"){
-                    extra.longClick = [{
-                        title: "去除聚阅收藏",
-                        js: $.toString((caseid) => {
-                            let casefile = 'hiker://files/rules/Src/Juyue/case.json';
-                            eval('let caselist = ' + (fetch(casefile)||'[]'));
-                            caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
-                            writeFile(casefile, JSON.stringify(caselist));
-                            refreshPage();
-                        }, md5(it.title+(it.params.url+'').split('@')[0]))
-                    }]
-                }
-                d.push({
-                    title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
-                    pic_url: it.picUrl,
-                    desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
-                    url: url,
-                    col_type: col_type,
-                    extra: extra
-                })
-            //}
+            extra['cls'] = "caselist";
+            extra['lineVisible'] = false;
+            extra['pageTitle'] = extra['pageTitle'] || name;
+            delete extra['id'];
+            delete extra['data']['extstr'];
+            if(sjType!="软件收藏"){
+                extra.longClick = [{
+                    title: "去除聚阅收藏",
+                    js: $.toString((caseid) => {
+                        let casefile = 'hiker://files/rules/Src/Juyue/case.json';
+                        eval('let caselist = ' + (fetch(casefile)||'[]'));
+                        caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
+                        writeFile(casefile, JSON.stringify(caselist));
+                        refreshPage();
+                    }, md5(it.title+(it.params.url+'').split('@')[0]))
+                }]
+            }
+            d.push({
+                title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
+                pic_url: it.picUrl,
+                desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
+                url: url,
+                col_type: col_type,
+                extra: extra
+            })
         }catch(e){
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }

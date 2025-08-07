@@ -1992,7 +1992,6 @@ function bookCase() {
                 xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
             }
         })
-
     }
     let typebtn = [];
     let datalist = [];
@@ -2136,7 +2135,7 @@ function bookCase() {
             d.push({
                 title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small><font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                 pic_url: it.picUrl,
-                desc: col_type=='movie_1_vertical_pic'?lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15):lastChapter,
+                desc: col_type=='movie_1_vertical_pic'?lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15):lastChapter.replace('更新至：',''),
                 url: url,
                 col_type: col_type,
                 extra: extra

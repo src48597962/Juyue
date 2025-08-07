@@ -737,7 +737,7 @@ function erji() {
                     }
                     
                     列表 = checkAndReverseArray(列表);
-                    lastChapter = 列表[列表.length-1].title;
+                    lastChapter = '更新至：' + 列表[列表.length-1].title;
                     if (getMyVar(sname + 'sort') == '1') {
                         列表.reverse();
                     }
@@ -2134,9 +2134,9 @@ function bookCase() {
                 }]
             }
             d.push({
-                title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small>💠  <font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
+                title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small><font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                 pic_url: it.picUrl,
-                desc: col_type=='movie_1_vertical_pic'?"🕓 "+(it.lastClick||'').substring(0,15)+"\n\n🔘 "+lastChapter:lastChapter,
+                desc: col_type=='movie_1_vertical_pic'?lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15):lastChapter,
                 url: url,
                 col_type: col_type,
                 extra: extra

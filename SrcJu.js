@@ -485,8 +485,6 @@ function yiji(testSource) {
 
 //二级+源搜索
 function erji() {
-    xlog(typeof MY_PAGE);
-    xlog(MY_PAGE);
     addListener("onClose", $.toString(() => {
         clearMyVar('二级详情临时对象');
         clearMyVar('二级附加临时对象');
@@ -519,8 +517,12 @@ function erji() {
         delete jkdata.extstr;
     }
     let parse = getObjCode(jkdata, 'er');
-    
     let d = [];
+
+    if(MY_PAGE>1 && !parse['二级翻页']){
+        setResult(d);
+    }
+        
     let smark = getMark(MY_URL, sid);//足迹记录
     let lineid = smark.lineid || 0;//线路索引id
     let pageid = smark.pageid || 0;//分页索引id
@@ -530,7 +532,7 @@ function erji() {
     let Color = getItem('主题颜色','#3399cc');
     let erLoadData,pic,linename,lastChapter;
     
-    try {
+    try{
         if (sid&&MY_URL) {
             if(!getMyVar("SrcJu_调试模式")){
                 let cacheData = fetch(erCacheFile);
@@ -559,21 +561,25 @@ function erji() {
             }else{
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
-                try {
-                    if(parse['二级']){
-                        eval(evalPublicStr);
-                        eval("let 二级获取 = " + parse['二级'])
-                        erLoadData = 二级获取.call(parse, MY_URL);
-                    }else{
-                        xlog("rule不存在二级方法");
-                    }
-                } catch (e) {
-                    xlog('执行获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                if(parse['二级']){
+                    eval(evalPublicStr);
+                    eval("let 二级获取 = " + parse['二级'])
+                    erLoadData = 二级获取.call(parse, MY_URL);
+                }else{
+                    xlog("parse不存在二级方法");
                 }
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
-            erLoadData = erLoadData || {};
+        }
+    }catch(e){
+        xlog('执行获取二级数据出错，信息>' + e.message + " 错误行#" + e.lineNumber);
+    }
+
+    erLoadData = erLoadData || {};
+
+    if(MY_PAGE==1){
+        try {
             erLoadData.author = jkdata.author || parse['作者'];
             noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
@@ -1328,23 +1334,45 @@ function erji() {
                 }
                 putMyVar('二级加载扩展列表','1');
             }
+        } catch (e) {
+            toast('有异常，看日志');
+            xlog(sname + '>加载二级页面失败>' + e.message + ' 错误行#' + e.lineNumber);
         }
-    } catch (e) {
-        toast('有异常，看日志');
-        xlog(sname + '>加载二级失败>' + e.message + ' 错误行#' + e.lineNumber);
+        d.push({
+            title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
+            url: stype=="小说"?'hiker://empty':'toast://温馨提示：且用且珍惜！',
+            col_type: 'text_center_1',
+            extra: {
+                id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",
+                lineVisible: false
+            }
+        });
     }
-    d.push({
-        title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
-        url: stype=="小说"?'hiker://empty':'toast://温馨提示：且用且珍惜！',
-        col_type: 'text_center_1',
-        extra: {
-            id: getMyVar('换源变更列表id')?"erji_loading2":"erji_loading",
-            lineVisible: false
-        }
-    });
-    setResult(d);
+    if(parse['二级翻页'] && erLoadData.pageParam){
+        try {
+            let 执行str = parse['二级翻页'].toString();
+            let getData = [];
+            let resultd;
+            let setResult = function(d) { resultd = d; };
+            eval("let 数据 = " + 执行str);
+            getData = 数据.call(parse, MY_URL, erLoadData.pageParam) || [];
+            if(resultd&&getData.length==0){
+                getData = resultd;
+            }
 
-    if (isload || noShow.选集) {
+            if (getData.length > 0) {
+                jkdata['erjisign'] = parse['二级标识'];
+                getData.forEach(item => {
+                    item = toerji(item, jkdata);
+                })
+            }
+            d = d.concat(getData);
+        } catch (e) {
+            xlog('加载二级翻页内容异常>' + e.message + ' 错误行#' + e.lineNumber);
+        }
+    }
+    setResult(d);
+    if ((isload || noShow.选集) && MY_PAGE==1) {
         //更换收藏封面
         if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
             setPagePicUrl(erTempData.img);

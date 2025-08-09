@@ -486,6 +486,7 @@ function yiji(testSource) {
 //二级+源搜索
 function erji() {
     xlog(typeof MY_PAGE);
+    xlog(MY_PAGE);
     addListener("onClose", $.toString(() => {
         clearMyVar('二级详情临时对象');
         clearMyVar('二级附加临时对象');

@@ -1918,6 +1918,9 @@ function bookCase() {
     addListener("onClose", $.toString(() => {
         clearMyVar('从书架进二级');
         clearMyVar('书架动态加载loading');
+        if(getItem("退出重置收藏")=="1"){
+            clearItem("切换收藏列表");
+        }
     }));
 
     setPageTitle('收藏|书架');
@@ -1948,7 +1951,7 @@ function bookCase() {
         putMyVar('书架动态加载loading', '1');
     }
 
-    let sjType = getItem("切换收藏列表", "聚阅收藏");
+    let sjType = getItem("切换收藏列表", "软件收藏");
     let Julist = [];
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
@@ -2059,17 +2062,32 @@ function bookCase() {
     d.push({
         title: sjType,
         url: $('#noLoading#').lazyRule(() => {
-            if(getItem("切换收藏列表")=="软件收藏"){
+            if(getItem("切换收藏列表")=="聚阅收藏"){
                 clearItem("切换收藏列表");
             }else{
-                setItem("切换收藏列表", "软件收藏");
+                setItem("切换收藏列表", "聚阅收藏");
             }
-            clearMyVar('书架收藏列表');
             refreshPage(false);
             return 'hiker://empty';
         }),
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
-        col_type: "icon_small_3"
+        col_type: "icon_small_3",
+        extra: {
+            longClick: [{
+                title: "退出重置收藏",
+                js: $.toString(() => {
+                    let sm;
+                    if(getItem("退出重置收藏")=="1"){
+                        clearItem("退出重置收藏");
+                        sm = '取消退出重置收藏';
+                    }else{
+                        setItem("退出重置收藏", "1");
+                        sm = '开启退出重置收藏';
+                    }
+                    return 'toast://' + sm;
+                })
+            }]
+        }
     });
 
     let Color = getItem('主题颜色','#3399cc');
@@ -2120,7 +2138,7 @@ function bookCase() {
             extra['pageTitle'] = extra['pageTitle'] || name;
             delete extra['id'];
             delete extra['data']['extstr'];
-            if(sjType!="软件收藏"){
+            if(sjType=="聚阅收藏"){
                 extra.longClick = [{
                     title: "去除聚阅收藏",
                     js: $.toString((caseid) => {
@@ -2146,7 +2164,7 @@ function bookCase() {
     })
     deleteItemByCls("loading_gif");
     d.push({
-        title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="软件收藏"?"右上角♥加入软件收藏":"长按二级封面加入聚阅收藏"):"",
+        title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",
         url: "hiker://empty",
         col_type: "text_center_1",
         extra: {

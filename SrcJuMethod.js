@@ -585,7 +585,7 @@ function toerji(item, jkdata) {
             extra.pageTitle = extra.pageTitle || extra.name;
             extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
             extra.data = jkdata;
-            item.url = $("hiker://empty?type="+jkdata.type+"#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
+            item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                 require(config.聚阅);
                 erji();
             })

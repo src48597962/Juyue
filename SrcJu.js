@@ -1951,7 +1951,7 @@ function bookCase() {
         putMyVar('书架动态加载loading', '1');
     }
 
-    let sjType = getItem("切换收藏列表", "软件收藏");
+    let sjType = MY_NAME=="海阔视界"?getItem("切换收藏列表", "软件收藏"):"聚阅收藏";
     let Julist = [];
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
@@ -2070,6 +2070,41 @@ function bookCase() {
         img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
         col_type: "icon_small_3"
     });
+    let longClick = [];
+    if(MY_NAME=="海阔视界"){
+        longClick.push({
+            title: "退出重置收藏"+(getItem("退出重置收藏")=="1"?"√":""),
+            js: $.toString(() => {
+                let sm;
+                if(getItem("退出重置收藏")=="1"){
+                    clearItem("退出重置收藏");
+                    sm = '取消退出重置收藏';
+                }else{
+                    setItem("退出重置收藏", "1");
+                    sm = '开启退出重置收藏';
+                }
+                return 'toast://' + sm;
+            })
+        })
+    }
+    longClick.push({
+        title: "聚阅收藏加锁"+(getItem("聚阅收藏加锁")=="1"?"√":""),
+        js: $.toString(() => {
+            let sm;
+            if(getItem("聚阅收藏加锁")=="1"){
+                const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                if (hikerPop.canBiometric() !== 0) {
+                    return "toast://无法调用生物学验证";
+                }
+                clearItem("聚阅收藏加锁");
+                sm = '取消聚阅收藏加锁';
+            }else{
+                setItem("聚阅收藏加锁", "1");
+                sm = '开启聚阅收藏加锁';
+            }
+            return 'toast://' + sm;
+        })
+    })
     d.push({
         title: sjType,
         url: $('#noLoading#').lazyRule(() => {
@@ -2084,37 +2119,7 @@ function bookCase() {
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
         col_type: "icon_small_3",
         extra: {
-            longClick: [{
-                title: "退出重置收藏"+(getItem("退出重置收藏")=="1"?"√":""),
-                js: $.toString(() => {
-                    let sm;
-                    if(getItem("退出重置收藏")=="1"){
-                        clearItem("退出重置收藏");
-                        sm = '取消退出重置收藏';
-                    }else{
-                        setItem("退出重置收藏", "1");
-                        sm = '开启退出重置收藏';
-                    }
-                    return 'toast://' + sm;
-                })
-            },{
-                title: "聚阅收藏加锁"+(getItem("聚阅收藏加锁")=="1"?"√":""),
-                js: $.toString(() => {
-                    let sm;
-                    if(getItem("聚阅收藏加锁")=="1"){
-                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
-                        if (hikerPop.canBiometric() !== 0) {
-                            return "toast://无法调用生物学验证";
-                        }
-                        clearItem("聚阅收藏加锁");
-                        sm = '取消聚阅收藏加锁';
-                    }else{
-                        setItem("聚阅收藏加锁", "1");
-                        sm = '开启聚阅收藏加锁';
-                    }
-                    return 'toast://' + sm;
-                })
-            }]
+            longClick: longClick
         }
     });
 
@@ -2192,7 +2197,7 @@ function bookCase() {
     })
     deleteItemByCls("loading_gif");
     d.push({
-        title: Julist.length==0?"空空如也~~"+(getItem("切换收藏列表")=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",
+        title: Julist.length==0?"空空如也~~"+(sjType=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",
         url: "hiker://empty",
         col_type: "text_center_1",
         extra: {

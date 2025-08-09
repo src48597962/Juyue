@@ -1976,25 +1976,36 @@ function bookCase() {
             }
         })
     }else{
-        let casefile = rulepath + 'case.json';
-        eval('let caselist = ' + (fetch(casefile) || '[]'));
-        let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
-        history = history.filter(v => v.type == '二级列表');
-        caselist.forEach(it => {
-            try {
-                let his = history.filter((v) => {
-                    return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
-                });
-                if (his.length == 1) {
-                    it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
-                }
-                it.extra = it.params['params'] || {};
-                delete it.params['params'];
-                Julist.push(it);
-            } catch (e) {
-                xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
+        if(getItem("聚阅收藏加锁")=="1" && getMyVar('已验证指纹')!='1'){
+            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+            if (hikerPop.canBiometric() !== 0) {
+                return "toast://调用生物学验证出错";
             }
-        })
+            let pop = hikerPop.checkByBiometric(() => {
+                putMyVar('已验证指纹','1');
+                refreshPage(false);
+            });
+        }else{
+            let casefile = rulepath + 'case.json';
+            eval('let caselist = ' + (fetch(casefile) || '[]'));
+            let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
+            history = history.filter(v => v.type == '二级列表');
+            caselist.forEach(it => {
+                try {
+                    let his = history.filter((v) => {
+                        return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
+                    });
+                    if (his.length == 1) {
+                        it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
+                    }
+                    it.extra = it.params['params'] || {};
+                    delete it.params['params'];
+                    Julist.push(it);
+                } catch (e) {
+                    xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
+                }
+            })
+        }
     }
     let typebtn = [];
     let datalist = [];
@@ -2074,7 +2085,7 @@ function bookCase() {
         col_type: "icon_small_3",
         extra: {
             longClick: [{
-                title: "退出重置收藏",
+                title: "退出重置收藏"+(getItem("退出重置收藏")=="1"?"√":""),
                 js: $.toString(() => {
                     let sm;
                     if(getItem("退出重置收藏")=="1"){
@@ -2085,6 +2096,23 @@ function bookCase() {
                         sm = '开启退出重置收藏';
                     }
                     return 'toast://' + sm;
+                })
+            },{
+                title: "聚阅收藏加锁"+(getItem("聚阅收藏加锁")=="1"?"√":""),
+                js: $.toString(() => {
+                    let sm;
+                    if(getItem("聚阅收藏加锁")=="1"){
+                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                        if (hikerPop.canBiometric() !== 0) {
+                            return "toast://无法调用生物学验证";
+                        }
+                        clearItem("聚阅收藏加锁");
+                        sm = '取消聚阅收藏加锁';
+                    }else{
+                        setItem("聚阅收藏加锁", "1");
+                        sm = '开启聚阅收藏加锁';
+                    }
+                    return "hiker://empty";
                 })
             }]
         }

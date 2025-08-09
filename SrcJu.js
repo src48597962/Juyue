@@ -2112,7 +2112,7 @@ function bookCase() {
                         setItem("聚阅收藏加锁", "1");
                         sm = '开启聚阅收藏加锁';
                     }
-                    return "hiker://empty";
+                    return 'toast://' + sm;
                 })
             }]
         }

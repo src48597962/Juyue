@@ -577,11 +577,11 @@ function erji() {
     }
 
     erLoadData = erLoadData || {};
+    erLoadData.author = jkdata.author || parse['作者'];
+    noShow = erLoadData.noShow || {};//定义不显示的组件
 
     if(MY_PAGE==1){
         try {
-            erLoadData.author = jkdata.author || parse['作者'];
-            noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
@@ -1372,7 +1372,7 @@ function erji() {
         }
     }
     setResult(d);
-    if ((isload || noShow.选集) && MY_PAGE==1) {
+    if (MY_PAGE==1 && (isload || noShow.选集)) {
         //更换收藏封面
         if(erTempData.img && oldMY_PARAMS.img!=erTempData.img){
             setPagePicUrl(erTempData.img);

@@ -1349,13 +1349,15 @@ function erji() {
         });
     }
     if(parse['二级翻页'] && erLoadData.pageParam){
+        setPreResult(d);
+        d = [];
         try {
             let 执行str = parse['二级翻页'].toString();
             let getData = [];
             let resultd;
             let setResult = function(d) { resultd = d; };
             eval("let 数据 = " + 执行str);
-            getData = 数据.call(parse, MY_URL, erLoadData.pageParam) || [];
+            getData = 数据.call(parse, erLoadData.pageParam||MY_URL) || [];
             if(resultd&&getData.length==0){
                 getData = resultd;
             }

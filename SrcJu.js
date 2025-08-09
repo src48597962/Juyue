@@ -522,12 +522,11 @@ function erji() {
     let smark = getMark(MY_URL, sid);//足迹记录
     let lineid = smark.lineid || 0;//线路索引id
     let pageid = smark.pageid || 0;//分页索引id
-    let erLoadData = {};
     let isload;//是否正确加载
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let pic,linename,lastChapter;
+    let erLoadData,pic,linename,lastChapter;
     
     try {
         if (sid&&MY_URL) {
@@ -572,6 +571,7 @@ function erji() {
                 let t2 = new Date().getTime();
                 xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
+            erLoadData = erLoadData || {};
             erLoadData.author = jkdata.author || parse['作者'];
             noShow = erLoadData.noShow || {};//定义不显示的组件
             let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
@@ -1329,7 +1329,7 @@ function erji() {
         }
     } catch (e) {
         toast('有异常，看日志');
-        xlog(sname + '>加载详情失败>' + e.message + ' 错误行#' + e.lineNumber);
+        xlog(sname + '>加载二级失败>' + e.message + ' 错误行#' + e.lineNumber);
     }
     d.push({
         title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",

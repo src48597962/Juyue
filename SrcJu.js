@@ -1363,12 +1363,6 @@ function erji() {
 
             if (getData.length > 0) {
                 jkdata['erjisign'] = parse['二级标识'];
-                getData.unshift({
-                    title: '评论区',
-                    url: 'hiker://empty',
-                    img: 'hiker://images/bbs',
-                    col_type: 'avatar'
-                })
                 getData.forEach(item => {
                     item = toerji(item, jkdata);
                 })

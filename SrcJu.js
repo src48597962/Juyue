@@ -1365,27 +1365,29 @@ function erji() {
         });
     }
     if(parse['二级翻页'] && erLoadData.pageParam){
-        setPreResult(d);
-        try {
-            let 执行str = parse['二级翻页'].toString();
-            let getData = [];
-            let resultd;
-            let setResult = function(d) { resultd = d; };
-            eval("let 数据 = " + 执行str);
-            getData = 数据.call(parse, erLoadData.pageParam||MY_URL) || [];
-            if(resultd&&getData.length==0){
-                getData = resultd;
-            }
+        if(($.type(erLoadData.pageParam)=='object'&&(!erLoadData.pageParam.line || getMyVar('线路显示翻页内容'))) || $.type(erLoadData.pageParam)!='object'){
+            setPreResult(d);
+            try {
+                let 执行str = parse['二级翻页'].toString();
+                let getData = [];
+                let resultd;
+                let setResult = function(d) { resultd = d; };
+                eval("let 数据 = " + 执行str);
+                getData = 数据.call(parse, erLoadData.pageParam||MY_URL) || [];
+                if(resultd&&getData.length==0){
+                    getData = resultd;
+                }
 
-            if (getData.length > 0) {
-                jkdata['erjisign'] = parse['二级标识'];
-                getData.forEach(item => {
-                    item = toerji(item, jkdata);
-                })
+                if (getData.length > 0) {
+                    jkdata['erjisign'] = parse['二级标识'];
+                    getData.forEach(item => {
+                        item = toerji(item, jkdata);
+                    })
+                }
+                d = getData;
+            } catch (e) {
+                xlog('加载二级翻页内容异常>' + e.message + ' 错误行#' + e.lineNumber);
             }
-            d = getData;
-        } catch (e) {
-            xlog('加载二级翻页内容异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
     }
     setResult(d);

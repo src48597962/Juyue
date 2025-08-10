@@ -2221,55 +2221,46 @@ function bookCase() {
             }
         })
     })
-    
-    d.push({
-        title: '🔍',
-        url: $.toString(() => {
+    if(datalist.length>=20){
+        function casesousuo(input) {
             deleteItemByCls("caselist");
             let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
                 let extra = v.extra || {};
                 extra['data'] = extra['data'] || {};
                 let types = (extra['data'].group || extra['data'].type || '').split(',');
                 let it = getMyVar("SrcJu_bookCaseType", "全部");
-                return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
+                if(input){
+                    return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
+                }
+                return it=='全部' || types.indexOf(it)>-1;
             });
             addItemAfter('casesousuoid', casedatalist);
-            putMyVar('收藏书架列表搜索','1');
             return 'hiker://emtpy';
-        }),
-        desc: '搜你想要的...',
-        col_type: "input",
-        extra: {
-            id: 'casesousuoid',
-            titleVisible: true,
-            defaultValue: "",
-            onChange: $.toString(() => {
-                if(input.length>1){
-                    deleteItemByCls('caselist');
-                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                        let extra = v.extra || {};
-                        extra['data'] = extra['data'] || {};
-                        let types = (extra['data'].group || extra['data'].type || '').split(',');
-                        let it = getMyVar("SrcJu_bookCaseType", "全部");
-                        return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
-                    });
-                    addItemAfter('casesousuoid', casedatalist);
-                    putMyVar('收藏书架列表搜索','1');
-                }else if(getMyVar('收藏书架列表搜索')){
-                    deleteItemByCls('caselist');
-                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                        let extra = v.extra || {};
-                        extra['data'] = extra['data'] || {};
-                        let types = (extra['data'].group || extra['data'].type || '').split(',');
-                        let it = getMyVar("SrcJu_bookCaseType","全部");
-                        return it=='全部' || types.indexOf(it)>-1;
-                    });
-                    addItemAfter('casesousuoid', casedatalist);
-                    clearMyVar('收藏书架列表搜索');
-                }
-            })
         }
-    });
+        d.push({
+            title: '🔍',
+            url: $.toString((casesousuo) => {
+                putMyVar('收藏书架列表搜索','1');
+                return casesousuo(input);
+            }, casesousuo),
+            desc: '',
+            col_type: "input",
+            extra: {
+                id: 'casesousuoid',
+                titleVisible: true,
+                defaultValue: "",
+                onChange: $.toString((casesousuo) => {
+                    if(input.length>1){
+                        putMyVar('收藏书架列表搜索','1');
+                        return casesousuo(input);
+                    }else if(getMyVar('收藏书架列表搜索')){
+                        clearMyVar('收藏书架列表搜索');
+                        return casesousuo();
+                    }
+                }, casesousuo)
+            }
+        });
+    }
 
     let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     let casedatalist = [];

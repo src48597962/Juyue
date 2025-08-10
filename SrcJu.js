@@ -20,7 +20,7 @@ function yiji(testSource) {
                     return fetch(config.聚阅.replace(/[^/]*$/,'') + "聚阅.hiker");
                 }),
                 cancel: $.toString(() => {
-                    return "toast://不升级小程序，功能不全或有异常"
+                    return "toast://不升级小程序，功能不全或有异常";
                 })
             });
         }
@@ -1981,6 +1981,8 @@ function bookCase() {
         if(getItem("退出重置收藏")=="1"){
             clearItem("切换收藏列表");
         }
+        clearMyVar('收藏书架列表');
+        clearMyVar('收藏书架列表搜索');
     }));
 
     setPageTitle('收藏|书架');
@@ -2071,11 +2073,14 @@ function bookCase() {
     let datalist = [];
     Julist.forEach(it=>{
         let data = it.extra['data'] || {};
-        let type = data.type || '';
-        if(type && typebtn.indexOf(type)==-1){
-            typebtn.push(type);
-        }
-        if(getMyVar("SrcJu_bookCaseType","全部")=="全部" || getMyVar("SrcJu_bookCaseType")==type){
+        let types = (data.group || data.type || '').split(',');
+        types.forEach(type=>{
+            if(type && typebtn.indexOf(type)==-1){
+                typebtn.push(type);
+            }
+        })
+        
+        if(getMyVar("SrcJu_bookCaseType","全部")=="全部" || types.indexOf(getMyVar("SrcJu_bookCaseType"))>-1){
             datalist.push(it);
         }
     })
@@ -2199,8 +2204,40 @@ function bookCase() {
             }
         })
     })
-    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
     
+    d.push({
+        title: '🔍',
+        url: $.toString(() => {
+            deleteItemByCls("caselist");
+            let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>v.title.includes(input));
+            addItemAfter('casesousuoid', casedatalist);
+            putMyVar('收藏书架列表搜索','1');
+            return 'hiker://emtpy';
+        }),
+        desc: '搜你想要的...',
+        col_type: "input",
+        extra: {
+            id: 'casesousuoid',
+            titleVisible: true,
+            defaultValue: "",
+            onChange: $.toString(() => {
+                if(input.length>1){
+                    deleteItemByCls('caselist');
+                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>v.title.includes(input));
+                    addItemAfter('casesousuoid', casedatalist);
+                    putMyVar('收藏书架列表搜索','1');
+                }else if(getMyVar('收藏书架列表搜索')){
+                    deleteItemByCls('caselist');
+                    let casedatalist = storage0.getMyVar('收藏书架列表', []);
+                    addItemAfter('casesousuoid', casedatalist);
+                    clearMyVar('收藏书架列表搜索');
+                }
+            })
+        }
+    });
+
+    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
+    let casedatalist = [];
     datalist.forEach(it => {
         try{
             let extra = it.extra;
@@ -2243,14 +2280,16 @@ function bookCase() {
                     }, md5(it.title+(it.params.url+'').split('@')[0]))
                 }]
             }
-            d.push({
+            let item = {
                 title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small><font color=#bfbfbf>"+(stype?stype+" | "+(sname||""):"自开二级页面")+"</font></small>":name,
                 pic_url: it.picUrl,
                 desc: col_type=='movie_1_vertical_pic'?lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15):lastChapter.replace('更新至：',''),
                 url: url,
                 col_type: col_type,
                 extra: extra
-            })
+            }
+            d.push(item)
+            casedatalist.push(item)
         }catch(e){
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
@@ -2266,6 +2305,7 @@ function bookCase() {
         }
     })
     setResult(d);
+    storage0.putMyVar('收藏书架列表', casedatalist);
 }
 //版本检测
 function Version() {

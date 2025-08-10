@@ -1106,9 +1106,9 @@ function erji() {
                     let line_other = line_others[i] || {};
                     let extra = line_other.extra || {};
                     extra.cls = "Juloadlist";
-                    extra.backgroundColor = lineid==i?(extra.backgroundColor||"#20" + Color.replace('#','')):"";
+                    extra.backgroundColor = !getMyVar('线路显示翻页内容')&&lineid==i?(extra.backgroundColor||"#20" + Color.replace('#','')):"";
                     d.push({
-                        title: lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
+                        title: !getMyVar('线路显示翻页内容')&&lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
                         url: $("#noLoading#").lazyRule((lineurl,nowid,newid) => {
                             if(nowid != newid || getMyVar('线路显示翻页内容')){
                                 clearMyVar('线路显示翻页内容');

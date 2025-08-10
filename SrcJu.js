@@ -1350,7 +1350,6 @@ function erji() {
     }
     if(parse['二级翻页'] && erLoadData.pageParam){
         setPreResult(d);
-        d = [];
         try {
             let 执行str = parse['二级翻页'].toString();
             let getData = [];
@@ -1364,11 +1363,17 @@ function erji() {
 
             if (getData.length > 0) {
                 jkdata['erjisign'] = parse['二级标识'];
+                getData.unshift({
+                    title: '评论区',
+                    url: 'hiker://empty',
+                    img: 'hiker://images/bbs',
+                    col_type: 'avatar'
+                })
                 getData.forEach(item => {
                     item = toerji(item, jkdata);
                 })
             }
-            d = d.concat(getData);
+            d = getData;
         } catch (e) {
             xlog('加载二级翻页内容异常>' + e.message + ' 错误行#' + e.lineNumber);
         }

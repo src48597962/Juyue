@@ -491,6 +491,7 @@ function erji() {
         clearMyVar('二级简介打开标识');
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
+        clearMyVar('切换显示评论');
         if(getMyVar('从书架进二级')){
             refreshPage(false);
         }
@@ -1083,33 +1084,47 @@ function erji() {
                     }
                 })
             }
-            
-            if(!noShow.线路){
-                if(线路s.length>0 && 线路s[0] !="线路"){
-                    线路s.forEach((it,i)=>{
-                        let line_others = 线路s_other || [];
-                        let line_other = line_others[i] || {};
-                        let extra = line_other.extra || {};
-                        extra.cls = "Juloadlist";
-                        extra.backgroundColor = lineid==i?(extra.backgroundColor||"#20" + Color.replace('#','')):"";
-                        d.push({
-                            title: lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
-                            url: $("#noLoading#").lazyRule((lineurl,nowid,newid) => {
-                                if(nowid != newid){
-                                    putMyVar(lineurl, newid);
-                                    refreshPage(false);
-                                }
-                                return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_line", lineid, i),
-                            desc: line_other.desc || '',
-                            img: line_other.img || line_other.pic || line_other.pic_url || '',
-                            col_type: line_other.col_type || line_col_type,
-                            extra: extra
-                        })
-                    })
-                }
+            if(parse['二级翻页'] && $.type(pageParam)=='object' && pageParam.comment){
+                d.push({
+                    title: getMyVar('切换显示评论')?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
+                    url: $("#noLoading#").lazyRule(() => {
+                        putMyVar('切换显示评论', '1');
+                        refreshPage(false);
+                        return 'hiker://empty'
+                    }),
+                    col_type: line_col_type,
+                    extra: {
+                        cls: "Juloadlist",
+                        backgroundColor = getMyVar('切换显示评论')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
+                    }
+                })
             }
-            if(!noShow.选集){
+            if(线路s.length>0 && 线路s[0] !="线路"){
+                线路s.forEach((it,i)=>{
+                    let line_others = 线路s_other || [];
+                    let line_other = line_others[i] || {};
+                    let extra = line_other.extra || {};
+                    extra.cls = "Juloadlist";
+                    extra.backgroundColor = lineid==i?(extra.backgroundColor||"#20" + Color.replace('#','')):"";
+                    d.push({
+                        title: lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
+                        url: $("#noLoading#").lazyRule((lineurl,nowid,newid) => {
+                            if(nowid != newid || getMyVar('切换显示评论')){
+                                clearMyVar('切换显示评论');
+                                putMyVar(lineurl, newid);
+                                refreshPage(false);
+                            }
+                            return 'hiker://empty'
+                        }, "SrcJu_"+MY_URL+"_line", lineid, i),
+                        desc: line_other.desc || '',
+                        img: line_other.img || line_other.pic || line_other.pic_url || '',
+                        col_type: line_other.col_type || line_col_type,
+                        extra: extra
+                    })
+                })
+            }
+
+            if(!noShow.选集 && !getMyVar('切换显示评论')){
                 //分页定义
                 let partpage = storage0.getItem('partpage') || {};
                 if(分页){//原网站有分页，不执行自定义分页
@@ -1312,7 +1327,7 @@ function erji() {
                     });
                 }
             }
-            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
+            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array' && !getMyVar('切换显示评论')){
                 let extenditems = erLoadData.extenditems;
                 if(extenditems.length>0){
                     d.push({

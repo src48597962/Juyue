@@ -2211,6 +2211,7 @@ function bookCase() {
                         }
                     })
                 })
+                putMyVar("SrcJu_bookCaseType", it);
                 return "hiker://empty";
             },typebtn,it,Color),
             col_type: 'scroll_button',
@@ -2244,7 +2245,13 @@ function bookCase() {
                     putMyVar('收藏书架列表搜索','1');
                 }else if(getMyVar('收藏书架列表搜索')){
                     deleteItemByCls('caselist');
-                    let casedatalist = storage0.getMyVar('收藏书架列表', []);
+                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
+                        let extra = v.extra || {};
+                        extra['data'] = extra['data'] || {};
+                        let types = (extra['data'].group || extra['data'].type || '').split(',');
+                        let it = getMyVar("SrcJu_bookCaseType","全部");
+                        return it=='全部' || types.indexOf(it)>-1;
+                    });
                     addItemAfter('casesousuoid', casedatalist);
                     clearMyVar('收藏书架列表搜索');
                 }

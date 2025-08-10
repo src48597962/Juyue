@@ -1084,7 +1084,7 @@ function erji() {
                     }
                 })
             }
-            if(parse['二级翻页'] && $.type(pageParam)=='object' && pageParam.comment){
+            if(parse['二级翻页'] && $.type(pageParam)=='object' && pageParam.line){
                 d.push({
                     title: getMyVar('切换显示评论')?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
                     url: $("#noLoading#").lazyRule(() => {

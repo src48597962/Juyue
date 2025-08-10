@@ -2,6 +2,12 @@ var newVersion = {
     "SrcJu": "1.0",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V1.1",
+        records: [
+            "优化：收藏书架逻辑代码升级，增加长按菜单",
+            "新增：增加二级翻页和二级返回的pageParam互应"
+        ]
+    },{
         title: "2025/08/06 V1.0",
         records: [
             "优化：接口列表增加版本号，操作增加查看相似",

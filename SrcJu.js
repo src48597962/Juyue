@@ -2199,7 +2199,7 @@ function bookCase() {
                     let extra = v.extra || {};
                     extra['data'] = extra['data'] || {};
                     let types = (extra['data'].group || extra['data'].type || '').split(',');
-                    return types.indexOf(it)>-1;
+                    return it=='全部' || types.indexOf(it)>-1;
                 });
                 addItemAfter('casesousuoid', casedatalist);
                 typebtn.forEach(t=>{

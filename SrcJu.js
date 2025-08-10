@@ -1096,7 +1096,7 @@ function erji() {
                     col_type: line_col_type,
                     extra: {
                         cls: "Juloadlist",
-                        backgroundColor: getMyVar('线路显示翻页内容')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
+                        backgroundColor: getMyVar('线路显示翻页内容')?"#20" + Color.replace('#',''):""
                     }
                 })
             }

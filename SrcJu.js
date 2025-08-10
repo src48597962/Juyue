@@ -491,7 +491,7 @@ function erji() {
         clearMyVar('二级简介打开标识');
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
-        clearMyVar('切换显示评论');
+        clearMyVar('线路显示翻页内容');
         if(getMyVar('从书架进二级')){
             refreshPage(false);
         }
@@ -1084,18 +1084,19 @@ function erji() {
                     }
                 })
             }
-            if(parse['二级翻页'] && $.type(pageParam)=='object' && pageParam.line){
+            if(parse['二级翻页'] && $.type(erLoadData.pageParam)=='object' && erLoadData.pageParam.line){
+                let linetitle = erLoadData.pageParam.title || '评论';
                 d.push({
-                    title: getMyVar('切换显示评论')?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
+                    title: getMyVar('线路显示翻页内容')?`““””<span style="color: `+Color+`">`+linetitle+`</span>`:linetitle,
                     url: $("#noLoading#").lazyRule(() => {
-                        putMyVar('切换显示评论', '1');
+                        putMyVar('线路显示翻页内容', '1');
                         refreshPage(false);
                         return 'hiker://empty'
                     }),
                     col_type: line_col_type,
                     extra: {
                         cls: "Juloadlist",
-                        backgroundColor: getMyVar('切换显示评论')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
+                        backgroundColor: getMyVar('线路显示翻页内容')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
                     }
                 })
             }
@@ -1109,8 +1110,8 @@ function erji() {
                     d.push({
                         title: lineid==i?`““””<span style="color: `+Color+`">`+it+`</span>`:it,
                         url: $("#noLoading#").lazyRule((lineurl,nowid,newid) => {
-                            if(nowid != newid || getMyVar('切换显示评论')){
-                                clearMyVar('切换显示评论');
+                            if(nowid != newid || getMyVar('线路显示翻页内容')){
+                                clearMyVar('线路显示翻页内容');
                                 putMyVar(lineurl, newid);
                                 refreshPage(false);
                             }
@@ -1124,7 +1125,7 @@ function erji() {
                 })
             }
 
-            if(!noShow.选集 && !getMyVar('切换显示评论')){
+            if(!noShow.选集 && !getMyVar('线路显示翻页内容')){
                 //分页定义
                 let partpage = storage0.getItem('partpage') || {};
                 if(分页){//原网站有分页，不执行自定义分页
@@ -1327,7 +1328,7 @@ function erji() {
                     });
                 }
             }
-            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array' && !getMyVar('切换显示评论')){
+            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array' && !getMyVar('线路显示翻页内容')){
                 let extenditems = erLoadData.extenditems;
                 if(extenditems.length>0){
                     d.push({

@@ -1095,7 +1095,7 @@ function erji() {
                     col_type: line_col_type,
                     extra: {
                         cls: "Juloadlist",
-                        backgroundColor = getMyVar('切换显示评论')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
+                        backgroundColor: getMyVar('切换显示评论')?(extra.backgroundColor||"#20" + Color.replace('#','')):""
                     }
                 })
             }

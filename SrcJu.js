@@ -1089,8 +1089,10 @@ function erji() {
                 d.push({
                     title: getMyVar('线路显示翻页内容')?`““””<span style="color: `+Color+`">`+linetitle+`</span>`:linetitle,
                     url: $("#noLoading#").lazyRule(() => {
-                        putMyVar('线路显示翻页内容', '1');
-                        refreshPage(false);
+                        if(!getMyVar('线路显示翻页内容')){
+                            putMyVar('线路显示翻页内容', '1');
+                            refreshPage(false);
+                        }
                         return 'hiker://empty'
                     }),
                     col_type: line_col_type,
@@ -1366,6 +1368,14 @@ function erji() {
     }
     if(parse['二级翻页'] && erLoadData.pageParam){
         if(($.type(erLoadData.pageParam)=='object'&&(!erLoadData.pageParam.line || getMyVar('线路显示翻页内容'))) || $.type(erLoadData.pageParam)!='object'){
+            d.push({
+                pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+                col_type: "pic_1_center",
+                url: "hiker://empty",
+                extra: {
+                    cls: "loading_gif"
+                }
+            })
             setPreResult(d);
             try {
                 let 执行str = parse['二级翻页'].toString();
@@ -1388,6 +1398,7 @@ function erji() {
             } catch (e) {
                 xlog('加载二级翻页内容异常>' + e.message + ' 错误行#' + e.lineNumber);
             }
+            deleteItemByCls("loading_gif");
         }
     }
     setResult(d);

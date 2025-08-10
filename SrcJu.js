@@ -2230,7 +2230,7 @@ function bookCase() {
                 let extra = v.extra || {};
                 extra['data'] = extra['data'] || {};
                 let types = (extra['data'].group || extra['data'].type || '').split(',');
-                let it = getMyVar("SrcJu_bookCaseType","全部");
+                let it = getMyVar("SrcJu_bookCaseType", "全部");
                 return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
             });
             addItemAfter('casesousuoid', casedatalist);
@@ -2246,7 +2246,13 @@ function bookCase() {
             onChange: $.toString(() => {
                 if(input.length>1){
                     deleteItemByCls('caselist');
-                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>v.title.includes(input));
+                    let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
+                        let extra = v.extra || {};
+                        extra['data'] = extra['data'] || {};
+                        let types = (extra['data'].group || extra['data'].type || '').split(',');
+                        let it = getMyVar("SrcJu_bookCaseType", "全部");
+                        return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
+                    });
                     addItemAfter('casesousuoid', casedatalist);
                     putMyVar('收藏书架列表搜索','1');
                 }else if(getMyVar('收藏书架列表搜索')){

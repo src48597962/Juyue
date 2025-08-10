@@ -2193,13 +2193,29 @@ function bookCase() {
     typebtn.forEach(it =>{
         d.push({
             title: getMyVar("SrcJu_bookCaseType","全部")==it?`““””<b><span style="color: ` + Color + `">` + it + `</span></b>`:it,
-            url: $('#noLoading#').lazyRule((it) => {
-                putMyVar("SrcJu_bookCaseType",it);
-                refreshPage(false);
+            url: $('#noLoading#').lazyRule((typebtn,it,Color) => {
+                deleteItemByCls("caselist");
+                let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
+                    let extra = v.extra || {};
+                    extra['data'] = extra['data'] || {};
+                    let types = (extra['data'].group || extra['data'].type || '').split(',');
+                    return types.indexOf(it)>-1;
+                });
+                addItemAfter('casesousuoid', casedatalist);
+                typebtn.forEach(t=>{
+                    updateItem('typebtn-' + t, {
+                        title: it==t?`““””<b><span style="color: ` + Color + `">` + t + `</span></b>`:t,
+                        extra: {
+                            id: 'typebtn-' + t,
+                            backgroundColor: it==t?"#20" + Color.replace('#',''):""
+                        }
+                    })
+                })
                 return "hiker://empty";
-            },it),
+            },typebtn,it,Color),
             col_type: 'scroll_button',
             extra: {
+                id: 'typebtn-' + it,
                 backgroundColor: getMyVar("SrcJu_bookCaseType","全部")==it?"#20" + Color.replace('#',''):""
             }
         })

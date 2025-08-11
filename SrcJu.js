@@ -557,7 +557,6 @@ function erji() {
             
             if(erdataCache){
                 erLoadData = erdataCache;
-                xlog('使用二级缓存数据');
                 eval(evalPublicStr);//调用执行公共加载代码，预处理等
             }else{
                 xlog('开始获取二级数据');
@@ -1378,6 +1377,7 @@ function erji() {
             })
             setPreResult(d);
             try {
+                xlog('获取二级翻页数据，当前页：' + MY_PAGE);
                 let 执行str = parse['二级翻页'].toString();
                 let getData = [];
                 let resultd;

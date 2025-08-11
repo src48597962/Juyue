@@ -970,7 +970,7 @@ function erji() {
                 }
                 
                 d.push({
-                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">排序⇅</span>` : `““””<span style="color: #55AA44">排序⇅</span>`,
+                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">⇅</span>` : `““””<span style="color: #55AA44">⇅</span>`,
                     url: $("#noLoading#").lazyRule((sname) => {
                         let 列表 = findItemsByCls('playlist') || [];
                         if(列表.length==0){
@@ -980,12 +980,12 @@ function erji() {
                         if (getMyVar(sname + 'sort') == '1') {
                             putMyVar(sname + 'sort', '0');
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #55AA44">排序⇅</span></b>`
+                                title: `““””<b><span style="color: #55AA44">⇅</span></b>`
                             });
                         } else {
                             putMyVar(sname + 'sort', '1')
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #66CCEE">排序⇅</span></b>`
+                                title: `““””<b><span style="color: #66CCEE">⇅</span></b>`
                             });
                         };
                         列表.reverse();
@@ -1004,7 +1004,7 @@ function erji() {
                 })
                 
                 d.push({
-                    title: `““””<span style="color: #f47983">样式<small>🎨</small></span>`,
+                    title: `““””<small>🎨</small>`,
                     url: $(["修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'),"选集样式:"+getItem('SrcJuList_col_type', '自动'),"选集分页设置"], 1, "选集列表样式").select(() => {
                         if(input=="选集分页设置"){
                             return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {

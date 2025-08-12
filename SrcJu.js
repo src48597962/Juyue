@@ -2136,7 +2136,10 @@ function bookCase() {
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
     })
+    xlog(Julist.length);
+    xlog(datalist.length);
     storage0.putMyVar('收藏书架列表', datalist);
+    xlog(storage0.getMyVar('收藏书架列表'));
 
     datalist = datalist.filter(it=>{
         let data = it.extra['data'] || {};

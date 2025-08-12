@@ -2069,6 +2069,9 @@ function bookCase() {
             })
         }
     }
+
+    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
+    let datalist = [];
     let typebtn = [];
     Julist.forEach(it=>{
         let data = it.extra['data'] || {};
@@ -2078,11 +2081,7 @@ function bookCase() {
                 typebtn.push(type);
             }
         })
-    })
-    
-    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
-    let datalist = [];
-    Julist.forEach(it => {
+
         try{
             let extra = it.extra;
             extra['data'] = extra['data'] || {};

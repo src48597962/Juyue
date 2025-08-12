@@ -2256,7 +2256,7 @@ function bookCase() {
             url: $('#noLoading#').lazyRule((typebtn,it,Color) => {
                 deleteItemByCls("caselist");
                 let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                    let data = it.extra['data'] || {};
+                    let data = v.extra['data'] || {};
                     let types = (data.group || data.type || '').split(',');
                     return it=='全部' || types.indexOf(it)>-1;
                 });
@@ -2284,7 +2284,7 @@ function bookCase() {
         function casesousuo(input) {
             deleteItemByCls("caselist");
             let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                let data = it.extra['data'] || {};
+                let data = v.extra['data'] || {};
                 let types = (data.group || data.type || '').split(',');
                 let it = getMyVar("SrcJu_bookCaseType", "全部");
                 if(input){

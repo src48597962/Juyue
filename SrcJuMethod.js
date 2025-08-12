@@ -690,6 +690,7 @@ function addBookCase(obj, update) {
         }
         caselist.unshift(obj);
         writeFile(casefile, JSON.stringify(caselist));
+        clearMyVar('收藏书架列表');
         return 'toast://已加入';
     }catch(e){
         return 'toast://失败>'+e.message;

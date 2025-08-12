@@ -1982,7 +1982,8 @@ function bookCase() {
             clearItem("切换收藏列表");
         }
         clearMyVar('收藏书架列表');
-        clearMyVar('收藏书架列表搜索');
+        clearMyVar('收藏书架搜索标识');
+        clearMyVar('收藏书架搜索框');
     }));
 
     setPageTitle('收藏|书架');
@@ -2259,6 +2260,11 @@ function bookCase() {
                     let types = (data.group || data.type || '').split(',');
                     return it=='全部' || types.indexOf(it)>-1;
                 });
+                if(casedatalist.length>=20){
+                    addItemBefore('caseloading', storage0.getMyVar('收藏书架搜索框', {}));
+                }else{
+                    deleteItem('casesearchinput');
+                }
                 addItemBefore('caseloading', casedatalist);
                 typebtn.forEach(t=>{
                     updateItem('typebtn-' + t, {
@@ -2279,43 +2285,47 @@ function bookCase() {
             }
         })
     })
-    if(datalist.length>=20){
-        function casesousuo(input) {
-            deleteItemByCls("caselist");
-            let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                let data = v.extra['data'] || {};
-                let types = (data.group || data.type || '').split(',');
-                let it = getMyVar("SrcJu_bookCaseType", "全部");
-                if(input){
-                    return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
-                }
-                return it=='全部' || types.indexOf(it)>-1;
-            });
-            addItemBefore('caseloading', casedatalist);
-            return 'hiker://emtpy';
-        }
-        d.push({
-            title: '🔍',
-            url: $.toString((casesousuo) => {
-                putMyVar('收藏书架列表搜索','1');
-                return casesousuo(input);
-            }, casesousuo),
-            desc: '',
-            col_type: "input",
-            extra: {
-                titleVisible: true,
-                defaultValue: "",
-                onChange: $.toString((casesousuo) => {
-                    if(input.length>1){
-                        putMyVar('收藏书架列表搜索','1');
-                        return casesousuo(input);
-                    }else if(getMyVar('收藏书架列表搜索')){
-                        clearMyVar('收藏书架列表搜索');
-                        return casesousuo();
-                    }
-                }, casesousuo)
+
+    function casesousuo(input) {
+        deleteItemByCls("caselist");
+        let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
+            let data = v.extra['data'] || {};
+            let types = (data.group || data.type || '').split(',');
+            let it = getMyVar("SrcJu_bookCaseType", "全部");
+            if(input){
+                return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
             }
+            return it=='全部' || types.indexOf(it)>-1;
         });
+        addItemBefore('caseloading', casedatalist);
+        return 'hiker://emtpy';
+    }
+    let 搜索框 = {
+        title: '🔍',
+        url: $.toString((casesousuo) => {
+            putMyVar('收藏书架搜索标识','1');
+            return casesousuo(input);
+        }, casesousuo),
+        desc: '',
+        col_type: "input",
+        extra: {
+            id: 'casesearchinput',
+            titleVisible: true,
+            defaultValue: "",
+            onChange: $.toString((casesousuo) => {
+                if(input.length>1){
+                    putMyVar('收藏书架搜索标识','1');
+                    return casesousuo(input);
+                }else if(getMyVar('收藏书架搜索标识')){
+                    clearMyVar('收藏书架搜索标识');
+                    return casesousuo();
+                }
+            }, casesousuo)
+        }
+    }
+    storage0.putMyVar('收藏书架搜索框', 搜索框);
+    if(datalist.length>=20){
+        d.push(搜索框);
     }
 
     deleteItemByCls("loading_gif");

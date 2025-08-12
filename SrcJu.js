@@ -2259,7 +2259,7 @@ function bookCase() {
                     let types = (data.group || data.type || '').split(',');
                     return it=='全部' || types.indexOf(it)>-1;
                 });
-                addItemAfter('casesousuoid', casedatalist);
+                addItemBefore('caseloading', casedatalist);
                 typebtn.forEach(t=>{
                     updateItem('typebtn-' + t, {
                         title: it==t?`““””<b><span style="color: ` + Color + `">` + t + `</span></b>`:t,

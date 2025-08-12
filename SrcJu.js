@@ -2136,10 +2136,7 @@ function bookCase() {
             xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
         }
     })
-    xlog(Julist.length);
-    xlog(datalist.length);
     storage0.putMyVar('收藏书架列表', datalist);
-    xlog(storage0.getMyVar('收藏书架列表'));
 
     datalist = datalist.filter(it=>{
         let data = it.extra['data'] || {};
@@ -2294,7 +2291,7 @@ function bookCase() {
                 }
                 return it=='全部' || types.indexOf(it)>-1;
             });
-            addItemAfter('casesousuoid', casedatalist);
+            addItemBefore('caseloading', casedatalist);
             return 'hiker://emtpy';
         }
         d.push({
@@ -2306,7 +2303,6 @@ function bookCase() {
             desc: '',
             col_type: "input",
             extra: {
-                id: 'casesousuoid',
                 titleVisible: true,
                 defaultValue: "",
                 onChange: $.toString((casesousuo) => {
@@ -2323,7 +2319,7 @@ function bookCase() {
     }
 
     deleteItemByCls("loading_gif");
-    
+
     datalist.forEach(item => {
         d.push(item);
     })

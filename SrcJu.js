@@ -2260,10 +2260,9 @@ function bookCase() {
                     let types = (data.group || data.type || '').split(',');
                     return it=='全部' || types.indexOf(it)>-1;
                 });
+                deleteItem('casesearchinput');
                 if(casedatalist.length>=20){
                     addItemBefore('caseloading', storage0.getMyVar('收藏书架搜索框', {}));
-                }else{
-                    deleteItem('casesearchinput');
                 }
                 addItemBefore('caseloading', casedatalist);
                 typebtn.forEach(t=>{

@@ -1981,7 +1981,6 @@ function bookCase() {
         if(getItem("退出重置收藏")=="1"){
             clearItem("切换收藏列表");
         }
-        clearMyVar('收藏书架列表');
         clearMyVar('收藏书架列表搜索');
     }));
 

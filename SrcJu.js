@@ -2139,7 +2139,7 @@ function bookCase() {
             datalist.push({//#bfbfbf
                 title: col_type=='movie_1_vertical_pic'?name.substring(0,15) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>":name,
                 pic_url: it.picUrl,
-                desc: col_type=='movie_1_vertical_pic'?lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15):lastChapter.replace('更新至：',''),
+                desc: col_type=='movie_1_vertical_pic'?(it.type=='一级列表'?it.type:lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15)):lastChapter.replace('更新至：',''),
                 url: url,
                 col_type: col_type,
                 extra: extra

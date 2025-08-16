@@ -593,6 +593,26 @@ function toerji(item, jkdata) {
             })
             item.extra = extra;
         }
+
+        let caseData = {
+            type: '二级列表',
+            title: extra.pageTitle,
+            picUrl: extra.img,
+            params: {
+                url: item.url,
+                find_rule: '',
+                params: extra
+            }
+        }
+        let longClick = extra.longClick || [];
+        longClick.push({
+            title: "加入收藏书架🗄",
+            js: $.toString((caseData) => {
+                return addBookCase(caseData);
+            }, caseData)
+        })
+        extra.longClick = longClick;
+        item.extra = extra;
     }catch(e){
         xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
     }

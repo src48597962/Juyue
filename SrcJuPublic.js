@@ -604,7 +604,7 @@ function selectSource(selectGroup) {
         },
         menuClick(manage) {
             let menuarr = ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"];
-            if(lockgroups.length>0){
+            if(lockgroups.length>0 && getMyVar('SrcJu_已验证指纹')!='1'){
                 menuarr.push("显示加锁分组");
             }
             hikerPop.selectCenter({

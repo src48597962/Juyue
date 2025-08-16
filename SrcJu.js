@@ -4,7 +4,6 @@ require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + 'SrcJ
 
 //一级
 function yiji(testSource) {
-    xlog($.require.toString())
     if(MY_RULE.title=="聚阅✓"){
         toast("此小程序已停用，请重新导入聚阅");
     }

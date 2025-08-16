@@ -592,7 +592,7 @@ function toerji(item, jkdata) {
                     require(config.聚阅);
                     erji();
                 })
-                item.extra = extra;
+                item.extra = Object.assign({}, extra);
             }
             
             if(/video:|pics:|\.m3u8|\.mp4|@rule=/.test(item.url)){
@@ -621,7 +621,7 @@ function toerji(item, jkdata) {
                     }, caseData)
                 })
                 extra.longClick = longClick;
-                item.extra = extra;
+                item.extra = Object.assign({}, extra);
             }
         }
     }catch(e){

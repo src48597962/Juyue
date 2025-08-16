@@ -252,12 +252,12 @@ function SRCSet() {
                     })
                 })
             },{
-                title: juItem.get('noShowType','Juyue')=='1'?"显示分类":"不显示分类",
+                title: juItem2.get('noShowType')=='1'?"显示分类":"不显示分类",
                 js: $.toString(() => {
-                    if(juItem.get('noShowType','Juyue')=='1'){
-                        juItem.clear('noShowType','Juyue')
+                    if(juItem2.get('noShowType')=='1'){
+                        juItem2.clear('noShowType')
                     }else{
-                        juItem.set('noShowType', '1','Juyue')
+                        juItem2.set('noShowType', '1')
                     }
                     return 'toast://已切换，切源列表、快速分组、接口列表同时生效';
                 })

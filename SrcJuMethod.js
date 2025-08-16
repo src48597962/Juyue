@@ -11,12 +11,12 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 // 聚阅全局自定义存储变量方法
-function juItemF(id, sfile){
+function juItemF(id, s){
     let juItemO = {
-        'file': sfile || 'hiker://files/data/聚阅/juItem.json',
+        'file': s?'hiker://files/rules/Src/Juyue/juItem.json':'hiker://files/data/聚阅/juItem.json',
         'items': function () {
             let items = {};
-            let itemsstr = fetch(juItem.file);
+            let itemsstr = fetch(this.file);
             if (itemsstr != "") {
                 eval("items=" + itemsstr + ";");
             }
@@ -25,36 +25,35 @@ function juItemF(id, sfile){
         'set': function (key, str, id2) {
             if(!key || !str) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            let items = juItem.items();
+            let items = this.items();
             let item = items[id] || {};
             item[key] = str;
             items[id] = item;
-            writeFile(juItem.file, JSON.stringify(items));
+            writeFile(this.file, JSON.stringify(items));
         },
         'get': function (key, id2) {
-            log(this.file);
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            let items = juItem.items();
+            let items = this.items();
             let item = items[id] || {};
             return item[key] || '';
         },
         'clear': function (key, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            let items = juItem.items();
+            let items = this.items();
             let item = items[id] || {};
             if(item[key]){
                 delete item[key];
                 items[id] = item;
-                writeFile(juItem.file, JSON.stringify(items));
+                writeFile(this.file, JSON.stringify(items));
             }
         }
     }
     return juItemO;
 }
 let juItem = juItemF();
-let juItem2 = juItemF('Juyue', 'hiker://files/rules/Src/Juyue/juItem.json');
+let juItem2 = juItemF('Juyue', 1);
 
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `

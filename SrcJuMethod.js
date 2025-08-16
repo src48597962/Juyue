@@ -614,9 +614,7 @@ function toerji(item, jkdata) {
                 }
 
                 let longClick = extra.longClick || [];
-                if(longClick.length==1&&longClick[0].title=="加入收藏书架🗄"){
-                    longClick = [];
-                }
+                longClick = longClick.filter(v=>v.title!="加入收藏书架🗄")
                 longClick.push({
                     title: "加入收藏书架🗄",
                     js: $.toString((caseData) => {

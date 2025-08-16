@@ -594,33 +594,35 @@ function toerji(item, jkdata) {
                 })
                 item.extra = extra;
             }
-
-            let caseExtra = Object.assign({}, extra);
-            delete caseExtra.longClick;
-            caseExtra.data = caseExtra.data || {
-                name: jkdata.name,
-                type: jkdata.type
-            }
-            let caseData = {
-                type: item.url.includes('@rule=')?'二级列表':'一级列表',
-                title: extra.pageTitle || item.title,
-                picUrl: extra.img || item.img || item.pic_url,
-                params: {
-                    url: item.url,
-                    find_rule: '',
-                    params: caseExtra
+            
+            if(/video:|pics:|\.m3u8|\.mp4|@rule=/.test(item.url)){
+                let caseExtra = Object.assign({}, extra);
+                delete caseExtra.longClick;
+                caseExtra.data = caseExtra.data || {
+                    name: jkdata.name,
+                    type: jkdata.type
                 }
-            }
+                let caseData = {
+                    type: item.url.includes('@rule=')?'二级列表':'一级列表',
+                    title: extra.pageTitle || item.title,
+                    picUrl: extra.img || item.img || item.pic_url,
+                    params: {
+                        url: item.url,
+                        find_rule: '',
+                        params: caseExtra
+                    }
+                }
 
-            let longClick = extra.longClick || [];
-            longClick.push({
-                title: "加入收藏书架🗄",
-                js: $.toString((caseData) => {
-                    return addBookCase(caseData);
-                }, caseData)
-            })
-            extra.longClick = longClick;
-            item.extra = extra;
+                let longClick = extra.longClick || [];
+                longClick.push({
+                    title: "加入收藏书架🗄",
+                    js: $.toString((caseData) => {
+                        return addBookCase(caseData);
+                    }, caseData)
+                })
+                extra.longClick = longClick;
+                item.extra = extra;
+            }
         }
     }catch(e){
         xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)

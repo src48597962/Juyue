@@ -595,6 +595,12 @@ function toerji(item, jkdata) {
                 item.extra = extra;
             }
 
+            let caseExtra = Object.assign({}, extra);
+            delete caseExtra.longClick;
+            caseExtra.data = caseExtra.data || {
+                name: jkdata.name,
+                type: jkdata.type
+            }
             let caseData = {
                 type: item.url.includes('@rule=')?'二级列表':'一级列表',
                 title: extra.pageTitle || item.title,
@@ -602,9 +608,10 @@ function toerji(item, jkdata) {
                 params: {
                     url: item.url,
                     find_rule: '',
-                    params: extra
+                    params: caseExtra
                 }
             }
+
             let longClick = extra.longClick || [];
             longClick.push({
                 title: "加入收藏书架🗄",

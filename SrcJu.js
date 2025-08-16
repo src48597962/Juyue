@@ -969,7 +969,7 @@ function erji() {
                 }
                 
                 d.push({
-                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">⇅</span>` : `““””<span style="color: #55AA44">⇅</span>`,
+                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span>` : `““””<span style="color: #55AA44">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span>`,
                     url: $("#noLoading#").lazyRule((sname) => {
                         let 列表 = findItemsByCls('playlist') || [];
                         if(列表.length==0){
@@ -979,12 +979,12 @@ function erji() {
                         if (getMyVar(sname + 'sort') == '1') {
                             putMyVar(sname + 'sort', '0');
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #55AA44">⇅</span></b>`
+                                title: `““””<b><span style="color: #55AA44">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span></b>`
                             });
                         } else {
                             putMyVar(sname + 'sort', '1')
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #66CCEE">⇅</span></b>`
+                                title: `““””<b><span style="color: #66CCEE">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span></b>`
                             });
                         };
                         列表.reverse();
@@ -1003,8 +1003,8 @@ function erji() {
                 })
                 
                 d.push({
-                    title: `““””<small>🎨</small>`,
-                    url: $(["修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'),"选集样式:"+getItem('SrcJuList_col_type', '自动'),"选集分页设置"], 1, "选集列表样式").select(() => {
+                    title: `““””<small>`+(juItem2.get('二级简洁模式')?"":"样式")+`🎨</small>`,
+                    url: $(["修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'),"选集样式:"+getItem('SrcJuList_col_type', '自动'),"选集分页设置","二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否")], 1, "样式设置").select(() => {
                         if(input=="选集分页设置"){
                             return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                                 let partpage = storage0.getItem('partpage') || {};
@@ -1075,6 +1075,17 @@ function erji() {
                                 refreshPage();
                                 return 'hiker://empty';
                             })
+                        }else if(input.includes('二级简洁模式')){
+                            let sm;
+                            if(juItem2.get('二级简洁模式')){
+                                juItem2.clear('二级简洁模式');
+                                sm = "退出简洁模式，排序、样式等显示名称";
+                            }else{
+                                juItem2.set('二级简洁模式','1');
+                                sm = "简洁模式，排序、样式等不显示名称";
+                            }
+                            refreshPage(false);
+                            return "toast://"+sm;
                         }
                     }),
                     col_type: line_col_type,

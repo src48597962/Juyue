@@ -203,7 +203,7 @@ function yiji(testSource) {
         })
         d.push({
             title: "管理",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",getItem('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",juItem2.get('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心"],1).select(()=>{
                 if(MY_INDEX==0){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
@@ -212,10 +212,10 @@ function yiji(testSource) {
                     })
                 }else if(MY_INDEX==1){
                     return $("#noLoading#").lazyRule(() => {
-                        if(getItem('显示快速分组')=="1"){
-                            clearItem('显示快速分组');
+                        if(juItem2.get('显示快速分组')=="1"){
+                            juItem2.clear('显示快速分组');
                         }else{
-                            setItem('显示快速分组','1');
+                            juItem2.set('显示快速分组','1');
                         }
                         refreshPage();
                         return 'hiker://empty';
@@ -237,7 +237,7 @@ function yiji(testSource) {
             col_type: icon5_col
         })
         
-        if(getItem('显示快速分组')=="1" && !testSource){
+        if(juItem2.get('显示快速分组')=="1" && !testSource){
             let typemenubtn = getTypeNames("主页");
             typemenubtn.forEach((it) =>{
                 let item = {

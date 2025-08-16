@@ -54,6 +54,8 @@ function juItemF(id, sfile){
 }
 let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 'hiker://files/rules/Src/Juyue/juItem.json');
+xlog(juItem2.file);
+
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
     let juItem = juItemF(jkdata.id);

@@ -151,7 +151,7 @@ function getDatas(lx, isyx) {
 // 获取分组接口列表
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
-    if(juItem.get('noShowType','Juyue')!='1'){//显示分类时输出列表，默认
+    if(juItem2.get('noShowType')!='1'){//显示分类时输出列表，默认
         datas = datas.filter(it=>{
             return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
         })
@@ -194,7 +194,7 @@ function sortBWithNonAAtEnd(a, b) {
 function getJkGroups(datas, isgroup) {
     let typeNames = [];
     let groupNames = [];
-    let noShowType = juItem.get('noShowType','Juyue');
+    let noShowType = juItem2.get('noShowType');
     datas.forEach(it => {
         if (typeNames.indexOf(it.type)==-1 && noShowType!='1'){
             typeNames.push(it.type);
@@ -593,7 +593,7 @@ function selectSource(selectGroup) {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem.get('noShowType','Juyue')=='1'?"显示分类":"不显示分类"],
+                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -613,10 +613,10 @@ function selectSource(selectGroup) {
                             manage.scrollToPosition(index, true);
                         }
                     } else if (i === 3) {
-                        if(juItem.get('noShowType','Juyue')=='1'){
-                            juItem.clear('noShowType','Juyue')
+                        if(juItem2.get('noShowType')=='1'){
+                            juItem2.clear('noShowType')
                         }else{
-                            juItem.set('noShowType', '1','Juyue')
+                            juItem2.set('noShowType', '1')
                         }
                         toast('已切换，切源列表、快速分组、接口列表同时生效');
                     }

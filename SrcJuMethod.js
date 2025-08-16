@@ -575,44 +575,46 @@ function getObjCode(jkdata, key) {
 // 修正按钮元素
 function toerji(item, jkdata) {
     try{
-        jkdata = jkdata || storage0.getMyVar('一级源接口信息');
-        if(!jkdata.url){
-            jkdata = storage0.getMyVar('一级源接口信息');
-        }
-        let extra = item.extra || {};
-        let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
-        if(item.url && !extra.noDetail && !/select:|@|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
-            extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
-            extra.img = extra.img || item.pic_url || item.img;
-            extra.pageTitle = extra.pageTitle || extra.name;
-            extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
-            extra.data = jkdata;
-            item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
-                require(config.聚阅);
-                erji();
+        if(item.url && item.url!='hiker://empty'){
+            jkdata = jkdata || storage0.getMyVar('一级源接口信息');
+            if(!jkdata.url){
+                jkdata = storage0.getMyVar('一级源接口信息');
+            }
+            let extra = item.extra || {};
+            let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
+            if(!extra.noDetail && !/select:|@|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext))){
+                extra.name = extra.name || extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
+                extra.img = extra.img || item.pic_url || item.img;
+                extra.pageTitle = extra.pageTitle || extra.name;
+                extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+                extra.data = jkdata;
+                item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
+                    require(config.聚阅);
+                    erji();
+                })
+                item.extra = extra;
+            }
+
+            let caseData = {
+                type: item.url.includes('@rule=')?'二级列表':'一级列表',
+                title: extra.pageTitle || item.title,
+                picUrl: extra.img || item.img || item.pic_url,
+                params: {
+                    url: item.url,
+                    find_rule: '',
+                    params: extra
+                }
+            }
+            let longClick = extra.longClick || [];
+            longClick.push({
+                title: "加入收藏书架🗄",
+                js: $.toString((caseData) => {
+                    return addBookCase(caseData);
+                }, caseData)
             })
+            extra.longClick = longClick;
             item.extra = extra;
         }
-
-        let caseData = {
-            type: '二级列表',
-            title: extra.pageTitle,
-            picUrl: extra.img,
-            params: {
-                url: item.url,
-                find_rule: '',
-                params: extra
-            }
-        }
-        let longClick = extra.longClick || [];
-        longClick.push({
-            title: "加入收藏书架🗄",
-            js: $.toString((caseData) => {
-                return addBookCase(caseData);
-            }, caseData)
-        })
-        extra.longClick = longClick;
-        item.extra = extra;
     }catch(e){
         xlog("toerji失败>" + e.message + " 错误行#" + e.lineNumber)
     }

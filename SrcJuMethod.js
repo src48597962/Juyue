@@ -32,6 +32,7 @@ function juItemF(id, sfile){
             writeFile(juItem.file, JSON.stringify(items));
         },
         'get': function (key, id2) {
+            log(this.file);
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = juItem.items();
@@ -54,7 +55,6 @@ function juItemF(id, sfile){
 }
 let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 'hiker://files/rules/Src/Juyue/juItem.json');
-xlog(juItem2.file);
 
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `

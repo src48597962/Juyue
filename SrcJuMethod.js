@@ -592,7 +592,7 @@ function toerji(item, jkdata) {
                     require(config.聚阅);
                     erji();
                 })
-                item.extra = Object.assign({}, extra);
+                item.extra = extra;
             }
             
             if(/video:|pics:|\.m3u8|\.mp4|@rule=/.test(item.url)){
@@ -614,6 +614,9 @@ function toerji(item, jkdata) {
                 }
 
                 let longClick = extra.longClick || [];
+                if(longClick.length==1&&longClick[0].title=="加入收藏书架🗄"){
+                    longClick = [];
+                }
                 longClick.push({
                     title: "加入收藏书架🗄",
                     js: $.toString((caseData) => {
@@ -621,7 +624,7 @@ function toerji(item, jkdata) {
                     }, caseData)
                 })
                 extra.longClick = longClick;
-                item.extra = Object.assign({}, extra);
+                item.extra = extra;
             }
         }
     }catch(e){

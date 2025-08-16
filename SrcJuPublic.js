@@ -438,7 +438,16 @@ function selectSource2(selectGroup) {
     })
     return "hiker://empty";
 }
-//封装选择主页源方法
+// 判断源是否在加锁分组中，返回bool
+function isLockGroups(jkdata) {
+    let lockgroups = Juconfig["lockgroups"] || [];
+    if(juItem2.get('noShowType')!='1'){
+        return lockgroups.indexOf(jkdata.type)==-1 || !(jkdata.group||"").split(',').some(item => lockgroups.includes(item));
+    }else{
+        return !(jkdata.group||jkdata.type).split(',').some(item => lockgroups.includes(item));
+    }
+}
+// 封装选择主页源方法
 function selectSource(selectGroup) {
     let nowtime = Date.now();
     let oldtime = parseInt(getMyVar('切源时间','0'))||0;
@@ -455,11 +464,7 @@ function selectSource(selectGroup) {
     let lockgroups = Juconfig["lockgroups"] || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){
         sourceList = sourceList.filter(it=>{
-            if(juItem2.get('noShowType')!='1'){
-                return lockgroups.indexOf(it.type)==-1 || !(it.group||"").split(',').some(item => lockgroups.includes(item));
-            }else{
-                return !(it.group||it.type).split(',').some(item => lockgroups.includes(item));
-            }
+            return isLockGroups(it);
         })
     }
 

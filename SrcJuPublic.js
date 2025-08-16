@@ -7,7 +7,7 @@ let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
 let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-let gzip = $.require(codepath + "plugins/gzip.js");
+
 /*
 if(codepath && !codePath){
     codePath = codepath;

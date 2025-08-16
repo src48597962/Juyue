@@ -11,9 +11,9 @@ if (getItem('接口日志打印') != "1") {
     };
 }
 // 聚阅全局自定义存储变量方法
-function juItemF(id){
+function juItemF(id, sfile){
     let juItemO = {
-        'file': 'hiker://files/data/聚阅/juItem.json',
+        'file': sfile || 'hiker://files/data/聚阅/juItem.json',
         'items': function () {
             let items = {};
             let itemsstr = fetch(juItem.file);
@@ -53,6 +53,7 @@ function juItemF(id){
     return juItemO;
 }
 let juItem = juItemF();
+let juItem2 = juItemF('Juyue', 'hiker://files/rules/Src/Juyue/juItem.json');
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
     let juItem = juItemF(jkdata.id);

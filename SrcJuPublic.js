@@ -452,6 +452,17 @@ function selectSource(selectGroup) {
     //hikerPop插件
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
+    let lockgroups = Juconfig["lockgroups"] || [];
+    if(getMyVar('SrcJu_已验证指纹')!='1'){
+        sourceList = sourceList.filter(it=>{
+            if(juItem2.get('noShowType')!='1'){
+                return lockgroups.indexOf(it.type)==-1 || !(it.group||"").split(',').some(item => lockgroups.includes(item));
+            }else{
+                return !(it.group||it.type).split(',').some(item => lockgroups.includes(item));
+            }
+        })
+    }
+
     let tmpList = sourceList;
     let changeGroup = getItem('显示快速分组','')?"全部":homeGroup;
     if(selectGroup){
@@ -592,8 +603,12 @@ function selectSource(selectGroup) {
             return changeSource(sourcedata);
         },
         menuClick(manage) {
+            let menuarr = ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"];
+            if(lockgroups.length>0){
+                menuarr.push("显示加锁分组");
+            }
             hikerPop.selectCenter({
-                options: ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"],
+                options: menuarr,
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -619,6 +634,14 @@ function selectSource(selectGroup) {
                             juItem2.set('noShowType', '1')
                         }
                         toast('已切换，切源列表、快速分组、接口列表同时生效');
+                    } else if (i === 4) {
+                        if (hikerPop.canBiometric() !== 0) {
+                            return "toast://调用生物学验证出错";
+                        }
+                        let pop = hikerPop.checkByBiometric(() => {
+                            putMyVar('SrcJu_已验证指纹','1');
+                            toast("验证成功，重新点切换站源吧");
+                        });
                     }
                 }
             });

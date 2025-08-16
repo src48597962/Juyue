@@ -442,9 +442,9 @@ function selectSource2(selectGroup) {
 function isLockGroups(jkdata) {
     let lockgroups = Juconfig["lockgroups"] || [];
     if(juItem2.get('noShowType')!='1'){
-        return lockgroups.indexOf(jkdata.type)==-1 || !(jkdata.group||"").split(',').some(item => lockgroups.includes(item));
+        return lockgroups.indexOf(jkdata.type)>-1 || (jkdata.group||"").split(',').some(item => lockgroups.includes(item));
     }else{
-        return !(jkdata.group||jkdata.type).split(',').some(item => lockgroups.includes(item));
+        return (jkdata.group||jkdata.type).split(',').some(item => lockgroups.includes(item));
     }
 }
 // 封装选择主页源方法
@@ -464,7 +464,7 @@ function selectSource(selectGroup) {
     let lockgroups = Juconfig["lockgroups"] || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){
         sourceList = sourceList.filter(it=>{
-            return isLockGroups(it);
+            return !isLockGroups(it);
         })
     }
 

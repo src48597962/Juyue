@@ -272,7 +272,7 @@ function yiji(testSource) {
                 return 'toast://当前无接口数据';
             }else if(input.includes('  ') && !input.endsWith('  ')){//+2空格搜索指定源名或分组
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if((juItem2.get('接口搜索方式')=="" && !getMyVar('接口搜索方式互换')) || isTest){
+            }else if(((juItem2.get('接口搜索方式')||'主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);

@@ -469,7 +469,7 @@ function selectSource(selectGroup) {
     }
 
     let tmpList = sourceList;
-    let changeGroup = getItem('显示快速分组','')?"全部":homeGroup;
+    let changeGroup = juItem2.get('显示快速分组')?"全部":homeGroup;
     if(selectGroup){
         tmpList = getGroupLists(sourceList, selectGroup);//快速分组所在分组源列表
     }else if(changeGroup != "全部"){

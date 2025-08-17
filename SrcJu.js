@@ -133,7 +133,7 @@ function yiji(testSource) {
             return `‘‘’’<strong><font color="`+Color+`">`+v+`√</front></strong>`;
         }
         let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"]).map(v=>{
-            return v==getItem("接口搜索方式","主页界面")?modeSelect(v):v+'  ';
+            return v==(juItem2.get('接口搜索方式')||'主页界面')?modeSelect(v):v+'  ';
         });
         searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
         //searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
@@ -161,7 +161,7 @@ function yiji(testSource) {
                         return "hiker://empty";
                     })
                 }else{
-                    setItem("接口搜索方式",input);
+                    juItem2.set("接口搜索方式",input);
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
                 }
@@ -272,7 +272,7 @@ function yiji(testSource) {
                 return 'toast://当前无接口数据';
             }else if(input.includes('  ') && !input.endsWith('  ')){//+2空格搜索指定源名或分组
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
-            }else if((getItem('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
+            }else if((juItem2.get('接口搜索方式')=="" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
@@ -304,10 +304,10 @@ function yiji(testSource) {
                     return 'toast://无结果';
                 }
                 return 'hiker://empty';
-            }else if(getItem('接口搜索方式')=="页面聚合"){
+            }else if(juItem2.get('接口搜索方式')=="页面聚合"){
                 return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input;
             }else{//分组接口/当前接口
-                let ssmode = getItem('接口搜索方式','');
+                let ssmode = juItem2.get('接口搜索方式');
                 if(getMyVar('接口搜索方式互换')){
                     ssmode = ssmode === "分组接口" ? "当前接口" : "分组接口";
                     clearMyVar('接口搜索方式互换');

@@ -387,6 +387,7 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd;
                 let setResult = function(d) { resultd = d; };
                 eval("let 数据 = " + 执行str);
+                xlog(d);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
                     getData = resultd;

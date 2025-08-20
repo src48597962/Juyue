@@ -385,7 +385,15 @@ function getYiData(datatype, jkdata, dd) {
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                let setResult = function(d) { resultd = d; };
+                //let setResult = function(ddd) { resultd = ddd; };
+                let setResult = function(ddd) { 
+                    console.log('🐛 setResult 被调用!');
+                    console.log('调用栈:', new Error().stack);
+                    console.log('参数:', ddd);
+                    console.log('this:', this);
+                    resultd = ddd; 
+                    return ddd;
+                };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 
@@ -413,8 +421,8 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                xlog(getData.length);
-                xlog(d);
+                //xlog(getData.length);
+                //xlog(d);
                 d = d.concat(getData);
             } catch (e) {
                 d.push({

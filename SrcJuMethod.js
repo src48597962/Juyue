@@ -387,14 +387,25 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd;
                 //let setResult = function(ddd) { resultd = ddd; };
-                // 保存原始全局 setResult（如果有）
-                const originalSetResult = setResult;
-
-                // 强制设置全局 setResult
-                setResult = function(ddd) {
-                    xlog('全局 setResult 被调用');
-                    resultd = ddd;
+                // 劫持全局方法
+                const setResult2 = setResult;
+                const deleteItem2 = deleteItem;
+                const addItemAfter2 = addItemAfter;
+                const addItemBefore2 = addItemBefore;
+                setResult = function(ddd) {resultd = ddd;};
+                deleteItem = function(key) {
+                    updateItemList.deleteItem = updateItemList.deleteItem || [];
+                    updateItemList.deleteItem.push(key);
                 };
+                addItemAfter = function(key, arr) {
+                    updateItemList.addItemAfter = updateItemList.addItemAfter || [];
+                    updateItemList.addItemAfter.push({[key]:arr});
+                };
+                addItemBefore = function(key, arr) {
+                    updateItemList.addItemBefore = updateItemList.addItemBefore || [];
+                    updateItemList.addItemBefore.push({[key]:arr});
+                };
+
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 
@@ -432,6 +443,11 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
+            // 还原全局方法
+            setResult = setResult2;
+            deleteItem = deleteItem2;
+            addItemAfter = addItemAfter2;
+            addItemBefore = addItemBefore2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -447,8 +463,16 @@ function getYiData(datatype, jkdata, dd) {
     if(istest){
         return {error: 1};//测试，返回失败
     }
-    xlog(setResult.toString());
     setResult(d);
+    Object.keys(updateItemList).forEach(key => {
+        updateItemList[key].forEach(k => {
+            if($.type(k)=='array'){
+                key(k);
+            }else if($.type(k)=='object'){
+                key(k.key, k.value);
+            }
+        })
+    });
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');

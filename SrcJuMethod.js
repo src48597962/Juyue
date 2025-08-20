@@ -257,7 +257,7 @@ function getYiData(datatype, jkdata, dd) {
     
     let page = MY_PAGE || 1;
     let sourcemenu = [];
-    let d = dd || [];
+    let arr = dd || [];
 
     try {
         let 页码 = parse["页码"] || {};
@@ -314,7 +314,7 @@ function getYiData(datatype, jkdata, dd) {
         }else if(page==1){
             if(ide.includes('#immersiveTheme#') || ide.includes('#gameTheme#')){//频道页面，有传页面标识的统一处理
                 /*
-                d.push({
+                arr.push({
                     col_type: 'pic_1_full',
                     img: parse["频道"].沉浸图片 || "http://123.56.105.145/weisyr/img/TopImg0.png",
                     url: 'hiker://empty',
@@ -322,7 +322,7 @@ function getYiData(datatype, jkdata, dd) {
                 */
                 if(getItem('不显示沉浸图')=='1'){
                     for(let i=0;i<2;i++){
-                        d.push({
+                        arr.push({
                             title: "",
                             url: "hiker://empty",
                             col_type: "text_1",
@@ -334,7 +334,7 @@ function getYiData(datatype, jkdata, dd) {
                 }else{
                     //顺佬H5沉浸顶图样式
                     require('http://123.56.105.145/weisyr/Top_H5.js');
-                    d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||"130"));
+                    arr.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||"130"));
                 }
             }
         }
@@ -345,7 +345,7 @@ function getYiData(datatype, jkdata, dd) {
                 num = 4;
             }
             for(let i=0;i<num;i++){
-                d.push({
+                arr.push({
                     title: "",
                     url: "hiker://empty",
                     col_type: "text_1",
@@ -355,7 +355,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            d.push({
+            arr.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
@@ -363,8 +363,8 @@ function getYiData(datatype, jkdata, dd) {
                     cls: "loading_gif"
                 }
             })
-            setPreResult(d);
-            d = [];
+            setPreResult(arr);
+            arr = [];
             putMyVar(datatype+'动态加载loading', '1');
         }
 
@@ -375,7 +375,7 @@ function getYiData(datatype, jkdata, dd) {
             let 执行str = (parse[datatype]||"").toString();
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
-                createClass(d, obj);
+                createClass(arr, obj);
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
@@ -385,7 +385,7 @@ function getYiData(datatype, jkdata, dd) {
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                let setResult = function(d) { resultd = d; };
+                let setResult = function(ddd) { resultd = ddd; };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
@@ -393,7 +393,7 @@ function getYiData(datatype, jkdata, dd) {
                 }
 
                 if (getData.length == 0 && page == 1) {
-                    d.push({
+                    arr.push({
                         title: "未获取到数据",
                         url: "hiker://empty",
                         col_type: "text_center_1",
@@ -410,9 +410,9 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                d = d.concat(getData);
+                arr = arr.concat(getData);
             } catch (e) {
-                d.push({
+                arr.push({
                     title: jkdata.name + '>' + datatype + '>加载异常',
                     desc: e.message + ' 错误行#' + e.lineNumber,
                     url: 'hiker://empty',
@@ -421,7 +421,7 @@ function getYiData(datatype, jkdata, dd) {
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
         }else{
-            d.push({
+            arr.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
@@ -435,7 +435,7 @@ function getYiData(datatype, jkdata, dd) {
     if(istest){
         return {error: 1};//测试，返回失败
     }
-    setResult(d);
+    setResult(arr);
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');
@@ -489,7 +489,7 @@ function getSsData(name, jkdata, page) {
         if(parse['搜索']){
             eval(evalPublicStr);
             let resultd;
-            let setResult = function(d) { resultd = d; };
+            let setResult = function(ddd) { resultd = ddd; };
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
             if(resultd&&getData.length==0){

@@ -393,8 +393,10 @@ function getYiData(datatype, jkdata, dd) {
                 setResult = function(ddd) {
                     xlog('全局 setResult 被调用');
                     resultd = ddd;
-                    setPreResult(d);
-                    d = [];
+                    if(!getMyVar(datatype+'动态加载loading')){
+                        setPreResult(d.concat(ddd));
+                        d = [];
+                    }
                 };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];

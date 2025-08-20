@@ -399,7 +399,6 @@ function getYiData(datatype, jkdata, dd) {
                 
                 xlog(resultd);
                 setResult = originalSetResult;
-                xlog($.type(window));
                 xlog($.type(window0.setResult));
                 
                 if(resultd&&getData.length==0){

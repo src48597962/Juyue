@@ -394,7 +394,7 @@ function getYiData(datatype, jkdata, dd) {
                     xlog('全局 setResult 被调用');
                     resultd = ddd;
                     if(!getMyVar(datatype+'动态加载loading')){
-                        setPreResult(d.concat(ddd));
+                        originalSetResult(d.concat(ddd));
                         d = [];
                     }
                 };

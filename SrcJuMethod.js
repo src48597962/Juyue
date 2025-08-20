@@ -387,10 +387,10 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd;
                 //let setResult = function(ddd) { resultd = ddd; };
                 let setResult = function(ddd) { 
-                    console.log('🐛 setResult 被调用!');
-                    console.log('调用栈:', new Error().stack);
-                    console.log('参数:', ddd);
-                    console.log('this:', this);
+                    xlog('🐛 setResult 被调用!');
+                    xlog('调用栈:', new Error().stack);
+                    xlog('参数:', ddd);
+                    xlog('this:', this);
                     resultd = ddd; 
                     return ddd;
                 };

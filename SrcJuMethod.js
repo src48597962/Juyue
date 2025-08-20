@@ -381,31 +381,14 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
+            // 劫持全局方法
             const setResult2 = setResult;
-            const deleteItem2 = deleteItem;
-            const addItemAfter2 = addItemAfter;
-            const addItemBefore2 = addItemBefore;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                //let setResult = function(ddd) { resultd = ddd; };
-                // 劫持全局方法
-                
                 setResult = function(ddd) {resultd = ddd;};
-                deleteItem = function(key) {
-                    updateItemList.deleteItem = updateItemList.deleteItem || [];
-                    updateItemList.deleteItem.push(key);
-                };
-                addItemAfter = function(key, arr) {
-                    updateItemList.addItemAfter = updateItemList.addItemAfter || [];
-                    updateItemList.addItemAfter.push({[key]:arr});
-                };
-                addItemBefore = function(key, arr) {
-                    updateItemList.addItemBefore = updateItemList.addItemBefore || [];
-                    updateItemList.addItemBefore.push({[key]:arr});
-                };
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -432,8 +415,6 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                xlog(getData);
-
                 d = d.concat(getData);
             } catch (e) {
                 d.push({
@@ -446,9 +427,6 @@ function getYiData(datatype, jkdata, dd) {
             }
             // 还原全局方法
             setResult = setResult2;
-            deleteItem = deleteItem2;
-            addItemAfter = addItemAfter2;
-            addItemBefore = addItemBefore2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -465,16 +443,6 @@ function getYiData(datatype, jkdata, dd) {
         return {error: 1};//测试，返回失败
     }
     setResult(d);
-    
-    Object.keys(updateItemList).forEach(key => {
-        updateItemList[key].forEach(k => {
-            if($.type(k)=='array'){
-                key(k);
-            }else if($.type(k)=='object'){
-                key(k.key, k.value);
-            }
-        })
-    });
     
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){

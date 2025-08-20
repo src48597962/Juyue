@@ -432,7 +432,6 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
-            xlog(setResult.toString());
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -448,6 +447,7 @@ function getYiData(datatype, jkdata, dd) {
     if(istest){
         return {error: 1};//测试，返回失败
     }
+    xlog(setResult.toString());
     setResult(d);
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){

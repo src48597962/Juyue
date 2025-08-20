@@ -363,10 +363,10 @@ function getYiData(datatype, jkdata, dd) {
                     cls: "loading_gif"
                 }
             })
+            setPreResult(d);
+            d = [];
             putMyVar(datatype+'动态加载loading', '1');
         }
-        setPreResult(d);
-        d = [];
 
         if(parse['host']){
             MY_URL = parse['host'];
@@ -388,6 +388,7 @@ function getYiData(datatype, jkdata, dd) {
                 let setResult = function(d) { resultd = d; };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
+                xlog(d);
                 if(resultd&&getData.length==0){
                     getData = resultd;
                 }

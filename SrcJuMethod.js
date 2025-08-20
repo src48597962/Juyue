@@ -381,6 +381,10 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
+            const setResult2 = setResult;
+            const deleteItem2 = deleteItem;
+            const addItemAfter2 = addItemAfter;
+            const addItemBefore2 = addItemBefore;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
@@ -388,10 +392,7 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd;
                 //let setResult = function(ddd) { resultd = ddd; };
                 // 劫持全局方法
-                const setResult2 = setResult;
-                const deleteItem2 = deleteItem;
-                const addItemAfter2 = addItemAfter;
-                const addItemBefore2 = addItemBefore;
+                
                 setResult = function(ddd) {resultd = ddd;};
                 deleteItem = function(key) {
                     updateItemList.deleteItem = updateItemList.deleteItem || [];
@@ -464,7 +465,7 @@ function getYiData(datatype, jkdata, dd) {
         return {error: 1};//测试，返回失败
     }
     setResult(d);
-    /*
+    
     Object.keys(updateItemList).forEach(key => {
         updateItemList[key].forEach(k => {
             if($.type(k)=='array'){
@@ -474,7 +475,7 @@ function getYiData(datatype, jkdata, dd) {
             }
         })
     });
-    */
+    
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');

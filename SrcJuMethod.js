@@ -386,18 +386,21 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd;
                 //let setResult = function(ddd) { resultd = ddd; };
-                let setResult = function(ddd) { 
-                    xlog('🐛 setResult 被调用!');
-                    xlog('调用栈:', new Error().stack);
-                    xlog('参数:', ddd);
-                    xlog('this:', this);
-                    resultd = ddd; 
-                    return ddd;
+                // 保存原始全局 setResult（如果有）
+                const originalSetResult = setResult;
+
+                // 强制设置全局 setResult
+                setResult = function(ddd) {
+                    xlog('全局 setResult 被调用');
+                    resultd = ddd;
                 };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 
                 xlog(resultd);
+                setResult = originalSetResult;
+                xlog($.type(window));
+                xlog($.type(window0.setResult));
                 
                 if(resultd&&getData.length==0){
                     getData = resultd;

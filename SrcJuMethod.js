@@ -380,12 +380,17 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
+            //局部劫持全局方法
+            const setResult2 = setResult;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                let setResult = function(d) { resultd = d; };
+                //let setResult = function(d) { resultd = d; };
+                setResult = function(ddd) {
+                    setResult2(d.concat(ddd));
+                }
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
@@ -420,6 +425,7 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
+            setResult = setResult2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

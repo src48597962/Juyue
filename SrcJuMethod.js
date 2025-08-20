@@ -31,12 +31,12 @@ function juItemF(id, s){
             items[id] = item;
             writeFile(this.file, JSON.stringify(items));
         },
-        'get': function (key, id2) {
+        'get': function (key, str, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
-            return item[key] || '';
+            return item[key] || str || '';
         },
         'clear': function (key, id2) {
             if(!key) return;
@@ -258,7 +258,6 @@ function getYiData(datatype, jkdata, dd) {
     let page = MY_PAGE || 1;
     let sourcemenu = [];
     let d = dd || [];
-    let updateItemList = {};
 
     try {
         let 页码 = parse["页码"] || {};
@@ -381,18 +380,14 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
-            // 劫持全局方法
-            const setResult2 = setResult;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                setResult = function(ddd) {resultd = ddd;};
-
+                let setResult = function(d) { resultd = d; };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
-                
                 if(resultd&&getData.length==0){
                     getData = resultd;
                 }
@@ -425,8 +420,6 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
-            // 还原全局方法
-            setResult = setResult2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -443,7 +436,6 @@ function getYiData(datatype, jkdata, dd) {
         return {error: 1};//测试，返回失败
     }
     setResult(d);
-    
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');

@@ -258,6 +258,7 @@ function getYiData(datatype, jkdata, dd) {
     let page = MY_PAGE || 1;
     let sourcemenu = [];
     let d = dd || [];
+    let updateItemList = {};
 
     try {
         let 页码 = parse["页码"] || {};
@@ -393,14 +394,9 @@ function getYiData(datatype, jkdata, dd) {
                 setResult = function(ddd) {
                     xlog('全局 setResult 被调用');
                     resultd = ddd;
-                    if(!getMyVar(datatype+'动态加载loading')){
-                        originalSetResult(d.concat(ddd));
-                        d = [];
-                    }
                 };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
-                setResult = originalSetResult;
                 
                 if(resultd&&getData.length==0){
                     getData = resultd;
@@ -436,6 +432,7 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
+            xlog(setResult.toString());
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

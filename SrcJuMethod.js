@@ -464,6 +464,7 @@ function getYiData(datatype, jkdata, dd) {
         return {error: 1};//测试，返回失败
     }
     setResult(d);
+    /*
     Object.keys(updateItemList).forEach(key => {
         updateItemList[key].forEach(k => {
             if($.type(k)=='array'){
@@ -473,6 +474,7 @@ function getYiData(datatype, jkdata, dd) {
             }
         })
     });
+    */
     if(datatype=="主页"){
         if(!parse['搜索'] || (parse['主页']||'').toString().includes('getVar("keyword", "")')){
             deleteItem('homesousuoid');

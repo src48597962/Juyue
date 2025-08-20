@@ -396,10 +396,7 @@ function getYiData(datatype, jkdata, dd) {
                 };
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
-                
-                xlog(resultd);
                 setResult = originalSetResult;
-                xlog($.type(window0.setResult));
                 
                 if(resultd&&getData.length==0){
                     getData = resultd;
@@ -423,8 +420,8 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                //xlog(getData.length);
-                //xlog(d);
+                xlog(getData.length);
+
                 d = d.concat(getData);
             } catch (e) {
                 d.push({

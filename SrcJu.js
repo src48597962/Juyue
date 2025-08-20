@@ -39,7 +39,7 @@ function yiji(testSource) {
         }
     }
 
-    let d = [];
+    let dd = [];
     if(MY_PAGE==1){
         let longClick = [{
             title: "分享",
@@ -90,7 +90,7 @@ function yiji(testSource) {
         }
         let homeIcons = getThemeList(true)['主页图标'];
         let icon5_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';
-        d.push({
+        dd.push({
             title: jkdata.name || "切源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
@@ -103,7 +103,7 @@ function yiji(testSource) {
             }
         })
         clearMyVar('频道展开');
-        d.push({
+        dd.push({
             title: "频道",
             url: $("#noLoading#").lazyRule(()=>{
                 if(getMyVar('频道展开')){
@@ -139,7 +139,7 @@ function yiji(testSource) {
         //searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
         searchModeS.push('显示搜索数');
 
-        d.push({
+        dd.push({
             title: getItem('切换搜索按钮','搜索'),
             url: getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
@@ -192,7 +192,7 @@ function yiji(testSource) {
                 }]
             }
         })
-        d.push({
+        dd.push({
             title: "收藏",
             url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
                 require(config.聚阅);
@@ -201,7 +201,7 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[3].img, false, homeIcons[3].color),
             col_type: icon5_col
         })
-        d.push({
+        dd.push({
             title: "管理",
             url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",juItem2.get('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心"],1).select(()=>{
                 if(MY_INDEX==0){
@@ -261,7 +261,7 @@ function yiji(testSource) {
                         backgroundColor: homeGroup==it?"#20" + Color.replace('#',''):""
                     }
                 }
-                d.push(item);
+                dd.push(item);
             })
         }
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup, isTest) => {
@@ -277,8 +277,8 @@ function yiji(testSource) {
                 showLoading('搜索中');
                 let d = search(input, 'yiji' , jkdata);
                 hideLoading();
-                if(d.length>0){
-                    d.push({
+                if(dd.length>0){
+                    dd.push({
                         title: "‘‘’’<small><small><font color=#bfbfbf>以上为当前源搜索结果</font></small></small>",
                         url: 'hiker://empty',
                         col_type: 'text_center_1',
@@ -287,13 +287,13 @@ function yiji(testSource) {
                             lineVisible: false
                         }
                     });
-                    d.push({
+                    dd.push({
                         col_type: "line_blank",
                         extra: {
                             cls: 'homesousuolist'
                         }
                     })
-                    d.push({
+                    dd.push({
                         col_type: "big_blank_block",
                         extra: {
                             cls: 'homesousuolist'
@@ -321,7 +321,7 @@ function yiji(testSource) {
             }
         }, jkdata, Juconfig['homeGroup'], testSource?1:0);
         let descarr = ['搜你想要的...','1个空格显示搜索历史','结尾+2空格互换方式','+2空格+指定源名或分组'];
-        d.push({
+        dd.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
                 if(input.endsWith('  ')){
@@ -348,7 +348,7 @@ function yiji(testSource) {
                         deleteItemByCls('sousuorecordlist');
                         let d = [];
                         if(getItem("搜索建议词","")=='1'){
-                            d.push({
+                            dd.push({
                                 col_type: "line",
                                 extra: {
                                     cls: 'sousuorecordlist'
@@ -382,7 +382,7 @@ function yiji(testSource) {
                         let recordlist = searchRecord('get');
                         recordlist.forEach(item=>{
                             let color = 背景色();
-                            d.push({
+                            dd.push({
                                 title: item,
                                 url: item + searchurl,
                                 col_type: 'flex_button',
@@ -407,13 +407,13 @@ function yiji(testSource) {
                             });
                         })
                         if(recordlist.length>0){
-                            d.push({
+                            dd.push({
                                 col_type: "line_blank",
                                 extra: {
                                     cls: 'sousuorecordlist'
                                 }
                             })
-                            d.push({
+                            dd.push({
                                 col_type: "big_blank_block",
                                 extra: {
                                     cls: 'sousuorecordlist'
@@ -426,7 +426,7 @@ function yiji(testSource) {
             }
         });
 
-        d.push({
+        dd.push({
             col_type: "blank_block",
             extra: {
                 id: "sourcemenuload"
@@ -434,7 +434,7 @@ function yiji(testSource) {
         })
 
         if(!jkdata.name){
-            d.push({
+            dd.push({
                 title: homeGroup + " 主页源不存在\n需先选择配置主页源",
                 desc: "点此或上面切源按钮皆可",
                 url: $('#noLoading#').lazyRule((input) => {
@@ -468,7 +468,7 @@ function yiji(testSource) {
             }else{
                 xlog('开始获取一级数据');
                 let t1 = new Date().getTime();
-                getYiData('主页', jkdata, d);
+                getYiData('主页', jkdata, dd);
                 let t2 = new Date().getTime();
                 xlog('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
@@ -476,11 +476,9 @@ function yiji(testSource) {
             xlog(jkdata.name+'>加载主页异常>' + e.message + ' 错误行#' + e.lineNumber);
         }
     }else{
-        setResult(d);
+        setResult(dd);
     }
-    
-    //主页加载后
-    
+    //主页加载后  
 }
 
 //二级+源搜索

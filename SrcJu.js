@@ -2069,8 +2069,10 @@ function bookCase() {
                     let his = history.filter((v) => {
                         return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
                     });
+                    xlog(his);
                     if (his.length == 1) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
+                        xlog(it.lastClick);
                     }
                     it.extra = it.params['params'] || {};
                     delete it.params['params'];

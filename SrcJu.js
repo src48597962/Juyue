@@ -2066,8 +2066,9 @@ function bookCase() {
             history = history.filter(v => v.type == '二级列表');
 
             xlog(history[0].ruleBaseUrl);
-            delete history[0].params.extstr;
-            xlog(history[0].params);
+            xlog($.type(history[0].params));
+            xlog(history[0].params.url);
+            xlog(history[0].params.col_type);
             xlog(caselist[0].params.url);
 
             caselist.forEach(it => {

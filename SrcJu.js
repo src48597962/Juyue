@@ -2065,6 +2065,8 @@ function bookCase() {
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
             history = history.filter(v => v.type == '二级列表');
 
+            xlog(JSON.parse(history[0].params));
+
             caselist.forEach(it => {
                 try {
                     let his = history.filter((v) => {

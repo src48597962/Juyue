@@ -2065,13 +2065,15 @@ function bookCase() {
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
             history = history.filter(v => v.type == '二级列表');
             xlog(history.length);
-            xlog(history[0]);
+            xlog(history[0].ruleBaseUrl);
+            xlog(caselist[0].params.url);
+            xlog(history[0].title);
+            xlog(caselist[0].title);
             caselist.forEach(it => {
                 try {
                     let his = history.filter((v) => {
                         return v.title==it.title && (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1])==it.params.url;
                     });
-                    xlog(his);
                     if (his.length == 1) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                         xlog(it.lastClick);

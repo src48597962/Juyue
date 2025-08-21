@@ -1588,7 +1588,7 @@ function search(name, sstype, jkdata) {
                 }, it.extra);
                 it.title = it.extra.data.name;
                 it.desc = it.extra.desc || it.desc || "源作者没写";
-                it.col_type = "avatar";
+                it.col_type = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar";
                 if(it.extra.name.toLowerCase()==name.toLowerCase()){
                     ssdata.push(it);
                 }

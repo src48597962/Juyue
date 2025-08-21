@@ -2068,7 +2068,9 @@ function bookCase() {
             caselist.forEach(it => {
                 try {
                     let his = history.filter((v) => {
-                        return v.title==it.title && (MY_NAME=="海阔视界"?JSON.parse(v.params).url.split(';')[0]:v.url.split(';')[0].split('@')[1])==it.params.url;
+                        return v.title==it.title;
+                    }).filter((v) => {
+                        return (MY_NAME=="海阔视界"?JSON.parse(v.params).url.split(';')[0]:v.url.split(';')[0].split('@')[1])==it.params.url;
                     });
                     if (his.length == 1) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";

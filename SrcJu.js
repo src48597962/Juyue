@@ -2064,11 +2064,11 @@ function bookCase() {
             eval('let caselist = ' + (fetch(casefile) || '[]'));
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
             history = history.filter(v => v.type == '二级列表');
-            xlog(history.length);
+
             xlog(history[0].ruleBaseUrl);
+            xlog((it.params.url||'').split(';')[0]);
             xlog(caselist[0].params.url);
-            xlog(history[0].title);
-            xlog(caselist[0].title);
+
             caselist.forEach(it => {
                 try {
                     let his = history.filter((v) => {

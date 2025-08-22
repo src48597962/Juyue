@@ -2122,7 +2122,7 @@ function bookCase() {
             }
 
             extra['cls'] = "caselist";
-            extra['lineVisible'] = false;
+            //extra['lineVisible'] = false;
             extra['pageTitle'] = extra['pageTitle'] || name;
             delete extra['id'];
             delete extra['data']['extstr'];
@@ -2142,7 +2142,7 @@ function bookCase() {
             datalist.push({//#bfbfbf
                 title: col_type=='movie_1_vertical_pic'?name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>":name,
                 pic_url: it.picUrl,
-                desc: col_type=='movie_1_vertical_pic'?(it.type=='一级列表'?it.type:lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,15)):lastChapter.replace('更新至：',''),
+                desc: col_type=='movie_1_vertical_pic'?(it.type=='一级列表'?it.type:lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,14)):lastChapter.replace('更新：',''),
                 url: url,
                 col_type: col_type,
                 extra: extra

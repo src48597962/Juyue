@@ -2085,7 +2085,7 @@ function bookCase() {
         }
     }
 
-    let col_type = getItem("bookCase_col_type", "movie_1_vertical_pic");
+    let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
     let datalist = [];
     let typebtn = [];
     Julist.forEach(it=>{
@@ -2100,27 +2100,6 @@ function bookCase() {
         try{
             let extra = it.extra;
             extra['data'] = extra['data'] || {};
-            let stype = extra['data'].type;
-            let name = extra.name||it.title;
-            let sname = extra.data.name;
-            let lastChapter = it.lastChapter || "";
-            let url = it.params.url+'' || '';
-            if(!url.includes('@') && !url.startsWith('hiker://page/')){
-                if(it.params.find_rule){
-                    url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
-                }else{
-                    let parse = $.require("jiekou").parse(extra.data);
-                    let 解析 = it.params.lazy||'解析';
-                    if(parse[解析]){
-                        if(it.type=='一级列表'){
-                            url = url + parse[解析].call(parse, url);
-                        }else if(it.type=='二级列表'){
-                            url = url + $('').rule(parse[解析]);
-                        }
-                    }
-                }
-            }
-
             extra['cls'] = "caselist";
             //extra['lineVisible'] = false;
             extra['pageTitle'] = extra['pageTitle'] || name;
@@ -2139,12 +2118,42 @@ function bookCase() {
                 }]
             }
 
-            datalist.push({//#bfbfbf
-                title: col_type=='movie_1_vertical_pic'?name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>":name,
+            let stype = extra['data'].type;
+            let sname = extra.data.name;
+            let name = extra.name || it.title;
+            let url = it.params.url+'' || '';
+            if(!url.includes('@') && !url.startsWith('hiker://page/')){
+                if(it.params.find_rule){
+                    url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
+                }else{
+                    let parse = $.require("jiekou").parse(extra.data);
+                    let 解析 = it.params.lazy||'解析';
+                    if(parse[解析]){
+                        if(it.type=='一级列表'){
+                            url = url + parse[解析].call(parse, url);
+                        }else if(it.type=='二级列表'){
+                            url = url + $('').rule(parse[解析]);
+                        }
+                    }
+                }
+            }
+
+            let datatitle = name, datadesc = '';
+            if(datacol=='movie_1_vertical_pic'){
+                datatitle = name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>";
+                datadesc = it.type=='一级列表'?it.type:it.lastChapter+"\n\n足迹："+it.lastClick.substring(0,14);
+            }else if(datacol=='movie_3_marquee'){
+                datadesc = it.lastChapter.replace('更新至：','');
+            }else{
+                datatitle = name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+((sname||"")+" | "+it.lastChapter)+"</font></small>";
+                datadesc = "足迹："+it.lastClick.substring(0,14);
+            }
+            datalist.push({
+                title: datatitle,
                 pic_url: it.picUrl,
-                desc: col_type=='movie_1_vertical_pic'?(it.type=='一级列表'?it.type:lastChapter+"\n\n足迹："+(it.lastClick||'').substring(0,14)):lastChapter.replace('更新：',''),
+                desc: datadesc,
                 url: url,
-                col_type: col_type,
+                col_type: datacol,
                 extra: extra
             })
         }catch(e){
@@ -2195,14 +2204,14 @@ function bookCase() {
         img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
         col_type: "icon_small_3"
     });
+    let case_cols = ['movie_1_vertical_pic', 'movie_3_marquee'];
+    if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
+        case_cols.push('icon_1_left_pic');
+    }
     d.push({
         title: '切换样式',
-        url: $('#noLoading#').lazyRule(() => {
-            if(getItem("bookCase_col_type")=="movie_3_marquee"){
-                clearItem("bookCase_col_type");
-            }else{
-                setItem("bookCase_col_type", "movie_3_marquee");
-            }
+        url: $(case_cols, 1, '选择列表样式').select(() => {
+            juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';
         }),

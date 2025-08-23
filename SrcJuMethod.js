@@ -23,7 +23,7 @@ function juItemF(id, s){
             return items;
         },
         'set': function (key, str, id2) {
-            if(!key || !str) return;
+            if(!key || str==undefined) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};

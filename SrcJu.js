@@ -2293,9 +2293,9 @@ function bookCase() {
                 let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
                 let adddatalist = [];
                 casedatalist.forEach(it=>{
-                    addlists.push(it);
+                    adddatalist.push(it);
                     if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
-                        addlists.push({
+                        adddatalist.push({
                             col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
                             extra: {
                                 cls: 'caselist'
@@ -2339,9 +2339,9 @@ function bookCase() {
         let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
         let adddatalist = [];
         casedatalist.forEach(it=>{
-            addlists.push(it);
+            adddatalist.push(it);
             if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
-                addlists.push({
+                adddatalist.push({
                     col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
                     extra: {
                         cls: 'caselist'
@@ -2384,6 +2384,14 @@ function bookCase() {
 
     datalist.forEach(item => {
         d.push(item);
+        if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+            d.push({
+                col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                extra: {
+                    cls: 'caselist'
+                }
+            });
+        }
     })
     d.push({
         title: Julist.length==0?"空空如也~~"+(sjType=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",

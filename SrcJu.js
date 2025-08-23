@@ -2103,7 +2103,7 @@ function bookCase() {
             let extra = it.extra;
             extra['data'] = extra['data'] || {};
             extra['cls'] = "caselist";
-            //extra['lineVisible'] = false;
+            extra['lineVisible'] = false;
             extra['pageTitle'] = extra['pageTitle'] || name;
             delete extra['id'];
             delete extra['data']['extstr'];
@@ -2142,11 +2142,11 @@ function bookCase() {
 
             let datatitle = name, datadesc = '';
             if(datacol=='movie_1_vertical_pic'){
-                datatitle = name.substring(0,14);// + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
-                datadesc = (stype?stype+" | "+sname:"")+"\n"+(it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick.substring(0,14));
+                datatitle = name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
+                datadesc = (it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick.substring(0,14));
             }else if(datacol=='movie_3_marquee'){
                 datadesc = it.lastChapter.replace('更新至：','');
-            }else{
+            }else if(datacol=='icon_1_left_pic'){
                 datatitle = name.substring(0,14) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+it.lastChapter)+"</font></small>";
                 datadesc = "足迹："+it.lastClick.substring(0,14);
             }
@@ -2289,7 +2289,22 @@ function bookCase() {
                 if(casedatalist.length>=20){
                     addItemBefore('caseloading', storage0.getMyVar('收藏书架搜索框', {}));
                 }
-                addItemBefore('caseloading', casedatalist);
+                
+                let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+                let adddatalist = [];
+                casedatalist.forEach(it=>{
+                    addlists.push(it);
+                    if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+                        addlists.push({
+                            col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                            extra: {
+                                cls: 'caselist'
+                            }
+                        });
+                    }
+                })
+                addItemBefore('caseloading', adddatalist);
+
                 typebtn.forEach(t=>{
                     updateItem('typebtn-' + t, {
                         title: it==t?`““””<b><span style="color: ` + Color + `">` + t + `</span></b>`:t,
@@ -2321,7 +2336,20 @@ function bookCase() {
             }
             return it=='全部' || types.indexOf(it)>-1;
         });
-        addItemBefore('caseloading', casedatalist);
+        let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+        let adddatalist = [];
+        casedatalist.forEach(it=>{
+            addlists.push(it);
+            if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+                addlists.push({
+                    col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                    extra: {
+                        cls: 'caselist'
+                    }
+                });
+            }
+        })
+        addItemBefore('caseloading', adddatalist);
         return 'hiker://emtpy';
     }
     let 搜索框 = {

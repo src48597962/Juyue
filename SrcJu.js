@@ -2076,6 +2076,7 @@ function bookCase() {
                     if (his.length == 1) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
+                    it.lastChapter = it.lastChapter || "";
                     it.extra = it.params['params'] || {};
                     delete it.params['params'];
                     Julist.push(it);
@@ -2120,7 +2121,7 @@ function bookCase() {
             }
 
             let stype = extra['data'].type;
-            let sname = extra.data.name;
+            let sname = extra.data.name || "";
             let name = extra.name || it.title;
             let url = it.params.url+'' || '';
             if(!url.includes('@') && !url.startsWith('hiker://page/')){
@@ -2142,11 +2143,11 @@ function bookCase() {
             let datatitle = name, datadesc = '';
             if(datacol=='movie_1_vertical_pic'){
                 datatitle = name.substring(0,14);// + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
-                datadesc = (stype?stype+" | "+(sname||""):"")+(it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick.substring(0,14));
+                datadesc = (stype?stype+" | "+sname:"")+"\n"+(it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick.substring(0,14));
             }else if(datacol=='movie_3_marquee'){
                 datadesc = it.lastChapter.replace('更新至：','');
             }else{
-                datatitle = name.substring(0,14) + "\n‘‘’’<small><font color=grey>"+((sname||"")+" | "+it.lastChapter)+"</font></small>";
+                datatitle = name.substring(0,14) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+it.lastChapter)+"</font></small>";
                 datadesc = "足迹："+it.lastClick.substring(0,14);
             }
             datalist.push({

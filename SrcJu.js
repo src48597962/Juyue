@@ -2145,7 +2145,7 @@ function bookCase() {
             }else if(datacol=='movie_3_marquee'){
                 datadesc = it.lastChapter.replace('更新至：','');
             }else{
-                datatitle = name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+((sname||"")+" | "+it.lastChapter)+"</font></small>";
+                datatitle = name.substring(0,14) + "\n‘‘’’<small><font color=grey>"+((sname||"")+" | "+it.lastChapter)+"</font></small>";
                 datadesc = "足迹："+it.lastClick.substring(0,14);
             }
             datalist.push({

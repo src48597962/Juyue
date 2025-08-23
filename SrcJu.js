@@ -2200,7 +2200,7 @@ function bookCase() {
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
         title: '本地下载',
-        url: getMyVar("SrcJu_bookCaseType","全部")=="全部"?"hiker://page/Main.view?rule=本地资源管理":"hiker://page/Bookrack.view?rule=本地资源管理&ruleName="+MY_RULE.title+"&type="+(getMyVar("SrcJu_bookCaseType")=="漫画"?"comic":"novel"),
+        url: "hiker://page/Main.view?rule=本地资源管理",
         img: getIcon(sjIcons[0].img, false, sjIcons[0].color),
         col_type: "icon_small_3"
     });

@@ -2072,6 +2072,7 @@ function bookCase() {
                     }).filter((v) => {
                         return (MY_NAME=="海阔视界"?JSON.parse(v.params).url.split(';')[0]:v.url.split(';')[0].split('@')[1])==it.params.url;
                     });
+                    it.lastClick = '';
                     if (his.length == 1) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }

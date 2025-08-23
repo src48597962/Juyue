@@ -2141,8 +2141,8 @@ function bookCase() {
 
             let datatitle = name, datadesc = '';
             if(datacol=='movie_1_vertical_pic'){
-                datatitle = name.substring(0,14) + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>";
-                datadesc = it.type=='一级列表'?it.type:it.lastChapter+"\n\n足迹："+it.lastClick.substring(0,14);
+                datatitle = name.substring(0,14);// + "\n\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
+                datadesc = (stype?stype+" | "+(sname||""):"")+(it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick.substring(0,14));
             }else if(datacol=='movie_3_marquee'){
                 datadesc = it.lastChapter.replace('更新至：','');
             }else{

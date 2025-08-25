@@ -538,11 +538,10 @@ function getObjCode(jkdata, key) {
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         //jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(jkstr);
-        if(jkdata.api=='getapp'){
+        if(jkdata.tmpl=='getapp'){
             try{
                 require(codePath + "plugins/getapp.js");
-                xlog($.type(parseTml['主页']));
-                parse = Object.assign({}, parseTml, parse);
+                parse = Object.assign({}, getapp, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }

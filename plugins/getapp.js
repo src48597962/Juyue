@@ -1,4 +1,4 @@
-let parseTml = {
+let getapp = {
     // 内容过滤
     filterContent: function(content) {
         return !/(QQ|群|广告勿信)/.test(content);

@@ -38,6 +38,7 @@ let parse = function(jkdata) {
         jkdata = {id: jkdata}
     }
     require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "SrcJuMethod.js");
+    xlog('123');
     return getObjCode(jkdata);
 }
 

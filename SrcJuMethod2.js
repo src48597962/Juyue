@@ -1,5 +1,4 @@
 //子页面读接口规则数据
-log(codePath);
 function readData(jkdata){
     if($.type(jkdata)=="string"){
         jkdata = {id: jkdata}
@@ -10,16 +9,14 @@ function readData(jkdata){
     if(filestr){
         //filestr = filestr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(filestr);
-        /*
         if(jkdata.tmpl=='getapp'){
             try{
-                require(codePath + "plugins/getapp.js");
+                require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "plugins/getapp.js");
                 parse = Object.assign({}, getapp, parse);
             }catch(e){
-                xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                log(jkdata.name + '>子页面执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
         }
-        */
         try{
             let arr = ['主页','分类','排序','更新','搜索','二级'];
             let pindao = parse['频道'] || [];

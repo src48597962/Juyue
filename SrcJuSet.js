@@ -855,8 +855,8 @@ function jiekouapi(data, look) {
         clearMyVar('apigroup');
         clearMyVar('apiilk');
         clearMyVar('apiruleurl');
-        clearMyVar('isload');
         clearMyVar('apitmpl');
+        clearMyVar('isload');
     }));
     if(data){
         if(getMyVar('isload', '0')=="0"){
@@ -868,6 +868,7 @@ function jiekouapi(data, look) {
             putMyVar('apigroup', data.group||"");
             putMyVar('apiilk', data.ilk||"");
             putMyVar('apiruleurl', data.url||"");
+            putMyVar('apitmpl',  data.tmpl||"");
             putMyVar('isload', '1');
         }
     }

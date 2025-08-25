@@ -34,7 +34,11 @@ function readData(jkdata){
 
 let parse = function(jkdata) {
     jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
-    return readData(jkdata);
+    if($.type(jkdata)=="string"){
+        jkdata = {id: jkdata}
+    }
+    require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "SrcJuMethod.js");
+    return getObjCode(jkdata);
 }
 
 function 图片解密(key, iv, kiType, mode, isBase64Dec) {

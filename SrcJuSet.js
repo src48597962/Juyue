@@ -986,6 +986,7 @@ function jiekouapi(data, look) {
             title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
             url: $(['parseCode', 'getapp']).select(()=>{
                 putMyVar('apitmpl', input);
+                refreshPage(false);
                 return 'hiker://empty';
             }),
             col_type: 'text_1'

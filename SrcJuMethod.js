@@ -535,6 +535,7 @@ function removeByValue(arr, val) {
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
+        jkdata.url = jkdata.url || '';
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         eval(jkstr);
         if(jkdata.tmpl=='getapp'){

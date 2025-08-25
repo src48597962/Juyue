@@ -538,6 +538,14 @@ function getObjCode(jkdata, key) {
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
         //jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(jkstr);
+        if(jkdata.api=='getapp'){
+            try{
+                require(codePath + "plugins/getapp.js");
+                parse = Object.assign({}, parseTml, parse);
+            }catch(e){
+                xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+            }
+        }
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};

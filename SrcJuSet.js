@@ -856,6 +856,7 @@ function jiekouapi(data, look) {
         clearMyVar('apiilk');
         clearMyVar('apiruleurl');
         clearMyVar('isload');
+        clearMyVar('apitmpl');
     }));
     if(data){
         if(getMyVar('isload', '0')=="0"){
@@ -980,7 +981,16 @@ function jiekouapi(data, look) {
             })
         }
     });
-    
+    if(!data){
+        d.push({
+            title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
+            url: $(['parseCode', 'getapp']).select(()=>{
+                putMyVar('apitmpl', input);
+                return 'hiker://empty';
+            }),
+            col_type: 'text_1'
+        });
+    }
     d.push({
         title: data||getMyVar('apiruleurl')?'查看':'新建',
         col_type: 'input',
@@ -988,10 +998,18 @@ function jiekouapi(data, look) {
         url: $.toString((isnew) => {
             let file = getMyVar('apiruleurl','');
             if(isnew && !file){
-                let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
-                let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
-                writeFile(codeTmpl, tmpl);
-                file = codeTmpl;
+                let tmpl;
+                let apitmpl = getMyVar('apitmpl', 'parseCode');
+                if(apitmpl=='parseCode'){
+                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
+                }else if(apitmpl=='getapp'){
+                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/getapp.js', 96);
+                }
+                if(tmpl){
+                    let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
+                    writeFile(codeTmpl, tmpl);
+                    file = codeTmpl;
+                }
             }
 
             if(fileExist(file)){

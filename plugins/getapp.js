@@ -19,7 +19,7 @@ let getapp = {
             putMyVar("host_1", appurl);
             putMyVar("de_key", selectedSource.de_key);
             putMyVar("init", selectedSource.init || "");
-            putMyVar("rank", selectedSource.rank || "");
+            putMyVar("hasrank", selectedSource.rank || "");
         }
 
         // 统一主题颜色函数
@@ -611,20 +611,20 @@ let getapp = {
         eval(this.rely(this.aes));
         var pg = MY_PAGE;
         try {
-            const hasRankFeature = getMyVar("rank") == '1';
+            const hasRankFeature = getMyVar("hasrank") == '1';
 
             if (MY_PAGE == 1) {
                 if (hasRankFeature) {
                     d.push({
-                        title: getMyVar("rankindex", "0") == "0" ? themeColor("strong", "全部") : "全部",
+                        title: getMyVar("rank", "0") == "0" ? themeColor("strong", "全部") : "全部",
                         url: $("#noLoading#").lazyRule(() => {
-                            putMyVar("rankindex", "0");
+                            putMyVar("rank", "0");
                             refreshPage(false);
                             return "hiker://empty";
                         }),
                         col_type: "scroll_button",
                         extra: {
-                            backgroundColor: getMyVar("rankindex", "0") == "0" ? themeColor("background") : ""
+                            backgroundColor: getMyVar("rank", "0") == "0" ? themeColor("background") : ""
                         }
                     });
 
@@ -633,15 +633,15 @@ let getapp = {
                         storage0.getMyVar(typeCacheKey).forEach((data, index) => {
                             if (this.filterContent(data.list)) {
                                 d.push({
-                                    title: getMyVar("rankindex", "0") == data.id ? themeColor("strong", data.list) : data.list,
+                                    title: getMyVar("rank", "0") == data.id ? themeColor("strong", data.list) : data.list,
                                     url: $("#noLoading#").lazyRule(id => {
-                                        putMyVar("rankindex", id);
+                                        putMyVar("rank", id);
                                         refreshPage(false);
                                         return "hiker://empty";
                                     }, data.id),
                                     col_type: "scroll_button",
                                     extra: {
-                                        backgroundColor: getMyVar("rankindex", "0") == data.id ? themeColor("background") : ""
+                                        backgroundColor: getMyVar("rank", "0") == data.id ? themeColor("background") : ""
                                     }
                                 });
                             }
@@ -659,17 +659,17 @@ let getapp = {
             const getRankParams = () => {
                 if (hasRankFeature) {
                     return {
-                        cacheKey: "rank_" + getMyVar("rankindex", "0") + "_" + pg + "_" + getMyVar("host_1", ""),
+                        cacheKey: "rank_" + getMyVar("rank", "0") + "_" + pg + "_" + getMyVar("host_1", ""),
                         body: {
-                            type_id: +getMyVar("rankindex", "0") || 0,
+                            type_id: +getMyVar("rank", "0") || 0,
                             page: +pg
                         }
                     };
                 } else {
                     return {
-                        cacheKey: "rank_" + getMyVar("rankindex", "1") + "_" + pg + "_" + getMyVar("host_1", ""),
+                        cacheKey: "rank_" + getMyVar("rank", "1") + "_" + pg + "_" + getMyVar("host_1", ""),
                         body: {
-                            type_id: +getMyVar("rankindex", "1") || 1,
+                            type_id: +getMyVar("rank", "1") || 1,
                             page: +pg
                         }
                     };

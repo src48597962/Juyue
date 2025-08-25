@@ -1133,7 +1133,8 @@ function jiekouapi(data, look) {
                     name: name,
                     type: type,
                     url: ruleurl,
-                    ilk: ilk
+                    ilk: ilk,
+                    tmpl: getMyVar('apitmpl') || undefined
                 }
                 if(author){
                     newapi['author'] = author;
@@ -1216,7 +1217,8 @@ function jiekouapi(data, look) {
                     name: name,
                     type: type,
                     url: ruleurl,
-                    ilk: ilk
+                    ilk: ilk,
+                    tmpl: getMyVar('apitmpl') || undefined
                 }
                 if(author){
                     newapi['author'] = author;

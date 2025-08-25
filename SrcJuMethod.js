@@ -536,11 +536,10 @@ function removeByValue(arr, val) {
 function getObjCode(jkdata, key) {
     try{
         let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
-        //jkstr = jkstr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
         eval(jkstr);
         if(jkdata.tmpl=='getapp'){
             try{
-                require(codePath + "plugins/getapp.js");
+                require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "plugins/getapp.js");
                 parse = Object.assign({}, getapp, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
@@ -549,10 +548,16 @@ function getObjCode(jkdata, key) {
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
+        let delarr = [];
         if(key){
             try{
-                let pdarr = parse['频道'] || [];
-                let delarr = [];
+                let pdarr = ((parse["频道"] || {}).包含项 || []).map(it=>{
+                    if($.type(it)=="object"){
+                        return it.名称;
+                    }else{
+                        return it;
+                    }
+                });
                 switch (key) {
                     case 'yi':
                         delarr = ['二级','最新'];
@@ -574,13 +579,14 @@ function getObjCode(jkdata, key) {
                         delarr = delarr.concat(pdarr);
                         break;
                     default:
-                    // 当没有匹配的case时执行
                 }
-                delarr.forEach(it=>{
-                    delete parse[it];
-                })
             }catch(e){}
+        }else{
+            delarr = ['主页','分类','排序','更新','搜索','二级'];
         }
+        delarr.forEach(it=>{
+            delete parse[it];
+        })
         return parse;
     }catch(e){
         toast(jkdata.name + ">代码文件加载异常");

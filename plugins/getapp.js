@@ -303,113 +303,17 @@ let getapp = {
                     类型: vod.vod_class + "｜" + vod.vod_year,
                     状态: vod.vod_director + "｜" + vod.vod_actor
                 })[0],
-                //detail1: `‘‘’’<font color="#55555">导演: ${vod.vod_director}\n主演: ${vod.vod_actor}</font>`,
-                //detail2: `‘‘’’<font color="#55555">连载: ${vod.vod_remarks}\n${vod.vod_year} | ${vod.vod_area} | ${vod.vod_class}</font>`,
+                detail1: `‘‘’’<font color="#55555">导演: ${vod.vod_director}\n主演: ${vod.vod_actor}</font>`,
+                detail2: `‘‘’’<font color="#55555">连载: ${vod.vod_remarks}\n${vod.vod_year} | ${vod.vod_area} | ${vod.vod_class}</font>`,
                 desc: vod.vod_blurb,
                 line: play_list.map(item => item.player_info.show.replace(/\(请勿相信任何广告\)/g, "").replace(/\丨广告勿信/g, "")),
                 list: play_list.map(item =>
                     item.urls.map(ep => ({
                         title: ep.name,
-                        url: $().lazyRule(
-                            (url, parse_api_url, token, from) => {
+                        url: $().lazyRule((url, parse_api_url, token, from) => {
                                 let parse = $.require("jiekou").parse();
-                                eval(parse.rely(parse.aes));
-
-                                function postvideo(url, body) {
-                                    if (!body) {
-                                        var body = '';
-                                    }
-                                    let html = fetch(getMyVar('host') + url, {
-                                        headers: {},
-                                        body: body,
-                                        method: 'POST'
-                                    });
-                                    let html1 = JSON.parse(html);
-                                    return html1
-                                }
-                                if (/\.mkv/.test(url)) {
-
-                                    return url + "#isVideo=true#";
-                                }
-                                if (/\.m4a|\.mp3/.test(url)) {
-                                    return url + "#isMusic=true#";
-                                }
-                                try {
-                                    if (/url=/.test(parse_api_url)) {
-                                        if (/maoyan/.test(parse_api_url)) {
-                                            return parse_api_url.split("url=")[1]
-                                        }
-                                        let qq = fetch(parse_api_url);
-                                        if (JSON.parse(qq).code === 200) {
-                                            let play = JSON.parse(qq).url
-                                            if (play.includes("nby") && play.includes("mp4")) {
-                                                let nby = JSON.parse(
-                                                    fetch(play, {
-                                                        headers: {},
-                                                        method: "GET",
-                                                        onlyHeaders: true
-                                                    })
-                                                );
-                                                return nby.url + "#isVideo=true#";
-                                            }
-                                            return play + "#isVideo=true#";
-
-                                        } else if ((JSON.parse(qq) && JSON.parse(qq).code === 0)) {
-                                            // .
-
-                                            return parse_api_url.split("url=")[1]
-
-                                        } else {
-                                            return "toast://解析失败"
-                                        }
-                                    }
-                                    let parse_api = parse_api_url.slice(0, 32);
-                                    let body = {
-                                        parse_api: parse_api,
-                                        url: Encrypt(url),
-                                        token: token
-                                    };
-                                    let data;
-                                    if (!getMyVar("init")) {
-                                        data = postvideo("api.php/getappapi.index/vodParse", body);
-                                    } else {
-                                        data = postvideo("api.php/qijiappapi.index/vodParse", body);
-                                    }
-                                    log(data)
-                                    if (data.code == 0) {
-                                        if (/\.m3u8|\/.mp4/.test(url)) {
-                                            return url + '#isVideo=true#'
-                                        } else {
-                                            return "toast://解析失败"
-                                        }
-
-                                    }
-                                    let json = JSON.parse(Decrypt(data.data)).json
-                                    log(json)
-                                    let m3u8 = JSON.parse(json).url
-                                    // log(m3u8)
-                                    if (m3u8.includes("nby") && m3u8.includes("mp4")) {
-                                        let nby = JSON.parse(
-                                            fetch(m3u8, {
-                                                headers: {},
-                                                method: "GET",
-                                                onlyHeaders: true
-                                            })
-                                        );
-                                        return nby.url + "#isVideo=true#";
-                                    } else if (m3u8 == null) {
-                                        return 'toast://未获取到链接'
-                                    }
-                                    return m3u8 + "#isVideo=true#"
-                                } catch (e) {
-                                    log(e.message)
-                                    return 'toast://未获取到链接'
-                                }
-                            },
-                            ep.url,
-                            ep.parse_api_url,
-                            ep.token,
-                            ep.from
+                                return parse['解析'].call(parse, url, parse_api_url, token, from);
+                            }, ep.url, ep.parse_api_url, ep.token, ep.from
                         )
                     })))
             };
@@ -417,8 +321,99 @@ let getapp = {
             log(e.message);
         }
     },
+    解析: function(url, parse_api_url, token, from) {
+        eval(parse.rely(parse.aes));
+        function postvideo(url, body) {
+            if (!body) {
+                var body = '';
+            }
+            let html = fetch(getMyVar('host') + url, {
+                headers: {},
+                body: body,
+                method: 'POST'
+            });
+            let html1 = JSON.parse(html);
+            return html1
+        }
+        if (/\.mkv/.test(url)) {
 
-    // 搜索功能
+            return url + "#isVideo=true#";
+        }
+        if (/\.m4a|\.mp3/.test(url)) {
+            return url + "#isMusic=true#";
+        }
+        try {
+            if (/url=/.test(parse_api_url)) {
+                if (/maoyan/.test(parse_api_url)) {
+                    return parse_api_url.split("url=")[1]
+                }
+                let qq = fetch(parse_api_url);
+                if (JSON.parse(qq).code === 200) {
+                    let play = JSON.parse(qq).url
+                    if (play.includes("nby") && play.includes("mp4")) {
+                        let nby = JSON.parse(
+                            fetch(play, {
+                                headers: {},
+                                method: "GET",
+                                onlyHeaders: true
+                            })
+                        );
+                        return nby.url + "#isVideo=true#";
+                    }
+                    return play + "#isVideo=true#";
+
+                } else if ((JSON.parse(qq) && JSON.parse(qq).code === 0)) {
+                    // .
+
+                    return parse_api_url.split("url=")[1]
+
+                } else {
+                    return "toast://解析失败"
+                }
+            }
+            let parse_api = parse_api_url.slice(0, 32);
+            let body = {
+                parse_api: parse_api,
+                url: Encrypt(url),
+                token: token
+            };
+            let data;
+            if (!getMyVar("init")) {
+                data = postvideo("api.php/getappapi.index/vodParse", body);
+            } else {
+                data = postvideo("api.php/qijiappapi.index/vodParse", body);
+            }
+            log(data)
+            if (data.code == 0) {
+                if (/\.m3u8|\/.mp4/.test(url)) {
+                    return url + '#isVideo=true#'
+                } else {
+                    return "toast://解析失败"
+                }
+
+            }
+            let json = JSON.parse(Decrypt(data.data)).json
+            log(json)
+            let m3u8 = JSON.parse(json).url
+            // log(m3u8)
+            if (m3u8.includes("nby") && m3u8.includes("mp4")) {
+                let nby = JSON.parse(
+                    fetch(m3u8, {
+                        headers: {},
+                        method: "GET",
+                        onlyHeaders: true
+                    })
+                );
+                return nby.url + "#isVideo=true#";
+            } else if (m3u8 == null) {
+                return 'toast://未获取到链接'
+            }
+            return m3u8 + "#isVideo=true#"
+        } catch (e) {
+            log(e.message)
+            return 'toast://未获取到链接'
+        }
+    },
     搜索: function(name) {
         var d = [];
         eval(this.rely(this.aes));

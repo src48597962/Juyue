@@ -13,15 +13,13 @@ let getapp = {
 
         // 初始化配置
         if (!getMyVar("host", "")) {
-            let lastSelectedHost = juItem.get("last_selected_host", "");
             let selectedSource = this.源数据 || {};
-            juItem.set("last_selected_host", selectedSource.host);
             let appurl = selectedSource.host;
             putMyVar("host", /txt|json/.test(appurl) ? fetch(appurl) + "/" : appurl);
             putMyVar("host_1", appurl);
             putMyVar("de_key", selectedSource.de_key);
             putMyVar("init", selectedSource.init || "");
-            putMyVar("title", selectedSource.title);
+            putMyVar("rank", selectedSource.rank || "");
         }
 
         // 统一主题颜色函数
@@ -433,7 +431,7 @@ let getapp = {
             data.search_list.forEach(data => {
                 d.push({
                     title: data.vod_name,
-                    desc: "来源：" + getMyVar("title") + "\n" + ("‘‘’’类型：" + data.vod_class + "\n" + ("‘‘’’更新状态：" + data.vod_remarks)),
+                    desc: "‘‘’’类型：" + data.vod_class + "\n" + ("‘‘’’更新状态：" + data.vod_remarks),
                     img: data.vod_pic,
                     url: data.vod_id,
                     col_type: "movie_1_vertical_pic",
@@ -613,21 +611,20 @@ let getapp = {
         eval(this.rely(this.aes));
         var pg = MY_PAGE;
         try {
-            const currentSource = this.源数据 || {};
-            const hasRankFeature = currentSource.rank === 1;
+            const hasRankFeature = getMyVar("rank") == '1';
 
             if (MY_PAGE == 1) {
                 if (hasRankFeature) {
                     d.push({
-                        title: getMyVar("rank", "0") == "0" ? themeColor("strong", "全部") : "全部",
+                        title: getMyVar("rankindex", "0") == "0" ? themeColor("strong", "全部") : "全部",
                         url: $("#noLoading#").lazyRule(() => {
-                            putMyVar("rank", "0");
+                            putMyVar("rankindex", "0");
                             refreshPage(false);
                             return "hiker://empty";
                         }),
                         col_type: "scroll_button",
                         extra: {
-                            backgroundColor: getMyVar("rank", "0") == "0" ? themeColor("background") : ""
+                            backgroundColor: getMyVar("rankindex", "0") == "0" ? themeColor("background") : ""
                         }
                     });
 
@@ -636,15 +633,15 @@ let getapp = {
                         storage0.getMyVar(typeCacheKey).forEach((data, index) => {
                             if (this.filterContent(data.list)) {
                                 d.push({
-                                    title: getMyVar("rank", "0") == data.id ? themeColor("strong", data.list) : data.list,
+                                    title: getMyVar("rankindex", "0") == data.id ? themeColor("strong", data.list) : data.list,
                                     url: $("#noLoading#").lazyRule(id => {
-                                        putMyVar("rank", id);
+                                        putMyVar("rankindex", id);
                                         refreshPage(false);
                                         return "hiker://empty";
                                     }, data.id),
                                     col_type: "scroll_button",
                                     extra: {
-                                        backgroundColor: getMyVar("rank", "0") == data.id ? themeColor("background") : ""
+                                        backgroundColor: getMyVar("rankindex", "0") == data.id ? themeColor("background") : ""
                                     }
                                 });
                             }
@@ -662,17 +659,17 @@ let getapp = {
             const getRankParams = () => {
                 if (hasRankFeature) {
                     return {
-                        cacheKey: "rank_" + getMyVar("rank", "0") + "_" + pg + "_" + getMyVar("host_1", ""),
+                        cacheKey: "rank_" + getMyVar("rankindex", "0") + "_" + pg + "_" + getMyVar("host_1", ""),
                         body: {
-                            type_id: +getMyVar("rank", "0") || 0,
+                            type_id: +getMyVar("rankindex", "0") || 0,
                             page: +pg
                         }
                     };
                 } else {
                     return {
-                        cacheKey: "rank_" + getMyVar("rank", "1") + "_" + pg + "_" + getMyVar("host_1", ""),
+                        cacheKey: "rank_" + getMyVar("rankindex", "1") + "_" + pg + "_" + getMyVar("host_1", ""),
                         body: {
-                            type_id: +getMyVar("rank", "1") || 1,
+                            type_id: +getMyVar("rankindex", "1") || 1,
                             page: +pg
                         }
                     };

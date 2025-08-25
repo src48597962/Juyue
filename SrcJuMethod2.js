@@ -1,3 +1,4 @@
+log(module.modulePath.slice(0, module.modulePath.lastIndexOf("/")) + "/");
 //子页面读接口规则数据
 function readData(jkdata){
     if($.type(jkdata)=="string"){

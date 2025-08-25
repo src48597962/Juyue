@@ -1,44 +1,10 @@
 //子页面读接口规则数据
-function readData(jkdata){
-    if($.type(jkdata)=="string"){
-        jkdata = {id: jkdata}
-    }
-    let fileid = jkdata.id;
-    let file = `hiker://files/rules/Src/Juyue/jiekou/${fileid}.txt`;
-    let filestr = fetch(file);
-    if(filestr){
-        //filestr = filestr.replace(/getMyVar\(/g, 'getMyVar('+jkdata.id+'+').replace(/putMyVar\(/g, 'putMyVar('+jkdata.id+'+');
-        eval(filestr);
-        if(jkdata.tmpl=='getapp'){
-            try{
-                require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "plugins/getapp.js");
-                parse = Object.assign({}, getapp, parse);
-            }catch(e){
-                log(jkdata.name + '>子页面执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-            }
-        }
-        try{
-            let arr = ['主页','分类','排序','更新','搜索','二级'];
-            let pindao = parse['频道'] || [];
-            arr.concat(pindao).forEach(it=>{
-                delete parse[it];
-            })
-        }catch(e){}
-        parse['id'] = jkdata.id;
-        parse['sourcename'] = jkdata.name;
-        return parse;
-    }else{
-        return {};
-    }
-}
-
 let parse = function(jkdata) {
     jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
     if($.type(jkdata)=="string"){
         jkdata = {id: jkdata}
     }
     require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "SrcJuMethod.js");
-    xlog('123');
     return getObjCode(jkdata);
 }
 

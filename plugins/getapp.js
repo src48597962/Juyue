@@ -312,7 +312,8 @@ let getapp = {
                         title: ep.name,
                         url: $().lazyRule((url, parse_api_url, token, from) => {
                                 let parse = $.require("jiekou").parse();
-                                return parse['解析'].call(parse, url, parse_api_url, token, from);
+                                eval("let 解析2 = " + parse['解析']);
+                                return 解析2.call(parse, url, parse_api_url, token, from);
                             }, ep.url, ep.parse_api_url, ep.token, ep.from
                         )
                     })))
@@ -322,7 +323,7 @@ let getapp = {
         }
     },
     解析: function(url, parse_api_url, token, from) {
-        eval(parse.rely(parse.aes));
+        eval(this.rely(this.aes));
         function postvideo(url, body) {
             if (!body) {
                 var body = '';

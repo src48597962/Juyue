@@ -541,6 +541,7 @@ function getObjCode(jkdata, key) {
         if(jkdata.api=='getapp'){
             try{
                 require(codePath + "plugins/getapp.js");
+                xlog($.type(parseTml['主页']));
                 parse = Object.assign({}, parseTml, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);

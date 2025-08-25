@@ -130,15 +130,12 @@ let getapp = {
             return JSON.parse(html1);
         }
     }),
-
-    // 主页数据
     主页: function() {
         var d = [];
         eval(this.rely(this.aes));
 
         try {
             if (MY_PAGE == 1) {
-
                 // 初始化数据
                 let init_data;
                 let initCacheKey = "init_data_" + getMyVar("host_1", "");
@@ -243,8 +240,6 @@ let getapp = {
         }
         return d;
     },
-
-    // 详情页
     二级: function(surl) {
         var d = [];
         eval(this.rely(this.aes));
@@ -456,8 +451,6 @@ let getapp = {
         }
         return d;
     },
-
-    // 分类筛选
     分类: function() {
         var d = [];
         eval(this.rely(this.aes));
@@ -615,15 +608,13 @@ let getapp = {
         }
         return d;
     },
-
-    // 排行榜
     排行: function() {
         var d = [];
         eval(this.rely(this.aes));
         var pg = MY_PAGE;
         try {
-            const currentSource = this.sourceData.find(source => source.host === getMyVar("host_1"));
-            const hasRankFeature = currentSource && currentSource.rank === 1;
+            const currentSource = this.源数据 || {};
+            const hasRankFeature = currentSource.rank === 1;
 
             if (MY_PAGE == 1) {
                 if (hasRankFeature) {
@@ -729,8 +720,6 @@ let getapp = {
         }
         return d;
     },
-
-    // 周更新表
     周表: function() {
         var d = [];
         eval(this.rely(this.aes));
@@ -817,8 +806,6 @@ let getapp = {
         }
         return d;
     },
-
-    // 最新集数
     最新: function(surl) {
         const detailData = this.二级(surl);
 

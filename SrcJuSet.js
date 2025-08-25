@@ -988,7 +988,7 @@ function jiekouapi(data, look) {
         url: $.toString((isnew) => {
             let file = getMyVar('apiruleurl','');
             if(isnew && !file){
-                let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'plugins/parseCodeTmpl.js', 96);
+                let tmpl = fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
                 let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';
                 writeFile(codeTmpl, tmpl);
                 file = codeTmpl;

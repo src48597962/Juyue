@@ -760,7 +760,8 @@ function erji() {
             }
             let lazy = $("").lazyRule((dataObj) => {
                 let url = input;
-                let parse = getObjCode(dataObj.data, 'jx');
+                let jkdata = dataObj.data;
+                let parse = getObjCode(jkdata, 'jx');
                 if(parse['解析']){
                     eval("let 解析2 = " + parse['解析']);
                     return 解析2.call(parse, url);

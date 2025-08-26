@@ -929,7 +929,7 @@ function erji() {
                     extra: {
                         cls: "Juloadlist",
                         longClick: [{
-                            title: "换源搜索范围：" + juItem2.get('二级换源走分类')?'分类':'分组',
+                            title: "换源搜索范围：" + (juItem2.get('二级换源走分类')?'分类':'分组'),
                             js: $.toString(() => {
                                 if(juItem2.get('二级换源走分类')){
                                     juItem2.clear('二级换源走分类');
@@ -938,7 +938,7 @@ function erji() {
                                 }
                             })
                         },{
-                            title: "换源模糊匹配：" + juItem2.get('二级换源模糊匹配')?'是':'否',
+                            title: "换源模糊匹配：" + (juItem2.get('二级换源模糊匹配')?'是':'否'),
                             js: $.toString(() => {
                                 if(juItem2.get('二级换源模糊匹配')){
                                     juItem2.clear('二级换源模糊匹配');

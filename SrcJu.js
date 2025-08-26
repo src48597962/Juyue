@@ -1609,7 +1609,7 @@ function search(name, sstype, jkdata, blurMatch) {
                     }
                 }, it.extra);
                 it.title = it.extra.data.name;
-                it.desc = (isnewVer?"〖"+it.extra.name+"〗":"") + (it.extra.desc || it.desc || "源作者没写");
+                it.desc = (isnewVer?it.extra.name+" ":"") + (it.extra.desc || it.desc || "源作者没写");
                 it.col_type = isnewVer?"icon_1_left_pic":"avatar";
                 
                 if((blurMatch&&isMatch(name, it.extra.name)) || (it.extra.name.toLowerCase()==name.toLowerCase())){

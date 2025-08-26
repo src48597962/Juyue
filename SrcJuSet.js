@@ -1055,7 +1055,7 @@ function jiekouapi(data, look) {
     d.push({
         title: '选择源类型：'+ (ilkindex>-1?ilks[ilkindex]:''),
         col_type: 'text_1',
-        url: $(ilks, 3, "选择源类型：").select(() => {
+        url: $(ilks, 2, "选择源类型：").select(() => {
             if(input=="主页源"){
                 putMyVar('apiilk','1');
             }else if(input=="搜索源"){

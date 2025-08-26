@@ -863,10 +863,7 @@ function erji() {
                                 "parseCode": download,
                                 "ruleName": sname + " (聚阅)",
                                 "type": itype,
-                                "decode": parse["imgdec"]?$.type(parse["imgdec"])=="function"?$.toString((imgdec)=>{
-                                    let imgDecrypt = imgdec;
-                                    return imgDecrypt();
-                                },parse["imgdec"]):parse["imgdec"]:""
+                                "decode": parse["imgdec"]?$.type(parse["imgdec"])=="function"?parse["imgdec"]():parse["imgdec"]:""
                             }
                         }
                     })

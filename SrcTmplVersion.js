@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.1",
     "hint": "聚阅2.0，重新起航",
     "JYUpdateRecords": [{
+        title: "beta V1.2",
+        records: [
+            "修复：内置banner幻灯片方法处理extra的bug"
+        ]
+    },{
         title: "2025/08/26 V1.1",
         records: [
             "优化：收藏书架逻辑代码升级，增加长按菜单",

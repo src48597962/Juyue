@@ -528,29 +528,39 @@ function removeByValue(arr, val) {
 }
 // 读取接口对象规则内容
 function getSource(input) {
-    if($.type(input)=='string'){
-
+    let rule;
+    if($.type(input)=='object'){
+        if(input.url){
+            rule = readFile(input.url) || readFile(input.url.replace('rules/Src','_cache'));
+        }else if(input.id){
+            rule = readFile(`hiker://files/rules/Src/Juyue/jiekou/${input.id}.txt`);
+        }else if(input.name){
+            input = input.name;
+        }
     }
-    let jkfile = "hiker://files/rules/Src/juyue/jiekou.json";
-    let jkjson = JSON.parse(readFile(jkfile));
-    let id = jkjson.find(x => x.name == name);
-    let rule = readFile(id.url);
-    eval(rule);
-    return parse;
+    if(!rule && $.type(input)=='string'){
+        let jkfile = "hiker://files/rules/Src/juyue/jiekou.json";
+        let jkjson = JSON.parse(readFile(jkfile));
+        let id = jkjson.find(x => x.name === input);
+        rule = readFile(id.url);
+    }
+    if(rule){
+        eval(rule);
+        return parse;
+    }else{
+        return {};
+    }
 }
 
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
-        jkdata.url = jkdata.url || '';
-        let jkstr = fetch(jkdata.url)||fetch(jkdata.url.replace('rules/Src','_cache'))||"let parse = {}";
-        eval(jkstr);
-        if(jkdata.tmpl=='getapp'){
+        let parse = getSource(jkdata);
+        if(parse['模板']){
             try{
-                require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "plugins/getapp.js");
-                parse = Object.assign({}, getapp, parse);
+                parse = Object.assign({}, getSource(parse['模板']), parse);
             }catch(e){
-                xlog(jkdata.name + '>执行getapp模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
         }
         parse['id'] = jkdata.id;
@@ -558,8 +568,8 @@ function getObjCode(jkdata, key) {
         parse['页码'] = parse['页码'] || {};
         
         if(key){
-            let delarr = [];
             try{
+                let delarr = [];
                 let pdarr = ((parse["频道"] || {}).包含项 || []).map(it=>{
                     if($.type(it)=="object"){
                         return it.名称;
@@ -592,12 +602,11 @@ function getObjCode(jkdata, key) {
                         break;
                     default:
                 }
+                delarr.forEach(it=>{
+                    delete parse[it];
+                })
             }catch(e){}
-            delarr.forEach(it=>{
-                delete parse[it];
-            })
         }
-        
         return parse;
     }catch(e){
         toast(jkdata.name + ">代码文件加载异常");

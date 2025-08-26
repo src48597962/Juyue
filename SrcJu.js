@@ -1570,7 +1570,7 @@ function sousuo() {
     }])
 }
 //搜索逻辑代码
-function search(name, sstype, jkdata) {
+function search(name, sstype, jkdata, blurMatch) {
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
 
@@ -1608,7 +1608,8 @@ function search(name, sstype, jkdata) {
                 it.title = it.extra.data.name;
                 it.desc = it.extra.desc || it.desc || "源作者没写";
                 it.col_type = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar";
-                if(it.extra.name.toLowerCase()==name.toLowerCase()){
+                
+                if((blurMatch&&isMatch(name, it.extra.name)) || (it.extra.name.toLowerCase()==name.toLowerCase())){
                     ssdata.push(it);
                 }
             }
@@ -1676,7 +1677,7 @@ function erjisousuo(name,group,datas,sstype) {
         let task = function (obj) {
             return (function() {
                 try {
-                    let lists = obj.search(obj.name, obj.type, obj.data);
+                    let lists = obj.search(obj.name, obj.type, obj.data, obj.blurMatch);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
@@ -1687,7 +1688,7 @@ function erjisousuo(name,group,datas,sstype) {
         let list = ssdatalist.map((item) => {
             return {
                 func: task,
-                param: {"search":search,"name":name,"type":sstype,"data":item},
+                param: {"search":search,"name":name,"type":sstype,"data":item,"blurMatch":sstype=="erji"&&juItem2.get('二级换源模糊匹配')?1:0},
                 id: item.id
             }
         });

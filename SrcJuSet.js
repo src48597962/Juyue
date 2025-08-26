@@ -828,7 +828,7 @@ function SRCSet() {
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + (it.ilk=="1" ? "  [主页源]" : it.ilk=="2" ? "  [搜索源]" : "  [完整源]"),
+            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":""),
             img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {
@@ -1047,7 +1047,7 @@ function jiekouapi(data, look) {
             onChange: data?'toast("不能修改文件地址");':'putMyVar("apiruleurl",input);'
         }
     });
-    let ilks = ["主页源","搜索源","完整源"];
+    let ilks = ["主页源","搜索源","完整源","模板源"];
     let ilkindex = -1;
     if(getMyVar('apiilk')){
         ilkindex = parseInt(getMyVar('apiilk')) -1;
@@ -1060,8 +1060,10 @@ function jiekouapi(data, look) {
                 putMyVar('apiilk','1');
             }else if(input=="搜索源"){
                 putMyVar('apiilk','2');
-            }else{
+            }else if(input=="完整源"){
                 putMyVar('apiilk','3');
+            }else if(input=="模板源"){
+                putMyVar('apiilk','4');
             }
             refreshPage(false);
             return 'hiker://empty';

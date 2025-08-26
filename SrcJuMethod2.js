@@ -5,7 +5,7 @@ let parse = function(jkdata) {
         jkdata = {id: jkdata}
     }
     require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + "SrcJuMethod.js");
-    return getObjCode(jkdata);
+    return getObjCode(jkdata, 'page');
 }
 
 function 图片解密(key, iv, kiType, mode, isBase64Dec) {

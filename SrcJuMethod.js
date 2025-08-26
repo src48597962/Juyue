@@ -789,6 +789,7 @@ function banner(start, arr, data, cfg){
     let col_type = cfg.col_type || 'card_pic_1';
     let desc = cfg.desc || '0';
     let extra = item.extra || {};
+    extra['id'] = 'bar';
 
     arr.push({
         title: item.title,
@@ -796,10 +797,7 @@ function banner(start, arr, data, cfg){
         img: item.img,
         desc: desc,
         col_type: col_type,
-        extra: {
-            id: 'bar',
-            cls: extra.cls
-        }
+        extra: extra
     })
     if (start == false || getMyVar('benstart', 'true') == 'false') {
         unRegisterTask(id)

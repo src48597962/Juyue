@@ -923,11 +923,30 @@ function erji() {
                         erjisousuo(name, group);
                         //hideLoading();
                         return  "hiker://empty";
-                    }, sskeyword, sgroup),
+                    }, sskeyword, juItem2.get('二级换源走分类')?stype:sgroup),
                     pic_url: getIcon(erIcons[2].img, false, erIcons[2].color),
                     col_type: 'icon_small_3',
                     extra: {
-                        cls: "Juloadlist"
+                        cls: "Juloadlist",
+                        longClick: [{
+                            title: "换源搜索范围：" + juItem2.get('二级换源走分类')?'分类':'分组',
+                            js: $.toString(() => {
+                                if(juItem2.get('二级换源走分类')){
+                                    juItem2.clear('二级换源走分类');
+                                }else{
+                                    juItem2.set('二级换源走分类', 1);
+                                }
+                            })
+                        },{
+                            title: "换源模糊匹配：" + juItem2.get('二级换源模糊匹配')?'是':'否',
+                            js: $.toString(() => {
+                                if(juItem2.get('二级换源模糊匹配')){
+                                    juItem2.clear('二级换源模糊匹配');
+                                }else{
+                                    juItem2.set('二级换源模糊匹配', 1);
+                                }
+                            })
+                        }]
                     }
                 })
                 d.push({

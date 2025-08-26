@@ -313,13 +313,6 @@ function getYiData(datatype, jkdata, dd) {
             }
         }else if(page==1){
             if(ide.includes('#immersiveTheme#') || ide.includes('#gameTheme#')){//频道页面，有传页面标识的统一处理
-                /*
-                d.push({
-                    col_type: 'pic_1_full',
-                    img: parse["频道"].沉浸图片 || "http://123.56.105.145/weisyr/img/TopImg0.png",
-                    url: 'hiker://empty',
-                });
-                */
                 if(getItem('不显示沉浸图')=='1'){
                     for(let i=0;i<2;i++){
                         d.push({
@@ -334,7 +327,8 @@ function getYiData(datatype, jkdata, dd) {
                 }else{
                     //顺佬H5沉浸顶图样式
                     require('http://123.56.105.145/weisyr/Top_H5.js');
-                    d.push(Top_H5(parse["频道"].沉浸图片||"", parse["频道"].高度||"130"));
+                    let 沉浸 = parse["频道"].沉浸 || {};
+                    d.push(Top_H5(沉浸.图片||"", 沉浸.高度||"110"));
                 }
             }
         }

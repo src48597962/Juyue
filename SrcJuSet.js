@@ -868,7 +868,6 @@ function jiekouapi(data, look) {
             putMyVar('apigroup', data.group||"");
             putMyVar('apiilk', data.ilk||"");
             putMyVar('apiruleurl', data.url||"");
-            putMyVar('apitmpl',  data.tmpl||"");
             putMyVar('isload', '1');
         }
     }
@@ -1135,8 +1134,7 @@ function jiekouapi(data, look) {
                     name: name,
                     type: type,
                     url: ruleurl,
-                    ilk: ilk,
-                    tmpl: getMyVar('apitmpl') || undefined
+                    ilk: ilk
                 }
                 if(author){
                     newapi['author'] = author;
@@ -1219,8 +1217,7 @@ function jiekouapi(data, look) {
                     name: name,
                     type: type,
                     url: ruleurl,
-                    ilk: ilk,
-                    tmpl: getMyVar('apitmpl') || undefined
+                    ilk: ilk
                 }
                 if(author){
                     newapi['author'] = author;

@@ -1591,6 +1591,7 @@ function search(name, sstype, jkdata, blurMatch) {
         return normalizedTarget.includes(normalizedSearch);
     }
 
+    let isnewVer = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305));
     getSsData(name, jkdata, page).vodlists.forEach(it => {
         it = toerji(it, jkdata);
         if(sstype=='erji'){
@@ -1606,8 +1607,8 @@ function search(name, sstype, jkdata, blurMatch) {
                     }
                 }, it.extra);
                 it.title = it.extra.data.name;
-                it.desc = it.extra.desc || it.desc || "源作者没写";
-                it.col_type = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar";
+                it.desc = (isnewVer?"〖"+it.extra.name+"〗":"") + (it.extra.desc || it.desc || "源作者没写");
+                it.col_type = isnewVer?"icon_1_left_pic":"avatar";
                 
                 if((blurMatch&&isMatch(name, it.extra.name)) || (it.extra.name.toLowerCase()==name.toLowerCase())){
                     ssdata.push(it);

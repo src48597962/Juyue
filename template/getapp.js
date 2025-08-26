@@ -16,7 +16,6 @@ let parse = {
     },
     二级标识: "#gameTheme#",
     配置: {
-        img: "",
         de_key: "",
         host: "",
         init: 120,

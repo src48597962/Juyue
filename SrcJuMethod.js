@@ -791,11 +791,11 @@ function banner(start, arr, data, cfg){
     let extra = item.extra || {};
 
     arr.push({
-        col_type: col_type,
-        img: item.img,
-        desc: desc,
         title: item.title,
         url: item.url,
+        img: item.img,
+        desc: desc,
+        col_type: col_type,
         extra: {
             id: 'bar',
             cls: extra.cls

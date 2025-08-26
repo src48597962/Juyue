@@ -558,10 +558,15 @@ function getObjCode(jkdata, key) {
         let parse = getSource(jkdata);
         if(parse['模板']){
             try{
-                parse = Object.assign({}, getSource(parse['模板']), parse);
+                let tmplparse = getSource(parse['模板']);
+                if(Object.keys(tmplparse).length==0){
+                    toast('未找到模板源：' + (parse['模板'].name||''));
+                }
+                parse = Object.assign({}, tmplparse, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
+            delete parse['模板'];
         }
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;

@@ -526,6 +526,19 @@ function removeByValue(arr, val) {
         }
     }
 }
+// 读取接口对象规则内容
+function getSource(input) {
+    if($.type(input)=='string'){
+
+    }
+    let jkfile = "hiker://files/rules/Src/juyue/jiekou.json";
+    let jkjson = JSON.parse(readFile(jkfile));
+    let id = jkjson.find(x => x.name == name);
+    let rule = readFile(id.url);
+    eval(rule);
+    return parse;
+}
+
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
@@ -543,8 +556,9 @@ function getObjCode(jkdata, key) {
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
-        let delarr = [];
+        
         if(key){
+            let delarr = [];
             try{
                 let pdarr = ((parse["频道"] || {}).包含项 || []).map(it=>{
                     if($.type(it)=="object"){
@@ -573,15 +587,17 @@ function getObjCode(jkdata, key) {
                         delarr = ['主页','分类','排序','更新','搜索','解析'];
                         delarr = delarr.concat(pdarr);
                         break;
+                    case 'page':
+                        delarr = ['主页','分类','排序','更新','搜索','二级'];
+                        break;
                     default:
                 }
             }catch(e){}
-        }else{
-            delarr = ['主页','分类','排序','更新','搜索','二级'];
+            delarr.forEach(it=>{
+                delete parse[it];
+            })
         }
-        delarr.forEach(it=>{
-            delete parse[it];
-        })
+        
         return parse;
     }catch(e){
         toast(jkdata.name + ">代码文件加载异常");

@@ -2113,7 +2113,7 @@ function bookCase() {
                         return (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]).split('&')[0]==(it.params.url||'').split('&')[0];
                     });
                     it.lastClick = '';
-                    if (his.length == 1) {
+                    if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
                     it.lastChapter = it.lastChapter || "";

@@ -582,7 +582,7 @@ function erji() {
 
     if(MY_PAGE==1){
         try {
-            let detailObj = erLoadData.detailObj || {}; //二级是否有传封面对象，有传就优先使用
+            let detailObj = (juItem2.get('切换封面样式')?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erjiextra.img = pic;
@@ -1020,10 +1020,18 @@ function erji() {
                         cls: "Juloadlist"
                     }
                 })
+
+                let morecols = ["选集分页设置","修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否")];
+                morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
+                morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
+                morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
+                if(erLoadData.detail1 && erLoadData.detailObj){
+                    morecols.push("切换封面样式:"+(juItem2.get('切换封面样式')?"是":"否"))
+                }
                 
                 d.push({
                     title: `““””`+(juItem2.get('二级简洁模式')?"":`<span style="color: #f47983">样式</span>`)+`<small>🎨</small>`,
-                    url: $(["修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),"线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'),"选集样式:"+getItem('SrcJuList_col_type', '自动'),"选集分页设置","二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否")], 1, "样式设置").select(() => {
+                    url: $([], 1, "样式设置").select(() => {
                         if(input=="选集分页设置"){
                             return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                                 let partpage = storage0.getItem('partpage') || {};
@@ -1102,6 +1110,17 @@ function erji() {
                             }else{
                                 juItem2.set('二级简洁模式','1');
                                 sm = "简洁模式，排序、样式等不显示名称";
+                            }
+                            refreshPage(false);
+                            return "toast://"+sm;
+                        }else if(input.includes('切换封面样式')){
+                            let sm;
+                            if(juItem2.get('切换封面样式')){
+                                juItem2.clear('切换封面样式');
+                                sm = "优先自定义封面样式";
+                            }else{
+                                juItem2.set('切换封面样式','1');
+                                sm = "强制聚阅原封面样式";
                             }
                             refreshPage(false);
                             return "toast://"+sm;

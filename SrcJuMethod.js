@@ -25,6 +25,7 @@ function juItemF(id, s){
         'set': function (key, str, id2) {
             if(!key || str==undefined || str=='') return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            clearMyVar(id+'_'+key);
             let items = this.items();
             let item = items[id] || {};
             item[key] = str;
@@ -34,13 +35,21 @@ function juItemF(id, s){
         'get': function (key, str, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(storage0.getMyVar(id+'_'+key)){
+                return storage0.getMyVar(id+'_'+key);
+            }
             let items = this.items();
             let item = items[id] || {};
-            return item[key] || str || '';
+            let result = item[key] || str || '';
+            if(result){
+                storage0.putMyVar(id+'_'+key, result);
+            }
+            return result;
         },
         'clear': function (key, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            clearMyVar(id+'_'+key);
             let items = this.items();
             let item = items[id] || {};
             if(item[key]){

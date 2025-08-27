@@ -1031,7 +1031,7 @@ function erji() {
                 
                 d.push({
                     title: `““””`+(juItem2.get('二级简洁模式')?"":`<span style="color: #f47983">样式</span>`)+`<small>🎨</small>`,
-                    url: $([], 1, "样式设置").select(() => {
+                    url: $(morecols, 1, "样式设置").select(() => {
                         if(input=="选集分页设置"){
                             return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
                                 let partpage = storage0.getItem('partpage') || {};

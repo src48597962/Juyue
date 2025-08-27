@@ -2110,7 +2110,7 @@ function bookCase() {
                     let his = history.filter((v) => {
                         return v.title==it.title;
                     }).filter((v) => {
-                        return (MY_NAME=="海阔视界"?JSON.parse(v.params).url.split(';')[0]:v.url.split(';')[0].split('@')[1])==it.params.url;
+                        return (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]).split('&')[0]==(it.params.url||'').split('&')[0];
                     });
                     it.lastClick = '';
                     if (his.length == 1) {

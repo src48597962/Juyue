@@ -578,6 +578,11 @@ function getObjCode(jkdata, key) {
             let ercodestr = parse['二级'].toString();
             if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
                 delete parse['二级标识'];
+                let yijkdata = storage0.getMyVar('一级源接口信息') || {};
+                if(yijkdata.id==jkdata.id && yijkdata['erjisign']){
+                    delete yijkdata['erjisign'];
+                    storage0.putMyVar('一级源接口信息', yijkdata);
+                }
             }
         }
         

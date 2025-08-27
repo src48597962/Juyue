@@ -1026,7 +1026,7 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
-                    morecols.push("切换封面样式:"+(juItem2.get('切换封面样式')?"是":"否"))
+                    morecols.push("自定义封面样式:"+(juItem2.get('切换封面样式')?"否":"是"))
                 }
                 
                 d.push({

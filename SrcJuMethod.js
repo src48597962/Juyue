@@ -36,7 +36,10 @@ function juItemF(id, s){
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
-            return item[key] || str || '';
+            if (item[key] !== undefined && item[key] !== null) {
+                return item[key];
+            }
+            return str || '';
         },
         'clear': function (key, id2) {
             if(!key) return;

@@ -38,6 +38,7 @@ function juItemF(id, s){
             if(storage0.getMyVar(id+'_'+key)){
                 return storage0.getMyVar(id+'_'+key);
             }
+            log('从文件读取'+key);
             let items = this.items();
             let item = items[id] || {};
             let result = item[key] || str || '';

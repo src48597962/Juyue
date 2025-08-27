@@ -987,8 +987,8 @@ function jiekouapi(data, look) {
             url: $(['parseCode', 'getapp']).select(()=>{
                 if(input=='getapp'){
                     if(!fileExist(`hiker://files/rules/Src/Juyue/jiekou/1756086251723.txt`)){
-                        toast('没找到GetAppApi模板源，先导入');
-                        return '云口令：聚阅接口￥XdfGQdw+1AZe6ajgwIxRJX5B7i2wjpP1QLr/uR8f2o4lEOMSURt7J5UsvhJZUUFx￥GetAppApi(云6)@import=js:$.require("hiker://page/import?rule=聚阅");'
+                        toast('没找到GetAppApi模板源，可先导入');
+                        return 'rule://云口令：聚阅接口￥XdfGQdw+1AZe6ajgwIxRJX5B7i2wjpP1QLr/uR8f2o4lEOMSURt7J5UsvhJZUUFx￥GetAppApi(云6)@import=js:$.require("hiker://page/import?rule=聚阅");'
                     }
                 }
                 putMyVar('apitmpl', input);

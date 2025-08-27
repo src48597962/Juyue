@@ -582,7 +582,7 @@ function erji() {
 
     if(MY_PAGE==1){
         try {
-            let detailObj = (juItem2.get('切换封面样式')?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
+            let detailObj = (juItem2.get('二级聚阅封面')?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erjiextra.img = pic;
@@ -1026,7 +1026,7 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
-                    morecols.push("自定义封面样式:"+(juItem2.get('切换封面样式')?"否":"是"))
+                    morecols.push("自定义封面样式:"+(juItem2.get('二级聚阅封面')?"否":"是"))
                 }
                 
                 d.push({
@@ -1113,13 +1113,13 @@ function erji() {
                             }
                             refreshPage(false);
                             return "toast://"+sm;
-                        }else if(input.includes('切换封面样式')){
+                        }else if(input.includes('自定义封面样式')){
                             let sm;
-                            if(juItem2.get('切换封面样式')){
-                                juItem2.clear('切换封面样式');
+                            if(juItem2.get('二级聚阅封面')){
+                                juItem2.clear('二级聚阅封面');
                                 sm = "优先自定义封面样式";
                             }else{
-                                juItem2.set('切换封面样式','1');
+                                juItem2.set('二级聚阅封面','1');
                                 sm = "强制聚阅原封面样式";
                             }
                             refreshPage(false);

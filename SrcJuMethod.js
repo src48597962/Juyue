@@ -574,10 +574,12 @@ function getObjCode(jkdata, key) {
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
-        /*
-        if(juItem2.get('二级聚阅封面')){
-            delete parse['二级标识'];
-        }*/
+        if(juItem2.get('二级聚阅封面') && parse['二级']){
+            let ercodestr = parse['二级'].toString();
+            if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
+                delete parse['二级标识'];
+            }
+        }
         
         if(key){
             try{

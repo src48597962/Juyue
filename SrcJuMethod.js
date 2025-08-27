@@ -23,9 +23,8 @@ function juItemF(id, s){
             return items;
         },
         'set': function (key, str, id2) {
-            if(!key || (str != 0 && !str)) return;
+            if(!key || str === undefined || str === null || str === '') return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            clearMyVar(id+'_'+key);
             let items = this.items();
             let item = items[id] || {};
             item[key] = str;
@@ -35,22 +34,13 @@ function juItemF(id, s){
         'get': function (key, str, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            if(storage0.getMyVar(id+'_'+key)){
-                return storage0.getMyVar(id+'_'+key);
-            }
-            log('从文件读取'+key);
             let items = this.items();
             let item = items[id] || {};
-            let result = item[key] || str || '';
-            if(result){
-                storage0.putMyVar(id+'_'+key, result);
-            }
-            return result;
+            return item[key] || str || '';
         },
         'clear': function (key, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
-            clearMyVar(id+'_'+key);
             let items = this.items();
             let item = items[id] || {};
             if(item[key]){

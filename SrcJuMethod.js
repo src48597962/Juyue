@@ -24,6 +24,10 @@ function juItemF(id, s){
         },
         'set': function (key, str, id2) {
             if(!key || str === undefined || str === null || str === '') return;
+            if(str.toString().length>100){
+                xlog(key+':无法写入长度超100');
+                return;
+            }
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};

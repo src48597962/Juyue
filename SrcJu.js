@@ -835,6 +835,20 @@ function erji() {
                         }
                     })
                 }else{
+                    let imgdecode = "";
+                    if(parse["imgdec"]){
+                        if($.type(parse["imgdec"])=="function"){
+                            imgdecode = parse["imgdec"]();
+                            if($.type(imgdecode)=="function"){
+                                imgdecode = $.toString((imgdec)=>{
+                                    let imgDecrypt = imgdec;
+                                    return imgDecrypt();
+                                }, imgdecode)
+                            }
+                        }else if($.type(parse["imgdec"])=="string"){
+                            imgdecode = parse["imgdec"];
+                        }
+                    }
                     d.push({
                         title: "收藏书架",
                         url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
@@ -864,7 +878,7 @@ function erji() {
                                 "parseCode": download,
                                 "ruleName": sname + " (聚阅)",
                                 "type": itype,
-                                "decode": parse["imgdec"]?$.type(parse["imgdec"])=="function"?parse["imgdec"]():parse["imgdec"]:""
+                                "decode": imgdecode
                             }
                         }
                     })

@@ -661,7 +661,7 @@ function toerji(item, jkdata) {
                 item.extra = extra;
             }
             
-            if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && !/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)){
+            if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && (!/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)||item.col_type=='icon_1_left_pic')){
                 let caseExtra = Object.assign({}, extra);
                 delete caseExtra.longClick;
                 caseExtra.data = caseExtra.data || {

@@ -1,12 +1,13 @@
 var newVersion = {
-    "SrcJu": "1.1",
-    "hint": "聚阅2.0，重新起航",
+    "SrcJu": "1.2",
+    "hint": "本次版本有重大更新",
     "JYUpdateRecords": [{
-        title: "beta V1.2",
+        title: "2025/08/28 V1.2",
         records: [
             "修复：内置banner幻灯片方法extra的bug",
             "优化：收藏书架足迹取历史逻辑完善",
             "优化：二级下载本地图片imgdec解密取值方法",
+            "优化：内置juItem存取方法完善支持全类型",
             "新增：二级样式中增加自定义和原始封面之间切换",
             "升级：小程序版本升级，更换gh代理获取接口"
         ]

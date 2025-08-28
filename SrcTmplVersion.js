@@ -4,7 +4,10 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V1.2",
         records: [
-            "修复：内置banner幻灯片方法处理extra的bug"
+            "修复：内置banner幻灯片方法extra的bug",
+            "优化：收藏书架足迹取历史逻辑完善",
+            "优化：二级下载本地图片imgdec解密取值方法",
+            "新增：二级样式中增加自定义和原始封面之间切换"
         ]
     },{
         title: "2025/08/26 V1.1",

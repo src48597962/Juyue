@@ -383,18 +383,21 @@ function getYiData(datatype, jkdata, dd) {
 
             //局部劫持全局方法
             //const setResult2 = setResult;
+            const setPreResult2 = setPreResult;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
                 let setResult = function(rd) { resultd = rd; };
-                let setPreResult = function(prd) { d = d.concat(prd); };
                 /*
                 setResult = function(ddd) {
                     setResult2(d.concat(ddd));
                 }
                 */
+                setPreResult = function(ddd) {
+                    setPreResult2(d.concat(ddd));
+                }
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd&&getData.length==0){
@@ -430,6 +433,7 @@ function getYiData(datatype, jkdata, dd) {
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
             //setResult = setResult2;
+            setPreResult = setPreResult2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

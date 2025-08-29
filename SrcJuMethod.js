@@ -393,17 +393,12 @@ function getYiData(datatype, jkdata, dd) {
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
-                xlog(resultd);
-                xlog(resultd2);
-                xlog(getData);
                 if(resultd){
                     getData = resultd;
                 }
                 if(resultd2){
                     getData = resultd2.concat(getData);
                 }
-                xlog(d);
-                xlog(getData);
                 if (getData.length == 0 && page == 1) {
                     d.push({
                         title: "未获取到数据",
@@ -422,7 +417,6 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                
                 d = d.concat(getData);
             } catch (e) {
                 d.push({
@@ -500,15 +494,18 @@ function getSsData(name, jkdata, page) {
     if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = page;
     }
+    
+    //全局变量劫持
+    const setResult2 = setResult;     
     try {
         let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
             eval(evalPublicStr);
             let resultd;
-            let setResult = function(d) { resultd = d; };
+            setResult = function(rd) { resultd = rd; };
             eval("let 数据 = " + parse['搜索'].toString());
             getData = 数据.call(parse, name, page) || [];
-            if(resultd&&getData.length==0){
+            if(resultd){
                 getData = resultd;
             }
         }
@@ -516,6 +513,8 @@ function getSsData(name, jkdata, page) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
     }
+    //恢复全局变量
+    setResult = setResult2;
     return {
         vodlists: getData,
         error: error

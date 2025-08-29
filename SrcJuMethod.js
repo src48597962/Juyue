@@ -388,7 +388,8 @@ function getYiData(datatype, jkdata, dd) {
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd;
-                let setResult = function(d) { resultd = d; };
+                let setResult = function(rd) { resultd = rd; };
+                let setPreResult = function(prd) { d = d.concat(prd); };
                 /*
                 setResult = function(ddd) {
                     setResult2(d.concat(ddd));

@@ -364,7 +364,6 @@ function getYiData(datatype, jkdata, dd) {
                     cls: "loading_gif"
                 }
             })
-            xlog('1111111');
             setPreResult(d);
             d = [];
             putMyVar(datatype+'动态加载loading', '1');
@@ -382,29 +381,22 @@ function getYiData(datatype, jkdata, dd) {
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
-            //局部劫持全局方法
-            //const setResult2 = setResult;
-            const setPreResult2 = setPreResult;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
-                let resultd;
+                let resultd,resultd2;
                 let setResult = function(rd) { resultd = rd; };
-                /*
-                setResult = function(ddd) {
-                    setResult2(d.concat(ddd));
-                }
-                */
-                setPreResult = function(ddd) {
-                    d = d.concat(ddd);
-                }
-                
+                let setPreResult = function(prd) { resultd2 = prd; };
+
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 xlog(getData);
-                if(resultd&&getData.length==0){
+                if(resultd){
                     getData = resultd;
+                }
+                if(resultd2){
+                    getData = resultd2.concat(getData);
                 }
                 xlog(d);
                 xlog(getData);
@@ -437,8 +429,6 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
-            //setResult = setResult2;
-            setPreResult = setPreResult2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

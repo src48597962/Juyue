@@ -364,6 +364,7 @@ function getYiData(datatype, jkdata, dd) {
                     cls: "loading_gif"
                 }
             })
+            xlog('1111111');
             setPreResult(d);
             d = [];
             putMyVar(datatype+'动态加载loading', '1');

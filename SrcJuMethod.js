@@ -399,12 +399,15 @@ function getYiData(datatype, jkdata, dd) {
                 setPreResult = function(ddd) {
                     d = d.concat(ddd);
                 }
+                
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
+                xlog(getData);
                 if(resultd&&getData.length==0){
                     getData = resultd;
                 }
-
+                xlog(d);
+                xlog(getData);
                 if (getData.length == 0 && page == 1) {
                     d.push({
                         title: "未获取到数据",
@@ -423,7 +426,7 @@ function getYiData(datatype, jkdata, dd) {
                         };//测试，返回成功
                     }
                 }
-                xlog(d);
+                
                 d = d.concat(getData);
             } catch (e) {
                 d.push({

@@ -380,14 +380,16 @@ function getYiData(datatype, jkdata, dd) {
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
-
+            //全局变量劫持
+            const setResult2 = setResult;
+            const setPreResult2 = setPreResult;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
                 let resultd,resultd2;
-                let setResult = function(rd) { resultd = rd; };
-                let setPreResult = function(prd) { resultd2 = prd; };
+                setResult = function(rd) { resultd = rd; };
+                setPreResult = function(prd) { resultd2 = prd; };
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -431,6 +433,9 @@ function getYiData(datatype, jkdata, dd) {
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
             }
+            //恢复全局变量
+            setResult = setResult2;
+            setPreResult = setPreResult2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

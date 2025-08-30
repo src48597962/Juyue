@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.2",
     "hint": "本次版本有重大更新",
     "JYUpdateRecords": [{
+        title: "beta V1.3",
+        records: [
+            
+        ]
+    },{
         title: "2025/08/28 V1.2",
         records: [
             "修复：内置banner幻灯片方法extra的bug",

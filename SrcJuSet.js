@@ -981,14 +981,47 @@ function jiekouapi(data, look) {
             })
         }
     });
+
+    let ilks = ["主页源","搜索源","完整源","模板源"];
+    let ilkindex = -1;
+    if(getMyVar('apiilk')){
+        ilkindex = parseInt(getMyVar('apiilk')) -1;
+    }
+    d.push({
+        title: '选择源类型：'+ (ilkindex>-1?ilks[ilkindex]:''),
+        col_type: 'text_1',
+        url: $(ilks, 2, "选择源类型：").select(() => {
+            if(input=="主页源"){
+                putMyVar('apiilk','1');
+            }else if(input=="搜索源"){
+                putMyVar('apiilk','2');
+            }else if(input=="完整源"){
+                putMyVar('apiilk','3');
+            }else if(input=="模板源"){
+                putMyVar('apiilk','4');
+            }
+            refreshPage(false);
+            return 'hiker://empty';
+        }),
+        extra: {
+            //lineVisible: false
+        }
+    });
+
     if(!data){
+        let tmpllist = ['parseCode', 'getapp'];
+        if(getMyVar('apiilk')=='4'){
+            tmpllist.push('string');
+        }
         d.push({
             title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
-            url: $(['parseCode', 'getapp']).select(()=>{
+            url: $(tmpllist, 2, '选择模板类型').select(()=>{
                 if(input=='getapp'){
                     if(!fileExist(`hiker://files/rules/Src/Juyue/jiekou/1756086251723.txt`)){
                         return 'toast://没找到GetAppApi模板源，需先导入';
                     }
+                }else if(input=='string'){
+                    toast('字符串类型模板，自定义调用，源接口请勿直接引用此模板');
                 }
                 putMyVar('apitmpl', input);
                 refreshPage(false);
@@ -1021,19 +1054,21 @@ function jiekouapi(data, look) {
             if(fileExist(file)){
                 let jsstr = $.toString((file)=>{
                     try {
-                        eval(fetch(file)); 
-                        let is;
-                        if(parse['作者'] && parse['作者'] != getMyVar('apiauthor','')){
-                            putMyVar('apiauthor', parse['作者']);
-                            is = 1;
-                        }
-                        let version = parse['版本'] || parse['Ver'] || parse['ver'] || $.dateFormat(new Date(),"yyyyMMdd");
-                        if(version != getMyVar('apiversion','')){
-                            putMyVar('apiversion', version.toString());
-                            is = 1;
-                        }
-                        if(is){
-                            toast('作者、版本有变化，记得点保存');
+                        if(getMyVar('apitmpl')!='string'){
+                            eval(fetch(file)); 
+                            let is;
+                            if(parse['作者'] && parse['作者'] != getMyVar('apiauthor','')){
+                                putMyVar('apiauthor', parse['作者']);
+                                is = 1;
+                            }
+                            let version = parse['版本'] || parse['Ver'] || parse['ver'] || $.dateFormat(new Date(),"yyyyMMdd");
+                            if(version != getMyVar('apiversion','')){
+                                putMyVar('apiversion', version.toString());
+                                is = 1;
+                            }
+                            if(is){
+                                toast('作者、版本有变化，记得点保存');
+                            }
                         }
                         putMyVar("apiruleurl", file);
                         refreshPage(false);
@@ -1052,31 +1087,7 @@ function jiekouapi(data, look) {
             onChange: data?'toast("不能修改文件地址");':'putMyVar("apiruleurl",input);'
         }
     });
-    let ilks = ["主页源","搜索源","完整源","模板源"];
-    let ilkindex = -1;
-    if(getMyVar('apiilk')){
-        ilkindex = parseInt(getMyVar('apiilk')) -1;
-    }
-    d.push({
-        title: '选择源类型：'+ (ilkindex>-1?ilks[ilkindex]:''),
-        col_type: 'text_1',
-        url: $(ilks, 2, "选择源类型：").select(() => {
-            if(input=="主页源"){
-                putMyVar('apiilk','1');
-            }else if(input=="搜索源"){
-                putMyVar('apiilk','2');
-            }else if(input=="完整源"){
-                putMyVar('apiilk','3');
-            }else if(input=="模板源"){
-                putMyVar('apiilk','4');
-            }
-            refreshPage(false);
-            return 'hiker://empty';
-        }),
-        extra: {
-            //lineVisible: false
-        }
-    });
+    
     if(!look){
         if(data){
             d.push({

@@ -862,11 +862,3 @@ function banner(start, arr, data, cfg){
         putMyVar('banneri', i);
     }, obj))
 }
-// 手机是否暗黑模式
-function isDarkMode() {
-  const Configuration = android.content.res.Configuration;
-  let cx = getCurrentActivity();
-
-  let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-  return theme == Configuration.UI_MODE_NIGHT_YES;
-}

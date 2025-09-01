@@ -1040,7 +1040,7 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
-                    morecols.push("自定义封面样式:"+(juItem2.get('二级聚阅封面')?"否":"是"))
+                    morecols.push("自定义封面样式:"+((juItem.get('二级聚阅封面')||juItem2.get('二级聚阅封面'))?"否":"是"))
                 }
                 
                 d.push({
@@ -1128,16 +1128,28 @@ function erji() {
                             refreshPage(false);
                             return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
-                            let sm;
-                            if(juItem2.get('二级聚阅封面')){
-                                juItem2.clear('二级聚阅封面');
-                                sm = "优先自定义封面样式";
-                            }else{
-                                juItem2.set('二级聚阅封面','1');
-                                sm = "强制聚阅原封面样式";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
+                            return $(['当前源', '全局设置']).select(()=>{
+                                let sm;
+                                if(input=='当前源'){
+                                    if(juItem.get('二级聚阅封面')){
+                                        juItem.clear('二级聚阅封面');
+                                        sm = "当前源优先自定义封面样式";
+                                    }else{
+                                        juItem.set('二级聚阅封面','1');
+                                        sm = "当前源强制聚阅原封面样式";
+                                    }
+                                }else{
+                                    if(juItem2.get('二级聚阅封面')){
+                                        juItem2.clear('二级聚阅封面');
+                                        sm = "全局优先自定义封面样式";
+                                    }else{
+                                        juItem2.set('二级聚阅封面','1');
+                                        sm = "全局强制聚阅原封面样式";
+                                    }
+                                }
+                                refreshPage(false);
+                                return "toast://"+sm;
+                            })
                         }
                     }),
                     col_type: line_col_type,

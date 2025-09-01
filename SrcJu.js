@@ -531,7 +531,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let erLoadData,pic,linename,lastChapter;
+    let erLoadData,pic,linename;
     
     try{
         if (sid&&MY_URL) {
@@ -745,7 +745,6 @@ function erji() {
                     }
                     
                     列表 = checkAndReverseArray(列表);
-                    lastChapter = '更新至：' + 列表[列表.length-1].title;
                     if (getMyVar(sname + 'sort') == '1') {
                         列表.reverse();
                     }
@@ -1131,7 +1130,7 @@ function erji() {
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级聚阅封面')?"开":"关"));
                             list.push('当前源:'+(juItem.get('二级聚阅封面')?"开":"关"));
-                            return $(list, 2, '请选择生效范围').select(()=>{
+                            return $(list, 2, '选择设置生效范围').select(()=>{
                                 let sm;
                                 if(input.includes('当前源')){
                                     if(juItem.get('二级聚阅封面')){
@@ -1434,7 +1433,7 @@ function erji() {
             xlog(sname + '>加载二级页面失败>' + e.message + ' 错误行#' + e.lineNumber);
         }
         d.push({
-            title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + "</font></small></small>",
+            title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + (parse['模板']&&$.type(parse['模板'])=='object'&&parse['模板'].name?"，模板："+parse['模板'].name:"") + "</font></small></small>",
             url: stype=="小说"?'hiker://empty':'toast://温馨提示：且用且珍惜！',
             col_type: getMyVar('线路显示翻页内容')?'blank_block':'text_center_1',
             extra: {
@@ -1506,8 +1505,7 @@ function erji() {
                     url: MY_RULE.url.split(';')[0],
                     find_rule: MY_RULE.find_rule,
                     params: MY_PARAMS
-                },
-                lastChapter: lastChapter
+                }
             }
             erLoadData.caseData = caseData;
 

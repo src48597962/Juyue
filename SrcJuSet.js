@@ -1021,7 +1021,7 @@ function jiekouapi(data, look) {
                         return 'toast://没找到GetAppApi模板源，需先导入';
                     }
                 }else if(input=='string'){
-                    toast('字符串类型模板，自定义调用，源接口请勿直接引用此模板');
+                    toast('字符串模板自定义调用，其他源接口不要用此模板');
                 }
                 putMyVar('apitmpl', input);
                 refreshPage(false);
@@ -1043,6 +1043,8 @@ function jiekouapi(data, look) {
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
                 }else if(apitmpl=='getapp'){
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/getapp.js', 96);
+                }else if(apitmpl=='string'){
+                    tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
                 }
                 if(tmpl){
                     let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';

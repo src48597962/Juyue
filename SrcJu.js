@@ -195,7 +195,7 @@ function yiji(testSource) {
         d.push({
             title: "收藏",
             url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
-                require(config.聚阅);
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                 bookCase();
             }),
             pic_url: getIcon(homeIcons[3].img, false, homeIcons[3].color),

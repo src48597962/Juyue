@@ -888,11 +888,11 @@ function jiekouapi(data, look) {
     d.push({
         title: '源接口作者：'+ getMyVar('apiauthor',''),
         col_type: 'text_1',
-        url: 'toast://保存代码文件时自动获取，作者:',/*$(getMyVar('apiauthor',''), "源接口作者").input(() => {
+        url: getMyVar('apitmpl')=='string'?$(getMyVar('apiauthor',''), "源接口作者").input(() => {
             putMyVar('apiauthor',input);
             refreshPage(false);
             return 'toast://源接口作者已设置为：' + input;
-        }),*/
+        }):'toast://保存代码文件时自动获取，作者:',
         extra: {
             //lineVisible: false
         }

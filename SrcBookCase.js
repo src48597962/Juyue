@@ -101,7 +101,7 @@ function bookCase() {
         }
     }
 
-    let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+    let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
     let datalist = [];
     let typebtn = [];
     Julist.forEach(it=>{
@@ -113,67 +113,9 @@ function bookCase() {
             }
         })
 
-        try{
-            let extra = it.extra;
-            extra['data'] = extra['data'] || {};
-            extra['cls'] = "caselist";
-            extra['lineVisible'] = false;
-            extra['pageTitle'] = extra['pageTitle'] || name;
-            delete extra['id'];
-            delete extra['data']['extstr'];
-            if(sjType=="聚阅收藏"){
-                extra.longClick = [{
-                    title: "去除聚阅收藏",
-                    js: $.toString((caseid) => {
-                        let casefile = 'hiker://files/rules/Src/Juyue/case.json';
-                        eval('let caselist = ' + (fetch(casefile)||'[]'));
-                        caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
-                        writeFile(casefile, JSON.stringify(caselist));
-                        refreshPage();
-                    }, md5(it.title+(it.params.url+'').split('@')[0]))
-                }]
-            }
-
-            let stype = extra['data'].type;
-            let sname = extra.data.name || "";
-            let name = extra.name || it.title;
-            let url = it.params.url+'' || '';
-            if(!url.includes('@') && !url.startsWith('hiker://page/')){
-                if(it.params.find_rule){
-                    url = url + (it.type=='一级列表'?'@lazyRule=.':it.type=='二级列表'?'@rule=':'') + it.params.find_rule;
-                }else{
-                    let parse = $.require("jiekou").parse(extra.data);
-                    let 解析 = it.params.lazy||'解析';
-                    if(parse[解析]){
-                        if(it.type=='一级列表'){
-                            url = url + parse[解析].call(parse, url);
-                        }else if(it.type=='二级列表'){
-                            url = url + $('').rule(parse[解析]);
-                        }
-                    }
-                }
-            }
-
-            let datatitle = name, datadesc = '';
-            if(datacol=='movie_1_vertical_pic'){
-                datatitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
-                datadesc = (it.type=='一级列表'?it.type:it.lastChapter+"\n足迹："+it.lastClick);
-            }else if(datacol=='movie_3_marquee'){
-                datadesc = it.lastChapter.replace('更新至：','');
-            }else if(datacol=='icon_1_left_pic'){
-                datatitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+it.lastChapter)+"</font></small>";
-                datadesc = "足迹："+it.lastClick;
-            }
-            datalist.push({
-                title: datatitle,
-                pic_url: it.picUrl,
-                desc: datadesc,
-                url: url,
-                col_type: datacol,
-                extra: extra
-            })
-        }catch(e){
-            xlog("书架加载异常>"+e.message + ' 错误行#' + e.lineNumber);
+        let obj = convertData(it, listcol, sjType);
+        if(obj){
+            datalist.push(obj);
         }
     })
     storage0.putMyVar('收藏书架列表', datalist);
@@ -306,13 +248,13 @@ function bookCase() {
                     addItemBefore('caseloading', storage0.getMyVar('收藏书架搜索框', {}));
                 }
                 
-                let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+                let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
                 let adddatalist = [];
                 casedatalist.forEach(it=>{
                     adddatalist.push(it);
-                    if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+                    if(listcol=='icon_1_left_pic' || listcol=='movie_1_vertical_pic'){
                         adddatalist.push({
-                            col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                            col_type: listcol=='movie_1_vertical_pic'?'line':'line_blank',
                             extra: {
                                 cls: 'caselist'
                             }
@@ -373,9 +315,9 @@ function bookCase() {
 
     datalist.forEach(item => {
         d.push(item);
-        if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+        if(listcol=='icon_1_left_pic' || listcol=='movie_1_vertical_pic'){
             d.push({
-                col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                col_type: listcol=='movie_1_vertical_pic'?'line':'line_blank',
                 extra: {
                     cls: 'caselist'
                 }
@@ -406,13 +348,13 @@ function casesousuo(input) {
         }
         return it=='全部' || types.indexOf(it)>-1;
     });
-    let datacol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+    let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
     let adddatalist = [];
     casedatalist.forEach(it=>{
         adddatalist.push(it);
-        if(datacol=='icon_1_left_pic' || datacol=='movie_1_vertical_pic'){
+        if(listcol=='icon_1_left_pic' || listcol=='movie_1_vertical_pic'){
             adddatalist.push({
-                col_type: datacol=='movie_1_vertical_pic'?'line':'line_blank',
+                col_type: listcol=='movie_1_vertical_pic'?'line':'line_blank',
                 extra: {
                     cls: 'caselist'
                 }
@@ -423,9 +365,9 @@ function casesousuo(input) {
     return 'hiker://emtpy';
 }
 // 书架列表循环转换d结构
-function convertData(data,datacol,sjType){
+function convertData(item, listcol, sjType){
     try{
-        let extra = data.extra;
+        let extra = item.extra;
         extra['data'] = extra['data'] || {};
         extra['cls'] = "caselist";
         extra['lineVisible'] = false;
@@ -441,46 +383,46 @@ function convertData(data,datacol,sjType){
                     caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
                     writeFile(casefile, JSON.stringify(caselist));
                     refreshPage();
-                }, md5(data.title+(data.params.url+'').split('@')[0]))
+                }, md5(item.title+(item.params.url+'').split('@')[0]))
             }]
         }
 
         let stype = extra['data'].type;
         let sname = extra.data.name || "";
-        let name = extra.name || data.title;
-        let url = data.params.url+'' || '';
+        let name = extra.name || item.title;
+        let url = item.params.url+'' || '';
         if(!url.includes('@') && !url.startsWith('hiker://page/')){
-            if(data.params.find_rule){
-                url = url + (data.type=='一级列表'?'@lazyRule=.':data.type=='二级列表'?'@rule=':'') + data.params.find_rule;
+            if(item.params.find_rule){
+                url = url + (item.type=='一级列表'?'@lazyRule=.':item.type=='二级列表'?'@rule=':'') + item.params.find_rule;
             }else{
                 let parse = $.require("jiekou").parse(extra.data);
-                let 解析 = data.params.lazy||'解析';
+                let 解析 = item.params.lazy||'解析';
                 if(parse[解析]){
-                    if(data.type=='一级列表'){
+                    if(item.type=='一级列表'){
                         url = url + parse[解析].call(parse, url);
-                    }else if(data.type=='二级列表'){
+                    }else if(item.type=='二级列表'){
                         url = url + $('').rule(parse[解析]);
                     }
                 }
             }
         }
 
-        let datatitle = name, datadesc = '';
-        if(datacol=='movie_1_vertical_pic'){
-            datatitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
-            datadesc = (data.type=='一级列表'?data.type:data.lastChapter+"\n足迹："+data.lastClick);
-        }else if(datacol=='movie_3_marquee'){
-            datadesc = data.lastChapter.replace('更新至：','');
-        }else if(datacol=='icon_1_left_pic'){
-            datatitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+data.lastChapter)+"</font></small>";
-            datadesc = "足迹："+data.lastClick;
+        let itemtitle = name, itemdesc = '';
+        if(listcol=='movie_1_vertical_pic'){
+            itemtitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
+            itemdesc = (item.type=='一级列表'?data.type:data.lastChapter+"\n足迹："+item.lastClick);
+        }else if(listcol=='movie_3_marquee'){
+            itemdesc = item.lastChapter.replace('更新至：','');
+        }else if(listcol=='icon_1_left_pic'){
+            itemtitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+item.lastChapter)+"</font></small>";
+            itemdesc = "足迹："+item.lastClick;
         }
         return {
-            title: datatitle,
-            pic_url: data.picUrl,
-            desc: datadesc,
+            title: itemtitle,
+            pic_url: item.picUrl,
+            desc: itemdesc,
             url: url,
-            col_type: datacol,
+            col_type: listcol,
             extra: extra
         }
     }catch(e){

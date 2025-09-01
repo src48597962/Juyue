@@ -327,7 +327,7 @@ function bookCase() {
         }
     })
     d.push({
-        title: Julist.length==0?"空空如也~~"+(sjType=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",
+        title: datalist.length==0?"空空如也~~"+(sjType=="聚阅收藏"?"长按二级封面加入聚阅收藏":"二级右上角♥加入软件收藏"):"",
         url: "hiker://empty",
         col_type: "text_center_1",
         extra: {

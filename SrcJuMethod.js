@@ -575,6 +575,10 @@ function getObjCode(jkdata, key) {
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + (parse['模板'].name||''));
                 }
+                xlog(jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
+                if(parse['模板'].name){
+                    parse['tmplname'] = parse['模板'].name;
+                }
                 parse = Object.assign({}, tmplparse, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);

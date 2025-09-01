@@ -1129,8 +1129,8 @@ function erji() {
                             return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
                             let list = [];
-                            list.push('所有源:'+(juItem2.get('二级聚阅封面')?"否":"是"));
-                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"否":"是"));
+                            list.push('所有源:'+(juItem2.get('二级聚阅封面')?"开":"关"));
+                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"开":"关"));
                             return $(list, 2, '请选择生效范围').select(()=>{
                                 let sm;
                                 if(input.includes('当前源')){

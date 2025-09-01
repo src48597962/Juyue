@@ -86,9 +86,9 @@ function bookCase() {
                     let his = history.filter((v) => {
                         return v.title==it.title;
                     }).filter((v) => {
-                        return (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]).split('&')[0]==(it.params.url||'').split('&')[0];
+                        return (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]).split('&')[0]==(it.params.url+'').split('&')[0];
                     });
-                    it.lastClick = '';
+                    it.lastClick = it.lastClick || '';
                     if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
@@ -106,8 +106,8 @@ function bookCase() {
     let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
     let datalist = [];
     let typebtn = [];
-    Julist.forEach(it=>{
-        let data = it.extra['data'] || {};
+    Julist.forEach(item=>{
+        let data = item.extra['data'] || {};
         let types = (data.group || data.type || '').split(',');
         types.forEach(type=>{
             if(type && typebtn.indexOf(type)==-1){
@@ -115,9 +115,10 @@ function bookCase() {
             }
         })
 
-        let obj = convertData(it, listcol, sjType);
+        let obj = convertData(item, listcol, sjType);
         if(obj){
             datalist.push(obj);
+            //id: md5(item.title+(item.params.url+'').split('&')[0])
         }
     })
     storage0.putMyVar('收藏书架列表', datalist);
@@ -374,7 +375,7 @@ function convertData(item, listcol, sjType){
         extra['cls'] = "caselist";
         extra['lineVisible'] = false;
         extra['pageTitle'] = extra['pageTitle'] || name;
-        delete extra['id'];
+        extra['id'] = md5(item.title+(item.params.url+'').split('&')[0]);
         delete extra['data']['extstr'];
         if(sjType=="聚阅收藏"){
             extra.longClick = [{
@@ -382,10 +383,10 @@ function convertData(item, listcol, sjType){
                 js: $.toString((caseid) => {
                     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                     eval('let caselist = ' + (fetch(casefile)||'[]'));
-                    caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('@')[0]) != caseid);
+                    caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('&')[0]) != caseid);
                     writeFile(casefile, JSON.stringify(caselist));
                     refreshPage();
-                }, md5(item.title+(item.params.url+'').split('@')[0]))
+                }, extra['id'])
             }]
         }
 
@@ -431,4 +432,15 @@ function convertData(item, listcol, sjType){
         xlog("书架列表生成异常>"+e.message + ' 错误行#' + e.lineNumber);
     }
     return;
+}
+// 异步更新书架列表最新
+function Async(data) {
+  return new Promise((resolve, reject) => {
+    let uu = fetch('https://www.zhenlang.cc/')
+    if (uu) {
+      resolve(`操作成功！数据: ${data}`);
+    } else {
+      reject(new Error(`操作失败！数据: ${data}`));
+    }
+  });
 }

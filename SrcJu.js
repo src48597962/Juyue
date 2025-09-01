@@ -1128,9 +1128,12 @@ function erji() {
                             refreshPage(false);
                             return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
-                            return $(['当前源', '全局设置']).select(()=>{
+                            let list = [];
+                            list.push('所有源:'+(juItem2.get('二级聚阅封面')?"是":"否"));
+                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"是":"否"));
+                            return $(list, 2, '请选择生效范围').select(()=>{
                                 let sm;
-                                if(input=='当前源'){
+                                if(input.includes('当前源')){
                                     if(juItem.get('二级聚阅封面')){
                                         juItem.clear('二级聚阅封面');
                                         sm = "当前源优先自定义封面样式";
@@ -1141,10 +1144,10 @@ function erji() {
                                 }else{
                                     if(juItem2.get('二级聚阅封面')){
                                         juItem2.clear('二级聚阅封面');
-                                        sm = "全局优先自定义封面样式";
+                                        sm = "所有源优先自定义封面样式";
                                     }else{
                                         juItem2.set('二级聚阅封面','1');
-                                        sm = "全局强制聚阅原封面样式";
+                                        sm = "所有源强制聚阅原封面样式";
                                     }
                                 }
                                 refreshPage(false);

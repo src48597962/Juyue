@@ -275,7 +275,7 @@ function getYiData(datatype, jkdata, dd) {
         
         if(datatype==="主页"){
             if(!getMyVar(jkdata.id)){
-                toast(jkdata.name + (parse["作者"] ? "，作者：" + parse["作者"] : ""));
+                toast(jkdata.name + (parse["作者"] ? "，作者：" + parse["作者"] : "") + (parse['模板名']?"，模板"+parse['模板名']:""));
                 putMyVar(jkdata.id, "1");
             }
             let 转换 = parse["转换"] || {};
@@ -575,9 +575,9 @@ function getObjCode(jkdata, key) {
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + (parse['模板'].name||''));
                 }
-                xlog(jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
+                xlog('当前源：' + jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
                 if(parse['模板'].name){
-                    parse['tmplname'] = parse['模板'].name;
+                    parse['模板名'] = parse['模板'].name;
                 }
                 parse = Object.assign({}, tmplparse, parse);
             }catch(e){

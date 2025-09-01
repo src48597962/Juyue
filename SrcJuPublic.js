@@ -749,14 +749,7 @@ function getIcon(icon, nochange, color2) {
         }
     },color, color2))
 }
-// 手机是否暗黑模式
-function isDarkMode() {
-  const Configuration = android.content.res.Configuration;
-  let cx = getCurrentActivity();
 
-  let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-  return theme == Configuration.UI_MODE_NIGHT_YES;
-}
 // 获取主题图标列表
 function getThemeList(isEnable) {
     let themefile = rulepath + 'themes.json';

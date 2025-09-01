@@ -582,7 +582,7 @@ function erji() {
 
     if(MY_PAGE==1){
         try {
-            let detailObj = (juItem2.get('二级聚阅封面')&&erLoadData.detail1?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
+            let detailObj = ((juItem.get('二级聚阅封面')||juItem2.get('二级聚阅封面'))&&erLoadData.detail1?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erjiextra.img = pic;

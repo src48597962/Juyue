@@ -1,4 +1,3 @@
-
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 require((config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 //书架
@@ -413,7 +412,7 @@ function convertData(item, listcol, sjType){
         let itemtitle = name, itemdesc = '';
         if(listcol=='movie_1_vertical_pic'){
             itemtitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(stype?stype+" | "+(sname||""):"")+"</font></small>"
-            itemdesc = (item.type=='一级列表'?data.type:data.lastChapter+"\n足迹："+item.lastClick);
+            itemdesc = (item.type=='一级列表'?item.type:item.lastChapter+"\n足迹："+item.lastClick);
         }else if(listcol=='movie_3_marquee'){
             itemdesc = item.lastChapter.replace('更新至：','');
         }else if(listcol=='icon_1_left_pic'){

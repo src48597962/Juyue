@@ -349,7 +349,7 @@ function bookCase() {
         }
     })
     setResult(d);
-/*
+
         let task = function (item) {
             return (function() {
                 let extra = item.params.params;
@@ -399,25 +399,6 @@ function bookCase() {
             param: {
             }
         });
-        */
-/*
-    // 异步更新最新
-    Julist.forEach(item=>{
-        Async(item)
-            .then((a) => {
-                if(a && a!=item.lastChapter){
-                    item.lastChapter = a;
-                    let obj = convertItem(item, listcol, sjType);
-                    if(obj){
-                        updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
-                            title: obj.title,
-                            desc: obj.desc
-                        });
-                    }
-                }
-            })
-    })  
-    */
 }
 
 // 书架搜索筛选

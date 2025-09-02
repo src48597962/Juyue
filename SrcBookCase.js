@@ -336,6 +336,57 @@ function bookCase() {
         }
     })
     setResult(d);
+
+        let task = function (item) {
+            return (function() {
+                let extra = item.extra || {};
+                let jkdata = extra['data'] || {};
+                let parse = getObjCode(jkdata, 'zx');
+                let zx;
+                if (parse['最新']) {
+                    let MY_URL = extra.url;
+                    let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                    eval("let 最新2 = " + 最新str);
+                    try{
+                        eval(evalPublicStr);
+                        zx = 最新2.call(parse, MY_URL) || "";
+                    }catch(e){
+                        zx = "解析获取失败";
+                        xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                    }
+                }else if(parse['二级']){
+                    zx = "作者没写最新"
+                }
+                return {lastChapter: zx, lastClick: item.lastClick, item: item};
+            })();
+        }
+        let list = Julist.map((item) => {
+            return {
+                func: task,
+                param: item,
+                id: md5(item.title+(item.params.url+'').split('&')[0])
+            }
+        });
+        let taskResults = [];
+        be(list, {
+            func: function (obj, id, error, result) {
+                taskResults.push({id: id, lastChapter: result.lastChapter, lastClick: result.lastClick})
+                let item = result.item;
+                if(result.lastChapter && result.lastChapter!=item.lastChapter){
+                    item.lastChapter = result.lastChapter;
+                    let obj = convertData(item, listcol, sjType);
+                    if(obj){
+                        updateItem(id, {
+                            title: obj.title,
+                            desc: obj.desc
+                        });
+                    }
+                }
+            },
+            param: {
+            }
+        });
+/*
     // 异步更新最新
     Julist.forEach(item=>{
         Async(item)
@@ -352,6 +403,7 @@ function bookCase() {
                 }
             })
     })  
+    */
 }
 // 异步更新书架列表最新
 function Async(item) {

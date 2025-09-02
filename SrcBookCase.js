@@ -51,12 +51,13 @@ function bookCase() {
                 let params = JSON.parse(it.params);
                 let extra = JSON.parse(params['params'] || '{}');
                 delete extra['extstr'];
+                xlog(extra);
                 let obj = {
                     type: it.mITitle,
                     title: it.mTitle,
                     picUrl: it.picUrl,
                     params: {
-                        url: params.url,
+                        url: params.url.split(';')[0],
                         find_rule: params.find_rule,
                         params: extra
                     },

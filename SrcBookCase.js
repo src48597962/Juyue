@@ -337,63 +337,49 @@ function bookCase() {
     })
     setResult(d);
     // 异步更新最新
-    /*
     Julist.forEach(item=>{
         Async(item)
             .then((a) => {
-                log('动态更新')
-                updateItem('1', {
-                    title: a
-                });
+                if(a){
+                    item.lastChapter = a;
+                    let obj = convertData(item, listcol, sjType);
+                    if(obj){
+                        updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
+                            title: obj.title,
+                            desc: obj.desc
+                        });
+                    }
+                }
             })
-            .catch((e) => {
-                updateItem('1', {
-                    title: e.message
-                });
-            });
-        let obj = convertData(item, listcol, sjType);
-        if(obj){
-            datalist.push(obj);
-            //id: md5(item.title+(item.params.url+'').split('&')[0])
-        }
-    })
-    */
-    Async(Julist[0])
-            .then((a) => {
-                xlog(a);
-                updateItem('1', {
-                    title: a
-                });
-            })
-    
+    })  
 }
 // 异步更新书架列表最新
 function Async(item) {
     return new Promise((resolve) => {
         //收藏更新最新章节
-        let extra = item.extra || {};
-        let jkdata = extra['data'] || {};
-        let parse = getObjCode(jkdata, 'zx');
-        let zx;
+        setTimeout(() => {
+            let extra = item.extra || {};
+            let jkdata = extra['data'] || {};
+            let parse = getObjCode(jkdata, 'zx');
+            let zx;
 
-        if (parse['最新']) {
-            let MY_URL = extra.url;
-            let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
-            eval("let 最新2 = " + 最新str);
-            try{
-                eval(evalPublicStr);
-                zx = 最新2.call(parse, MY_URL) || "";
-                zx = jkdata.name + " | " + (zx||"");
-            }catch(e){
-                zx = jkdata.name + " | 最新获取失败";
-                xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+            if (parse['最新']) {
+                let MY_URL = extra.url;
+                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                eval("let 最新2 = " + 最新str);
+                try{
+                    eval(evalPublicStr);
+                    zx = 最新2.call(parse, MY_URL) || "";
+                    zx = jkdata.name + " | " + (zx||"");
+                }catch(e){
+                    zx = jkdata.name + " | 解析获取失败";
+                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                }
+            }else if(parse['二级']){
+                zx = jkdata.name + " | 作者没写最新"
             }
-        }else if(parse['二级']){
-            zx = jkdata.name + " | 作者没写最新"
-        }
-        if (zx) {
-            resolve(item.title + '》' + zx);
-        }
+            resolve(zx);
+        }, 3000);
     });
 }
 

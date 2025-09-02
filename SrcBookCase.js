@@ -366,7 +366,7 @@ function bookCase() {
                         zx = 最新2.call(parse, MY_URL) || "";
                     }catch(e){
                         zx = "解析获取失败";
-                        xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                        xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message + ' 错误行#' + e.lineNumber );
                     }
                 }else if(parse['二级']){
                     zx = "作者没写最新"

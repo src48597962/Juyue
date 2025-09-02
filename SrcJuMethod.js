@@ -763,7 +763,7 @@ function searchRecord(lx, input) {
     return;
 }
 //获取case数据id
-function caseItemId(item) {
+function getCaseID(item) {
     return md5(item.title+(item.params.url+'').split('&')[0].split('#')[0]);
 }
 // 加入聚阅收藏书架方法
@@ -774,6 +774,8 @@ function addBookCase(obj, update) {
         if(history.length>0 && history[0].title==getPageTitle()){
             let data = history[0];
             let params = JSON.parse(data.params);
+            let extra = JSON.parse(params.params);
+            delete extra['extstr'];
             obj = {
                 type: data.type,
                 title: data.title,
@@ -781,7 +783,7 @@ function addBookCase(obj, update) {
                 params: {
                     url: params.url.split(';')[0],
                     find_rule: params.find_rule,
-                    params: JSON.parse(params.params)
+                    params: extra
                 }
             }
         }
@@ -793,12 +795,12 @@ function addBookCase(obj, update) {
         let casefile = 'hiker://files/rules/Src/Juyue/case.json';
         eval('let caselist = ' + (fetch(casefile)||'[]'));
         if(update){
-            if(!caselist.some(v=>caseItemId(v)==caseItemId(obj))){
+            if(!caselist.some(v=>getCaseID(v)==getCaseID(obj))){
                 return;
             }
         }
 
-        let index = caselist.findIndex(v => caseItemId(v)==caseItemId(obj));
+        let index = caselist.findIndex(v => getCaseID(v)==getCaseID(obj));
         if(index>-1){
             caselist.splice(index, 1);
         }

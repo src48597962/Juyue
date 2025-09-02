@@ -102,7 +102,7 @@ function bookCase() {
         }
     }
 
-    let listcol = "movie_1_vertical_pic";//juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+    let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
     let datalist = [];
     let typebtn = [];
     Julist.forEach(item=>{
@@ -335,7 +335,7 @@ function bookCase() {
         }
     })
     setResult(d);
-
+/*
         let task = function (item) {
             return (function() {
                 let extra = item.extra || {};
@@ -385,6 +385,7 @@ function bookCase() {
             param: {
             }
         });
+        */
 /*
     // 异步更新最新
     Julist.forEach(item=>{

@@ -47,20 +47,19 @@ function bookCase() {
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
         collection.forEach(it => {
             try{
-                if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
-                    it.type = it.mITitle;
-                    it.title = it.mTitle;
-                    delete it.mITitle;
-                    delete it.mTitle;
-                    it.params = JSON.parse(it.params);
-                    it.params.url = (it.params.url||'').split(';')[0];
-                    it.lastClick = it.lastClick?it.lastClick.split('@@')[0]:"";
-                    let extraData = JSON.parse(it.extraData || '{}');
-                    it.lastChapter = extraData.lastChapterStatus || "";
-                    it.extra = JSON.parse(it.params['params'] || '{}');
-                    delete it.params['params'];
-                    Julist.push(it);
-                }
+                it.type = it.mITitle;
+                it.title = it.mTitle;
+                delete it.mITitle;
+                delete it.mTitle;
+                it.params = JSON.parse(it.params);
+                it.params.url = (it.params.url||'').split(';')[0];
+                it.lastClick = it.lastClick?it.lastClick.split('@@')[0]:"";
+                let extraData = JSON.parse(it.extraData || '{}');
+                it.lastChapter = extraData.lastChapterStatus || "";
+                it.extra = JSON.parse(it.params['params'] || '{}');
+                delete it.params['params'];
+                xlog(it);
+                Julist.push(it);
             }catch(e){
                 xlog("软件收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
             }

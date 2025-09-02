@@ -360,7 +360,7 @@ function bookCase() {
     */
     Async(Julist[0])
             .then((a) => {
-                xlog('成功' + a);
+                xlog(a);
                 updateItem('1', {
                     title: a
                 });
@@ -382,7 +382,7 @@ function Async(item) {
             eval("let 最新2 = " + 最新str);
             try{
                 eval(evalPublicStr);
-                zx = 最新2.call(parse, url) || "";
+                zx = 最新2.call(parse, MY_URL) || "";
                 zx = jkdata.name + " | " + (zx||"");
             }catch(e){
                 zx = jkdata.name + " | 最新获取失败";

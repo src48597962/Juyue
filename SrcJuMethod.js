@@ -775,7 +775,8 @@ function addBookCase(obj, update) {
             let data = history[0];
             let params = JSON.parse(data.params);
             let extra = JSON.parse(params.params);
-            delete extra['extstr'];
+            extra['data'] = extra['data'] || {};
+            delete extra['data']['extstr'];
             obj = {
                 type: data.type,
                 title: data.title,

@@ -497,7 +497,8 @@ function convertItem(item, listcol, sjType){
         }else if(listcol=='movie_3_marquee'){
             itemdesc = item.lastChapter.replace('更新至：','');
         }else if(listcol=='icon_1_left_pic'){
-            itemtitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+(sname+" | "+item.lastChapter)+"</font></small>";
+            let lastChapter = item.lastChapter.startsWith(sname)?item.lastChapter:(sname+" | "+item.lastChapter);
+            itemtitle = name.substring(0,13) + "\n‘‘’’<small><font color=grey>"+lastChapter+"</font></small>";
             itemdesc = "足迹："+item.lastClick;
         }
         return {

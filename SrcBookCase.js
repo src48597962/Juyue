@@ -358,12 +358,12 @@ function bookCase() {
                 let zx;
                 if (parse['最新']) {
                     let MY_URL = extra.url;
-                    let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
-                    eval("let 最新2 = " + 最新str);
+                    //let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                    //eval("let 最新2 = " + 最新str);
                     try{
                         eval(evalPublicStr);
                         let MY_PARAMS = extra;
-                        zx = 最新2.call(parse, MY_URL) || "";
+                        zx = parse['最新'].call(parse, MY_URL) || "";
                     }catch(e){
                         zx = "解析获取失败";
                         xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message + ' 错误行#' + e.lineNumber );

@@ -347,7 +347,7 @@ function bookCase() {
                     if(obj){
                         updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
                             title: obj.title,
-                            desc: obj.desc
+                            desc: obj.desc+`““””<span style="color: red">●`
                         });
                     }
                 }

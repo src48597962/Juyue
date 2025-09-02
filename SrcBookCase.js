@@ -341,12 +341,11 @@ function bookCase() {
         Async(item)
             .then((a) => {
                 if(a && a!=item.lastChapter){
-                    xlog(a);
                     item.lastChapter = a;
                     let obj = convertData(item, listcol, sjType);
                     if(obj){
                         updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
-                            title: obj.title+`““””<span style="color: red">●`,
+                            title: obj.title,
                             desc: obj.desc
                         });
                     }

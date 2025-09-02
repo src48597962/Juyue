@@ -47,19 +47,24 @@ function bookCase() {
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
         collection.forEach(it => {
             try{
-                it.type = it.mITitle;
-                it.title = it.mTitle;
-                delete it.mITitle;
-                delete it.mTitle;
-                it.params = JSON.parse(it.params);
-                it.params.url = (it.params.url||'').split(';')[0];
-                it.lastClick = it.lastClick?it.lastClick.split('@@')[0]:"";
                 let extraData = JSON.parse(it.extraData || '{}');
-                it.lastChapter = extraData.lastChapterStatus || "";
-                it.extra = JSON.parse(it.params['params'] || '{}');
-                delete it.params['params'];
-                xlog(it);
-                Julist.push(it);
+                let params = JSON.parse(it.params);
+                let extra = JSON.parse(params['params'] || '{}');
+                delete extra['extstr'];
+                let obj = {
+                    type: it.mITitle,
+                    title: it.mTitle,
+                    picUrl: it.picUrl,
+                    params: {
+                        url: params.url,
+                        find_rule: params.find_rule,
+                        params: extra
+                    },
+                    lastChapter: extraData.lastChapterStatus || "",
+                    lastClick: it.lastClick?it.lastClick.split('@@')[0]:""
+                }
+                obj.id = getCaseID(obj);
+                Julist.push(obj);
             }catch(e){
                 xlog("软件收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
             }
@@ -82,18 +87,24 @@ function bookCase() {
 
             caselist.forEach(it => {
                 try {
+                    it.id = getCaseID(it);
                     let his = history.filter((v) => {
                         return v.title==it.title;
                     }).filter((v) => {
-                        return (MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split(';')[0].split('@')[1]).split('&')[0]==(it.params.url+'').split('&')[0];
+                        let obj = {
+                            title: v.title,
+                            params: {
+                                url: MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url
+                            }
+                        }
+                        return getCaseID(obj)==it.id;
                     });
+                    it.params.params = it.params.params || {};
+                    it.lastChapter = it.lastChapter || "";
                     it.lastClick = it.lastClick || '';
                     if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
-                    it.lastChapter = it.lastChapter || "";
-                    it.extra = it.params['params'] || {};
-                    delete it.params['params'];
                     Julist.push(it);
                 } catch (e) {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
@@ -106,7 +117,8 @@ function bookCase() {
     let datalist = [];
     let typebtn = [];
     Julist.forEach(item=>{
-        let data = item.extra['data'] || {};
+        let extra = item.params.params;
+        let data = extra['data'] || {};
         let types = (data.group || data.type || '').split(',');
         types.forEach(type=>{
             if(type && typebtn.indexOf(type)==-1){
@@ -114,7 +126,7 @@ function bookCase() {
             }
         })
 
-        let obj = convertData(item, listcol, sjType);
+        let obj = convertItem(item, listcol, sjType);
         if(obj){
             datalist.push(obj);
         }
@@ -338,7 +350,7 @@ function bookCase() {
 /*
         let task = function (item) {
             return (function() {
-                let extra = item.extra || {};
+                let extra = item.params.params;
                 let jkdata = extra['data'] || {};
                 let parse = getObjCode(jkdata, 'zx');
                 let zx;
@@ -373,7 +385,7 @@ function bookCase() {
                 let item = result.item;
                 if(result.lastChapter && result.lastChapter!=item.lastChapter){
                     item.lastChapter = result.lastChapter;
-                    let obj = convertData(item, listcol, sjType);
+                    let obj = convertItem(item, listcol, sjType);
                     if(obj){
                         updateItem(id, {
                             title: obj.title,
@@ -393,7 +405,7 @@ function bookCase() {
             .then((a) => {
                 if(a && a!=item.lastChapter){
                     item.lastChapter = a;
-                    let obj = convertData(item, listcol, sjType);
+                    let obj = convertItem(item, listcol, sjType);
                     if(obj){
                         updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
                             title: obj.title,
@@ -404,33 +416,6 @@ function bookCase() {
             })
     })  
     */
-}
-// 异步更新书架列表最新
-function Async(item) {
-    return new Promise((resolve) => {
-        //收藏更新最新章节
-        //setTimeout(() => {
-            let extra = item.extra || {};
-            let jkdata = extra['data'] || {};
-            let parse = getObjCode(jkdata, 'zx');
-            let zx;
-            if (parse['最新']) {
-                let MY_URL = extra.url;
-                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
-                eval("let 最新2 = " + 最新str);
-                try{
-                    eval(evalPublicStr);
-                    zx = 最新2.call(parse, MY_URL) || "";
-                }catch(e){
-                    zx = "解析获取失败";
-                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
-                }
-            }else if(parse['二级']){
-                zx = "作者没写最新"
-            }
-            resolve(zx);
-        //}, 3000);
-    });
 }
 
 // 书架搜索筛选
@@ -462,25 +447,24 @@ function casesousuo(input) {
     return 'hiker://emtpy';
 }
 // 书架列表循环转换d结构
-function convertData(item, listcol, sjType){
+function convertItem(item, listcol, sjType){
     try{
-        let extra = item.extra;
+        let extra = item.params.params;
         extra['data'] = extra['data'] || {};
         extra['cls'] = "caselist";
         extra['lineVisible'] = false;
-        extra['pageTitle'] = extra['pageTitle'] || name;
-        extra['id'] = md5(item.title+(item.params.url+'').split('&')[0]);
-        delete extra['data']['extstr'];
+        extra['id'] = item.id;
+
         if(sjType=="聚阅收藏"){
             extra.longClick = [{
                 title: "去除聚阅收藏",
                 js: $.toString((caseid) => {
                     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                     eval('let caselist = ' + (fetch(casefile)||'[]'));
-                    caselist = caselist.filter(item => md5(item.title+(item.params.url+'').split('&')[0]) != caseid);
+                    caselist = caselist.filter(item => getCaseID(item) != caseid);
                     writeFile(casefile, JSON.stringify(caselist));
                     refreshPage();
-                }, extra['id'])
+                }, item.id)
             }]
         }
 

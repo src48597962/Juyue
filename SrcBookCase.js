@@ -340,7 +340,7 @@ function bookCase() {
     Julist.forEach(item=>{
         Async(item)
             .then((a) => {
-                if(a){
+                if(a && a!=item.lastChapter){
                     xlog(a);
                     item.lastChapter = a;
                     let obj = convertData(item, listcol, sjType);
@@ -358,7 +358,7 @@ function bookCase() {
 function Async(item) {
     return new Promise((resolve) => {
         //收藏更新最新章节
-        //setTimeout(() => {
+        setTimeout(() => {
             let extra = item.extra || {};
             let jkdata = extra['data'] || {};
             let parse = getObjCode(jkdata, 'zx');
@@ -378,7 +378,7 @@ function Async(item) {
                 zx = "作者没写最新"
             }
             resolve(zx);
-        //}, 3000);
+        }, 3000);
     });
 }
 

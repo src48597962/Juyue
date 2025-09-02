@@ -360,26 +360,39 @@ function bookCase() {
     */
     Async(Julist[0])
             .then((a) => {
+                xlog('成功' + a);
                 updateItem('1', {
                     title: a
                 });
             })
-            .catch((e) => {
-                updateItem('1', {
-                    title: e.message
-                });
-            });
     
 }
 // 异步更新书架列表最新
 function Async(item) {
-    return new Promise((resolve, reject) => {
-        xlog(item);
-        let uu = '1';
-        if (uu) {
-            resolve(`操作成功！数据: ${data}`);
-        } else {
-            reject(new Error(`操作失败！数据: ${data}`));
+    return new Promise((resolve) => {
+        //收藏更新最新章节
+        let extra = item.extra || {};
+        let jkdata = extra['data'] || {};
+        let parse = getObjCode(jkdata, 'zx');
+        let zx;
+
+        if (parse['最新']) {
+            let MY_URL = extra.url;
+            let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(url)');
+            eval("let 最新2 = " + 最新str);
+            try{
+                eval(evalPublicStr);
+                zx = 最新2.call(parse, url) || "";
+                zx = jkdata.name + " | " + (zx||"");
+            }catch(e){
+                zx = jkdata.name + " | 最新获取失败";
+                xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+            }
+        }else if(parse['二级']){
+            zx = jkdata.name + " | 作者没写最新"
+        }
+        if (zx) {
+            resolve(item.title + '》' + zx);
         }
     });
 }

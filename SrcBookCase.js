@@ -363,7 +363,6 @@ function Async(item) {
             let jkdata = extra['data'] || {};
             let parse = getObjCode(jkdata, 'zx');
             let zx;
-
             if (parse['最新']) {
                 let MY_URL = extra.url;
                 let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
@@ -371,13 +370,12 @@ function Async(item) {
                 try{
                     eval(evalPublicStr);
                     zx = 最新2.call(parse, MY_URL) || "";
-                    zx = jkdata.name + " | " + (zx||"");
                 }catch(e){
-                    zx = jkdata.name + " | 解析获取失败";
+                    zx = "解析获取失败";
                     xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
                 }
             }else if(parse['二级']){
-                zx = jkdata.name + " | 作者没写最新"
+                zx = "作者没写最新"
             }
             resolve(zx);
         //}, 3000);

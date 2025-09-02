@@ -50,8 +50,8 @@ function bookCase() {
                 let extraData = JSON.parse(it.extraData || '{}');
                 let params = JSON.parse(it.params);
                 let extra = JSON.parse(params['params'] || '{}');
-                delete extra['extstr'];
-                xlog(extra);
+                extra['data'] = extra['data'] || {};
+                delete extra['data']['extstr'];
                 let obj = {
                     type: it.mITitle,
                     title: it.mTitle,
@@ -64,6 +64,7 @@ function bookCase() {
                     lastChapter: extraData.lastChapterStatus || "",
                     lastClick: it.lastClick?it.lastClick.split('@@')[0]:""
                 }
+                xlog(obj);
                 obj.id = getCaseID(obj);
                 Julist.push(obj);
             }catch(e){

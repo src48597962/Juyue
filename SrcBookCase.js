@@ -118,7 +118,6 @@ function bookCase() {
         let obj = convertData(item, listcol, sjType);
         if(obj){
             datalist.push(obj);
-            //id: md5(item.title+(item.params.url+'').split('&')[0])
         }
     })
     storage0.putMyVar('收藏书架列表', datalist);
@@ -337,8 +336,54 @@ function bookCase() {
         }
     })
     setResult(d);
-
+    // 异步更新最新
+    /*
+    Julist.forEach(item=>{
+        Async(item)
+            .then((a) => {
+                log('动态更新')
+                updateItem('1', {
+                    title: a
+                });
+            })
+            .catch((e) => {
+                updateItem('1', {
+                    title: e.message
+                });
+            });
+        let obj = convertData(item, listcol, sjType);
+        if(obj){
+            datalist.push(obj);
+            //id: md5(item.title+(item.params.url+'').split('&')[0])
+        }
+    })
+    */
+    Async(Julist[0])
+            .then((a) => {
+                updateItem('1', {
+                    title: a
+                });
+            })
+            .catch((e) => {
+                updateItem('1', {
+                    title: e.message
+                });
+            });
+    
 }
+// 异步更新书架列表最新
+function Async(item) {
+    return new Promise((resolve, reject) => {
+        xlog(item);
+        let uu = '1';
+        if (uu) {
+            resolve(`操作成功！数据: ${data}`);
+        } else {
+            reject(new Error(`操作失败！数据: ${data}`));
+        }
+    });
+}
+
 // 书架搜索筛选
 function casesousuo(input) {
     deleteItemByCls("caselist");
@@ -432,15 +477,4 @@ function convertData(item, listcol, sjType){
         xlog("书架列表生成异常>"+e.message + ' 错误行#' + e.lineNumber);
     }
     return;
-}
-// 异步更新书架列表最新
-function Async(data) {
-  return new Promise((resolve, reject) => {
-    let uu = fetch('https://www.zhenlang.cc/')
-    if (uu) {
-      resolve(`操作成功！数据: ${data}`);
-    } else {
-      reject(new Error(`操作失败！数据: ${data}`));
-    }
-  });
 }

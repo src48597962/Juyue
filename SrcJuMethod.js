@@ -762,6 +762,10 @@ function searchRecord(lx, input) {
     }
     return;
 }
+//获取case数据id
+function caseItemId(item) {
+    return md5(item.title+(item.params.url+'').split('&')[0].split('#')[0]);
+}
 // 加入聚阅收藏书架方法
 function addBookCase(obj, update) {
     if(!obj){
@@ -789,12 +793,12 @@ function addBookCase(obj, update) {
         let casefile = 'hiker://files/rules/Src/Juyue/case.json';
         eval('let caselist = ' + (fetch(casefile)||'[]'));
         if(update){
-            if(!caselist.some(v=>v.params.url.split('@')[0]==obj.params.url.split('@')[0]&&v.title==obj.title)){
+            if(!caselist.some(v=>caseItemId(v)==caseItemId(obj))){
                 return;
             }
         }
 
-        let index = caselist.findIndex(v => v.params.url.split('@')[0]==obj.params.url.split('@')[0]&&v.title==obj.title);
+        let index = caselist.findIndex(v => caseItemId(v)==caseItemId(obj));
         if(index>-1){
             caselist.splice(index, 1);
         }
@@ -805,6 +809,7 @@ function addBookCase(obj, update) {
         return 'toast://失败>'+e.message;
     }
 }
+
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

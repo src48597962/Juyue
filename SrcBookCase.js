@@ -346,8 +346,8 @@ function bookCase() {
                     let obj = convertData(item, listcol, sjType);
                     if(obj){
                         updateItem(md5(item.title+(item.params.url+'').split('&')[0]), {
-                            title: obj.title,
-                            desc: obj.desc+`““””<span style="color: red">●`
+                            title: obj.title+`““””<span style="color: red">●`,
+                            desc: obj.desc
                         });
                     }
                 }

@@ -362,6 +362,7 @@ function bookCase() {
                     eval("let 最新2 = " + 最新str);
                     try{
                         eval(evalPublicStr);
+                        let MY_PARAMS = extra;
                         zx = 最新2.call(parse, MY_URL) || "";
                     }catch(e){
                         zx = "解析获取失败";

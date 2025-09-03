@@ -422,6 +422,7 @@ function bookCase() {
                             title: `●`+obj.title,
                             desc: obj.desc
                         });
+                        xlog('单线执行'+item.id);
                     }
                 }
                 // 返回当前结果，供Promise.all()收集
@@ -431,9 +432,10 @@ function bookCase() {
     })  
     // 等待所有异步操作完成后再处理结果
     Promise.all(promises)
-        .then(() => {
+        .then((results) => {
             // 所有异步操作都已完成，asyncResult已收集完整
-            xlog(promises);
+            xlog('所有结果');
+            xlog(results);
             // 可以在这里进行后续处理
         })
 }

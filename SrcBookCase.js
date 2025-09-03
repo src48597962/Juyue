@@ -396,6 +396,7 @@ function bookCase() {
         Promise.all(promises)
             .then((results) => {
                 addBookCase(results.filter(v=>v), true);
+                xlog('收藏书架列表最新和足迹更新结束');
             })
     }
 }

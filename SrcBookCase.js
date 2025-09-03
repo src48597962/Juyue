@@ -186,7 +186,7 @@ function bookCase() {
         url: $('#noLoading#').lazyRule(() => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
-            hikerPop.selectBottomSettingMenu({options: [SettingItem("我的主页自定义"), SettingItem(), SettingItem("小程序新窗口打开", "默认"), SettingItem("跟随系统深色模式", true), SettingItem("收藏继续播放提示", true, "播放器")], click(s, officeItem, change) {
+            hikerPop.selectBottomSettingMenu({options: [SettingItem("我的主页自定义"), SettingItem(), SettingItem("小程序新窗口打开", "默认"), SettingItem("跟随系统深色模式", true), SettingItem("收藏继续播放提示", "播放器", true)], click(s, officeItem, change) {
                 if ("我的主页自定义" == s) {
                     return "toast://" + s;
                 }
@@ -198,7 +198,7 @@ function bookCase() {
                 }
                 change();
             }, onDismiss() {
-                refreshPage();
+                //refreshPage();
             }});
             return "hiker://empty";
         })/*$(case_cols, 1, '选择列表样式').select(() => {

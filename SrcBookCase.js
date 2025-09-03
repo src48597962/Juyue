@@ -182,11 +182,17 @@ function bookCase() {
         case_cols.push('icon_1_left_pic');
     }
     d.push({
-        title: '切换样式',
+        title: '收藏设置',
         url: $('#noLoading#').lazyRule(() => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
-            hikerPop.selectBottomSettingMenu({options: [SettingItem("我的主页自定义"), SettingItem(), SettingItem("小程序新窗口打开", "默认"), SettingItem("跟随系统深色模式", true), SettingItem("收藏继续播放提示", "播放器", true)], click(s, officeItem, change) {
+            let setItems = [
+                SettingItem("列表/书架样式", listcol), 
+                SettingItem("自动获取更新时机", "默认"), 
+                SettingItem("退出重置为软件收藏", true), 
+                SettingItem("聚阅收藏需要生物锁", true)
+            ]
+            hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if ("我的主页自定义" == s) {
                     return "toast://" + s;
                 }

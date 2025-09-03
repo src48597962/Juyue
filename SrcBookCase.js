@@ -419,8 +419,8 @@ function bookCase() {
                     let obj = convertItem(item, listcol, sjType);
                     if(obj){
                         updateItem(item.id, {
-                            title: `●`+obj.title,
-                            desc: obj.desc
+                            title: obj.title,
+                            desc: obj.desc+`●`
                         });
                         xlog('单线执行'+item.id);
                     }
@@ -433,10 +433,7 @@ function bookCase() {
     // 等待所有异步操作完成后再处理结果
     Promise.all(promises)
         .then((results) => {
-            // 所有异步操作都已完成，asyncResult已收集完整
-            xlog('所有结果');
-            xlog(results);
-            // 可以在这里进行后续处理
+            addBookCase(results, true);
         })
 }
 

@@ -48,7 +48,7 @@ function bookCase() {
         d = [];
         putMyVar('书架动态加载loading', '1');
     }
-    xlog('a1');
+    
     let sjType = MY_NAME=="海阔视界"?getItem("切换收藏列表", "软件收藏"):"聚阅收藏";
     let Julist = [];
     if(sjType=="软件收藏"){
@@ -83,14 +83,13 @@ function bookCase() {
         if(getItem("聚阅收藏加锁")=="1" && getMyVar('SrcJu_已验证指纹')!='1'){
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
             if (hikerPop.canBiometric() !== 0) {
-                return "toast://调用生物学验证出错";
+                toast("调用生物学验证出错");
             }
             let pop = hikerPop.checkByBiometric(() => {
                 putMyVar('SrcJu_已验证指纹','1');
                 refreshPage(false);
             });
         }else{
-            xlog('a');
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile) || '[]'));
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
@@ -121,7 +120,6 @@ function bookCase() {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
                 }
             })
-            xlog('b');
         }
     }
 
@@ -179,7 +177,7 @@ function bookCase() {
         }
         d.push(Top_H5("90", topimg));
     }
-    xlog('1');
+
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
         title: '本地下载',
@@ -266,7 +264,7 @@ function bookCase() {
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
         col_type: "icon_small_3"
     });
-    xlog('2');
+
     let Color = getItem('主题颜色','#3399cc');
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
@@ -370,7 +368,6 @@ function bookCase() {
         }
     })
     setResult(d);
-    xlog('3');
     if(!getMyVar('执行书架异步更新') || getMyVar('书架异步更新下滑')){
         putMyVar('执行书架异步更新', '1');
         clearMyVar('书架异步更新下滑');

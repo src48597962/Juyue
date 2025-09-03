@@ -193,11 +193,12 @@ function bookCase() {
     d.push({
         title: '设置菜单',
         url: $('#noLoading#').lazyRule((case_cols) => {
+            let updatetimings = ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"];
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
-                SettingItem("自动获取更新时机", "默认"), 
+                SettingItem("自动获取更新时机", updatetimings[juItem2.get("bookCase_UpdateTiming", 1)]), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
             ]
             if(MY_NAME=="海阔视界"){
@@ -212,7 +213,7 @@ function bookCase() {
                         return "toast://选择了:" + a;
                     }});
                 }else if (s=="自动获取更新时机") {
-                    hikerPop.selectBottomMark({options: ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"], position: juItem2.get("bookCase_UpdateTiming", 1), click(a,i) {
+                    hikerPop.selectBottomMark({options: updatetimings, position: juItem2.get("bookCase_UpdateTiming", 1), click(a,i) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_UpdateTiming", i);
                         change();

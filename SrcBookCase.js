@@ -385,11 +385,10 @@ function bookCase() {
                                 title: obj.title,
                                 desc: obj.desc
                             });
-                            // 返回当前结果，供Promise.all()收集
-                            return {id: item.id, lastChapter: zx, lastClick: item.lastClick};
                         }
                     }
-                    return '';
+                    // 返回当前结果，供Promise.all()收集
+                    return {id: item.id, lastChapter: zx, lastClick: item.lastClick};
                 })
             promises.push(promise);
         })  

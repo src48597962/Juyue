@@ -575,7 +575,10 @@ function getObjCode(jkdata, key) {
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + (parse['模板'].name||''));
                 }
-                xlog('当前源：' + jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
+                if(getMyVar('调用模板'+jkdata.id)){
+                    putMyVar('调用模板'+jkdata.id, '1');
+                    xlog('当前源：' + jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
+                }
                 if(parse['模板'].name){
                     parse['模板名'] = parse['模板'].name;
                 }

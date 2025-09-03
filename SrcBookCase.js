@@ -190,7 +190,7 @@ function bookCase() {
                 SettingItem("列表/书架样式", listcol), 
                 SettingItem("自动获取更新时机", "默认"), 
                 SettingItem("退出重置为软件收藏", getItem("退出重置收藏")=="1"?true:false), 
-                SettingItem("聚阅收藏需要生物锁", false)
+                SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
             ]
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {

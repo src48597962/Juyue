@@ -182,7 +182,7 @@ function bookCase() {
         case_cols.push('icon_1_left_pic');
     }
     d.push({
-        title: '收藏设置',
+        title: '设置菜单',
         url: $('#noLoading#').lazyRule((listcol) => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;

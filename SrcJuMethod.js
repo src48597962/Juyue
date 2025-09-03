@@ -373,25 +373,6 @@ function getYiData(datatype, jkdata, dd) {
             MY_URL = parse['host'];
         }
         if(parse[datatype]){
-            if(datatype=='主页' && parse['聚合搜索'] && page==1){
-                //有聚合搜索
-                d.push({
-                    title: "🔍",
-                    url: $.toString((jkdata) => {
-                        let parse = $.require("jiekou?rule="+MY_RULE.title).parse(jkdata);
-                        setResult([{
-                            title: "点我一下，视界聚搜",
-                            url: "hiker://search?s=" + input,
-                            extra: {
-                                delegateOnlySearch: true,
-                                rules: parse['聚合搜索'](input)
-                            }
-                        }])
-                    }, jkdata),
-                    desc: "",
-                    col_type: "input"
-                });
-            }
             let 执行str = (parse[datatype]||"").toString();
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
@@ -466,8 +447,15 @@ function getYiData(datatype, jkdata, dd) {
     }
     setResult(d);
     if(datatype=="主页"){
-        if(!parse['搜索'] || parse['聚合搜索']){// || (parse['主页']||'').toString().includes('getVar("keyword", "")')
+        if(!parse['搜索']){// || (parse['主页']||'').toString().includes('getVar("keyword", "")')
             deleteItem('homesousuoid');
+        }
+        if(parse['聚合搜索'] && page==1){
+            updateItem('homesousuoid', {
+                url: $.toString(() => {
+                    return 'hiker://search?s='+input+'  聚合搜索&rule='+MY_RULE.title;
+                })
+            });
         }
         if(sourcemenu.length==0){
             updateItem("sourcemenu", {

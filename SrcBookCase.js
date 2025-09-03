@@ -183,11 +183,11 @@ function bookCase() {
     }
     d.push({
         title: '设置菜单',
-        url: $('#noLoading#').lazyRule((listcol) => {
+        url: $('#noLoading#').lazyRule(() => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
-                SettingItem("列表/书架样式", listcol), 
+                SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
                 SettingItem("自动获取更新时机", "默认"), 
                 SettingItem("退出重置为软件收藏", getItem("退出重置收藏")=="1"?true:false), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
@@ -206,13 +206,13 @@ function bookCase() {
                     officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }else if (s=="聚阅收藏需要生物锁") {
                     if(getItem("聚阅收藏加锁")=="1"){
-                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
                         if (hikerPop.canBiometric() !== 0) {
-                            return "toast://无法调用生物学验证";
-                        }else{
+                            return "toast://调用生物学验证出错";
+                        }
+                        let pop = hikerPop.checkByBiometric(() => {
                             clearItem("聚阅收藏加锁");
                             officeItem.setSelected(-1);
-                        }
+                        });
                     }else{
                         setItem("聚阅收藏加锁", "1");
                         officeItem.setSelected(1);
@@ -223,7 +223,7 @@ function bookCase() {
                 //refreshPage();
             }});
             return "hiker://empty";
-        }, listcol)/*$(case_cols, 1, '选择列表样式').select(() => {
+        })/*$(case_cols, 1, '选择列表样式').select(() => {
             juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';

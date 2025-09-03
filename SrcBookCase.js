@@ -349,92 +349,36 @@ function bookCase() {
         }
     })
     setResult(d);
-/*
-        let task = function (item) {
-            return (function() {
-                let zx;
-                try {
-                    let extra = item.params.params;
-                    let jkdata = extra['data'] || {};
-                    let parse = getObjCode(jkdata, 'zx');
-                    xlog(MY_PARAMS)
-                    const MY_PARAMS2 = MY_PARAMS;
-                    if (parse['最新']) {
-                        //MY_URL = extra.url;
-                        MY_PARAMS = extra;
-                        let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
-                        eval("let 最新2 = " + 最新str);
-
-                        eval(evalPublicStr);
-
-                        zx = 最新2.call(parse, extra.url) || "";
-
-                    } else if (parse['二级']) {
-                        zx = "作者没写最新"
+    if(!getMyVar('执行异步更新')){
+        putMyVar('执行异步更新', '1');
+        // 收集所有异步操作的Promise
+        let promises = [];
+        // 异步更新最新
+        Julist.forEach(item=>{
+            const promise = Async(item)
+                .then((zx) => {
+                    if(zx && zx!=item.lastChapter){
+                        item.lastChapter = zx;
+                        let obj = convertItem(item, listcol, sjType);
+                        if(obj){
+                            updateItem(item.id, {
+                                title: obj.title,
+                                desc: obj.desc+`●`
+                            });
+                            // 返回当前结果，供Promise.all()收集
+                            return {id: item.id, lastChapter: zx, lastClick: item.lastClick};
+                        }
                     }
-                    MY_PARAMS = MY_PARAMS2;
-                    xlog(MY_PARAMS)
-                } catch (e) {
-                    zx = "解析获取失败";
-                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message + ' 错误行#' + e.lineNumber);
-                }
-                return {lastChapter: zx, lastClick: item.lastClick, item: item};
-            })();
-        }
-        let list = Julist.map((item) => {
-            return {
-                func: task,
-                param: item,
-                id: md5(item.title+(item.params.url+'').split('&')[0])
-            }
-        });
-        let taskResults = [];
-        be(list, {
-            func: function (obj, id, error, result) {
-                taskResults.push({id: id, lastChapter: result.lastChapter, lastClick: result.lastClick})
-                let item = result.item;
-                if(result.lastChapter && result.lastChapter!=item.lastChapter){
-                    item.lastChapter = result.lastChapter;
-                    let obj = convertItem(item, listcol, sjType);
-                    if(obj){
-                        updateItem(id, {
-                            title: obj.title,
-                            desc: obj.desc
-                        });
-                    }
-                }
-            },
-            param: {
-            }
-        });
-        */
-    // 收集所有异步操作的Promise
-    let promises = [];
-    // 异步更新最新
-    Julist.forEach(item=>{
-        const promise = Async(item)
-            .then((zx) => {
-                if(zx && zx!=item.lastChapter){
-                    item.lastChapter = zx;
-                    let obj = convertItem(item, listcol, sjType);
-                    if(obj){
-                        updateItem(item.id, {
-                            title: obj.title,
-                            desc: obj.desc+`●`
-                        });
-                        xlog('单线执行'+item.id);
-                    }
-                }
-                // 返回当前结果，供Promise.all()收集
-                return {id: item.id, lastChapter: zx, lastClick: item.lastClick};
+                    return '';
+                })
+            promises.push(promise);
+        })  
+        // 等待所有异步操作完成后再处理结果
+        Promise.all(promises)
+            .then((results) => {
+                addBookCase(results.filter(v=>v), true);
             })
-        promises.push(promise);
-    })  
-    // 等待所有异步操作完成后再处理结果
-    Promise.all(promises)
-        .then((results) => {
-            addBookCase(results, true);
-        })
+    }
 }
 
 // 异步更新书架列表最新

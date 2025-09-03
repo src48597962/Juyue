@@ -358,6 +358,7 @@ function bookCase() {
                     let jkdata = extra['data'] || {};
                     let parse = getObjCode(jkdata, 'zx');
                     xlog(MY_PARAMS)
+                    const MY_PARAMS2 = MY_PARAMS;
                     if (parse['最新']) {
                         //MY_URL = extra.url;
                         MY_PARAMS = extra;
@@ -371,6 +372,7 @@ function bookCase() {
                     } else if (parse['二级']) {
                         zx = "作者没写最新"
                     }
+                    MY_PARAMS = MY_PARAMS2;
                     xlog(MY_PARAMS)
                 } catch (e) {
                     zx = "解析获取失败";

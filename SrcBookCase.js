@@ -349,7 +349,7 @@ function bookCase() {
         }
     })
     setResult(d);
-
+/*
         let task = function (item) {
             return (function() {
                 let zx;
@@ -407,6 +407,52 @@ function bookCase() {
             param: {
             }
         });
+        */
+        // 异步更新最新
+    Julist.forEach(item=>{
+        Async(item)
+            .then((a) => {
+                if(a && a!=item.lastChapter){
+                    xlog(a);
+                    item.lastChapter = a;
+                    let obj = convertItem(item, listcol, sjType);
+                    if(obj){
+                        updateItem(item.id, {
+                            title: `●`+obj.title,
+                            desc: obj.desc
+                        });
+                    }
+                }
+            })
+    })  
+}
+
+// 异步更新书架列表最新
+function Async(item) {
+    return new Promise((resolve) => {
+        //收藏更新最新章节
+        //setTimeout(() => {
+            let extra = item.params.params;
+            let jkdata = extra['data'] || {};
+            let parse = getObjCode(jkdata, 'zx');
+            let zx;
+            if (parse['最新']) {
+                let MY_URL = extra.url;
+                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                eval("let 最新2 = " + 最新str);
+                try{
+                    eval(evalPublicStr);
+                    zx = 最新2.call(parse, MY_URL) || "";
+                }catch(e){
+                    zx = "解析获取失败";
+                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                }
+            }else if(parse['二级']){
+                zx = "作者没写最新"
+            }
+            resolve(zx);
+        //}, 3000);
+    });
 }
 
 // 书架搜索筛选

@@ -206,14 +206,17 @@ function bookCase() {
                     officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }else if (s=="聚阅收藏需要生物锁") {
                     if(getItem("聚阅收藏加锁")=="1"){
+                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
                         if (hikerPop.canBiometric() !== 0) {
                             return "toast://无法调用生物学验证";
+                        }else{
+                            clearItem("聚阅收藏加锁");
+                            officeItem.setSelected(-1);
                         }
-                        clearItem("聚阅收藏加锁");
                     }else{
                         setItem("聚阅收藏加锁", "1");
+                        officeItem.setSelected(1);
                     }
-                    officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }
                 change();
             }, onDismiss() {

@@ -408,25 +408,38 @@ function bookCase() {
             }
         });
         */
+    // 收集所有异步操作的Promise
+    let promises = [];
     let asyncResult = [];
     // 异步更新最新
     Julist.forEach(item=>{
-        Async(item)
+        const promise = Async(item)
             .then((zx) => {
                 if(zx && zx!=item.lastChapter){
                     item.lastChapter = zx;
                     let obj = convertItem(item, listcol, sjType);
                     if(obj){
-                        asyncResult.push({id: item.id, lastChapter: zx, lastClick: item.lastClick});
                         updateItem(item.id, {
                             title: `●`+obj.title,
                             desc: obj.desc
                         });
                     }
                 }
+                // 返回当前结果，供Promise.all()收集
+                return {id: item.id, lastChapter: zx, lastClick: item.lastClick};
             })
+        promises.push(promise);
     })  
-    xlog(asyncResult);
+    // 等待所有异步操作完成后再处理结果
+    Promise.all(promises)
+        .then(() => {
+            // 所有异步操作都已完成，asyncResult已收集完整
+            xlog("所有异步操作完成，结果:", asyncResult);
+            // 可以在这里进行后续处理
+        })
+        .catch(error => {
+            xlog("异步操作出错:", error);
+        });
 }
 
 // 异步更新书架列表最新

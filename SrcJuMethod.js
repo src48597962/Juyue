@@ -809,6 +809,8 @@ function addBookCase(obj, update) {
                 if(index>-1){
                     it = Object.assign({}, caselist[index], it);
                     caselist.splice(index, 1);
+                }else{
+                    return;//更新时，本地没有的跳过
                 }
             }
             caselist.unshift(it);

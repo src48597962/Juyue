@@ -200,13 +200,19 @@ function bookCase() {
                 }else if (s=="退出重置为软件收藏") {
                     if(getItem("退出重置收藏")=="1"){
                         clearItem("退出重置收藏");
-                        officeItem.setSelected(officeItem.getSelected() === 1);
                     }else{
                         setItem("退出重置收藏", "1");
-                        officeItem.setSelected(officeItem.getSelected() === -1);
                     }
+                    officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }else if (s=="聚阅收藏需要生物锁") {
-
+                    if(getItem("聚阅收藏加锁")=="1"){
+                        if (hikerPop.canBiometric() !== 0) {
+                            return "toast://无法调用生物学验证";
+                        }
+                        clearItem("聚阅收藏加锁");
+                    }else{
+                        setItem("聚阅收藏加锁", "1");
+                    }
                     officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }
                 change();

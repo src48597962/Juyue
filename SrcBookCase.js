@@ -236,7 +236,7 @@ function bookCase() {
                 //refreshPage();
             }});
             return "hiker://empty";
-        }, case_cols, case_cols.indexOf(colindex))/*$(case_cols, 1, '选择列表样式').select(() => {
+        }, case_cols, case_cols.indexOf(listcol))/*$(case_cols, 1, '选择列表样式').select(() => {
             juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';

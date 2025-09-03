@@ -197,6 +197,7 @@ function bookCase() {
             }
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
+                    officeItem.setDesc('111');
                     hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(a) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_col_type", a);

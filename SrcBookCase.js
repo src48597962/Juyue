@@ -197,9 +197,8 @@ function bookCase() {
             }
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
-                    officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
                     hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(a) {
-                        officeItem.setDesc(a);
+                        officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
                         juItem2.set("bookCase_col_type", a);
                         return "toast://选择了:" + a;
                     }});

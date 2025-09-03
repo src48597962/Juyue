@@ -434,12 +434,9 @@ function bookCase() {
     Promise.all(promises)
         .then(() => {
             // 所有异步操作都已完成，asyncResult已收集完整
-            xlog("所有异步操作完成，结果:", asyncResult);
+            xlog(asyncResult);
             // 可以在这里进行后续处理
         })
-        .catch(error => {
-            xlog("异步操作出错:", error);
-        });
 }
 
 // 异步更新书架列表最新

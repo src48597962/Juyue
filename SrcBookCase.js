@@ -177,7 +177,7 @@ function bookCase() {
         }
         d.push(Top_H5("90", topimg));
     }
-    
+    xlog('1');
     let sjIcons = getThemeList(true)['书架图标'];
     d.push({
         title: '本地下载',
@@ -264,7 +264,7 @@ function bookCase() {
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
         col_type: "icon_small_3"
     });
-
+    xlog('2');
     let Color = getItem('主题颜色','#3399cc');
     typebtn.unshift("全部");
     typebtn.forEach(it =>{
@@ -368,6 +368,7 @@ function bookCase() {
         }
     })
     setResult(d);
+    xlog('3');
     if(!getMyVar('执行书架异步更新') || getMyVar('书架异步更新下滑')){
         putMyVar('执行书架异步更新', '1');
         clearMyVar('书架异步更新下滑');

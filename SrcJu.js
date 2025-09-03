@@ -1567,8 +1567,13 @@ function sousuo() {
             delegateOnlySearch: true,
             rules: $.toString((name) => {
                 let info = storage0.getMyVar('一级源接口信息') || {};
+                let keyword = name.split('  ')[0].trim();
                 let keyword2;
                 if(name.indexOf('  ')>-1){
+                    if(name.split('  ')[1].trim()=='聚合搜索'){
+                        let parse = getObjCode(info, 'ss');
+                        return parse['聚合搜索'](keyword);
+                    }
                     keyword2 = name.split('  ')[1].trim() || info.name;
                 }
 
@@ -1601,7 +1606,6 @@ function sousuo() {
                     //xlog(e.message);
                 }
 
-                let keyword = name.split('  ')[0].trim();
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     judata.push({

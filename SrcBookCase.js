@@ -359,8 +359,8 @@ function bookCase() {
                     let parse = getObjCode(jkdata, 'zx');
 
                     if (parse['最新']) {
-                        let MY_URL = extra.url;
-                        let MY_PARAMS = extra;
+                        MY_URL = extra.url;
+                        MY_PARAMS = extra;
                         let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
                         eval("let 最新2 = " + 最新str);
 

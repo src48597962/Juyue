@@ -189,17 +189,24 @@ function bookCase() {
             let setItems = [
                 SettingItem("列表/书架样式", listcol), 
                 SettingItem("自动获取更新时机", "默认"), 
-                SettingItem("退出重置为软件收藏", true), 
-                SettingItem("聚阅收藏需要生物锁", true)
+                SettingItem("退出重置为软件收藏", getItem("退出重置收藏")?true:false), 
+                SettingItem("聚阅收藏需要生物锁", false)
             ]
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
-                if ("我的主页自定义" == s) {
+                if (s=="列表/书架样式") {
                     return "toast://" + s;
-                }
-                if ("小程序新窗口打开" == s) {
+                }else if (s=="自动获取更新时机") {
                     officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
-                }
-                if ("跟随系统深色模式" == s || "收藏继续播放提示" == s) {
+                }else if (s=="退出重置为软件收藏") {
+                    if(getItem("退出重置收藏")=="1"){
+                        clearItem("退出重置收藏");
+                        officeItem.setSelected(officeItem.getSelected() === 1);
+                    }else{
+                        setItem("退出重置收藏", "1");
+                        officeItem.setSelected(officeItem.getSelected() === -1);
+                    }
+                }else if (s=="聚阅收藏需要生物锁") {
+
                     officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }
                 change();

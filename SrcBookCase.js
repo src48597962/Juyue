@@ -395,7 +395,9 @@ function bookCase() {
         // 等待所有异步操作完成后再处理结果
         Promise.all(promises)
             .then((results) => {
-                addBookCase(results.filter(v=>v).reverse(), true);
+                if(sjType=="聚阅收藏"){
+                    addBookCase(results.filter(v=>v).reverse(), true);
+                }
                 xlog('收藏书架列表最新、足迹更新完成');
             })
     }

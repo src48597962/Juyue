@@ -90,6 +90,7 @@ function bookCase() {
                 refreshPage(false);
             });
         }else{
+            xlog('a');
             let casefile = rulepath + 'case.json';
             eval('let caselist = ' + (fetch(casefile) || '[]'));
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
@@ -97,7 +98,7 @@ function bookCase() {
 
             caselist.forEach(it => {
                 try {
-                    it.id = getCaseID(it);
+                    it.id = it.id || getCaseID(it);
                     let his = history.filter((v) => {
                         return v.title==it.title;
                     }).filter((v) => {
@@ -120,6 +121,7 @@ function bookCase() {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
                 }
             })
+            xlog('b');
         }
     }
 

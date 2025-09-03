@@ -11,10 +11,18 @@ function bookCase() {
         clearMyVar('收藏书架列表');
         clearMyVar('收藏书架搜索标识');
         clearMyVar('收藏书架搜索框');
+        if(juItem2.get("bookCase_UpdateTiming")==0){
+            clearMyVar('执行书架异步更新');
+        }
     }));
 
     setPageTitle('收藏|书架');
     putMyVar('从书架进二级','1');
+    if(juItem2.get("bookCase_UpdateTiming")==2){
+        addListener("onRefresh", $.toString(() => {
+            putMyVar('书架异步更新下滑', '1');
+        }));
+    }
     let d = [];
     if (typeof (setPreResult) != "undefined" && getMyVar('书架动态加载loading') != '1'){
         for(let i=0;i<4;i++){
@@ -207,6 +215,7 @@ function bookCase() {
                     hikerPop.selectBottomMark({options: ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"], position: juItem2.get("bookCase_UpdateTiming", 1), click(a,i) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_UpdateTiming", i);
+                        change();
                         return "toast://选择了:" + a;
                     }});
                 }else if (s=="退出重置为软件收藏") {
@@ -235,51 +244,11 @@ function bookCase() {
                 refreshPage();
             }});
             return "hiker://empty";
-        }, case_cols)/*$(case_cols, 1, '选择列表样式').select(() => {
-            juItem2.set("bookCase_col_type", input);
-            refreshPage(false);
-            return 'hiker://empty';
-        })*/,
+        }, case_cols),
         img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
         col_type: "icon_small_3"
     });
-    let longClick = [];
-    if(MY_NAME=="海阔视界"){
-        longClick.push({
-            title: "退出重置收藏"+(getItem("退出重置收藏")=="1"?"√":""),
-            js: $.toString(() => {
-                let sm;
-                if(getItem("退出重置收藏")=="1"){
-                    clearItem("退出重置收藏");
-                    sm = '取消退出重置收藏';
-                }else{
-                    setItem("退出重置收藏", "1");
-                    sm = '开启退出重置收藏';
-                }
-                refreshPage();
-                return 'toast://' + sm;
-            })
-        })
-    }
-    longClick.push({
-        title: "聚阅收藏加锁"+(getItem("聚阅收藏加锁")=="1"?"√":""),
-        js: $.toString(() => {
-            let sm;
-            if(getItem("聚阅收藏加锁")=="1"){
-                const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
-                if (hikerPop.canBiometric() !== 0) {
-                    return "toast://无法调用生物学验证";
-                }
-                clearItem("聚阅收藏加锁");
-                sm = '取消聚阅收藏加锁';
-            }else{
-                setItem("聚阅收藏加锁", "1");
-                sm = '开启聚阅收藏加锁';
-            }
-            refreshPage();
-            return 'toast://' + sm;
-        })
-    })
+    
     d.push({
         title: sjType,
         url: $('#noLoading#').lazyRule(() => {
@@ -292,10 +261,7 @@ function bookCase() {
             return 'hiker://empty';
         }),
         img: getIcon(sjIcons[2].img, false, sjIcons[2].color),
-        col_type: "icon_small_3",
-        extra: {
-            longClick: longClick
-        }
+        col_type: "icon_small_3"
     });
 
     let Color = getItem('主题颜色','#3399cc');
@@ -401,8 +367,9 @@ function bookCase() {
         }
     })
     setResult(d);
-    if(!getMyVar('执行异步更新')){
-        putMyVar('执行异步更新', '1');
+    if(!getMyVar('执行书架异步更新') || getMyVar('书架异步更新下滑')){
+        putMyVar('执行书架异步更新', '1');
+        clearMyVar('书架异步更新下滑');
         // 收集所有异步操作的Promise
         let promises = [];
         // 异步更新最新

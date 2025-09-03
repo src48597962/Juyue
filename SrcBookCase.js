@@ -55,26 +55,28 @@ function bookCase() {
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
         collection.forEach(it => {
             try{
-                let extraData = JSON.parse(it.extraData || '{}');
-                let params = JSON.parse(it.params);
-                let extra = JSON.parse(params['params'] || '{}');
-                extra['data'] = extra['data'] || {};
-                delete extra['data']['extstr'];
-                delete extra['longClick'];
-                let obj = {
-                    type: it.mITitle,
-                    title: it.mTitle,
-                    picUrl: it.picUrl,
-                    params: {
-                        url: params.url.split(';')[0],
-                        find_rule: params.find_rule,
-                        params: extra
-                    },
-                    lastChapter: extraData.lastChapterStatus || "",
-                    lastClick: it.lastClick?it.lastClick.split('@@')[0]:""
+                if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
+                    let extraData = JSON.parse(it.extraData || '{}');
+                    let params = JSON.parse(it.params);
+                    let extra = JSON.parse(params['params'] || '{}');
+                    extra['data'] = extra['data'] || {};
+                    delete extra['data']['extstr'];
+                    delete extra['longClick'];
+                    let obj = {
+                        type: it.mITitle,
+                        title: it.mTitle,
+                        picUrl: it.picUrl,
+                        params: {
+                            url: params.url.split(';')[0],
+                            find_rule: params.find_rule,
+                            params: extra
+                        },
+                        lastChapter: extraData.lastChapterStatus || "",
+                        lastClick: it.lastClick?it.lastClick.split('@@')[0]:""
+                    }
+                    obj.id = getCaseID(obj);
+                    Julist.push(obj);
                 }
-                obj.id = getCaseID(obj);
-                Julist.push(obj);
             }catch(e){
                 xlog("软件收藏列表加载异常>"+e.message + ' 错误行#' + e.lineNumber);
             }

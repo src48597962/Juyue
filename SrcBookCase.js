@@ -183,11 +183,29 @@ function bookCase() {
     }
     d.push({
         title: '切换样式',
-        url: $(case_cols, 1, '选择列表样式').select(() => {
+        url: $('#noLoading#').lazyRule(() => {
+            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+            let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
+            hikerPop.selectBottomSettingMenu({options: [SettingItem("我的主页自定义"), SettingItem(), SettingItem("小程序新窗口打开", "默认"), SettingItem("跟随系统深色模式", true), SettingItem("收藏继续播放提示", true, "播放器")], click(s, officeItem, change) {
+                if ("我的主页自定义" == s) {
+                    return "toast://" + s;
+                }
+                if ("小程序新窗口打开" == s) {
+                    officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
+                }
+                if ("跟随系统深色模式" == s || "收藏继续播放提示" == s) {
+                    officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
+                }
+                change();
+            }, onDismiss() {
+                refreshPage();
+            }});
+            return "hiker://empty";
+        })/*$(case_cols, 1, '选择列表样式').select(() => {
             juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';
-        }),
+        })*/,
         img: getIcon(sjIcons[1].img, false, sjIcons[1].color),
         col_type: "icon_small_3"
     });
@@ -363,7 +381,7 @@ function bookCase() {
                         if(obj){
                             updateItem(item.id, {
                                 title: obj.title,
-                                desc: obj.desc+`●`
+                                desc: obj.desc
                             });
                             // 返回当前结果，供Promise.all()收集
                             return {id: item.id, lastChapter: zx, lastClick: item.lastClick};

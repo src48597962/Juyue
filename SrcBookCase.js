@@ -181,6 +181,7 @@ function bookCase() {
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
         case_cols.push('icon_1_left_pic');
     }
+    let case_updates = ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"];
     d.push({
         title: '设置菜单',
         url: $('#noLoading#').lazyRule(() => {
@@ -189,14 +190,26 @@ function bookCase() {
             let setItems = [
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
                 SettingItem("自动获取更新时机", "默认"), 
-                SettingItem("退出重置为软件收藏", getItem("退出重置收藏")=="1"?true:false), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
             ]
+            if(MY_NAME=="海阔视界"){
+                setItems.push(SettingItem("退出重置为软件收藏", getItem("退出重置收藏")=="1"?true:false));
+            }
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
-                    return "toast://" + s;
+                    hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(s) {
+                        officeItem.setDesc(s);
+                        juItem2.set("bookCase_col_type", s);
+                        return "toast://选择了:" + s;
+                    }});
+                    return "hiker://empty";
                 }else if (s=="自动获取更新时机") {
-                    officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
+                    hikerPop.selectBottomMark({options: case_updates, position: case_updates.indexOf(juItem2.get("bookCase_UpdateTiming", "每次打开收藏都更新")), click(s) {
+                        officeItem.setDesc(s);
+                        juItem2.set("bookCase_UpdateTiming", s);
+                        return "toast://选择了:" + s;
+                    }});
+                    return "hiker://empty";
                 }else if (s=="退出重置为软件收藏") {
                     if(getItem("退出重置收藏")=="1"){
                         clearItem("退出重置收藏");

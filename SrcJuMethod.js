@@ -808,9 +808,6 @@ function addBookCase(obj, update) {
                 let index = caselist.findIndex(v => (v.id||getCaseID(v))==it.id);
                 if(index>-1){
                     it = Object.assign({}, caselist[index], it);
-                    if(it.title.includes('杜鹃的婚约')){
-                        xlog(it);
-                    }
                     caselist.splice(index, 1);
                 }
             }

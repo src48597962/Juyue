@@ -181,10 +181,10 @@ function bookCase() {
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
         case_cols.push('icon_1_left_pic');
     }
-    let case_updates = ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"];
+    
     d.push({
         title: '设置菜单',
-        url: $('#noLoading#').lazyRule(() => {
+        url: $('#noLoading#').lazyRule((case_cols,colindex) => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
@@ -197,16 +197,16 @@ function bookCase() {
             }
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
-                    hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(s) {
+                    hikerPop.selectBottomMark({options: case_cols, position: colindex, click(s) {
                         officeItem.setDesc(s);
                         juItem2.set("bookCase_col_type", s);
                         return "toast://选择了:" + s;
                     }});
                     return "hiker://empty";
                 }else if (s=="自动获取更新时机") {
-                    hikerPop.selectBottomMark({options: case_updates, position: case_updates.indexOf(juItem2.get("bookCase_UpdateTiming", "每次打开收藏都更新")), click(s) {
+                    hikerPop.selectBottomMark({options: ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"], position: juItem2.get("bookCase_UpdateTiming", 1), click(s,i) {
                         officeItem.setDesc(s);
-                        juItem2.set("bookCase_UpdateTiming", s);
+                        juItem2.set("bookCase_UpdateTiming", i);
                         return "toast://选择了:" + s;
                     }});
                     return "hiker://empty";
@@ -236,7 +236,7 @@ function bookCase() {
                 //refreshPage();
             }});
             return "hiker://empty";
-        })/*$(case_cols, 1, '选择列表样式').select(() => {
+        }, case_cols, case_cols.indexOf(colindex))/*$(case_cols, 1, '选择列表样式').select(() => {
             juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';

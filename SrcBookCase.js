@@ -357,20 +357,21 @@ function bookCase() {
                     let extra = item.params.params;
                     let jkdata = extra['data'] || {};
                     let parse = getObjCode(jkdata, 'zx');
-
+                    xlog(MY_PARAMS)
                     if (parse['最新']) {
-                        MY_URL = extra.url;
+                        //MY_URL = extra.url;
                         MY_PARAMS = extra;
                         let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
                         eval("let 最新2 = " + 最新str);
 
                         eval(evalPublicStr);
 
-                        zx = 最新2.call(parse, MY_URL) || "";
+                        zx = 最新2.call(parse, extra.url) || "";
 
                     } else if (parse['二级']) {
                         zx = "作者没写最新"
                     }
+                    xlog(MY_PARAMS)
                 } catch (e) {
                     zx = "解析获取失败";
                     xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message + ' 错误行#' + e.lineNumber);

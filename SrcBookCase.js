@@ -471,11 +471,11 @@ function convertItem(item, listcol, sjType){
 
         if(sjType=="聚阅收藏"){
             extra.longClick = [{
-                title: "去除聚阅收藏",
+                title: "取消收藏",
                 js: $.toString((caseid) => {
                     let casefile = 'hiker://files/rules/Src/Juyue/case.json';
                     eval('let caselist = ' + (fetch(casefile)||'[]'));
-                    caselist = caselist.filter(item => getCaseID(item) != caseid);
+                    caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
                     writeFile(casefile, JSON.stringify(caselist));
                     refreshPage();
                 }, item.id)

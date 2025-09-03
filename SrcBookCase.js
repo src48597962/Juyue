@@ -410,7 +410,6 @@ function bookCase() {
         */
     // 收集所有异步操作的Promise
     let promises = [];
-    let asyncResult = [];
     // 异步更新最新
     Julist.forEach(item=>{
         const promise = Async(item)
@@ -434,7 +433,7 @@ function bookCase() {
     Promise.all(promises)
         .then(() => {
             // 所有异步操作都已完成，asyncResult已收集完整
-            xlog(asyncResult);
+            xlog(promises);
             // 可以在这里进行后续处理
         })
 }

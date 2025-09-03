@@ -48,7 +48,7 @@ function bookCase() {
         d = [];
         putMyVar('书架动态加载loading', '1');
     }
-
+    xlog('a1');
     let sjType = MY_NAME=="海阔视界"?getItem("切换收藏列表", "软件收藏"):"聚阅收藏";
     let Julist = [];
     if(sjType=="软件收藏"){

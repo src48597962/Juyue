@@ -789,23 +789,30 @@ function addBookCase(obj, update) {
             }
         }
     }
-    if(!obj.params.url){
-        return 'toast://数据错误';
+    let waitlist= [];
+    if($.type(obj)=='object'){
+        if(!obj.params.url){
+            return 'toast://数据错误';
+        }
+        waitlist.push(obj);
+    }else if($.type(obj)=='array'){
+        waitlist = obj;
     }
+    
     try{
         let casefile = 'hiker://files/rules/Src/Juyue/case.json';
         eval('let caselist = ' + (fetch(casefile)||'[]'));
-        if(update){
-            if(!caselist.some(v=>getCaseID(v)==getCaseID(obj))){
-                return;
+        waitlist.forEach(it => {
+            it.id = it.id || getCaseID(it);
+            if(update){
+                let index = caselist.findIndex(v => (v.id||getCaseID(v))==it.id);
+                if(index>-1){
+                    it = Object.assign({}, caselist[index], it);
+                    caselist.splice(index, 1);
+                }
             }
-        }
-
-        let index = caselist.findIndex(v => getCaseID(v)==getCaseID(obj));
-        if(index>-1){
-            caselist.splice(index, 1);
-        }
-        caselist.unshift(obj);
+            caselist.unshift(it);
+        })
         writeFile(casefile, JSON.stringify(caselist));
         return 'toast://已加入';
     }catch(e){

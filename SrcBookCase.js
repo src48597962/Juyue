@@ -233,7 +233,7 @@ function bookCase() {
                 }
                 change();
             }, onDismiss() {
-                //refreshPage();
+                refreshPage();
             }});
             return "hiker://empty";
         }, case_cols, case_cols.indexOf(listcol))/*$(case_cols, 1, '选择列表样式').select(() => {

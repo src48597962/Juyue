@@ -432,25 +432,28 @@ function Async(item) {
     return new Promise((resolve) => {
         //收藏更新最新章节
         //setTimeout(() => {
-            let extra = item.params.params;
-            let jkdata = extra['data'] || {};
-            let parse = getObjCode(jkdata, 'zx');
             let zx;
-            if (parse['最新']) {
-                let MY_URL = extra.url;
-                let MY_PARAMS = extra;
-                let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
-                eval("let 最新2 = " + 最新str);
-                try{
+            try{
+                let extra = item.params.params;
+                let jkdata = extra['data'] || {};
+                let parse = getObjCode(jkdata, 'zx');
+
+                if (parse['最新']) {
+                    let MY_URL = extra.url;
+                    let MY_PARAMS = extra;
+                    xlog(MY_PARAMS);
+                    let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                    eval("let 最新2 = " + 最新str);
                     eval(evalPublicStr);
                     zx = 最新2.call(parse, MY_URL) || "";
-                }catch(e){
-                    zx = "解析获取失败";
-                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                }else if(parse['二级']){
+                    zx = "作者没写最新"
                 }
-            }else if(parse['二级']){
-                zx = "作者没写最新"
+            }catch(e){
+                zx = "解析获取失败";
+                xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
             }
+            
             resolve(zx);
         //}, 3000);
     });

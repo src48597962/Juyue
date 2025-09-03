@@ -198,13 +198,11 @@ function bookCase() {
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
                     officeItem.setDesc(officeItem.getDesc() == "新窗口" ? "默认" : "新窗口");
-                    /*
                     hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(a) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_col_type", a);
                         return "toast://选择了:" + a;
                     }});
-                    */
                 }else if (s=="自动获取更新时机") {
                     hikerPop.selectBottomMark({options: ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"], position: juItem2.get("bookCase_UpdateTiming", 1), click(a,i) {
                         officeItem.setDesc(a);

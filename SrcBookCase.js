@@ -183,7 +183,7 @@ function bookCase() {
     }
     d.push({
         title: '收藏设置',
-        url: $('#noLoading#').lazyRule(() => {
+        url: $('#noLoading#').lazyRule((listcol) => {
             const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
@@ -207,7 +207,7 @@ function bookCase() {
                 //refreshPage();
             }});
             return "hiker://empty";
-        })/*$(case_cols, 1, '选择列表样式').select(() => {
+        }, listcol)/*$(case_cols, 1, '选择列表样式').select(() => {
             juItem2.set("bookCase_col_type", input);
             refreshPage(false);
             return 'hiker://empty';

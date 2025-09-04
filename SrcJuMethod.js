@@ -433,6 +433,7 @@ function getYiData(datatype, jkdata, dd) {
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
+                desc: parse['模板']?'请确认模板>'+(parse['模板'].name||parse['模板'].id):'',
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });

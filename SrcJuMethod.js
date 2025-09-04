@@ -433,7 +433,7 @@ function getYiData(datatype, jkdata, dd) {
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
-                desc: parse['模板']?('确认模板源>'+(parse['模板'].name||parse['模板'].id)):'',
+                desc: parse['模板名']?('确认模板源>'+(parse['模板名']||'')):'',
                 url: 'hiker://empty',
                 col_type: 'text_center_1'
             });
@@ -583,21 +583,21 @@ function getObjCode(jkdata, key) {
         if(parse['模板']){
             try{
                 let tmplparse = getSource(parse['模板']);
+                parse['模板名'] = parse['模板'].name||parse['模板'].id||'';
+                xlog(Object.keys(tmplparse).length);
                 if(Object.keys(tmplparse).length==0){
-                    toast('未找到模板源：' + (parse['模板'].name||''));
+                    toast('未找到模板源：' + parse['模板名']);
                 }
                 if(getMyVar('调用模板'+jkdata.id)){
                     putMyVar('调用模板'+jkdata.id, '1');
-                    xlog('当前源：' + jkdata.name + '>调用模板源>' +(parse['模板'].name||parse['模板'].id||''));
-                }
-                if(parse['模板'].name){
-                    parse['模板名'] = parse['模板'].name;
+                    xlog('当前源：' + jkdata.name + '>调用模板源>' + parse['模板名']);
                 }
                 parse = Object.assign({}, tmplparse, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
             delete parse['新建模板'];
+            delete parse['模板'];
         }
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;

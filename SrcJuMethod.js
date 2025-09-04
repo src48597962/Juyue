@@ -393,7 +393,7 @@ function getYiData(datatype, jkdata, dd) {
 
                 eval("let 数据 = " + 执行str);
                 //getData = 数据.call(parse) || [];
-                getData = parse[datatype]() || [];
+                getData = parse[datatype].call(parse) || [];
                 if(resultd){
                     getData = resultd;
                 }

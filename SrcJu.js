@@ -1039,7 +1039,6 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
-                    xlog(isJuDetail());
                     morecols.push("自定义封面样式:"+(isJuDetail()?"否":"是"))
                 }
                 
@@ -1129,25 +1128,25 @@ function erji() {
                             return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
                             let list = [];
-                            list.push('所有源:'+(juItem2.get('二级聚阅封面')=='1'?"关":juItem2.get('二级聚阅封面')=='0'?"开":"未配置"));
-                            list.push('当前源:'+(juItem.get('二级聚阅封面')=='1'?"关":juItem.get('二级聚阅封面')=='0'?"开":"未配置"));
+                            list.push('所有源:'+(juItem2.get('二级聚阅封面')?"关":"开"));
+                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"关":juItem.get('二级聚阅封面')==''?"未配置":"开"));
                             list.push('清除配置');
                             return $(list, 2, '自定义封面开关，关代表不显示').select(()=>{
                                 let sm;
                                 if(input.includes('当前源')){
-                                    if(juItem.get('二级聚阅封面')=='1'){
-                                        juItem.set('二级聚阅封面', '0');
+                                    if(juItem.get('二级聚阅封面')){
+                                        juItem.set('二级聚阅封面', false);
                                         sm = "当前源优先自定义封面样式";
                                     }else{
-                                        juItem.set('二级聚阅封面', '1');
+                                        juItem.set('二级聚阅封面', true);
                                         sm = "当前源强制聚阅原封面样式";
                                     }
                                 }else if(input.includes('所有源')){
-                                    if(juItem2.get('二级聚阅封面')=='1'){
-                                        juItem2.set('二级聚阅封面', '0');
+                                    if(juItem2.get('二级聚阅封面')){
+                                        juItem2.clear('二级聚阅封面');
                                         sm = "所有源优先自定义封面样式";
                                     }else{
-                                        juItem2.set('二级聚阅封面', '1');
+                                        juItem2.set('二级聚阅封面', true);
                                         sm = "所有源强制聚阅原封面样式";
                                     }
                                 }else{

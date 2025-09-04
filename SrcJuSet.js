@@ -858,6 +858,7 @@ function jiekouapi(data, look) {
         clearMyVar('apitmpl');
         clearMyVar('isload');
         clearMyVar('tmpldatas');
+        clearMyVar('apitmplindex');
     }));
     if(data){
         if(getMyVar('isload', '0')=="0"){

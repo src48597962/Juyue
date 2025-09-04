@@ -841,9 +841,9 @@ function isJuDetail(){
     let source = juItem.get('二级聚阅封面');
     let all = juItem.get('二级聚阅封面');
     if(source != ''){
-        return source?true:false;
+        return source=='1'?true:false;
     }else{
-        return all?true:false;
+        return all=='1'?true:false;
     }
 }
 //来自阿尔法大佬的主页幻灯片

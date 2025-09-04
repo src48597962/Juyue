@@ -1061,7 +1061,7 @@ function jiekouapi(data, look) {
                     let tmpldata = tmpldatas[index];
                     let tmplparse = getSource(tmpldata).新建模板;
                     if(tmplparse){
-                        tmpl = tmplparse.toString();
+                        tmpl = rely(tmplparse);
                     }else{
                         try{
                             tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);

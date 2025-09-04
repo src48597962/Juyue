@@ -1034,6 +1034,7 @@ function jiekouapi(data, look) {
                     toast('字符串模板自定义调用，其他源接口不要用此模板');
                 }
                 putMyVar('apitmpl', input);
+                putMyVar('apitmplindex', MY_INDEX);
                 refreshPage(false);
                 return 'hiker://empty';
             }),
@@ -1049,13 +1050,19 @@ function jiekouapi(data, look) {
             if(isnew && !file){
                 let tmpl;
                 let apitmpl = getMyVar('apitmpl', 'parseCode');
-                if(apitmpl=='parseCode'){
-                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
-                }else if(apitmpl=='string'){
+                if(apitmpl=='string'){
                     tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
                 }else{
-                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
-                    
+                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
+                    if(!tmpl){
+                        let tmpldatas = storage0.getMyVar('tmpldatas');
+                        let index = parseInt(getMyVar('apitmplindex', '1')) - 1;
+                        if(index>-1){
+                            let tmpldata = tmpldatas[index];
+                            tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
+                            tmpl = tmpl.replace(`id: ''`, `id: '${tmpldata.id}'`).replace(`name: ''`, `name: '${tmpldata.name}'`)
+                        }
+                    }
                 }
                 if(tmpl){
                     let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';

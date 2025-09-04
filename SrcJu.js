@@ -1130,7 +1130,7 @@ function erji() {
                             xlog(juItem.get('二级聚阅封面'));
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级聚阅封面')?"关":"开"));
-                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"关":juItem.get('二级聚阅封面')==''?"未配置":"开"));
+                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"关":juItem.get('二级聚阅封面')===''?"未配置":"开"));
                             list.push('清除配置');
                             return $(list, 2, '自定义封面开关，关代表不显示').select(()=>{
                                 let sm;

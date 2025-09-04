@@ -602,6 +602,7 @@ function getObjCode(jkdata, key) {
         }
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
+        parse['jkdata'] = jkdata;
         parse['页码'] = parse['页码'] || {};
         if(isJuDetail() && parse['二级']){
             let ercodestr = parse['二级'].toString();

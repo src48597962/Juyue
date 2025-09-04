@@ -1010,7 +1010,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    if(!data && getMyVar('apiilk')=='4'){
+    if(!data && getMyVar('apiilk')!='4'){
         let tmpldatas = storage0.getMyVar('tmpldatas');
         if(!tmpldatas){
             tmpldatas = getDatas('tmpl', true).map(it=>{
@@ -1021,7 +1021,7 @@ function jiekouapi(data, look) {
             });
             storage0.putMyVar('tmpldatas', tmpldatas);
         }
-        let tmpllist = [];
+        let tmpllist = ['parseCode'];
         tmpldatas.forEach(it=>{
             tmpllist.push(it.name);
         })
@@ -1029,7 +1029,7 @@ function jiekouapi(data, look) {
             tmpllist.push('string');
         }
         d.push({
-            title: '选择模板：' + getMyVar('apitmpl'),
+            title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
             url: $(tmpllist, 2, '选择模板类型').select(()=>{
                 if(input=='string'){
                     toast('字符串模板自定义调用，其他源接口不要用此模板');
@@ -1056,14 +1056,17 @@ function jiekouapi(data, look) {
                 }else if(apitmpl=='parseCode'){
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/parseCode.js`, 96);
                 }else{
-                    try{
-                        tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
-                    }catch(e){}
-                    if(!tmpl){
-                        let tmpldatas = storage0.getMyVar('tmpldatas');
-                        let index = parseInt(getMyVar('apitmplindex', '-1'));
-                        if(index>-1){
-                            let tmpldata = tmpldatas[index];
+                    let tmpldatas = storage0.getMyVar('tmpldatas');
+                    let index = parseInt(getMyVar('apitmplindex', '1')) - 1;
+                    let tmpldata = tmpldatas[index];
+                    let tmplparse = getSource(tmpldata).新建模板;
+                    if(tmplparse){
+                        tmpl = rely(tmplparse);
+                    }else{
+                        try{
+                            tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
+                        }catch(e){}
+                        if(!tmpl){
                             tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
                             tmpl = tmpl.replace(`模板id`, `${tmpldata.id}`).replace(`模板名称`, `${tmpldata.name}`);
                         }

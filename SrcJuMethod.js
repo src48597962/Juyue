@@ -841,7 +841,7 @@ function isJuDetail(){
     let source = juItem.get('二级聚阅封面');
     let all = juItem2.get('二级聚阅封面');
     
-    if(source != ''){
+    if(source !== ''){
         return source?true:false;
     }else{
         return all?true:false;

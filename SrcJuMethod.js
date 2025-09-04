@@ -843,9 +843,10 @@ function isJuDetail(){
     xlog(source);
     if(source != ''){
         xlog('优先走当前源配置');
-        return source=='1'?true:false;
+        return source=='1'?1:0;
     }else{
-        return all=='1'?true:false;
+        xlog('走全局');
+        return all=='1'?1:0;
     }
 }
 //来自阿尔法大佬的主页幻灯片

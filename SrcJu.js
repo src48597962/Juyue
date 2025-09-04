@@ -1039,6 +1039,7 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
+                    xlog(isJuDetail());
                     morecols.push("自定义封面样式:"+(isJuDetail()?"否":"是"))
                 }
                 

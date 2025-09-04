@@ -1127,6 +1127,7 @@ function erji() {
                             refreshPage(false);
                             return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
+                            xlog(juItem.get('二级聚阅封面'));
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级聚阅封面')?"关":"开"));
                             list.push('当前源:'+(juItem.get('二级聚阅封面')?"关":juItem.get('二级聚阅封面')==''?"未配置":"开"));

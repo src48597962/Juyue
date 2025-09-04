@@ -857,6 +857,7 @@ function jiekouapi(data, look) {
         clearMyVar('apiruleurl');
         clearMyVar('apitmpl');
         clearMyVar('isload');
+        clearMyVar('tmpldatas');
     }));
     if(data){
         if(getMyVar('isload', '0')=="0"){
@@ -1009,18 +1010,27 @@ function jiekouapi(data, look) {
     });
 
     if(!data){
-        let tmpllist = ['parseCode', 'getapp'];
+        let tmpldatas = storage0.getMyVar('tmpldatas');
+        if(!tmpldatas){
+            tmpldatas = getDatas('tmpl', true).map(it=>{
+                return {
+                    id: it.id,
+                    name: it.name
+                }
+            });
+            storage0.putMyVar('tmpldatas', tmpldatas);
+        }
+        let tmpllist = ['parseCode'];
+        tmpldatas.forEach(it=>{
+            tmpllist.push(it.name);
+        })
         if(getMyVar('apiilk')=='4'){
             tmpllist.push('string');
         }
         d.push({
             title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
             url: $(tmpllist, 2, '选择模板类型').select(()=>{
-                if(input=='getapp'){
-                    if(!fileExist(`hiker://files/rules/Src/Juyue/jiekou/1756086251723.txt`)){
-                        return 'toast://没找到GetAppApi模板源，需先导入';
-                    }
-                }else if(input=='string'){
+                if(input=='string'){
                     toast('字符串模板自定义调用，其他源接口不要用此模板');
                 }
                 putMyVar('apitmpl', input);
@@ -1041,10 +1051,11 @@ function jiekouapi(data, look) {
                 let apitmpl = getMyVar('apitmpl', 'parseCode');
                 if(apitmpl=='parseCode'){
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/parseCode.js', 96);
-                }else if(apitmpl=='getapp'){
-                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/getapp.js', 96);
                 }else if(apitmpl=='string'){
                     tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
+                }else{
+                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
+                    
                 }
                 if(tmpl){
                     let codeTmpl = 'hiker://files/_cache/Juyue/parseCodeTmpl.txt';

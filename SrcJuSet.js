@@ -1009,7 +1009,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    if(!data){
+    if(!data && getMyVar('apiilk')=='4'){
         let tmpldatas = storage0.getMyVar('tmpldatas');
         if(!tmpldatas){
             tmpldatas = getDatas('tmpl', true).map(it=>{
@@ -1024,7 +1024,7 @@ function jiekouapi(data, look) {
         tmpldatas.forEach(it=>{
             tmpllist.push(it.name);
         })
-        if(getMyVar('apiilk')=='4'){
+        if(getMyVar('apiilk')=='code4'){
             tmpllist.push('string');
         }
         d.push({
@@ -1052,6 +1052,8 @@ function jiekouapi(data, look) {
                 let apitmpl = getMyVar('apitmpl', 'parseCode');
                 if(apitmpl=='string'){
                     tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
+                }else if(apitmpl=='parseCode'){
+                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/parseCode.js`, 96);
                 }else{
                     try{
                         tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
@@ -1062,7 +1064,7 @@ function jiekouapi(data, look) {
                         if(index>-1){
                             let tmpldata = tmpldatas[index];
                             tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
-                            tmpl = tmpl.replace(`id: ''`, `id: '${tmpldata.id}'`).replace(`name: ''`, `name: '${tmpldata.name}'`)
+                            tmpl = tmpl.replace(`模板id`, `${tmpldata.id}`).replace(`模板名称`, `${tmpldata.name}`);
                         }
                     }
                 }

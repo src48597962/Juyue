@@ -839,7 +839,7 @@ function rely(data){
 //二级是否强制聚阅封面的判断返回
 function isJuDetail(){
     let source = juItem.get('二级聚阅封面');
-    let all = juItem.get('二级聚阅封面');
+    let all = juItem2.get('二级聚阅封面');
     
     if(source != ''){
         return source=='1'?1:0;

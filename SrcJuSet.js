@@ -1021,7 +1021,7 @@ function jiekouapi(data, look) {
             });
             storage0.putMyVar('tmpldatas', tmpldatas);
         }
-        let tmpllist = ['parseCode'];
+        let tmpllist = [];
         tmpldatas.forEach(it=>{
             tmpllist.push(it.name);
         })
@@ -1029,7 +1029,7 @@ function jiekouapi(data, look) {
             tmpllist.push('string');
         }
         d.push({
-            title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
+            title: '选择模板：' + getMyVar('apitmpl'),
             url: $(tmpllist, 2, '选择模板类型').select(()=>{
                 if(input=='string'){
                     toast('字符串模板自定义调用，其他源接口不要用此模板');
@@ -1061,7 +1061,7 @@ function jiekouapi(data, look) {
                     }catch(e){}
                     if(!tmpl){
                         let tmpldatas = storage0.getMyVar('tmpldatas');
-                        let index = parseInt(getMyVar('apitmplindex', '1')) - 1;
+                        let index = parseInt(getMyVar('apitmplindex', '-1'));
                         if(index>-1){
                             let tmpldata = tmpldatas[index];
                             tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);

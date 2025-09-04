@@ -836,6 +836,16 @@ function addBookCase(obj, update) {
 function rely(data){
     return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, "$1");
 }
+//二级是否强制聚阅封面的判断返回
+function isJuDetail(){
+    let source = juItem.get('二级聚阅封面');
+    let all = juItem.get('二级聚阅封面');
+    if(source != ''){
+        return source?true:false;
+    }else{
+        return all?true:false;
+    }
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

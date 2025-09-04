@@ -851,7 +851,7 @@ function erji() {
                     d.push({
                         title: "收藏书架",
                         url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
-                            require(config.聚阅);
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                             bookCase();
                         }),
                         pic_url: getIcon(erIcons[1].img, false, erIcons[1].color),

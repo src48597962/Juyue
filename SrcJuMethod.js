@@ -373,7 +373,7 @@ function getYiData(datatype, jkdata, dd) {
             MY_URL = parse['host'];
         }
         if(parse[datatype]){
-            let 执行str = (parse[datatype]||"").toString();
+            let 执行str = parse[datatype].toString();
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
                 createClass(d, obj);
@@ -393,7 +393,7 @@ function getYiData(datatype, jkdata, dd) {
 
                 eval("let 数据 = " + 执行str);
                 //getData = 数据.call(parse) || [];
-                getData = 数据() || [];
+                getData = parse[datatype]() || [];
                 if(resultd){
                     getData = resultd;
                 }

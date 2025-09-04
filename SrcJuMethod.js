@@ -563,7 +563,9 @@ function getSource(input) {
         let jkfile = "hiker://files/rules/Src/juyue/jiekou.json";
         let jkjson = JSON.parse(readFile(jkfile));
         let id = jkjson.find(x => x.name === input);
-        rule = readFile(id.url);
+        if(id){
+            rule = readFile(id.url);
+        }
     }
     if(rule){
         const parse = (function(jkdata) {

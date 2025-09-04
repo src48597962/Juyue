@@ -577,7 +577,7 @@ function getSource(input) {
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
-        let parse = getSource(jkdata);
+        let parse = getSource.call(this, jkdata);
         if(parse['模板']){
             try{
                 let tmplparse = getSource(parse['模板']);

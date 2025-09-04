@@ -832,7 +832,10 @@ function addBookCase(obj, update) {
         return 'toast://失败>'+e.message;
     }
 }
-
+//提取$.toString()内文本
+function rely(data){
+    return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, "$1");
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

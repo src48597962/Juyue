@@ -1053,7 +1053,9 @@ function jiekouapi(data, look) {
                 if(apitmpl=='string'){
                     tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
                 }else{
-                    tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
+                    try{
+                        tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
+                    }catch(e){}
                     if(!tmpl){
                         let tmpldatas = storage0.getMyVar('tmpldatas');
                         let index = parseInt(getMyVar('apitmplindex', '1')) - 1;

@@ -599,7 +599,7 @@ function getObjCode(jkdata, key) {
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['页码'] = parse['页码'] || {};
-        if((juItem.get('二级聚阅封面')||juItem2.get('二级聚阅封面')) && parse['二级']){
+        if(isJuDetail() && parse['二级']){
             let ercodestr = parse['二级'].toString();
             if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
                 delete parse['二级标识'];
@@ -842,9 +842,9 @@ function isJuDetail(){
     let all = juItem2.get('二级聚阅封面');
     
     if(source != ''){
-        return source=='1'?1:0;
+        return source?true:false;
     }else{
-        return all=='1'?1:0;
+        return all?true:false;
     }
 }
 //来自阿尔法大佬的主页幻灯片

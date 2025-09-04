@@ -567,7 +567,10 @@ function getSource(input) {
         rule = readFile(id.url);
     }
     if(rule){
-        eval(rule);
+        const parse = (function(jkdata) {
+            eval(rule);
+            return parse;
+        })(input);
         return parse;
     }else{
         return {};
@@ -577,7 +580,7 @@ function getSource(input) {
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     try{
-        let parse = getSource.call(this, jkdata);
+        let parse = getSource(jkdata);
         if(parse['模板']){
             try{
                 let tmplparse = getSource(parse['模板']);

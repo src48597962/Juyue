@@ -129,6 +129,8 @@ function getDatas(lx, isyx) {
         datalist = datalist.filter(it => it.ilk != "2" && it.ilk != "4");
     } else if (lx == "er") {
         datalist = datalist.filter(it => it.ilk != "1" && it.ilk != "4");
+    } else if (lx == "tmpl") {
+        datalist = datalist.filter(it => it.ilk == "4");
     }
     
     if (getItem("sourceListSort") == "接口名称") {

@@ -586,7 +586,6 @@ function getObjCode(jkdata, key) {
             try{
                 let tmplparse = getSource(parse['模板']);
                 parse['模板名'] = parse['模板'].name||parse['模板'].id||'';
-                xlog(Object.keys(tmplparse).length);
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + parse['模板名']);
                 }

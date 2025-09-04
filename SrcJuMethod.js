@@ -840,7 +840,9 @@ function rely(data){
 function isJuDetail(){
     let source = juItem.get('二级聚阅封面');
     let all = juItem.get('二级聚阅封面');
+    xlog(source);
     if(source != ''){
+        xlog('优先走当前源配置');
         return source=='1'?true:false;
     }else{
         return all=='1'?true:false;

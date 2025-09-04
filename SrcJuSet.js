@@ -900,7 +900,7 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '源版本号：'+ getMyVar('apiversion',''),
+        title: '源版本号：'+ getMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString()),
         col_type: 'text_1',
         url: 'toast://保存代码文件时自动获取，版本:'
     });
@@ -1061,7 +1061,7 @@ function jiekouapi(data, look) {
                     let tmpldata = tmpldatas[index];
                     let tmplparse = getSource(tmpldata).新建模板;
                     if(tmplparse){
-                        tmpl = rely(tmplparse);
+                        tmpl = tmplparse;
                     }else{
                         try{
                             tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);

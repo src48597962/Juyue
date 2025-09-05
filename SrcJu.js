@@ -860,16 +860,20 @@ function erji() {
                 }else{
                     let imgdecode = "";
                     if(parse["imgdec"]){
-                        if($.type(parse["imgdec"])=="function"){
-                            imgdecode = parse["imgdec"]();
-                            if($.type(imgdecode)=="function"){
-                                imgdecode = $.toString((imgdec)=>{
-                                    let imgDecrypt = imgdec;
-                                    return imgDecrypt();
-                                }, imgdecode)
+                        try{
+                            if($.type(parse["imgdec"])=="function"){
+                                imgdecode = parse["imgdec"]();
+                                if($.type(imgdecode)=="function"){
+                                    imgdecode = $.toString((imgdec)=>{
+                                        let imgDecrypt = imgdec;
+                                        return imgDecrypt();
+                                    }, imgdecode)
+                                }
+                            }else if($.type(parse["imgdec"])=="string"){
+                                imgdecode = parse["imgdec"];
                             }
-                        }else if($.type(parse["imgdec"])=="string"){
-                            imgdecode = parse["imgdec"];
+                        }catch(e){
+                            xlog('获取图片解密imgdec出错，信息>' + e.message + " 错误行#" + e.lineNumber);
                         }
                     }
                     d.push({

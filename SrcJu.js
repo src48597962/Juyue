@@ -813,7 +813,7 @@ function erji() {
                         cls: "SrcJudescload"
                     }
                 }]
-                if(juItem2.clear('二级简介固化显示')){
+                if(juItem2.get('二级简介固化显示')){
                     putMyVar('二级简介打开标识',"1");
                     d = d.concat(jjarr);;
                 }

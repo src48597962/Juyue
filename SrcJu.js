@@ -561,11 +561,21 @@ function erji() {
             if(erdataCache){
                 erLoadData = erdataCache;
             }else{
-                erLoadData = getErData(jkdata);
+                xlog('开始获取二级数据');
+                let t1 = new Date().getTime();
+                if(parse['二级']){
+                    eval("let 二级获取 = " + parse['二级'])
+                    erLoadData = 二级获取.call(parse, MY_URL);
+                }else{
+                    xlog("parse不存在二级方法");
+                }
+                let t2 = new Date().getTime();
+                xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
             }
         }
     }catch(e){
         xlog('执行获取二级数据出错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        setJkSort(jkdata, {fail: 1});
     }
 
     erLoadData = erLoadData || {};

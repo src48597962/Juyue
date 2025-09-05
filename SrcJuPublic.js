@@ -819,6 +819,53 @@ function isDarkMode() {
   let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
   return theme == Configuration.UI_MODE_NIGHT_YES;
 }
+// 执行一些主页加载后的事项，间隔24小时
+function excludeLoadingItems() {
+    // 清理接口排序
+    let datalist = [];
+    let sourcedata = fetch(jkfile);
+    if(sourcedata != ""){
+        try{
+            eval("datalist=" + sourcedata+ ";");
+        }catch(e){ }
+    }
+    let sort = {};
+    if(fetch(sortfile)){
+        eval("sort = " + fetch(sortfile));
+    }
+    Object.keys(sort).forEach(it=>{
+        if(!datalist.some(item => item.id==it)){
+            delete sort[it];
+        }
+        if($.type(sort[it]) != "object"){
+            delete sort[it];
+        }
+    })
+    writeFile(sortfile, JSON.stringify(sort));
+    // 失败10以上的接口自动禁用
+    datalist.forEach(it=>{
+        if(!it.stop){
+            try{
+                let jksort = sort[it.id] || {};
+                let fail = jksort.fail || 0;
+                if(fail>=10){
+                    it.stop = 1;
+                }
+            }catch(e){}
+        }
+    })
+    writeFile(jkfile, JSON.stringify(datalist));
+    
+    // 清理接口残留过期文件
+    /*
+    let names = readDir(jkfilespath);
+    names.forEach(it=>{
+        if(!datalist.some(item => item.url==jkfilespath+it)){
+            deleteFile(jkfilespath+it);
+        }
+    })
+    */
+}
 // 检测依赖
 if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){

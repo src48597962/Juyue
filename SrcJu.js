@@ -555,21 +555,13 @@ function erji() {
             //方便换源时二级代码中使用MY_PARAMS
             MY_PARAMS = erjiextra;
             
+            //二级调用执行公共加载代码，预处理等
+            eval(evalPublicStr);
+
             if(erdataCache){
                 erLoadData = erdataCache;
-                eval(evalPublicStr);//调用执行公共加载代码，预处理等
             }else{
-                xlog('开始获取二级数据');
-                let t1 = new Date().getTime();
-                if(parse['二级']){
-                    eval(evalPublicStr);
-                    eval("let 二级获取 = " + parse['二级'])
-                    erLoadData = 二级获取.call(parse, MY_URL);
-                }else{
-                    xlog("parse不存在二级方法");
-                }
-                let t2 = new Date().getTime();
-                xlog('获取二级数据完成，耗时：' + (t2-t1) + 'ms');
+                erLoadData = getErData(jkdata);
             }
         }
     }catch(e){

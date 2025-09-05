@@ -862,10 +862,7 @@ function erji() {
                     if(parse["imgdec"]){
                         if($.type(parse["imgdec"])=="function"){
                             imgdecode = parse["imgdec"]();
-                            xlog($.type(imgdecode));
                             if($.type(imgdecode)=="function"){
-                                xlog('123');
-                                xlog($.type(imgdecode));
                                 imgdecode = $.toString((imgdec)=>{
                                     let imgDecrypt = imgdec;
                                     return imgDecrypt();

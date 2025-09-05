@@ -801,7 +801,7 @@ function erji() {
                         longClick: [{
                             title: "固化显示简介",
                             js: $.toString(() => {
-                                setItem('二级简介固化显示', true);
+                                setItem('二级简介固化显示', '1');
                                 return 'toast://已固化简介显示';
                             })
                         }]

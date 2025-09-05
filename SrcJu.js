@@ -861,8 +861,8 @@ function erji() {
                     let imgdecode = "";
                     if(parse["imgdec"]){
                         if($.type(parse["imgdec"])=="function"){
-                            xlog($.type(imgdecode));
                             imgdecode = parse["imgdec"]();
+                            xlog($.type(imgdecode));
                             if($.type(imgdecode)=="function"){
                                 xlog('123');
                                 xlog($.type(imgdecode));

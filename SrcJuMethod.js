@@ -862,6 +862,7 @@ function setJkSort(data, so) {
     }else if($.type(data)=='array'){
         waitlist = data;
     }
+    let sortfile = "hiker://files/rules/Src/Juyue/jksort.json";
     let sort = {};
     if(fetch(sortfile)){
         eval("sort = " + fetch(sortfile));

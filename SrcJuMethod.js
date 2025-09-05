@@ -856,6 +856,7 @@ function isJuDetail(){
 }
 // 设置接口顺序
 function setJkSort(data, so) {
+    xlog(data);
     let waitlist= [];
     if($.type(data)=='string'){
         waitlist.push(data);

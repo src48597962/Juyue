@@ -252,7 +252,7 @@ function SRCSet() {
                     })
                 })
             },{
-                title: juItem2.get('noShowType')=='1'?"显示分类":"不显示分类",
+                title: juItem2.get('noShowType')=='1'?"强制显示分类":"优先显示分组",
                 js: $.toString(() => {
                     if(juItem2.get('noShowType')=='1'){
                         juItem2.clear('noShowType')

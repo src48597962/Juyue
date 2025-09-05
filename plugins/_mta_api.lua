@@ -1,0 +1,4 @@
+MY_URL = MY_URL
+MY_PARAMS = MY_PARAMS
+MY_RULE = MY_RULE
+extra = extra

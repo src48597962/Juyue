@@ -236,6 +236,7 @@ function bookCase() {
                         let pop = hikerPop.checkByBiometric(() => {
                             clearItem("聚阅收藏加锁");
                             officeItem.setSelected(-1);
+                            change();
                         });
                     }else{
                         setItem("聚阅收藏加锁", "1");

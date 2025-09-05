@@ -804,7 +804,7 @@ function setJkSort(data, so) {
     waitlist.forEach(it=>{
         let key;
         if($.type(it)=="object"){
-            key = it.url;
+            key = it.id;
         }else if($.type(it)=="string"){
             key = it;
         }

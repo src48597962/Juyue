@@ -874,6 +874,7 @@ function setJkSort(data, so) {
         }else if($.type(it)=="string"){
             key = it;
         }
+        xlog(key);
         let jksort = sort[key] || {};
         if($.type(jksort) != "object"){
             jksort = {};
@@ -891,6 +892,7 @@ function setJkSort(data, so) {
         }
         sort[key] = jksort;
     })
+    xlog(sort);
     writeFile(sortfile, JSON.stringify(sort));
 }
 //获取可用的链接地址且最快的

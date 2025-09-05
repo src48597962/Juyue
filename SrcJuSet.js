@@ -1084,10 +1084,11 @@ function jiekouapi(data, look) {
             if(fileExist(file)){
                 let jsstr = $.toString((file)=>{
                     try {
-                        if(getMyVar('apitmpl')=='string'){
+                        let filestr = fetch(file);
+                        if(!filestr.includes('let parse = {')){
                             putMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString());
                         }else{
-                            eval(fetch(file)); 
+                            eval(filestr); 
                             let is;
                             if(parse['作者'] && parse['作者'] != getMyVar('apiauthor','')){
                                 putMyVar('apiauthor', parse['作者']);

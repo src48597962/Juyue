@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu": "1.2",
+    "SrcJu": "1.3",
     "hint": "",
     "JYUpdateRecords": [{
-        title: "beta V1.3",
+        title: "2025/09/05 V1.3",
         records: [
             "修复：完善二级自定义封面是否显示逻辑",
             "修复：parse子方法里面jkdata丢失的问题",

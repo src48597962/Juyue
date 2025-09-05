@@ -169,7 +169,7 @@ function getDatas(lx, isyx) {
 // 获取分组接口列表
 function getGroupLists(datas, k) {
     k = k=="全部"?"":k;
-    if(juItem2.get('noShowType')!='1'){//显示分类时输出列表，默认
+    if(juItem2.get('noShowType')!='1'){//强制显示分类时输出列表，默认
         datas = datas.filter(it=>{
             return !k || k==it.type || (it.group||"").split(',').indexOf(k)>-1;
         })
@@ -627,7 +627,7 @@ function selectSource(selectGroup) {
             return changeSource(sourcedata);
         },
         menuClick(manage) {
-            let menuarr = ["改变样式", "排序:" + getItem('sourceListSort','更新时间'), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"];
+            let menuarr = ["改变样式", "排序:" + getItem('sourceListSort','更新时间'), "列表倒序", juItem2.get('noShowType')=='1'?"强制显示分类":"优先显示分组"];
             if(lockgroups.length>0 && getMyVar('SrcJu_已验证指纹')!='1'){
                 menuarr.push("显示加锁分组");
             }

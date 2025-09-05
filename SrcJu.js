@@ -479,14 +479,14 @@ function yiji(testSource) {
         setResult(d);
     }
     
-    // 一些自动检查调用在首页加载后，间隔24小时
+    // 一些自动检查调用在主页加载后，间隔24小时
     let nowtime = Date.now();
     let oldstartChecktime = parseInt(getItem('startChecktime','0').replace('time',''));
     if (!getMyVar('SrcJu_startCheck') && nowtime > (oldstartChecktime+24*60*60*1000)) {
         setItem('startChecktime', nowtime+'time');//保存检查时间
-        excludeLoadingItems(); //执行一些加载后的事项
-
+        excludeLoadingItems(); 
         putMyVar('SrcJu_startCheck', 1);
+        xlog('执行加载主页后扩展事项');
     }
 }
 

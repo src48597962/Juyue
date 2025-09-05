@@ -378,6 +378,7 @@ function changeSource(sourcedata) {
     if (homeSourceId==sourcedata.id) {
         return 'toast://主页源：' + sourcedata.name;
     }
+    setJkSort(sourcedata, {use: 1});
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");
         unRegisterTask("lunbo");

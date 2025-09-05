@@ -892,6 +892,57 @@ function setJkSort(data, so) {
     })
     writeFile(sortfile, JSON.stringify(sort));
 }
+//获取可用的链接地址且最快的
+function getFastestUrl(list, timeout) {
+    timeout = timeout || 8000;
+    let results = [];
+    let task = function (obj) {
+        let s = Date.now();
+        let j = JSON.parse(fetch(obj.url, {
+            onlyHeaders: true,
+            timeout,
+        }));
+        let e = Date.now();
+        let c = e - s;
+        return {
+            time: c,
+            url: j.url,
+            code: j.statusCode
+        }
+    };
+    let tasks = list.map((x, i) => {
+        i = i + 1;
+        return {
+            func: task,
+            param: {
+                url: x
+            },
+            id: 'taskid' + i
+        }
+    });
+
+    let count = tasks.length;
+    if (tasks.length) {
+        be(tasks, {
+            func: function (obj, id, error, taskResult) {
+                if(taskResult.code == '200'){
+                    obj.results.push(taskResult)
+                }
+                count = count - 1;
+                if (count > 0) {
+                    //showLoading("检测中...剩余地址：" + count)
+                } else {
+                    //hideLoading();
+                }
+            },
+            param: {
+                results: results
+            }
+        });
+    }
+    results = results.sort((a, b) => a.time - b.time);
+    return results.length>0?results[0].url:'';
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

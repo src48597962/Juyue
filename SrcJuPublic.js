@@ -790,44 +790,6 @@ function getThemeList(isEnable) {
     }
     return themelist;
 }
-// 设置接口顺序
-function setJkSort(data, so) {
-    let waitlist= [];
-    if($.type(data)=='string'){
-        waitlist.push(data);
-    }else if($.type(data)=='array'){
-        waitlist = data;
-    }
-    let sort = {};
-    if(fetch(sortfile)){
-        eval("sort = " + fetch(sortfile));
-    }
-    waitlist.forEach(it=>{
-        let key;
-        if($.type(it)=="object"){
-            key = it.id;
-        }else if($.type(it)=="string"){
-            key = it;
-        }
-        let jksort = sort[key] || {};
-        if($.type(jksort) != "object"){
-            jksort = {};
-        }
-        if(so.use==0){
-            jksort.use = 0;
-        }else if(so.fail==0){
-            jksort.fail = 0;
-        }else if(so.use){
-            jksort.use = jksort.use || 0;
-            jksort.use++;
-        }else if(so.fail){
-            jksort.fail = jksort.fail || 0;
-            jksort.fail++;
-        }
-        sort[key] = jksort;
-    })
-    writeFile(sortfile, JSON.stringify(sort));
-}
 // 手机是否暗黑模式
 function isDarkMode() {
   const Configuration = android.content.res.Configuration;

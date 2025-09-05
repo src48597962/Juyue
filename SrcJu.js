@@ -796,7 +796,7 @@ function erji() {
                             title: "固化显示简介",
                             js: $.toString(() => {
                                 juItem.set('二级固化显示简介', true);
-                                toast('已固化显示简介');
+                                return 'toast://已固化显示简介';
                             })
                         }]
                     }
@@ -819,7 +819,7 @@ function erji() {
                             deleteItemByCls("SrcJudescload");
                             if(juItem.get('二级固化显示简介')){
                                 juItem.clear('二级固化显示简介')
-                                toast('取消固化显示简介');
+                                return 'toast://取消固化显示简介';
                             }
                         }else{
                             putMyVar('二级简介打开标识',"1");

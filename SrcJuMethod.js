@@ -426,7 +426,7 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_center_1'
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
-                setJkSort(jkdata, {fail: 1});
+                setJkSort(jkdata.id, {fail: 1});
             }
             //恢复全局变量
             setResult = setResult2;
@@ -521,7 +521,7 @@ function getSsData(name, jkdata, page) {
     } catch (e) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        setJkSort(jkdata, {fail: 1});
+        setJkSort(jkdata.id, {fail: 1});
     }
     //恢复全局变量
     setResult = setResult2;
@@ -856,7 +856,6 @@ function isJuDetail(){
 }
 // 设置接口顺序
 function setJkSort(data, so) {
-    xlog(data);
     let waitlist= [];
     if($.type(data)=='string'){
         waitlist.push(data);
@@ -875,7 +874,6 @@ function setJkSort(data, so) {
         }else if($.type(it)=="string"){
             key = it;
         }
-        xlog(key);
         let jksort = sort[key] || {};
         if($.type(jksort) != "object"){
             jksort = {};
@@ -893,7 +891,6 @@ function setJkSort(data, so) {
         }
         sort[key] = jksort;
     })
-    xlog(sort);
     writeFile(sortfile, JSON.stringify(sort));
 }
 //获取可用的链接地址且最快的

@@ -781,37 +781,37 @@ function erji() {
             
             if(!noShow.简介){
                 let erIcons = getThemeList(true)['二级图标'];
+                let jjarr = [{
+                    title: `<font color="`+getItem('主题颜色','#3399cc')+`">详情简介 </font>`,
+                    col_type: "avatar",
+                    url: $("#noLoading#").lazyRule(() => {
+                        clearMyVar('二级简介打开标识');
+                        deleteItemByCls("SrcJudescload");
+                        return "hiker://empty";
+                    }),
+                    pic_url: getIcon(erIcons[3].img, false, erIcons[3].color),
+                    extra: {
+                        cls: "SrcJudescload"
+                    }
+                },{
+                    title: erTempData.desc||"",
+                    col_type: "rich_text",
+                    extra: {
+                        cls: "SrcJudescload"
+                    }
+                }]
                 d.push({
                     title: "详情简介",
-                    url: $("#noLoading#").lazyRule((desc, jjimg) => {
+                    url: $("#noLoading#").lazyRule((jjarr) => {
                         if(getMyVar('二级简介打开标识')=="1"){
                             clearMyVar('二级简介打开标识');
                             deleteItemByCls("SrcJudescload");
                         }else{
                             putMyVar('二级简介打开标识',"1");
-                            let Color = getItem('主题颜色','#3399cc');
-                            addItemAfter('detailid', [{
-                                title: `<font color="`+Color+`">详情简介 </font>`,
-                                col_type: "avatar",
-                                url: $("#noLoading#").lazyRule(() => {
-                                    clearMyVar('二级简介打开标识');
-                                    deleteItemByCls("SrcJudescload");
-                                    return "hiker://empty";
-                                }),
-                                pic_url: jjimg,
-                                extra: {
-                                    cls: "SrcJudescload"
-                                }
-                            },{
-                                title: desc,
-                                col_type: "rich_text",
-                                extra: {
-                                    cls: "SrcJudescload"
-                                }
-                            }]);
+                            addItemAfter('detailid', jjarr);
                         }
                         return "hiker://empty";
-                    }, erTempData.desc||"", getIcon(erIcons[3].img, false, erIcons[3].color)),
+                    }, jjarr),
                     pic_url: getIcon(erIcons[0].img, false, erIcons[0].color),
                     col_type: 'icon_small_3',
                     extra: {

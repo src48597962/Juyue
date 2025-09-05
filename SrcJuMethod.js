@@ -426,6 +426,7 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_center_1'
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
+                setJkSort(jkdata, {fail: 1});
             }
             //恢复全局变量
             setResult = setResult2;
@@ -520,6 +521,7 @@ function getSsData(name, jkdata, page) {
     } catch (e) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
+        setJkSort(jkdata, {fail: 1});
     }
     //恢复全局变量
     setResult = setResult2;
@@ -851,6 +853,44 @@ function isJuDetail(){
     }else{
         return all?true:false;
     }
+}
+// 设置接口顺序
+function setJkSort(data, so) {
+    let waitlist= [];
+    if($.type(data)=='string'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    let sort = {};
+    if(fetch(sortfile)){
+        eval("sort = " + fetch(sortfile));
+    }
+    waitlist.forEach(it=>{
+        let key;
+        if($.type(it)=="object"){
+            key = it.id;
+        }else if($.type(it)=="string"){
+            key = it;
+        }
+        let jksort = sort[key] || {};
+        if($.type(jksort) != "object"){
+            jksort = {};
+        }
+        if(so.use==0){
+            jksort.use = 0;
+        }else if(so.fail==0){
+            jksort.fail = 0;
+        }else if(so.use){
+            jksort.use = jksort.use || 0;
+            jksort.use++;
+        }else if(so.fail){
+            jksort.fail = jksort.fail || 0;
+            jksort.fail++;
+        }
+        sort[key] = jksort;
+    })
+    writeFile(sortfile, JSON.stringify(sort));
 }
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){

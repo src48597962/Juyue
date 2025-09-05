@@ -135,6 +135,22 @@ function getDatas(lx, isyx) {
     
     if (getItem("sourceListSort") == "接口名称") {
         datalist = sortByPinyin(datalist);
+    }else if (getItem("sourceListSort") == "使用频率") {
+        let sort = {};
+        if(fetch(sortfile)){
+            eval("sort = " + fetch(sortfile));
+        }
+        datalist.forEach(it=>{
+            try{
+                let jksort = sort[it.id] || {};
+                it.sort = jksort.use || 0;
+            }catch(e){
+                it.sort = 0;
+            }
+        })
+        datalist.sort((a, b) => {
+            return b.sort - a.sort
+        })
     }else{
         datalist.reverse();
     }
@@ -611,7 +627,7 @@ function selectSource(selectGroup) {
             return changeSource(sourcedata);
         },
         menuClick(manage) {
-            let menuarr = ["改变样式", "排序:" + (getItem('sourceListSort')=='接口名称'?"更新时间":"接口名称"), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"];
+            let menuarr = ["改变样式", "排序:" + getItem('sourceListSort','更新时间'), "列表倒序", juItem2.get('noShowType')=='1'?"显示分类":"不显示分类"];
             if(lockgroups.length>0 && getMyVar('SrcJu_已验证指纹')!='1'){
                 menuarr.push("显示加锁分组");
             }
@@ -625,8 +641,13 @@ function selectSource(selectGroup) {
                         manage.changeColumns(spen);
                         manage.scrollToPosition(index, false);
                     } else if (i === 1) {
-                        setItem("sourceListSort", getItem('sourceListSort')=='接口名称' ? "更新时间" : "接口名称");
-                        toast('下次打开切源列表生效>'+s);
+                        let sorttype = ["更新时间","接口名称","使用频率"].map(v=>v==getItem('sourceListSort','更新时间')?v+"√":v);
+                        showSelectOptions({
+                            "title": "选择排序方式", 
+                            "options" : sorttype, 
+                            "col": 1, 
+                            "js": `setItem('sourceListSort', input.replace("√",""));'toast://排序方式在下次生效：' + input.replace("√","")`
+                        })
                     } else if (i === 2) {
                         items.reverse();
                         manage.change(items);

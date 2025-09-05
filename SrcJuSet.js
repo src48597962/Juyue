@@ -124,7 +124,7 @@ function SRCSet() {
                     sm = "退出仅显示相似列表";
                 }else{
                     return $(getMyVar('similarTitles','0.8'),"源名相似度0-1").input(() => {
-                        if(!parseInt(input)||parseInt(input)>1||parseInt(input)<0){return 'toast://输入有误，请输入0-1之间1位小数'}
+                        if(!parseFloat(input)||parseFloat(input)>1||parseFloat(input)<0){return 'toast://输入有误，请输入0-1之间1位小数'}
                         putMyVar('similarTitles', input);
                         refreshPage(false);
                         return "toast://进入仅显示相似列表，阀值"+input;

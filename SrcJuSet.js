@@ -118,10 +118,10 @@ function SRCSet() {
                 });
                 return 'hiker://empty';
             }else if(input=="查看相似"||input=="退出相似"){
-                let sm;
                 if(getMyVar('similarTitles')){
                     clearMyVar('similarTitles');
-                    sm = "退出仅显示相似列表";
+                    refreshPage(false);
+                    return "toast://退出仅显示相似列表";
                 }else{
                     return $(getMyVar('similarTitles','0.8'),"源名相似度0-1").input(() => {
                         if(!parseFloat(input)||parseFloat(input)>1||parseFloat(input)<0){return 'toast://输入有误，请输入0-1之间1位小数'}
@@ -130,8 +130,6 @@ function SRCSet() {
                         return "toast://进入仅显示相似列表，阀值"+input;
                     })
                 }
-                refreshPage(false);
-                return "toast://"+sm;
             }
         }),
         img: getIcon(jkIcons[1].img, false, jkIcons[1].color),

@@ -787,8 +787,8 @@ function erji() {
                     url: $("#noLoading#").lazyRule(() => {
                         clearMyVar('二级简介打开标识');
                         deleteItemByCls("SrcJudescload");
-                        if(juItem.get('二级简介固化显示')){
-                            juItem.clear('二级简介固化显示')
+                        if(juItem2.get('二级简介固化显示')){
+                            juItem2.clear('二级简介固化显示')
                             return 'toast://取消简介固化显示';
                         }
                         return "hiker://empty";
@@ -799,7 +799,7 @@ function erji() {
                         longClick: [{
                             title: "固化显示简介",
                             js: $.toString(() => {
-                                juItem.set('二级简介固化显示', true);
+                                juItem2.set('二级简介固化显示', true);
                                 return 'toast://已固化简介显示';
                             })
                         }]
@@ -811,7 +811,7 @@ function erji() {
                         cls: "SrcJudescload"
                     }
                 }]
-                if(juItem.get('二级简介固化显示')){
+                if(juItem2.get('二级简介固化显示')){
                     putMyVar('二级简介打开标识',"1");
                     d = d.concat(jjarr);;
                 }

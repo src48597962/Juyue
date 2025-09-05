@@ -791,7 +791,14 @@ function erji() {
                     }),
                     pic_url: getIcon(erIcons[3].img, false, erIcons[3].color),
                     extra: {
-                        cls: "SrcJudescload"
+                        cls: "SrcJudescload",
+                        longClick: [{
+                            title: "固化显示简介",
+                            js: $.toString(() => {
+                                juItem.set('二级固化显示简介', true);
+                                toast('已固化显示简介');
+                            })
+                        }]
                     }
                 },{
                     title: erTempData.desc||"",
@@ -800,12 +807,20 @@ function erji() {
                         cls: "SrcJudescload"
                     }
                 }]
+                if(juItem.get('二级固化显示简介')){
+                    putMyVar('二级简介打开标识',"1");
+                    d = d.concat(jjarr);;
+                }
                 d.push({
                     title: "详情简介",
                     url: $("#noLoading#").lazyRule((jjarr) => {
                         if(getMyVar('二级简介打开标识')=="1"){
                             clearMyVar('二级简介打开标识');
                             deleteItemByCls("SrcJudescload");
+                            if(juItem.get('二级固化显示简介')){
+                                juItem.clear('二级固化显示简介')
+                                toast('取消固化显示简介');
+                            }
                         }else{
                             putMyVar('二级简介打开标识',"1");
                             addItemAfter('detailid', jjarr);

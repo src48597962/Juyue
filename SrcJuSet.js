@@ -164,7 +164,7 @@ function SRCSet() {
 
     if(getMyVar("seacrhJiekou")){
         jkdatalist = jkdatalist.filter(it=>{
-            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1 || (it.author||"").indexOf(getMyVar("seacrhJiekou"))>-1;
+            return it.name.indexOf(getMyVar("seacrhJiekou"))>-1 || (it.author||"").indexOf(getMyVar("seacrhJiekou"))>-1 || it.id==getMyVar("seacrhJiekou");
         })
     }
     let yxdatalist = jkdatalist.filter(it=>{

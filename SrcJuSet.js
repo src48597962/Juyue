@@ -834,7 +834,13 @@ function SRCSet() {
             img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {
-                id: it.id
+                id: it.id,
+                longClick: [{
+                    title: "打开代码文件",
+                    js: $.toString((url) => {
+                        return 'openFile://'+ url;
+                    },it.url)
+                }]
             }
         });
     })

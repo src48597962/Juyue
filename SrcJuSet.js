@@ -163,9 +163,12 @@ function SRCSet() {
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));
 
     if(getMyVar("seacrhJiekou")){
+        let t1 = new Date().getTime();
         jkdatalist = jkdatalist.filter(it=>{
             return it.name.toLowerCase().indexOf(getMyVar("seacrhJiekou").toLowerCase())>-1 || (it.author||"").indexOf(getMyVar("seacrhJiekou"))>-1 || it.id==getMyVar("seacrhJiekou");
         })
+        let t2 = new Date().getTime();
+        xlog('筛选耗时：' + (t2-t1) + 'ms');
     }
     let yxdatalist = jkdatalist.filter(it=>{
         return !it.stop;

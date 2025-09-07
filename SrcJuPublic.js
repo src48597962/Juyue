@@ -866,6 +866,80 @@ function excludeLoadingItems() {
     })
     */
 }
+// 获取接口源列表元素
+function jkItemList(jkdatalist){
+    let d = [];
+    jkdatalist.forEach(it => {
+        let selectmenu,datatitle;
+        selectmenu = ["分享","编辑", "删除", it.stop?"启用":"禁用", "置顶", "测试"];
+        datatitle = getDataTitle(it);
+        let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+
+        d.push({
+            title: datatitle,
+            url: getMyVar('批量选择模式')?$('#noLoading#').lazyRule((data) => {
+                data = JSON.parse(base64Decode(data));
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                duoselect(data);
+                return "hiker://empty";
+            },base64Encode(JSON.stringify(it))):$(selectmenu, 2).select((data) => {
+                data = JSON.parse(base64Decode(data));
+                if (input == "分享") {
+                    if(getItem("sharePaste","")==""){
+                        let pastes = getPastes();
+                        pastes.push('云口令文件');
+                        return $(pastes,2).select((data)=>{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            return JYshare(input, data);
+                        }, data)
+                    }else{
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        return JYshare(getItem("sharePaste",""), data);
+                    }
+                } else if (input == "编辑") {
+                    return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        jiekouapi(data);
+                    }, data)
+                } else if (input == "删除") {
+                    return $("确定删除："+data.name).confirm((data)=>{
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        deleteData(data);
+                        refreshPage(false);
+                        return 'toast://已删除:'+data.name;
+                    }, data)
+                } else if (input == "测试") {
+                    return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                        setPageTitle(data.name+"-接口测试");
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                        yiji(data);
+                    }, data);
+                } else {//置顶、禁用、启用
+                    if(input == "置顶" && getItem("sourceListSort", "更新时间") != "更新时间"){
+                        return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
+                    }
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    let sm = dataHandle(data, input);
+                    refreshPage(false);
+                    return 'toast://' + sm;
+                }
+            }, base64Encode(JSON.stringify(it))),
+            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":""),
+            img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
+            col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
+            extra: {
+                id: it.id,
+                longClick: [{
+                    title: "打开代码文件",
+                    js: $.toString((url) => {
+                        return 'openFile://'+ url;
+                    },it.url)
+                }]
+            }
+        });
+    })
+    return d;
+}
 // 检测依赖
 if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){

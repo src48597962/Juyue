@@ -238,7 +238,8 @@ function SRCSet() {
     groupNames.unshift("全部");
     let Color = getItem('主题颜色','#3399cc');
     let groupColtype = getItem("groupColtype", "flex_button");
-    let lockgroups = Juconfig["lockgroups"] || [];
+    let lockgroups = juItem2.get('lockgroups') || [];
+    let hidegroups = juItem2.get('hidegroups') || [];
     groupNames.forEach(it =>{
         let obj = {
             title: (getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it) + (lockgroups.indexOf(it)>-1?"🔒":""),
@@ -287,8 +288,7 @@ function SRCSet() {
             obj.extra.longClick = [{
                 title: lockgroups.indexOf(it)>-1?"解锁":"加锁",
                 js: $.toString((it) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let lockgroups = Juconfig["lockgroups"] || [];
+                    let lockgroups = juItem2.get('lockgroups') || [];
                     if(lockgroups.indexOf(it)>-1){
                         const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
                         if (hikerPop.canBiometric() !== 0) {
@@ -296,16 +296,26 @@ function SRCSet() {
                         }
                         lockgroups = lockgroups.filter(item => item !== it);
                         let pop = hikerPop.checkByBiometric(() => {
-                            Juconfig["lockgroups"] = lockgroups;
-                            writeFile(cfgfile, JSON.stringify(Juconfig));
+                            juItem2.set('lockgroups', lockgroups);
                             refreshPage(false);
                         });
                     }else{
                         lockgroups.push(it);
-                        Juconfig["lockgroups"] = lockgroups;
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        juItem2.set('lockgroups', lockgroups);
                         refreshPage(false);
                     }
+                },it)
+            },{
+                title: hidegroups.indexOf(it)>-1?"显示":"隐藏",
+                js: $.toString((it) => {
+                    let hidegroups = juItem2.get('hidegroups') || [];
+                    if(hidegroups.indexOf(it)>-1){
+                        hidegroups = hidegroups.filter(item => item !== it);
+                    }else{
+                        hidegroups.push(it);
+                    }
+                    juItem2.set('hidegroups', hidegroups);
+                    refreshPage(false);
                 },it)
             }]
         }

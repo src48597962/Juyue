@@ -213,7 +213,7 @@ function SRCSet() {
                 if(input=="" && getMyVar("seacrhJiekou")){
                     refreshPage();
                 }else if(input != ""){
-                    deleteItemByCls('jkItemListCls');
+                    deleteItemByCls('jkItemLoadList');
                     putMyVar("seacrhJiekou", input);
                     let t1 = new Date().getTime();
                     let jkdatalist = storage0.getMyVar("jkdatalist");

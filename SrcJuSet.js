@@ -173,7 +173,7 @@ function SRCSet() {
         }
         let t1 = new Date().getTime();
         jkdatalist = jkdatalist.filter(it=>{
-            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr || searchByPinyin(it.name,seacrhStr);
+            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr;// || searchByPinyin(it.name,seacrhStr);
         })
         let t2 = new Date().getTime();
         xlog('筛选耗时：' + (t2-t1) + 'ms');

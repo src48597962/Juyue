@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.3",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V1.4",
+        records: [
+            "优化：接口列表检索改为动态刷新列表+支持py"
+        ]
+    },{
         title: "2025/09/05 V1.3",
         records: [
             "修复：完善二级自定义封面是否显示逻辑",

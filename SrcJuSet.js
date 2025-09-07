@@ -238,7 +238,7 @@ function SRCSet() {
     groupNames.unshift("全部");
     let Color = getItem('主题颜色','#3399cc');
     let groupColtype = getItem("groupColtype", "flex_button");
-    let lockgroups = juItem2.get('lockgroups') || [];
+    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
     let hidegroups = juItem2.get('hidegroups') || [];
     groupNames.forEach(it =>{
         let obj = {
@@ -288,7 +288,8 @@ function SRCSet() {
             obj.extra.longClick = [{
                 title: lockgroups.indexOf(it)>-1?"解锁":"加锁",
                 js: $.toString((it) => {
-                    let lockgroups = juItem2.get('lockgroups') || [];
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');//先临时放着吧
+                    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
                     if(lockgroups.indexOf(it)>-1){
                         const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
                         if (hikerPop.canBiometric() !== 0) {

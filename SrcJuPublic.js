@@ -127,6 +127,7 @@ function getDatas(lx, isyx) {
      
     if (lx == "yi") {
         datalist = datalist.filter(it => it.ilk != "2" && it.ilk != "4");
+
     } else if (lx == "er") {
         datalist = datalist.filter(it => it.ilk != "1" && it.ilk != "4");
     } else if (lx == "tmpl") {
@@ -247,7 +248,10 @@ function getJkGroups(datas, isgroup) {
             yxTypes.push(it);
         }
     })
-    return yxTypes.concat(groupNames);
+    let hidegroups = juItem2.get('hidegroups') || [];
+    return yxTypes.concat(groupNames).filter(item=>{
+        return hidegroups.indexOf(item) == -1;//返回没有隐藏的分组s
+    });
 }
 //获取不同场景分组分类名称arry
 function getTypeNames(s, datas) {
@@ -292,7 +296,7 @@ function getSearchLists(group) {
     }
     /*
     else{
-        let lockgroups = Juconfig["lockgroups"] || [];
+        let lockgroups = juItem2.get('lockgroups') || [];
         datalist = datalist.filter(it=>{
             return lockgroups.indexOf(it.group||it.type)==-1;
         })
@@ -460,8 +464,7 @@ function selectSource2(selectGroup) {
     return "hiker://empty";
 }
 // 判断源是否在加锁分组中，返回bool
-function isLockGroups(jkdata) {
-    let lockgroups = Juconfig["lockgroups"] || [];
+function isLockGroups(jkdata, lockgroups) {
     if(juItem2.get('noShowType')!='1'){
         return lockgroups.indexOf(jkdata.type)>-1 || (jkdata.group||"").split(',').some(item => lockgroups.includes(item));
     }else{
@@ -482,10 +485,10 @@ function selectSource(selectGroup) {
     //hikerPop插件
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
-    let lockgroups = Juconfig["lockgroups"] || [];
+    let lockgroups = juItem2.get('lockgroups') || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){
         sourceList = sourceList.filter(it=>{
-            return !isLockGroups(it);
+            return !isLockGroups(it, lockgroups);
         })
     }
 

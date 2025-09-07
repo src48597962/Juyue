@@ -162,7 +162,6 @@ function SRCSet() {
     }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }
-
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));
 
     if(getMyVar("seacrhJiekou")){
@@ -178,6 +177,7 @@ function SRCSet() {
         return !it.stop;
     });
     storage0.putMyVar("jkdatalist", jkdatalist);
+
     d.push({
         title: '分享',
         url: yxdatalist.length == 0 ? "toast://有效接口为0，无法分享" : $(pastes,2).select(()=>{

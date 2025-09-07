@@ -223,11 +223,11 @@ function SRCSet() {
                     deleteItemByCls('jkItemLoadList');
                     putMyVar("seacrhJiekou", input);
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    const PinyinEngine = $.require("https://cdn.jsdelivr.net/npm/pinyin-engine@1.2.2/dist/tw.min.js");
                     let jkdatalist = storage0.getMyVar("jkdatalist");
+                    const PinyinEngine = $.require("https://cdn.jsdelivr.net/npm/pinyin-engine@1.2.2/dist/tw.min.js");
                     const pinyinEngine = new PinyinEngine(jkdatalist, ['name']);
                     jkdatalist = jkdatalist.filter(it=>{
-                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || pinyinEngine.query(input);
+                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input;// || pinyinEngine.query(input);
                     })
                     storage0.putMyVar("seacrhDataList", jkdatalist);
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));

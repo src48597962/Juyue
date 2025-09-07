@@ -210,12 +210,22 @@ function SRCSet() {
             defaultValue: getMyVar('seacrhJiekou',''),
             titleVisible: true,
             onChange: $.toString(() => {
-                    if(input==""){
-                        deleteItemByCls('searchrecord');
-                    }else if(input==" "){
-                        addItemAfter('newSearchid', d);
-                    }
-                })
+                if(input=="" && getMyVar("seacrhJiekou")){
+                    refreshPage();
+                }else if(input != ""){
+                    deleteItemByCls('jkItemList');
+                    putMyVar("seacrhJiekou", input);
+                    let t1 = new Date().getTime();
+                    let jkdatalist = storage0.getMyVar("jkdatalist");
+                    jkdatalist = jkdatalist.filter(it=>{
+                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input;
+                    })
+                    let t2 = new Date().getTime();
+                    xlog('筛选耗时：' + (t2-t1) + 'ms');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    addItemBefore('jkItemLoading', jkItemList(jkdatalist));
+                }
+            })
             /*
     if(getMyVar("seacrhJiekou")){
         let seacrhStr = getMyVar("seacrhJiekou");
@@ -428,7 +438,10 @@ function SRCSet() {
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前接口数：" + jkdatalist.length + "，总有效数："+yxdatalist.length+"</font></small>",
         url: 'hiker://empty',
-        col_type: 'text_center_1'
+        col_type: 'text_center_1',
+        extra: {
+            id: 'jkItemLoading'
+        }
     });
     setResult(d);
 }

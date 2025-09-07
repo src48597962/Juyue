@@ -341,9 +341,6 @@ function getDataTitle(data, ide) {
     }else{
         dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
     }
-    if(ide){
-        xlog(dataTitle);
-    }
     return dataTitle;
 }
 // 接口多选处理方法
@@ -879,7 +876,7 @@ function jkItemList(jkdatalist){
         let selectmenu,datatitle;
         selectmenu = ["分享","编辑", "删除", it.stop?"启用":"禁用", "置顶", "测试"];
         if(selectlist.some(item => it.id==item.id)){
-            dataTitle = colorTitle(getDataTitle(it, '●'), '#3CB371');
+            datatitle = colorTitle(getDataTitle(it, '●'), '#3CB371');
         }else{
             datatitle = getDataTitle(it);
         }

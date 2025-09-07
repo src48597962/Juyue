@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V1.4",
         records: [
-            "优化：接口列表检索改为动态刷新列表+支持py"
+            "优化：接口列表检索改为动态刷新列表+支持py",
+            "新增：分组支持在接口列表处设置为主页隐藏"
         ]
     },{
         title: "2025/09/05 V1.3",

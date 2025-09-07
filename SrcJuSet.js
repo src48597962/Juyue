@@ -211,6 +211,7 @@ function SRCSet() {
             titleVisible: true,
             onChange: $.toString(() => {
                 if(input=="" && getMyVar("seacrhJiekou")){
+                    clearMyVar('seacrhJiekou');
                     refreshPage();
                 }else if(input != ""){
                     deleteItemByCls('jkItemLoadList');

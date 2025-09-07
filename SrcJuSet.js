@@ -158,7 +158,7 @@ function SRCSet() {
         let t1 = new Date().getTime();
         datalist = similarTitles(datalist, getMyVar('similarTitles'));
         let t2 = new Date().getTime();
-        xlog('相似耗时：' + (t2-t1) + 'ms');
+        xlog('查看相似耗时：' + (t2-t1) + 'ms');
     }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }
@@ -166,9 +166,14 @@ function SRCSet() {
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));
 
     if(getMyVar("seacrhJiekou")){
+        let seacrhStr = getMyVar("seacrhJiekou");
+        function searchByPinyin(str, keyword) {
+            let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
+            return PinyinMatch.match(str, keyword) !== false;
+        }
         let t1 = new Date().getTime();
         jkdatalist = jkdatalist.filter(it=>{
-            return it.name.toLowerCase().indexOf(getMyVar("seacrhJiekou").toLowerCase())>-1 || (it.author||"").indexOf(getMyVar("seacrhJiekou"))>-1 || it.id==getMyVar("seacrhJiekou");
+            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr || searchByPinyin(it.name,seacrhStr);
         })
         let t2 = new Date().getTime();
         xlog('筛选耗时：' + (t2-t1) + 'ms');

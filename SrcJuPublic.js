@@ -127,7 +127,6 @@ function getDatas(lx, isyx) {
      
     if (lx == "yi") {
         datalist = datalist.filter(it => it.ilk != "2" && it.ilk != "4");
-
     } else if (lx == "er") {
         datalist = datalist.filter(it => it.ilk != "1" && it.ilk != "4");
     } else if (lx == "tmpl") {
@@ -248,10 +247,7 @@ function getJkGroups(datas, isgroup) {
             yxTypes.push(it);
         }
     })
-    let hidegroups = juItem2.get('hidegroups') || [];
-    return yxTypes.concat(groupNames).filter(item=>{
-        return hidegroups.indexOf(item) == -1;//返回没有隐藏的分组s
-    });
+    return yxTypes.concat(groupNames);
 }
 //获取不同场景分组分类名称arry
 function getTypeNames(s, datas) {
@@ -260,6 +256,10 @@ function getTypeNames(s, datas) {
         snames = ["漫画", "小说", "音频", "视频", "聚合"];
     } else if (s == "主页") {
         snames = getJkGroups(datas || getDatas('yi', 1));
+        let hidegroups = juItem2.get('hidegroups') || [];
+        snames = snames.filter(item=>{
+            return hidegroups.indexOf(item) == -1;//返回没有隐藏的分组s
+        });
     } else {
         snames = runTypes;
     }

@@ -335,11 +335,17 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
+    let dataTitle;
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-        return (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + (data.version?'\nV'+data.version:'') + '</font></small>';
+        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + (data.version?'\nV'+data.version:'') + '</font></small>';
     }else{
-        return (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
+        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
     }
+    let selectlist = storage0.getMyVar('duodatalist') || [];
+    if(selectlist.some(item => data.id==item.id)){
+        dataTitle = colorTitle(dataTitle.replace('○', '●'));
+    }
+    return dataTitle;
 }
 // 接口多选处理方法
 function duoselect(data){

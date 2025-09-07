@@ -42,8 +42,10 @@ function juItemF(id, s){
             let item = items[id] || {};
             if (item[key] !== undefined && item[key] !== null) {
                 return item[key];
+            }else if(str != ''){
+                return str;
             }
-            return str || '';
+            return '';
         },
         'clear': function (key, id2) {
             if(!key) return;

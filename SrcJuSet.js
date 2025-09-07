@@ -200,10 +200,10 @@ function SRCSet() {
         col_type: "line"
     });
     d.push({
-        title: "🔍",
+        title: "筛选",
         url: $.toString(() => {
-            putMyVar("seacrhJiekou",input);
-            refreshPage(false);
+            //putMyVar("seacrhJiekou",input);
+            //refreshPage(false);
         }),
         desc: "搜你想要的...",
         col_type: "input",
@@ -222,13 +222,10 @@ function SRCSet() {
                     deleteItemByCls('jkItemLoadList');
                     putMyVar("seacrhJiekou", input);
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let t1 = new Date().getTime();
                     let jkdatalist = storage0.getMyVar("jkdatalist");
                     jkdatalist = jkdatalist.filter(it=>{
                         return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input;
                     })
-                    let t2 = new Date().getTime();
-                    xlog('筛选耗时：' + (t2-t1) + 'ms');
                     storage0.putMyVar("seacrhDataList", jkdatalist);
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));
                 }

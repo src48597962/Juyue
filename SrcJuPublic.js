@@ -335,17 +335,11 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
-    let dataTitle;
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + (data.version?'\nV'+data.version:'') + '</font></small>';
+        return (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + (data.version?'\nV'+data.version:'') + '</font></small>';
     }else{
-        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
+        return (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
     }
-    let selectlist = storage0.getMyVar('duodatalist') || [];
-    if(selectlist.some(item => data.id==item.id)){
-        dataTitle = colorTitle(dataTitle.replace('○', '●'), '#3CB371');
-    }
-    return dataTitle;
 }
 // 接口多选处理方法
 function duoselect(data){
@@ -874,11 +868,16 @@ function excludeLoadingItems() {
 }
 // 获取接口源列表元素
 function jkItemList(jkdatalist){
+    let selectlist = storage0.getMyVar('duodatalist') || [];
     let d = [];
     jkdatalist.forEach(it => {
         let selectmenu,datatitle;
         selectmenu = ["分享","编辑", "删除", it.stop?"启用":"禁用", "置顶", "测试"];
-        datatitle = getDataTitle(it);
+        if(selectlist.some(item => it.id==item.id)){
+            dataTitle = colorTitle(getDataTitle(it, '●'), '#3CB371');
+        }else{
+            datatitle = getDataTitle(it);
+        }
         let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
         d.push({

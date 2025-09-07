@@ -242,7 +242,7 @@ function SRCSet() {
     let hidegroups = juItem2.get('hidegroups') || [];
     groupNames.forEach(it =>{
         let obj = {
-            title: (getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it) + (lockgroups.indexOf(it)>-1?"🔒":""),
+            title: (getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it) + (lockgroups.indexOf(it)>-1?"🔒":"") + (hidegroups.indexOf(it)>-1?"👁️‍🗨️":""),
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("selectGroup")!=it){
                     putMyVar("selectGroup",it);

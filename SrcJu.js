@@ -452,7 +452,7 @@ function yiji(testSource) {
     //加载主页内容
     if(jkdata.name){
         try{
-            let lockgroups = Juconfig["lockgroups"] || [];
+            let lockgroups = juItem2.get('lockgroups') || [];
             if((isLockGroups(jkdata) || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('SrcJu_已验证指纹')!='1'){
                 const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
                 if (hikerPop.canBiometric() !== 0) {

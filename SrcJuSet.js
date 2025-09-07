@@ -167,13 +167,9 @@ function SRCSet() {
 
     if(getMyVar("seacrhJiekou")){
         let seacrhStr = getMyVar("seacrhJiekou");
-        function searchByPinyin(str, keyword) {
-            let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
-            return PinyinMatch.match(str, keyword) !== false;
-        }
         let t1 = new Date().getTime();
         jkdatalist = jkdatalist.filter(it=>{
-            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr;// || searchByPinyin(it.name,seacrhStr);
+            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr;
         })
         let t2 = new Date().getTime();
         xlog('筛选耗时：' + (t2-t1) + 'ms');

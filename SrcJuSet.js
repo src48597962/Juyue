@@ -202,7 +202,7 @@ function SRCSet() {
     d.push({
         title: "🔍",
         url: $.toString(() => {
-            return 'toast://大于1个字符自动筛选'
+            return 'toast://输入大于1个字符自动筛选'
             //putMyVar("seacrhJiekou",input);
             //refreshPage(false);
         }),

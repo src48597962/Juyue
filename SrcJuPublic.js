@@ -465,6 +465,7 @@ function selectSource2(selectGroup) {
 }
 // 判断源是否在加锁分组中，返回bool
 function isLockGroups(jkdata, lockgroups) {
+    lockgroups = lockgroups || [];
     if(juItem2.get('noShowType')!='1'){
         return lockgroups.indexOf(jkdata.type)>-1 || (jkdata.group||"").split(',').some(item => lockgroups.includes(item));
     }else{

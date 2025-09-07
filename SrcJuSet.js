@@ -200,8 +200,9 @@ function SRCSet() {
         col_type: "line"
     });
     d.push({
-        title: "筛选",
+        title: "🔍",
         url: $.toString(() => {
+            return 'toast://大于1个字符自动筛选'
             //putMyVar("seacrhJiekou",input);
             //refreshPage(false);
         }),
@@ -218,13 +219,15 @@ function SRCSet() {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     let jkdatalist = storage0.getMyVar("jkdatalist");
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));
-                }else if(input != ""){
+                }else if(input != "" && input.length>1){
                     deleteItemByCls('jkItemLoadList');
                     putMyVar("seacrhJiekou", input);
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    const PinyinEngine = $.require("https://cdn.jsdelivr.net/npm/pinyin-engine@1.2.2/dist/tw.min.js");
                     let jkdatalist = storage0.getMyVar("jkdatalist");
+                    const pinyinEngine = new PinyinEngine(jkdatalist, ['name']);
                     jkdatalist = jkdatalist.filter(it=>{
-                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input;
+                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || pinyinEngine.query(input);
                     })
                     storage0.putMyVar("seacrhDataList", jkdatalist);
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));

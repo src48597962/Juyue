@@ -296,7 +296,7 @@ function getSearchLists(group) {
     }
     /*
     else{
-        let lockgroups = juItem2.get('lockgroups') || [];
+        let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
         datalist = datalist.filter(it=>{
             return lockgroups.indexOf(it.group||it.type)==-1;
         })
@@ -485,7 +485,7 @@ function selectSource(selectGroup) {
     //hikerPop插件
     const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
-    let lockgroups = juItem2.get('lockgroups') || [];
+    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){
         sourceList = sourceList.filter(it=>{
             return !isLockGroups(it, lockgroups);

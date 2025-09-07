@@ -343,7 +343,7 @@ function getDataTitle(data, ide) {
     }
     let selectlist = storage0.getMyVar('duodatalist') || [];
     if(selectlist.some(item => data.id==item.id)){
-        dataTitle = colorTitle(dataTitle.replace('○', '●'));
+        dataTitle = colorTitle(dataTitle.replace('○', '●'), '#3CB371');
     }
     return dataTitle;
 }

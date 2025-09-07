@@ -202,19 +202,19 @@ function SRCSet() {
     d.push({
         title: "🔍",
         url: $.toString(() => {
-            deleteItemByCls('jkItemLoadList');
-            putMyVar("seacrhJiekou", input);
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-            let jkdatalist = storage0.getMyVar("jkdatalist");
-            let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
-            jkdatalist = jkdatalist.filter(it=>{
-                return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
-            })
-            storage0.putMyVar("seacrhDataList", jkdatalist);
-            addItemBefore('jkItemLoading', jkItemList(jkdatalist));
-            //return 'toast://输入大于1个字符自动筛选'
-            //putMyVar("seacrhJiekou",input);
-            //refreshPage(false);
+            if(input != ''){
+                deleteItemByCls('jkItemLoadList');
+                putMyVar("seacrhJiekou", input);
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let jkdatalist = storage0.getMyVar("jkdatalist");
+                let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
+                jkdatalist = jkdatalist.filter(it=>{
+                    return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
+                })
+                storage0.putMyVar("seacrhDataList", jkdatalist);
+                addItemBefore('jkItemLoading', jkItemList(jkdatalist));
+            }
+            return 'hiker://empty';
         }),
         desc: "搜你想要的...",
         col_type: "input",
@@ -229,19 +229,6 @@ function SRCSet() {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     let jkdatalist = storage0.getMyVar("jkdatalist");
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));
-                }else if(input != "" && input.length>1){
-                    /*
-                    deleteItemByCls('jkItemLoadList');
-                    putMyVar("seacrhJiekou", input);
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let jkdatalist = storage0.getMyVar("jkdatalist");
-                    let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
-                    jkdatalist = jkdatalist.filter(it=>{
-                        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
-                    })
-                    storage0.putMyVar("seacrhDataList", jkdatalist);
-                    addItemBefore('jkItemLoading', jkItemList(jkdatalist));
-                    */
                 }
             })
         }

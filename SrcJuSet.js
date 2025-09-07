@@ -207,7 +207,7 @@ function SRCSet() {
                 putMyVar("seacrhJiekou", input);
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let jkdatalist = storage0.getMyVar("jkdatalist");
-                let PinyinMatch = $.require("https://cdn.jsdelivr.net/npm/pinyin-match@1.2.8/dist/main.min.js")
+                let PinyinMatch = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/pinyin-match.js");
                 jkdatalist = jkdatalist.filter(it=>{
                     return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
                 })

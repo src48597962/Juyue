@@ -155,7 +155,10 @@ function SRCSet() {
     
     let datalist = getDatas('all');
     if(getMyVar('similarTitles')){
+        let t1 = new Date().getTime();
         datalist = similarTitles(datalist, getMyVar('similarTitles'));
+        let t2 = new Date().getTime();
+        xlog('相似耗时：' + (t2-t1) + 'ms');
     }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }

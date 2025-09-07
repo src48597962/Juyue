@@ -6,6 +6,7 @@ function SRCSet() {
         clearMyVar('duodatalist');
         clearMyVar("seacrhJiekou");
         clearMyVar('jkdatalist');
+        clearMyVar('seacrhDataList');
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
         clearMyVar('similarTitles');
@@ -211,11 +212,16 @@ function SRCSet() {
             titleVisible: true,
             onChange: $.toString(() => {
                 if(input=="" && getMyVar("seacrhJiekou")){
+                    deleteItemByCls('jkItemLoadList');
                     clearMyVar('seacrhJiekou');
-                    refreshPage();
+                    clearMyVar('seacrhDataList');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    let jkdatalist = storage0.getMyVar("jkdatalist");
+                    addItemBefore('jkItemLoading', jkItemList(jkdatalist));
                 }else if(input != ""){
                     deleteItemByCls('jkItemLoadList');
                     putMyVar("seacrhJiekou", input);
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     let t1 = new Date().getTime();
                     let jkdatalist = storage0.getMyVar("jkdatalist");
                     jkdatalist = jkdatalist.filter(it=>{
@@ -223,21 +229,10 @@ function SRCSet() {
                     })
                     let t2 = new Date().getTime();
                     xlog('筛选耗时：' + (t2-t1) + 'ms');
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                    storage0.putMyVar("seacrhDataList", jkdatalist);
                     addItemBefore('jkItemLoading', jkItemList(jkdatalist));
                 }
             })
-            /*
-    if(getMyVar("seacrhJiekou")){
-        let seacrhStr = getMyVar("seacrhJiekou");
-        let t1 = new Date().getTime();
-        jkdatalist = jkdatalist.filter(it=>{
-            return it.name.toLowerCase().includes(seacrhStr.toLowerCase()) || (it.author||"").includes(seacrhStr) || it.id==seacrhStr;
-        })
-        let t2 = new Date().getTime();
-        xlog('筛选耗时：' + (t2-t1) + 'ms');
-    }
-            */
         }
     });
 
@@ -326,7 +321,7 @@ function SRCSet() {
         d.push({
             title: "反向选择",
             url: $('#noLoading#').lazyRule(() => {
-                let jkdatalist = storage0.getMyVar("jkdatalist") || [];
+                let jkdatalist = storage0.getMyVar("seacrhDataList") || storage0.getMyVar("jkdatalist") || [];
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 duoselect(jkdatalist);
                 return "toast://已反选";
@@ -991,7 +986,7 @@ function JYshare(input,data) {
         if(duoselect.length>0){
             sharelist = duoselect;
         }else{
-            sharelist = storage0.getMyVar("jkdatalist", []);
+            sharelist = storage0.getMyVar("seacrhDataList") || storage0.getMyVar("jkdatalist", []);
         }
     }
 

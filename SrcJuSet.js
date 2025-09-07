@@ -2766,6 +2766,7 @@ function similarTitles(items, similarityThreshold) {
     similarityThreshold = similarityThreshold || 0.8;
     
     // 计算两个字符串的相似度（0~1）
+    /*
     function similarity(s1, s2) {
         var longer = s1.length > s2.length ? s1 : s2;
         var shorter = s1.length > s2.length ? s2 : s1;
@@ -2774,6 +2775,13 @@ function similarTitles(items, similarityThreshold) {
         
         var distance = levenshteinDistance(longer, shorter);
         return (longerLength - distance) / longerLength;
+    }
+    */
+    const StringUtil = Packages.com.example.hikerview.utils.StringUtil;
+    function similarity(str1, str2) {
+        var df = 0;
+        df = StringUtil.levenshtein(str1, str2)
+        return df;
     }
 
     // Levenshtein 距离计算

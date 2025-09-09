@@ -325,6 +325,7 @@ function dataHandle(data, input) {
             datalist[index].stop = 1;
         }else if(input == "启用"){
             delete datalist[index].stop;
+            setJkSort(it, {fail: 0});//重置失败
         }else if(input == "置顶"){
             const [target] = datalist.splice(index, 1);
             datalist.push(target);

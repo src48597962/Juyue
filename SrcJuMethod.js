@@ -492,7 +492,7 @@ function getYiData(datatype, jkdata, dd) {
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
                 try{
-                    let json = JSON.parse(fetch(parse['获取更新'](), {
+                    let json = JSON.parse(fetch(parse['获取更新'].call(parse), {
                         withStatusCode:true,
                         timeout: 5000
                     }));

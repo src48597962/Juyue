@@ -501,10 +501,10 @@ function getYiData(datatype, jkdata, dd) {
                         let newparse = func(json.body);
                         if(newparse['版本'] != parse['版本']){
                             confirm({
-                                title: "发现源有新版本",
-                                content: "本地:"+parse['版本']+"=>云端:"+newparse['版本'],
+                                title: "当前源有新版本",
+                                content: "本地:"+parse['版本']+"\n云端:"+newparse['版本'],
                                 confirm: $.toString((id, parseStr, newVer) => {
-                                    updateSourceById(id, parseStr, newVer)
+                                    updateSourceById(id, parseStr, newVer);
                                     refreshPage(true);
                                     return 'toast://已更新';
                                 }, jkdata.id, json.body, newparse['版本']),

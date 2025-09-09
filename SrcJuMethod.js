@@ -493,11 +493,11 @@ function getYiData(datatype, jkdata, dd) {
                             confirm({
                                 title: "发现源有新版本",
                                 content: "本地:"+parse['版本']+"=>云端:"+newparse['版本'],
-                                confirm: $.toString((newparse, id) => {
+                                confirm: $.toString((parseStr, id) => {
                                     
                                     refreshPage(true);
-                                    return 'toast://已更新到:'+newparse['版本'];
-                                }, newparse, jkdata.id),
+                                    return 'toast://已更新';
+                                }, json.body, jkdata.id),
                                 cancel: $.toString(() => {
                                 })
                             });
@@ -936,7 +936,7 @@ function getFastestUrl(list, timeout) {
         let s = Date.now();
         let j = JSON.parse(fetch(obj.url, {
             onlyHeaders: true,
-            timeout,
+            timeout: timeout,
         }));
         let e = Date.now();
         let c = e - s;

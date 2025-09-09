@@ -482,7 +482,7 @@ function getYiData(datatype, jkdata, dd) {
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
                 let json = JSON.parse(fetch(parse['更新地址'], {
-                    onlyHeaders: true,
+                    withStatusCode:true,
                     timeout: 5000
                 }));
                 xlog(json);

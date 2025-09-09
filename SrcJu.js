@@ -94,7 +94,7 @@ function yiji(testSource) {
                         clearMyVar('SrcJu_VersionCheck_'+jkdata.id);
                         juItem.clear('versionCheckTime');
                         refreshPage();
-                        return "toast://偿试更新，有新版会弹窗";
+                        return "toast://获取更新，有新版本会弹窗提示";
                     }, jkdata)
                 })
             }

@@ -1,3 +1,6 @@
+// 必要的变量定义
+let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
+
 // 重定义打印日志
 let xlog = log;
 if (getItem('规则日志打印','1') == "0") {
@@ -13,7 +16,7 @@ if (getItem('接口日志打印') != "1") {
 // 聚阅全局自定义存储变量方法
 function juItemF(id, s){
     let juItemO = {
-        'file': s?'hiker://files/rules/Src/Juyue/juItem.json':'hiker://files/data/聚阅/juItem.json',
+        'file': s?`${rulepath}juItem.json`:'hiker://files/data/聚阅/juItem.json',
         'items': function () {
             let items = {};
             let itemsstr = fetch(this.file);

@@ -477,6 +477,35 @@ function getYiData(datatype, jkdata, dd) {
                 title: parse["频道"].显示为
             })
         }
+        if(parse['更新地址'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
+            let lastCheckTime = juItem.get('versionCheckTime') || 0;
+            let nowtime = Date.now();
+            if (nowtime > (lastCheckTime+24*60*60*1000)) {
+                juItem.set('versionCheckTime', nowtime);
+
+                let json = JSON.parse(fetch(obj.url, {
+                    onlyHeaders: true,
+                    timeout: 5000
+                }));
+                xlog(json);
+                try{
+                    if(programversion<5){
+                        confirm({
+                            title: "温馨提示",
+                            content: "发现小程序新版本",
+                            confirm: $.toString(() => {
+                                return fetch(config.聚阅.replace(/[^/]*$/,'') + "聚阅.hiker");
+                            }),
+                            cancel: $.toString(() => {
+                            })
+                        });
+                    }
+                }catch(e){
+
+                }
+            }
+            putMyVar('SrcJu_VersionCheck_'+jkdata.id, '1');
+        }
     }else{
         if (typeof (setPageParams) != "undefined") {
             if (!MY_PARAMS.data) {

@@ -492,7 +492,8 @@ function getYiData(datatype, jkdata, dd) {
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
                 try{
-                    let json = JSON.parse(fetch(parse['获取更新'].call(parse), {
+                    let newurl = parse['获取更新'].call(parse);
+                    let json = JSON.parse(fetch(newurl, {
                         withStatusCode:true,
                         timeout: 5000
                     }));
@@ -512,8 +513,11 @@ function getYiData(datatype, jkdata, dd) {
                                 })
                             });
                         }
+                    }else{
+                        xlog(jkdata.name + '>获取更新内容失败>' + newurl);
                     }
                 }catch(e){
+                    xlog(jkdata.name + '>执行获取更新报错，信息>' + e.message + " 错误行#" + e.lineNumber);
                 }
                 juItem.set('versionCheckTime', nowtime);
             }

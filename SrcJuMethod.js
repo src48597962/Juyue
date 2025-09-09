@@ -481,25 +481,29 @@ function getYiData(datatype, jkdata, dd) {
             let lastCheckTime = juItem.get('versionCheckTime') || 0;
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
-                let json = JSON.parse(fetch(parse['更新地址'], {
-                    withStatusCode:true,
-                    timeout: 5000
-                }));
-                xlog(json);
                 try{
-                    if(programversion<5){
-                        confirm({
-                            title: "温馨提示",
-                            content: "发现小程序新版本",
-                            confirm: $.toString(() => {
-                                return fetch(config.聚阅.replace(/[^/]*$/,'') + "聚阅.hiker");
-                            }),
-                            cancel: $.toString(() => {
-                            })
-                        });
+                    let json = JSON.parse(fetch(parse['更新地址'], {
+                        withStatusCode:true,
+                        timeout: 5000
+                    }));
+                    if(json.statusCode==200){
+                        let func = new Function('evals', 'eval(evals); return parse;'); 
+                        let newparse = func(json.body);
+                        if(newparse['版本'] != parse['版本']){
+                            confirm({
+                                title: "发现源有新版本",
+                                content: "本地:"+parse['版本']+"=>云端:"+newparse['版本'],
+                                confirm: $.toString((newparse, id) => {
+                                    
+                                    refreshPage(true);
+                                    return 'toast://已更新到:'+newparse['版本'];
+                                }, newparse, jkdata.id),
+                                cancel: $.toString(() => {
+                                })
+                            });
+                        }
                     }
                 }catch(e){
-
                 }
                 juItem.set('versionCheckTime', nowtime);
             }

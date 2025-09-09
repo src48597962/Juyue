@@ -481,9 +481,7 @@ function getYiData(datatype, jkdata, dd) {
             let lastCheckTime = juItem.get('versionCheckTime') || 0;
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
-                juItem.set('versionCheckTime', nowtime);
-
-                let json = JSON.parse(fetch(obj.url, {
+                let json = JSON.parse(fetch(parse['更新地址'], {
                     onlyHeaders: true,
                     timeout: 5000
                 }));
@@ -503,6 +501,7 @@ function getYiData(datatype, jkdata, dd) {
                 }catch(e){
 
                 }
+                juItem.set('versionCheckTime', nowtime);
             }
             putMyVar('SrcJu_VersionCheck_'+jkdata.id, '1');
         }

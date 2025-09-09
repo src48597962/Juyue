@@ -1,11 +1,13 @@
 // 本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
+/*
 let libspath = "hiker://files/data/聚阅/"; //依赖文件路径
-//let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
+let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
 let cachepath = "hiker://files/_cache/Juyue/"; //缓存文件路径
 let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
 let jkfile = rulepath + "jiekou.json";
 let cfgfile = rulepath + "config.json";
 let sortfile = rulepath + "jksort.json";
+*/
 let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
 
 /*

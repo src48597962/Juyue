@@ -1,5 +1,12 @@
-// 必要的变量定义
+// 程序目录和文件路径定义
+let libspath = "hiker://files/data/聚阅/"; //依赖文件路径
 let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
+let cachepath = "hiker://files/_cache/Juyue/"; //缓存文件路径
+let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
+let jkfile = rulepath + "jiekou.json";
+let cfgfile = rulepath + "config.json";
+let sortfile = rulepath + "jksort.json";
+let casefile = rulepath + 'case.json';
 
 // 重定义打印日志
 let xlog = log;
@@ -16,7 +23,7 @@ if (getItem('接口日志打印') != "1") {
 // 聚阅全局自定义存储变量方法
 function juItemF(id, s){
     let juItemO = {
-        'file': s?`${rulepath}juItem.json`:'hiker://files/data/聚阅/juItem.json',
+        'file': s?`${rulepath}juItem.json`:`${libspath}juItem.json`,
         'items': function () {
             let items = {};
             let itemsstr = fetch(this.file);
@@ -594,13 +601,12 @@ function getSource(input) {
         if(input.url){
             rule = readFile(input.url) || readFile(input.url.replace('rules/Src','_cache'));
         }else if(input.id){
-            rule = readFile(`hiker://files/rules/Src/Juyue/jiekou/${input.id}.txt`);
+            rule = readFile(`${jkfilespath}${input.id}.txt`);
         }else if(input.name){
             input = input.name;
         }
     }
     if(!rule && $.type(input)=='string'){
-        let jkfile = "hiker://files/rules/Src/juyue/jiekou.json";
         let jkjson = JSON.parse(readFile(jkfile));
         let id = jkjson.find(x => x.name === input);
         if(id){
@@ -856,7 +862,6 @@ function addBookCase(obj, update) {
     }
     
     try{
-        let casefile = 'hiker://files/rules/Src/Juyue/case.json';
         eval('let caselist = ' + (fetch(casefile)||'[]'));
         waitlist.forEach(it => {
             it.id = it.id || getCaseID(it);
@@ -900,7 +905,6 @@ function setJkSort(data, so) {
     }else if($.type(data)=='array'){
         waitlist = data;
     }
-    let sortfile = "hiker://files/rules/Src/Juyue/jksort.json";
     let sort = {};
     if(fetch(sortfile)){
         eval("sort = " + fetch(sortfile));

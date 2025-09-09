@@ -503,11 +503,11 @@ function getYiData(datatype, jkdata, dd) {
                             confirm({
                                 title: "发现源有新版本",
                                 content: "本地:"+parse['版本']+"=>云端:"+newparse['版本'],
-                                confirm: $.toString((parseStr, id) => {
-                                    
+                                confirm: $.toString((id, parseStr, newVer) => {
+                                    updateSourceById(id, parseStr, newVer)
                                     refreshPage(true);
                                     return 'toast://已更新';
-                                }, json.body, jkdata.id),
+                                }, jkdata.id, json.body, newparse['版本']),
                                 cancel: $.toString(() => {
                                 })
                             });
@@ -527,6 +527,14 @@ function getYiData(datatype, jkdata, dd) {
             }
         }
     }
+}
+//根据id更新源代码
+function updateSourceById(id, parseStr, newVer){
+    writeFile(`${jkfilespath}${id}.txt`, parseStr);
+    let jkjson = JSON.parse(readFile(jkfile));
+    let index = jkjson.findIndex(item => item.id === id);
+    jkjson[index].version = newVer || jkjson[index].version;
+    writeFile(jkfile, JSON.stringify(jkjson));
 }
 //ocr数字验证码识别
 function ocr(codeurl,headers) {

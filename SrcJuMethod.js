@@ -487,12 +487,12 @@ function getYiData(datatype, jkdata, dd) {
                 title: parse["频道"].显示为
             })
         }
-        if(parse['更新地址'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
+        if(parse['获取更新'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
             let lastCheckTime = juItem.get('versionCheckTime') || 0;
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
                 try{
-                    let json = JSON.parse(fetch(parse['更新地址'], {
+                    let json = JSON.parse(fetch(parse['获取更新'](), {
                         withStatusCode:true,
                         timeout: 5000
                     }));

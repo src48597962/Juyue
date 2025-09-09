@@ -87,6 +87,17 @@ function yiji(testSource) {
                     return "toast://已处理";
                 }, jkdata)
             })
+            if(juItem.get('versionCheckTime')!=''){
+                longClick.push({
+                    title: "更新",
+                    js: $.toString((jkdata) => {
+                        clearMyVar('SrcJu_VersionCheck_'+jkdata.id);
+                        juItem.clear('versionCheckTime');
+                        refreshPage();
+                        return "toast://偿试更新，有新版会弹窗";
+                    }, jkdata)
+                })
+            }
         }
         let homeIcons = getThemeList(true)['主页图标'];
         let icon5_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';

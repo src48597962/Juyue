@@ -11,14 +11,14 @@ function bookCase() {
         clearMyVar('收藏书架列表');
         clearMyVar('收藏书架搜索标识');
         clearMyVar('收藏书架搜索框');
-        if(juItem2.get("bookCase_UpdateTiming")==0){
+        if(juItem2.get("bookCase_UpdateTiming")===0){
             clearMyVar('执行书架异步更新');
         }
     }));
 
     setPageTitle('收藏|书架');
     putMyVar('从书架进二级','1');
-    if(juItem2.get("bookCase_UpdateTiming")==2){
+    if(juItem2.get("bookCase_UpdateTiming")===2){
         addListener("onRefresh", $.toString(() => {
             putMyVar('书架异步更新下滑', '1');
         }));
@@ -371,7 +371,7 @@ function bookCase() {
         }
     })
     setResult(d);
-    if((!getMyVar('执行书架异步更新') && juItem2.get("bookCase_UpdateTiming","1")!=2) || getMyVar('书架异步更新下滑')){
+    if((!getMyVar('执行书架异步更新') && juItem2.get("bookCase_UpdateTiming")!==2) || getMyVar('书架异步更新下滑')){
         putMyVar('执行书架异步更新', '1');
         clearMyVar('书架异步更新下滑');
         // 收集所有异步操作的Promise

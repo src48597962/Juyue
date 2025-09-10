@@ -371,7 +371,7 @@ function bookCase() {
         }
     })
     setResult(d);
-    if((!getMyVar('执行书架异步更新') && juItem2.get("bookCase_UpdateTiming")!=2) || getMyVar('书架异步更新下滑')){
+    if((!getMyVar('执行书架异步更新') && juItem2.get("bookCase_UpdateTiming","1")!=2) || getMyVar('书架异步更新下滑')){
         putMyVar('执行书架异步更新', '1');
         clearMyVar('书架异步更新下滑');
         // 收集所有异步操作的Promise

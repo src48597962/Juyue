@@ -881,14 +881,12 @@ function addBookCase(obj, update) {
         eval('let caselist = ' + (fetch(casefile)||'[]'));
         waitlist.forEach(it => {
             it.id = it.id || getCaseID(it);
-            if(update){
-                let index = caselist.findIndex(v => (v.id||getCaseID(v))==it.id);
-                if(index>-1){
-                    it = Object.assign({}, caselist[index], it);
-                    caselist.splice(index, 1);
-                }else{
-                    return;//更新时，本地没有的跳过
-                }
+            let index = caselist.findIndex(v => (v.id||getCaseID(v))==it.id);
+            if(index>-1){
+                it = Object.assign({}, caselist[index], it);
+                caselist.splice(index, 1);
+            }else if(update){
+                return;//更新时，本地没有的跳过
             }
             caselist.unshift(it);
         })

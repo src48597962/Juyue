@@ -593,7 +593,9 @@ function erji() {
         }
     }catch(e){
         xlog('执行获取二级数据出错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        setJkSort(jkdata.id, {fail: 1});
+        if(!parse['noFail']){
+            setJkSort(jkdata.id, {fail: 1});
+        }
     }
 
     erLoadData = erLoadData || {};

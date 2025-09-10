@@ -615,6 +615,7 @@ function erji() {
             let detailextra = detailObj.extra || erLoadData.detailextra || {};
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
+            xlog(detailextra.longClick);
             detailextra.longClick = detailextra.longClick || [];
             let addCaseObj = [{
                 title: "加入收藏书架🗄",

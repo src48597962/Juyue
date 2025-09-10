@@ -898,6 +898,12 @@ function addBookCase(obj, update) {
         return 'toast://失败>'+e.message;
     }
 }
+// 去除聚阅收藏
+function removeBookCase(caseid){
+    eval('let caselist = ' + (fetch(casefile)||'[]'));
+    caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
+    writeFile(casefile, JSON.stringify(caselist));
+}
 //提取$.toString()内文本
 function rely(data){
     return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, "$1");

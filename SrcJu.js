@@ -636,10 +636,10 @@ function erji() {
                 }, erCacheFile, MY_URL)
             }];
             if(!noShow.封面){
-                if(!erdataCache){
-                    erLoadData.detailextra = detailextra;
+                //if(!erdataCache){
+                 //   erLoadData.detailextra = detailextra;
                     detailextra.longClick = detailextra.longClick.concat(addCaseObj);
-                }
+                //}
                 d.push({
                     title: erTempData.detail1 || "",
                     desc: erTempData.detail2 || "",

@@ -476,10 +476,7 @@ function convertItem(item, listcol, sjType){
             extra.longClick = [{
                 title: "取消收藏",
                 js: $.toString((caseid) => {
-                    let casefile = 'hiker://files/rules/Src/Juyue/case.json';
-                    eval('let caselist = ' + (fetch(casefile)||'[]'));
-                    caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
-                    writeFile(casefile, JSON.stringify(caselist));
+                    removeBookCase(caseid);
                     refreshPage();
                 }, item.id)
             }]

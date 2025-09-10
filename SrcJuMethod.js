@@ -439,7 +439,9 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_center_1'
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
-                setJkSort(jkdata.id, {fail: 1});
+                if(!parse['noFail']){
+                    setJkSort(jkdata.id, {fail: 1});
+                }
             }
             //恢复全局变量
             setResult = setResult2;
@@ -560,11 +562,11 @@ function getSsData(name, jkdata, page) {
     if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = page;
     }
-    
+    let parse = getObjCode(jkdata, 'ss');
+
     //全局变量劫持
     const setResult2 = setResult;     
     try {
-        let parse = getObjCode(jkdata, 'ss');
         if(parse['搜索']){
             eval(evalPublicStr);
             let resultd;
@@ -578,7 +580,9 @@ function getSsData(name, jkdata, page) {
     } catch (e) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        setJkSort(jkdata.id, {fail: 1});
+        if(!parse['noFail']){
+            setJkSort(jkdata.id, {fail: 1});
+        }
     }
     //恢复全局变量
     setResult = setResult2;

@@ -549,7 +549,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let erLoadData,pic,linename;
+    let erLoadData,pic,linename,caseData,caseid;
     
     try{
         if (sid&&MY_URL) {
@@ -616,9 +616,25 @@ function erji() {
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
+            caseData = {
+                type: '二级列表',
+                title: name,
+                picUrl: erTempData.img,
+                params: {
+                    url: MY_RULE.url.split(';')[0],
+                    find_rule: MY_RULE.find_rule,
+                    params: MY_PARAMS
+                }
+            }
+            caseid = getCaseID(caseData);
+            let isCase = isBookCase(caseid);
             let addCaseObj = [{
-                title: "加入收藏书架🗄",
-                js: $.toString((erCacheFile, erUrl) => {
+                title: isCase?"取消收藏💔":"加入收藏❤",
+                js: isCase?$.toString((caseid) => {
+                    removeBookCase(caseid);
+                    refreshPage();
+                    return 'hiker://empty';
+                }, caseid):$.toString((erCacheFile, erUrl) => {
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
@@ -1540,21 +1556,10 @@ function erji() {
             }
             
             erLoadData.updatetime = Date.now();
-            
-            let caseData = {
-                type: '二级列表',
-                title: name,
-                picUrl: erTempData.img,
-                params: {
-                    url: MY_RULE.url.split(';')[0],
-                    find_rule: MY_RULE.find_rule,
-                    params: MY_PARAMS
-                }
-            }
             erLoadData.caseData = caseData;
 
             if(!erdataCache){
-                addBookCase(erLoadData.caseData, true);//更新收藏书架数据
+                addBookCase(caseData, true);//更新收藏书架数据
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
             }else if(saveCache){
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存

@@ -201,6 +201,7 @@ function bookCase() {
             let setItems = [
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
                 SettingItem("自动获取更新时机", updatetiming[juItem2.get("bookCase_UpdateTiming", 1)]), 
+                SettingItem(), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
             ]
             if(MY_NAME=="海阔视界"){

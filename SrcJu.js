@@ -549,7 +549,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let erLoadData,pic,linename,caseData,caseid;
+    let erLoadData,pic,linename;
     
     try{
         if (sid&&MY_URL) {
@@ -616,37 +616,17 @@ function erji() {
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
-            caseData = {
-                type: '二级列表',
-                title: name,
-                picUrl: erTempData.img,
-                params: {
-                    url: MY_RULE.url.split(';')[0],
-                    find_rule: MY_RULE.find_rule,
-                    params: MY_PARAMS
-                }
-            }
-            caseid = getCaseID(caseData);
-            let isCase = isBookCase(caseid);
             let addCaseObj = [{
-                title: isCase?"取消收藏🗄":"加入收藏书架🗄",
-                js: isCase?$.toString((caseid) => {
-                    removeBookCase(caseid);
-                    refreshPage();
-                    return 'hiker://empty';
-                }, caseid):$.toString((erCacheFile, erUrl) => {
+                title: "加入收藏书架🗄",
+                js: $.toString((erCacheFile, erUrl) => {
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{
                             eval("let cacheJson=" + cacheData + ";");
                             if(cacheJson.url==erUrl){
-                                let result = addBookCase(cacheJson.caseData);
-                                if(result == 'toast://已加入'){
-                                    refreshPage();
-                                }
-                                return result;
+                                return addBookCase(cacheJson.caseData);
                             }else{
-                                return 'toast://未获取到数据';
+                                return 'toast://未获取到数据，刷新页面重试';
                             }
                         }catch(e){
                             xlog('加入收藏处理异常>' + e.message);
@@ -656,10 +636,7 @@ function erji() {
                 }, erCacheFile, MY_URL)
             }];
             if(!noShow.封面){
-                //if(!erdataCache){
-                 //   erLoadData.detailextra = detailextra;
-                    detailextra.longClick = detailextra.longClick.concat(addCaseObj);
-                //}
+                detailextra.longClick = detailextra.longClick.concat(addCaseObj);
                 d.push({
                     title: erTempData.detail1 || "",
                     desc: erTempData.detail2 || "",
@@ -1561,7 +1538,16 @@ function erji() {
             if(smark.pageid != pageid || smark.lineid != lineid){
                 saveCache = 1;
             }
-            
+            let caseData = {
+                type: '二级列表',
+                title: name,
+                picUrl: erTempData.img,
+                params: {
+                    url: MY_RULE.url.split(';')[0],
+                    find_rule: MY_RULE.find_rule,
+                    params: MY_PARAMS
+                }
+            }
             erLoadData.updatetime = Date.now();
             erLoadData.caseData = caseData;
 

@@ -902,6 +902,17 @@ function removeBookCase(caseid){
     caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
     writeFile(casefile, JSON.stringify(caselist));
 }
+// 是否存在聚阅收藏
+function isBookCase(caseid, caselist){
+    if(!caselist){
+        eval('caselist = ' + (fetch(casefile)||'[]'));
+    }
+    let index = caselist.findIndex(item => (item.id||getCaseID(item)) == caseid);
+    if(index>-1){
+        return true;
+    }
+    return false;
+}
 //提取$.toString()内文本
 function rely(data){
     return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, "$1");

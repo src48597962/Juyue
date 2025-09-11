@@ -629,7 +629,7 @@ function erji() {
             caseid = getCaseID(caseData);
             let isCase = isBookCase(caseid);
             let addCaseObj = [{
-                title: isCase?"取消收藏💔":"加入收藏❤",
+                title: isCase?"取消收藏🗄":"加入收藏书架🗄",
                 js: isCase?$.toString((caseid) => {
                     removeBookCase(caseid);
                     refreshPage();
@@ -640,7 +640,11 @@ function erji() {
                         try{
                             eval("let cacheJson=" + cacheData + ";");
                             if(cacheJson.url==erUrl){
-                                return addBookCase(cacheJson.caseData);
+                                let result = addBookCase(cacheJson.caseData);
+                                if(result == 'toast://已加入'){
+                                    refreshPage();
+                                }
+                                return result;
                             }else{
                                 return 'toast://未获取到数据';
                             }

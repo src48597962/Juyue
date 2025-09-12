@@ -398,12 +398,10 @@ function getYiData(datatype, jkdata, dd) {
             //全局变量劫持
             const setResult2 = setResult;
             const setPreResult2 = setPreResult;
-            /*
             const addItemBefore2 = addItemBefore;
             const addItemAfter2 = addItemAfter;
             const deleteItem2 = deleteItem;
             const deleteItemByCls2 = deleteItemByCls;
-            */
             try {
                 let sourcename = jkdata.name;
                 let getData = [];

@@ -409,26 +409,11 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
                 setPreResult = function(prd) { resultd2 = prd; };
-                addItemAfter = function (id, arr) {
-                    let item = {
-                        action: "addItemAfter",
-                        execute: {}
-                    };
-                    item.execute[id] = arr;
-                    dynamicsItemList.push(item);
-                    /*
-                    dynamicsItemList.push({
-                        action: "addItemAfter",
-                        execute: { [id]: arr }
-                    });
-                    */
-                }
-                /*
-                addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", execute:{[id]: arr}}); };
-                addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", execute:{[id]: arr}}); };
-                deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", execute:id}); };
-                deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", execute:id}); };
-                */
+                addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
+                addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
+                deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
+                deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
+
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd){
@@ -572,11 +557,9 @@ function getYiData(datatype, jkdata, dd) {
     
     dynamicsItemList.forEach((it)=>{
         if(it.action=="addItemBefore" || it.action=="addItemAfter"){
-            let [key, value] = it.execute;
-            actions[it.action](key, value);
+            actions[it.action](it.key, it.value);
         }else{
-            let key = it.execute;
-            actions[it.action](key);
+            actions[it.action](it.key);
         }
     })
 }

@@ -548,6 +548,7 @@ function getYiData(datatype, jkdata, dd) {
         }
     }
     // 统一处理动态刷新组件
+    /*
     const actions = {
         addItemBefore,
         addItemAfter,
@@ -563,6 +564,7 @@ function getYiData(datatype, jkdata, dd) {
             actions[it.action](key);
         }
     })
+    */
 }
 //根据id更新源代码
 function updateSourceById(id, parseStr, newVer){

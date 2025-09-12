@@ -409,11 +409,12 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
                 setPreResult = function(prd) { resultd2 = prd; };
+                /*
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", execute:{[id]: arr}}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", execute:{[id]: arr}}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", execute:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", execute:id}); };
-
+                */
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
                 if(resultd){
@@ -456,12 +457,10 @@ function getYiData(datatype, jkdata, dd) {
             //恢复全局变量
             setResult = setResult2;
             setPreResult = setPreResult2;
-            /*
             addItemBefore = addItemBefore2;
             addItemAfter = addItemAfter2;
             deleteItem = deleteItem2;
             deleteItemByCls = deleteItemByCls2;
-            */
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -550,7 +549,6 @@ function getYiData(datatype, jkdata, dd) {
         }
     }
     // 统一处理动态刷新组件
-    /*
     const actions = {
         addItemBefore,
         addItemAfter,
@@ -567,7 +565,6 @@ function getYiData(datatype, jkdata, dd) {
             actions[it.action](key);
         }
     })
-    */
 }
 //根据id更新源代码
 function updateSourceById(id, parseStr, newVer){

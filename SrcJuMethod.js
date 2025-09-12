@@ -409,12 +409,10 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
                 setPreResult = function(prd) { resultd2 = prd; };
-                /*
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", execute:{[id]: arr}}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", execute:{[id]: arr}}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", execute:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", execute:id}); };
-                */
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];

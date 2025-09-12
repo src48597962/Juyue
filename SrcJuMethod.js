@@ -398,10 +398,12 @@ function getYiData(datatype, jkdata, dd) {
             //全局变量劫持
             const setResult2 = setResult;
             const setPreResult2 = setPreResult;
+            /*
             const addItemBefore2 = addItemBefore;
             const addItemAfter2 = addItemAfter;
             const deleteItem2 = deleteItem;
             const deleteItemByCls2 = deleteItemByCls;
+            */
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
@@ -409,10 +411,12 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
                 setPreResult = function(prd) { resultd2 = prd; };
+                /*
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", execute:{[id]: arr}}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", execute:{[id]: arr}}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", execute:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", execute:id}); };
+                */
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -456,10 +460,12 @@ function getYiData(datatype, jkdata, dd) {
             //恢复全局变量
             setResult = setResult2;
             setPreResult = setPreResult2;
+            /*
             addItemBefore = addItemBefore2;
             addItemAfter = addItemAfter2;
             deleteItem = deleteItem2;
             deleteItemByCls = deleteItemByCls2;
+            */
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',

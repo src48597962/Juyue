@@ -548,14 +548,14 @@ function getYiData(datatype, jkdata, dd) {
         }
     }
     // 统一处理动态刷新组件
-    
+    /*
     const actions = {
         addItemBefore,
         addItemAfter,
         deleteItem,
         deleteItemByCls
     };
-    /*
+    
     dynamicsItemList.forEach((it)=>{
         if(it.action=="addItemBefore" || it.action=="addItemAfter"){
             let [key, value] = it.execute;

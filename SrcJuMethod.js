@@ -409,10 +409,13 @@ function getYiData(datatype, jkdata, dd) {
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
                 setPreResult = function(prd) { resultd2 = prd; };
-                addItemAfter = function (addid, addarr) {
-                    dynamicsItemList.push({
-                        "action": "addItemAfter"
-                    });
+                addItemAfter = function (id, arr) {
+                    let item = {
+                        action: "addItemAfter",
+                        execute: {}
+                    };
+                    item.execute[id] = arr;
+                    dynamicsItemList.push(item);
                     /*
                     dynamicsItemList.push({
                         action: "addItemAfter",

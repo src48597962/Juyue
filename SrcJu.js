@@ -528,6 +528,7 @@ function erji() {
     let sgroup = jkdata.group || jkdata.type;//二级源所在分组
     let sid = jkdata.id;//二级源id
     MY_URL = erjiextra.url;//二级请求url
+    delete erjiextra['longClick'];
     
     if(jkdata.extstr){
         if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
@@ -549,7 +550,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let erLoadData,pic,linename;
+    let erLoadData,pic,linename,caseData;
     
     try{
         if (sid&&MY_URL) {
@@ -635,6 +636,24 @@ function erji() {
                     return 'toast://失败，未找到数据';
                 }, erCacheFile, MY_URL)
             }];
+            
+            if(erLoadData.caseData){
+                caseData = erLoadData.caseData;
+            }else{
+                caseData = {
+                    type: '二级列表',
+                    title: name,
+                    picUrl: erTempData.img,
+                    params: {
+                        url: MY_RULE.url.split(';')[0],
+                        find_rule: MY_RULE.find_rule,
+                        params: MY_PARAMS
+                    }
+                }
+                let caseid = getCaseID(caseData);
+                caseData['id'] = caseid;
+            }
+
             if(!noShow.封面){
                 detailextra.longClick = detailextra.longClick.concat(addCaseObj);
                 d.push({
@@ -1538,16 +1557,7 @@ function erji() {
             if(smark.pageid != pageid || smark.lineid != lineid){
                 saveCache = 1;
             }
-            let caseData = {
-                type: '二级列表',
-                title: name,
-                picUrl: erTempData.img,
-                params: {
-                    url: MY_RULE.url.split(';')[0],
-                    find_rule: MY_RULE.find_rule,
-                    params: MY_PARAMS
-                }
-            }
+            
             erLoadData.updatetime = Date.now();
             erLoadData.caseData = caseData;
 

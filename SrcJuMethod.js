@@ -877,7 +877,7 @@ function getCaseID(item) {
 function getCaseData() {
     let obj = {
         type: '二级列表',
-        title: name,
+        title: MY_PARAMS.name,
         picUrl: MY_PARAMS.img,
         params: {
             url: MY_RULE.url.split(';')[0],

@@ -583,8 +583,8 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 if(parse['二级']){
-                    eval("let 二级获取 = " + parse['二级'])
-                    erLoadData = 二级获取.call(parse, MY_URL);
+                    //eval("let 二级获取 = " + parse['二级'])
+                    erLoadData = parse['二级'].call(parse, MY_URL);
                 }else{
                     xlog("parse不存在二级方法");
                 }

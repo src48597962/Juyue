@@ -583,7 +583,7 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 if(parse['二级']){
-                    caseData = getCaseData(name);
+                    caseData = getCaseData();
 
                     eval("let 二级获取 = " + parse['二级'])
                     erLoadData = 二级获取.call(parse, MY_URL);

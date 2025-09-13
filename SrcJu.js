@@ -598,6 +598,8 @@ function erji() {
 
                     eval("let 二级获取 = " + parse['二级'])
                     erLoadData = 二级获取.call(parse, MY_URL);
+                    
+                    erLoadData.caseData = caseData;
                 }else{
                     xlog("parse不存在二级方法");
                 }

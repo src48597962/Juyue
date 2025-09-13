@@ -1549,8 +1549,12 @@ function erji() {
             erLoadData.updatetime = Date.now();
             //erLoadData.caseData = caseData;
 
-            if(!erdataCache){
+            if(caseData){
                 addBookCase(caseData, true);//更新收藏书架数据
+                writeFile(`${cachepath}case/${caseData.id}.json`, $.stringify(caseData));
+            }
+            if(!erdataCache){
+                //addBookCase(caseData, true);//更新收藏书架数据
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
             }else if(saveCache){
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存

@@ -579,7 +579,6 @@ function erji() {
 
             if(erdataCache){
                 erLoadData = erdataCache;
-                caseData = erLoadData.caseData;
             }else{
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();

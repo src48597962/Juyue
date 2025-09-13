@@ -869,9 +869,25 @@ function searchRecord(lx, input) {
     }
     return;
 }
-//获取case数据id
+// 获取case数据id
 function getCaseID(item) {
     return md5(item.title+(item.params.url+'').split('&')[0].split('#')[0]);
+}
+// 获取case书架数据
+function getCaseData() {
+    let obj = {
+        type: '二级列表',
+        title: name,
+        picUrl: MY_PARAMS.img,
+        params: {
+            url: MY_RULE.url.split(';')[0],
+            find_rule: MY_RULE.find_rule,
+            params: MY_PARAMS
+        }
+    }
+    let caseid = getCaseID(obj);
+    obj.id = caseid;
+    return obj;
 }
 // 加入聚阅收藏书架方法
 function addBookCase(obj, update) {

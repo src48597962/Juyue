@@ -1555,7 +1555,7 @@ function erji() {
             }
             
             erLoadData.updatetime = Date.now();
-            erLoadData.caseData = caseData;
+            //erLoadData.caseData = caseData;
 
             if(!erdataCache){
                 addBookCase(caseData, true);//更新收藏书架数据

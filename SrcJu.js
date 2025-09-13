@@ -624,6 +624,7 @@ function erji() {
             let addCaseObj = [{
                 title: "加入收藏书架🗄",
                 js: $.toString((erCacheFile, erUrl) => {
+                    log(getCaseData());
                     let cacheData = fetch(erCacheFile);
                     if (cacheData != "") {
                         try{

@@ -1672,7 +1672,6 @@ function search(name, sstype, jkdata, blurMatch) {
 
     let isnewVer = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305));
     getSsData(name, jkdata, page).vodlists.forEach(it => {
-        it = toerji(it, jkdata);
         if(sstype=='erji'){
             if(it.extra && it.extra.url){
                 it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {

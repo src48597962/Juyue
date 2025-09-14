@@ -385,15 +385,21 @@ function deleteData(data){
     }else if($.type(data)=='array'){
         dellist = data;
     }
-
+    let juItemfile = `${libspath}juItem.json`;
+    let items = {};
+    let itemsstr = fetch(juItemfile);
+    if (itemsstr != "") {
+        eval("items=" + itemsstr + ";");
+    }
     dellist.forEach(it => {
         if(it.url.includes(jkfilespath)){
             deleteFile(it.url);
         }
+        delete items[it.id];
         let index = datalist.indexOf(datalist.filter(d => it.id==d.id)[0]);
         datalist.splice(index, 1);
     })
-
+    writeFile(juItemfile, JSON.stringify(items));
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
     clearMyVar('duodatalist');

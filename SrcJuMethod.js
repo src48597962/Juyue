@@ -47,6 +47,7 @@ function juItemF(id, s){
         },
         'get': function (key, str, id2) {
             if(!key) return;
+            log(id);
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
@@ -597,20 +598,7 @@ function getSsData(name, jkdata, page) {
     const setResult2 = setResult;
     try {
         if(parse['搜索']){
-            const originalSet = juItem.set;
-            juItem.set = function(key, str, id) {
-                if (id === undefined) {
-                    id = jkdata.id;
-                }
-                return originalSet.call(this, key, str, id);
-            };
-            const originalGet = juItem.get;
-            juItem.get = function(key, str, id) {
-                if (id === undefined) {
-                    id = jkdata.id;
-                }
-                return originalGet.call(this, key, str, id);
-            };
+            let juItem = juItemF(jkdata.id);
             eval(evalPublicStr);
             let resultd;
             setResult = function(rd) { resultd = rd; };

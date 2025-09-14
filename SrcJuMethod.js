@@ -704,7 +704,7 @@ function getObjCode(jkdata, key) {
         parse['sourcename'] = jkdata.name;
         parse['jkdata'] = jkdata;
         parse['页码'] = parse['页码'] || {};
-        if(isJuDetail() && parse['二级']){
+        if(isJuDetail(jkdata.id) && parse['二级']){
             let ercodestr = parse['二级'].toString();
             if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
                 delete parse['二级标识'];
@@ -972,8 +972,8 @@ function rely(data){
     return data.match(/\{([\s\S]*)\}/)[0].replace(/\{([\s\S]*)\}/, "$1");
 }
 //二级是否强制聚阅封面的判断返回
-function isJuDetail(){
-    let source = juItem.get('二级聚阅封面');
+function isJuDetail(id){
+    let source = juItem.get('二级聚阅封面','',id);
     let all = juItem2.get('二级聚阅封面');
     
     if(source !== ''){

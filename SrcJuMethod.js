@@ -76,8 +76,8 @@ let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 1);
 
 // 全局公共执行代码前需要加载的
-// let juItem = juItemF(jkdata.id);
 let evalPublicStr = `
+    let juItem = juItemF(jkdata.id);
     if (parse['预处理1'] && !getMyVar(jkdata.id+'执行预处理1')) {
         parse['预处理1'].call(parse);
         putMyVar(jkdata.id+'执行预处理1', '1');

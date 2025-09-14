@@ -47,7 +47,6 @@ function juItemF(id, s){
         },
         'get': function (key, str, id2) {
             if(!key) return;
-            log(id);
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
@@ -76,8 +75,8 @@ let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 1);
 
 // 全局公共执行代码前需要加载的
+// let juItem = juItemF(jkdata.id);
 let evalPublicStr = `
-    let juItem = juItemF(jkdata.id);
     if (parse['预处理1'] && !getMyVar(jkdata.id+'执行预处理1')) {
         parse['预处理1'].call(parse);
         putMyVar(jkdata.id+'执行预处理1', '1');
@@ -598,7 +597,6 @@ function getSsData(name, jkdata, page) {
     const setResult2 = setResult;
     try {
         if(parse['搜索']){
-            let juItem = juItemF(jkdata.id);
             eval(evalPublicStr);
             let resultd;
             setResult = function(rd) { resultd = rd; };
@@ -669,6 +667,7 @@ function getSource(input) {
     }
     if(rule){
         const parse = (function(jkdata) {
+            let juItem = juItemF(jkdata.id);
             eval(rule);
             return parse;
         })(input);

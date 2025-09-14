@@ -449,7 +449,7 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_center_1'
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
-                if(!parse['No-fail']){
+                if(!parse['不记失败']){
                     setJkSort(jkdata.id, {fail: 1});
                 }
             }
@@ -609,7 +609,7 @@ function getSsData(name, jkdata, page) {
     } catch (e) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        if(!parse['No-fail']){
+        if(!parse['不记失败']){
             setJkSort(jkdata.id, {fail: 1});
         }
     }

@@ -598,7 +598,7 @@ function erji() {
         }
     }catch(e){
         xlog('执行获取二级数据出错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        if(!parse['No-fail']){
+        if(!parse['不记失败']){
             setJkSort(jkdata.id, {fail: 1});
         }
     }

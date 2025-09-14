@@ -96,7 +96,7 @@ function bookCase() {
             eval('let caselist = ' + (fetch(casefile) || '[]'));
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
             history = history.filter(v => v.type == '二级列表');
-            xlog(history[0]);
+
             caselist.forEach(it => {
                 try {
                     it.id = it.id || getCaseID(it);
@@ -106,7 +106,7 @@ function bookCase() {
                         let obj = {
                             title: v.title,
                             params: {
-                                url: MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url
+                                url: MY_NAME=="海阔视界"?v.ruleBaseUrl:v.url.split('@')[1]
                             }
                         }
                         return getCaseID(obj)==it.id;

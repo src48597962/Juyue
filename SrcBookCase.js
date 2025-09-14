@@ -96,7 +96,7 @@ function bookCase() {
             eval('let caselist = ' + (fetch(casefile) || '[]'));
             let history = JSON.parse(fetch("hiker://history?rule=" + MY_RULE.title));
             history = history.filter(v => v.type == '二级列表');
-
+            xlog(history[0]);
             caselist.forEach(it => {
                 try {
                     it.id = it.id || getCaseID(it);

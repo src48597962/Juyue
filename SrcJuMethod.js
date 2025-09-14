@@ -47,7 +47,6 @@ function juItemF(id, s){
         },
         'get': function (key, str, id2) {
             if(!key) return;
-            log(key+ '-'+str+'-'+id);
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
@@ -704,7 +703,7 @@ function getObjCode(jkdata, key) {
         parse['sourcename'] = jkdata.name;
         parse['jkdata'] = jkdata;
         parse['页码'] = parse['页码'] || {};
-        if(isJuDetail() && parse['二级']){
+        if((key=='yi'||key=='ss') && parse['二级'] && isJuDetail()){
             let ercodestr = parse['二级'].toString();
             if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
                 delete parse['二级标识'];

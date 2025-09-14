@@ -529,6 +529,7 @@ function erji() {
     let sid = jkdata.id;//二级源id
     MY_URL = erjiextra.url;//二级请求url
     delete erjiextra['longClick'];
+    delete erjiextra['cls'];
     
     if(jkdata.extstr){
         if(!fileExist(jkdata.url) && !fileExist(jkdata.url.replace('rules/Src','_cache'))){
@@ -550,7 +551,7 @@ function erji() {
     let erdataCache;//是否加载缓存页面数据
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
-    let erLoadData,pic,linename,caseData;
+    let erLoadData,pic,linename;
     
     try{
         if (sid&&MY_URL) {
@@ -583,11 +584,10 @@ function erji() {
                 xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 if(parse['二级']){
-                    caseData = getCaseData();
-
                     eval("let 二级获取 = " + parse['二级'])
                     erLoadData = 二级获取.call(parse, MY_URL);
-                    
+
+                    let caseData = getCaseData();
                     erLoadData.caseData = caseData;
                 }else{
                     xlog("parse不存在二级方法");
@@ -623,23 +623,14 @@ function erji() {
             detailextra.longClick = detailextra.longClick || [];
             let addCaseObj = [{
                 title: "加入收藏书架🗄",
-                js: $.toString((erCacheFile, erUrl) => {
-                    log(getCaseData());
-                    let cacheData = fetch(erCacheFile);
-                    if (cacheData != "") {
-                        try{
-                            eval("let cacheJson=" + cacheData + ";");
-                            if(cacheJson.url==erUrl){
-                                return addBookCase(cacheJson.caseData);
-                            }else{
-                                return 'toast://未获取到数据，刷新页面重试';
-                            }
-                        }catch(e){
-                            xlog('加入收藏处理异常>' + e.message);
-                        }
+                js: $.toString((caseData) => {
+                    try{
+                        return addBookCase(caseData);
+                    }catch(e){
+                        xlog('加入收藏处理异常>' + e.message);
                     }
-                    return 'toast://失败，未找到数据';
-                }, erCacheFile, MY_URL)
+                    return 'toast://失败，书架数据获取失败';
+                }, erLoadData.caseData)
             }];
 
             if(!noShow.封面){
@@ -1539,23 +1530,17 @@ function erji() {
         storage0.putMyVar('二级详情临时对象',erTempData);
         //当前二级数据保存到缓存文件，避免二级重复请求
         if(!getMyVar("SrcJu_调试模式")){
-            erLoadData.sid = jkdata.id;
-            erLoadData.url = MY_URL;
             let saveCache;
             if(smark.pageid != pageid || smark.lineid != lineid){
                 saveCache = 1;
             }
-            
             erLoadData.updatetime = Date.now();
-            //erLoadData.caseData = caseData;
 
-            if(caseData){
-                addBookCase(caseData, true);//更新收藏书架数据
-                writeFile(`${cachepath}case/${caseData.id}.json`, $.stringify(caseData));
-            }
             if(!erdataCache){
-                //addBookCase(caseData, true);//更新收藏书架数据
+                erLoadData.sid = jkdata.id;
+                erLoadData.url = MY_URL;
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
+                addBookCase(erLoadData.caseData, true);//更新收藏书架数据
             }else if(saveCache){
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存
             }

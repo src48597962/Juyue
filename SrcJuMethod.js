@@ -615,6 +615,13 @@ function getSsData(name, jkdata, page) {
     }
     //恢复全局变量
     setResult = setResult2;
+
+    if(parse['二级标识']){
+        jkdata['erjisign'] = parse['二级标识'];
+    }
+    getData.forEach(it=>{
+        it = toerji(it, jkdata);
+    })
     return {
         vodlists: getData,
         error: error

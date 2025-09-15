@@ -980,13 +980,11 @@ function batchTestSource(){
             col_type: "rich_text"
         })
         checkSourceList.forEach(it => {
-            let selectmenu,datatitle;
-            selectmenu = ["删除", it.stop?"启用":"禁用", "测试"];
-            datatitle = getDataTitle(it);
+            let selectmenu = ["删除", it.stop?"启用":"禁用", "测试"];
             let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
             d.push({
-                title: datatitle,
+                title: it.name,
                 url: $(selectmenu, 2).select((data) => {
                     data = JSON.parse(base64Decode(data));
                     if (input == "删除") {

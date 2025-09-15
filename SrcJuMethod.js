@@ -76,7 +76,7 @@ let juItem2 = juItemF('Juyue', 1);
 
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
-    let juItem = juItemF(jkdata.id);
+    //let juItem = juItemF(jkdata.id);
     if (parse['预处理1'] && !getMyVar(jkdata.id+'执行预处理1')) {
         parse['预处理1'].call(parse);
         putMyVar(jkdata.id+'执行预处理1', '1');
@@ -646,39 +646,44 @@ function removeByValue(arr, val) {
         }
     }
 }
-// 读取接口对象规则内容
-function getSource(input) {
-    let rule;
-    if($.type(input)=='object'){
-        if(input.url){
-            rule = readFile(input.url) || readFile(input.url.replace('rules/Src','_cache'));
-        }else if(input.id){
-            rule = readFile(`${jkfilespath}${input.id}.txt`);
-        }else if(input.name){
-            input = input.name;
-        }
-    }
-    if(!rule && $.type(input)=='string'){
-        let jkjson = JSON.parse(readFile(jkfile));
-        let id = jkjson.find(x => x.name === input);
-        if(id){
-            rule = readFile(id.url);
-        }
-    }
-    if(rule){
-        const parse = (function(jkdata) {
-            let juItem = juItemF(jkdata.id);
-            eval(rule);
-            return parse;
-        })(input);
-        return parse;
-    }else{
-        return {};
-    }
-}
 
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
+    // 重新劫持定义juItem
+    let juItem = juItemF(jkdata.id);
+    // 读取接口对象规则内容
+    function getSource(input) {
+        let rule;
+        if($.type(input)=='object'){
+            if(input.url){
+                rule = readFile(input.url) || readFile(input.url.replace('rules/Src','_cache'));
+            }else if(input.id){
+                rule = readFile(`${jkfilespath}${input.id}.txt`);
+            }else if(input.name){
+                input = input.name;
+            }
+        }
+        if(!rule && $.type(input)=='string'){
+            let jkjson = JSON.parse(readFile(jkfile));
+            let id = jkjson.find(x => x.name === input);
+            if(id){
+                rule = readFile(id.url);
+            }
+        }
+        if(rule){
+            /*
+            const parse = (function(jkdata) {
+                let juItem = juItemF(jkdata.id);
+                eval(rule);
+                return parse;
+            })(input);
+            */
+            eval(rule);
+            return parse;
+        }else{
+            return {};
+        }
+    }
     try{
         let parse = getSource(jkdata);
         if(parse['模板']){

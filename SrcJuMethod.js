@@ -47,7 +47,6 @@ function juItemF(id, s){
         },
         'get': function (key, str, id2) {
             if(!key) return;
-            log(id);
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             let items = this.items();
             let item = items[id] || {};
@@ -450,9 +449,7 @@ function getYiData(datatype, jkdata, dd) {
                     col_type: 'text_center_1'
                 });
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
-                if(!parse['不记失败']){
-                    setJkSort(jkdata.id, {fail: 1});
-                }
+                setJkSort(jkdata.id, {fail: 1});
             }
             //恢复全局变量
             setResult = setResult2;
@@ -610,9 +607,7 @@ function getSsData(name, jkdata, page) {
     } catch (e) {
         error = e.message;
         xlog(jkdata.name + '>执行搜索获取数据报错，信息>' + e.message + " 错误行#" + e.lineNumber);
-        if(!parse['不记失败']){
-            setJkSort(jkdata.id, {fail: 1});
-        }
+        setJkSort(jkdata.id, {fail: 1});
     }
     //恢复全局变量
     setResult = setResult2;

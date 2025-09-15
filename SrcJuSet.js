@@ -1575,6 +1575,20 @@ function manageSet(){
         col_type: 'text_icon'
     });
     d.push({
+        title: '自动禁用失败的源',
+        img: getItem('自动禁用失败的源')=="1"?getIcon("管理-开.svg"):getIcon("关.svg"),
+        url: $("#noLoading#").lazyRule(() => {
+            if(getItem('自动禁用失败的源')=="1"){
+                clearItem('自动禁用失败的源');
+            }else{
+                setItem('自动禁用失败的源','1');
+            }
+            refreshPage();
+            return 'hiker://empty';
+        }),
+        col_type: 'text_icon'
+    });
+    d.push({
         col_type: "line_blank"
     });
     d.push({

@@ -423,7 +423,13 @@ function SRCSet() {
         d.push({
             title: "批量检测",
             url: !config.聚阅.includes('000')?"toast://暂未上线":$('#noLoading#').lazyRule(() => {
-
+                let duoselect = storage0.getMyVar('duodatalist') || [];
+                duoselect = duoselect.filter(v=>!v.stop);
+                if(duoselect.length==0){
+                    return "toast://未选择";
+                }
+                storage0.putMyVar('批量检测_待检列表', duoselect);//写入待检测源
+                return batchTestSource();
             }),
             col_type: 'scroll_button',
             extra: {

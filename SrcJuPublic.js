@@ -968,6 +968,7 @@ function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
         addListener("onClose", $.toString(() => {
             clearMyVar("批量检测_待检列表");
+            clearMyVar("批量检测_待检列表2");
             clearMyVar('批量选择模式');
             clearMyVar('duodatalist');
             refreshPage(true);

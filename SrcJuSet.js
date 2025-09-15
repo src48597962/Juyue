@@ -429,6 +429,8 @@ function SRCSet() {
                     return "toast://未选择";
                 }
                 storage0.putMyVar('批量检测_待检列表', duoselect);//写入待检测源
+                
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 return batchTestSource();
             }),
             col_type: 'scroll_button',

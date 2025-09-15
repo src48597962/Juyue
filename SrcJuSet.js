@@ -674,6 +674,16 @@ function jiekouapi(data, look) {
                     let tmpldatas = storage0.getMyVar('tmpldatas');
                     let index = parseInt(getMyVar('apitmplindex', '1')) - 1;
                     let tmpldata = tmpldatas[index];
+                    // 读取模板源，查看是否有新建模板
+                    function getSource(input) {
+                        let rule = readFile(`${jkfilespath}${input.id}.txt`);
+                        if(rule){
+                            eval(rule);
+                            return parse;
+                        }else{
+                            return {};
+                        }
+                    }
                     let tmplparse = getSource(tmpldata).新建模板;
                     if(tmplparse){
                         tmpl = tmplparse;

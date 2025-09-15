@@ -973,42 +973,71 @@ function batchTestSource(){
             refreshPage(true);
         }));
         
-        let checkSourceList = storage0.getMyVar("批量检测_待检列表") || [];
         let d = [];
         d.push({
-            title: "待检源列表",
-            col_type: "rich_text"
-        })
-        checkSourceList.forEach(it => {
-            let selectmenu = ["删除", "测试"];
-            let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+            title: '开始检测',
+            col_type: 'text_3',
+            url: $().lazyRule(()=>{
+                
+                return "hiker://empty";
+            })
+        });
+        d.push({
+            title: '开始检测',
+            col_type: 'text_3',
+            url: $().lazyRule(()=>{
+                
+                return "hiker://empty";
+            })
+        });
+        d.push({
+            title: '开始检测',
+            col_type: 'text_3',
+            url: $().lazyRule(()=>{
+                
+                return "hiker://empty";
+            })
+        });
 
-            d.push({
-                title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + '</font></small>',
-                url: $(selectmenu, 2).select((data) => {
-                    data = JSON.parse(base64Decode(data));
-                    if (input == "删除") {
-                        return $("确定删除："+data.name).confirm((data)=>{
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            deleteData(data);
-                            refreshPage(false);
-                            return 'toast://已删除:'+data.name;
-                        }, data)
-                    } else if (input == "测试") {
-                        return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
-                            setPageTitle(data.name+"-接口测试");
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
-                            yiji(data);
-                        }, data);
+        let checkSourceList = storage0.getMyVar("批量检测_待检列表2");
+        if(!checkSourceList){
+            let sourceList = storage0.getMyVar("批量检测_待检列表") || [];
+            sourceList.forEach(it => {
+                let selectmenu = ["删除", "测试"];
+                let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+
+                it = {
+                    title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + '</font></small>',
+                    url: $(selectmenu, 2).select((data) => {
+                        data = JSON.parse(base64Decode(data));
+                        if (input == "删除") {
+                            return $("确定删除："+data.name).confirm((data)=>{
+                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                deleteData(data);
+                                refreshPage(false);
+                                return 'toast://已删除:'+data.name;
+                            }, data)
+                        } else if (input == "测试") {
+                            return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                                setPageTitle(data.name+"-接口测试");
+                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                                yiji(data);
+                            }, data);
+                        }
+                    }, base64Encode(JSON.stringify(it))),
+                    desc: '',
+                    img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
+                    col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
+                    extra: {
+                        id: 'test-' + it.id
                     }
-                }, base64Encode(JSON.stringify(it))),
-                desc: '',
-                img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
-                col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
-                extra: {
-                    id: 'test-' + it.id
-                }
-            });
+                };
+            })
+            checkSourceList = sourceList;
+            storage0.putMyVar("批量检测_待检列表2", sourceList);
+        }
+        checkSourceList.forEach(it=>{
+            d.push(it);
         })
 
         setResult(d);

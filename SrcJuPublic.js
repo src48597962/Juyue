@@ -980,11 +980,11 @@ function batchTestSource(){
             col_type: "rich_text"
         })
         checkSourceList.forEach(it => {
-            let selectmenu = ["删除", it.stop?"启用":"禁用", "测试"];
+            let selectmenu = ["删除", "测试"];
             let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
             d.push({
-                title: it.name,
+                title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + '</font></small>',
                 url: $(selectmenu, 2).select((data) => {
                     data = JSON.parse(base64Decode(data));
                     if (input == "删除") {
@@ -1000,14 +1000,9 @@ function batchTestSource(){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                             yiji(data);
                         }, data);
-                    } else {//禁用、启用
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                        let sm = dataHandle(data, input);
-                        refreshPage(false);
-                        return 'toast://' + sm;
                     }
                 }, base64Encode(JSON.stringify(it))),
-                desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":""),
+                desc: '',
                 img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
                 col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
                 extra: {

@@ -2,6 +2,12 @@ var newVersion = {
     "SrcJu": "1.4",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V1.5",
+        records: [
+            "优化：去除getSource全局方法，优化juItem劫持，降低串源几率",
+            "新增：去除不记失败标记，程序中心增加自动禁用失败大于10源开关"
+        ]
+    },{
         title: "2025/09/15 V1.4",
         records: [
             "修复：收藏更新时机错误及重复收藏处理逻辑",

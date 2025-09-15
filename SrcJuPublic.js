@@ -857,19 +857,21 @@ function excludeLoadingItems() {
         }
     })
     writeFile(sortfile, JSON.stringify(sort));
-    // 失败10以上的接口自动禁用
-    datalist.forEach(it=>{
-        if(!it.stop){
-            try{
-                let jksort = sort[it.id] || {};
-                let fail = jksort.fail || 0;
-                if(fail>=10){
-                    it.stop = 1;
-                }
-            }catch(e){}
-        }
-    })
-    writeFile(jkfile, JSON.stringify(datalist));
+    if(juItem2.get('自动禁用失败的源')){
+        // 失败10以上的接口自动禁用
+        datalist.forEach(it=>{
+            if(!it.stop){
+                try{
+                    let jksort = sort[it.id] || {};
+                    let fail = jksort.fail || 0;
+                    if(fail>=10){
+                        it.stop = 1;
+                    }
+                }catch(e){}
+            }
+        })
+        writeFile(jkfile, JSON.stringify(datalist));
+    }
     
     // 清理接口残留过期文件
     /*

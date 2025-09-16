@@ -697,6 +697,7 @@ function getObjCode(jkdata, key) {
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
+            jkdata.tmpl = jkdata.tmpl || parse['模板'];
             delete parse['新建模板'];
             delete parse['模板'];
         }

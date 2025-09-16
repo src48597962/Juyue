@@ -682,10 +682,11 @@ function getObjCode(jkdata, key) {
     }
     try{
         let parse = getSource(jkdata);
-        if(parse['模板']){
+        let tmpldata = jkdata.tmpl || parse['模板'];
+        if(tmpldata){
             try{
-                let tmplparse = getSource(parse['模板']);
-                parse['模板名'] = parse['模板'].name||parse['模板'].id||'';
+                let tmplparse = getSource(tmpldata);
+                parse['模板名'] = tmpldata.name||tmpldata.id||'';
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + parse['模板名']);
                 }
@@ -697,7 +698,7 @@ function getObjCode(jkdata, key) {
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
-            jkdata.tmpl = jkdata.tmpl || parse['模板'];
+            jkdata.tmpl = tmpldata;
             delete parse['新建模板'];
             delete parse['模板'];
         }

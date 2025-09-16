@@ -473,7 +473,7 @@ function jiekouapi(data, look) {
         clearMyVar('apitmpl');
         clearMyVar('isload');
         clearMyVar('tmpldatas');
-        clearMyVar('apitmplindex');
+        clearMyVar('tmpldata');
     }));
     if(data){
         if(getMyVar('isload', '0')=="0"){
@@ -650,7 +650,16 @@ function jiekouapi(data, look) {
                     toast('字符串模板自定义调用，其他源接口不要用此模板');
                 }
                 putMyVar('apitmpl', input);
-                putMyVar('apitmplindex', MY_INDEX);
+                
+                let index = MY_INDEX - 1;
+                if(index>-1){
+                    let tmpldatas = storage0.getMyVar('tmpldatas');
+                    let tmpldata = tmpldatas[index];
+                    storage0.putMyVar('tmpldata', tmpldata);
+                }else{
+                    clearMyVar('tmpldata');
+                }
+                
                 refreshPage(false);
                 return 'hiker://empty';
             }),
@@ -671,20 +680,21 @@ function jiekouapi(data, look) {
                 }else if(apitmpl=='parseCode'){
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/parseCode.js`, 96);
                 }else{
-                    let tmpldatas = storage0.getMyVar('tmpldatas');
-                    let index = parseInt(getMyVar('apitmplindex', '1')) - 1;
-                    let tmpldata = tmpldatas[index];
-                    // 读取模板源，查看是否有新建模板
-                    function getSource(input) {
-                        let rule = readFile(`${jkfilespath}${input.id}.txt`);
-                        if(rule){
-                            eval(rule);
-                            return parse;
-                        }else{
-                            return {};
+                    let tmplparse;
+                    let tmpldata = storage0.getMyVar('tmpldata');
+                    if(tmpldata){
+                        // 读取模板源，查看是否有新建模板
+                        function getSource(input) {
+                            let rule = readFile(`${jkfilespath}${input.id}.txt`);
+                            if(rule){
+                                eval(rule);
+                                return parse;
+                            }else{
+                                return {};
+                            }
                         }
+                        tmplparse = getSource(tmpldata).新建模板;
                     }
-                    let tmplparse = getSource(tmpldata).新建模板;
                     if(tmplparse){
                         tmpl = tmplparse;
                     }else{
@@ -776,7 +786,7 @@ function jiekouapi(data, look) {
         d.push({
             title: '保存',
             col_type: 'text_3',
-            url: $().lazyRule((oldid) => {
+            url: $().lazyRule((data) => {
                 if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
@@ -804,11 +814,12 @@ function jiekouapi(data, look) {
                 
                 let newid = Date.now().toString();
                 let newapi = {
-                    id: oldid || newid,
+                    id: data?data.id:newid,
                     name: name,
                     type: type,
                     url: ruleurl,
-                    ilk: ilk
+                    ilk: ilk,
+                    tmpl: storage0.getMyVar('tmpldata') || data.tmpl
                 }
                 if(author){
                     newapi['author'] = author;
@@ -822,8 +833,8 @@ function jiekouapi(data, look) {
                 if(img){
                     newapi['img'] = img;
                 }
-                if(oldid){
-                    newapi['oldid'] = oldid;
+                if(data){
+                    newapi['oldid'] = data.id;
                 }
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
 
@@ -840,7 +851,7 @@ function jiekouapi(data, look) {
                     back(true);
                     return "toast://保存成功";
                 }
-            }, (data?data.id:"")||""),
+            }, data),
             extra: {
                 longClick: [{
                     title: "分享代码文件",
@@ -876,34 +887,34 @@ function jiekouapi(data, look) {
                 if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
                     return "toast://规则文件不存在";
                 }
-
-                let name = getMyVar('apiname');
-                let author = getMyVar('apiauthor');
-                let ruleurl = getMyVar('apiruleurl');
-                let img = getMyVar('apiimg');
-                let type = getMyVar('apitype');
-                let group = getMyVar('apigroup');
-                let ilk = getMyVar('apiilk');
-                
-                let newid = Date.now().toString();
-                let newapi = {
-                    id: newid,
-                    name: name,
-                    type: type,
-                    url: ruleurl,
-                    ilk: ilk
-                }
-                if(author){
-                    newapi['author'] = author;
-                }
-                if(group){
-                    newapi['group'] = group;
-                }
-                if(img){
-                    newapi['img'] = img;
-                }
-                data = newapi;
             }
+            let name = getMyVar('apiname');
+            let author = getMyVar('apiauthor');
+            let ruleurl = getMyVar('apiruleurl');
+            let img = getMyVar('apiimg');
+            let type = getMyVar('apitype');
+            let group = getMyVar('apigroup');
+            let ilk = getMyVar('apiilk');
+            
+            let newid = Date.now().toString();
+            data = {
+                id: data.id || newid,
+                name: name || data.name,
+                type: type || data.type,
+                url: ruleurl || data.url,
+                ilk: ilk || data.ilk,
+                tmpl: storage0.getMyVar('tmpldata') || data.tmpl
+            }
+            if(author){
+                data['author'] = author;
+            }
+            if(group){
+                data['group'] = group;
+            }
+            if(img){
+                data['img'] = img;
+            }
+            
             return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                 setPageTitle(data.name+"-接口测试");
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');

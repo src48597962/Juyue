@@ -779,11 +779,12 @@ function toerji(item, jkdata) {
                 extra.img = extra.img || item.pic_url || item.img;
                 extra.pageTitle = extra.pageTitle || extra.name;
                 extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
-                extra.data = jkdata;
                 item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                     require(config.聚阅);
                     erji();
                 })
+                delete jkdata['erjisign'];
+                extra.data = jkdata;
                 item.extra = extra;
             }
             

@@ -898,7 +898,7 @@ function jiekouapi(data, look) {
             
             let newid = Date.now().toString();
             data = {
-                id: data.id || newid,
+                id: data?data.id:newid,
                 name: name || data.name,
                 type: type || data.type,
                 url: ruleurl || data.url,

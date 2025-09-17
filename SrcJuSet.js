@@ -625,7 +625,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    if(!data && getMyVar('apiilk')!='4'){
+    if(getMyVar('apiilk')!='4'){
         let tmpldatas = storage0.getMyVar('tmpldatas');
         if(!tmpldatas){
             tmpldatas = getDatas('tmpl', true).map(it=>{

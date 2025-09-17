@@ -486,6 +486,10 @@ function jiekouapi(data, look) {
             putMyVar('apiilk', data.ilk||"");
             putMyVar('apiruleurl', data.url||"");
             putMyVar('isload', '1');
+            if(data.tmpl && data.tmpl.name){
+                putMyVar('apitmpl', data.tmpl.name);
+                storage0.putMyVar('tmpldata', data.tmpl);
+            }
         }
     }
 

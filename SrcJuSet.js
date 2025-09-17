@@ -479,7 +479,7 @@ function jiekouapi(data, look) {
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
             putMyVar('apiauthor', data.author||"");
-            putMyVar('apiversion', data.version||"");
+            putMyVar('apiversion', data.version||$.dateFormat(new Date(),"yyyyMMdd").toString());
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");
@@ -495,9 +495,9 @@ function jiekouapi(data, look) {
 
     let d = [];
     d.push({
-        title: '名称',
+        title: '源名称',
         col_type: 'input',
-        desc: "接口名称",
+        desc: "输入源名称",
         extra: {
             defaultValue: getMyVar('apiname') || "",
             titleVisible: false,
@@ -507,12 +507,12 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '源接口作者：'+ getMyVar('apiauthor',''),
+        title: '源作者：'+ getMyVar('apiauthor',''),
         col_type: 'text_1',
-        url: getMyVar('apitmpl')=='string'?$(getMyVar('apiauthor',''), "源接口作者").input(() => {
+        url: getMyVar('apitmpl')=='string'?$(getMyVar('apiauthor',''), "输入源作者").input(() => {
             putMyVar('apiauthor',input);
             refreshPage(false);
-            return 'toast://源接口作者已设置为：' + input;
+            return 'toast://源作者已设置为：' + input;
         }):'toast://保存代码文件时自动获取，作者:',
         extra: {
             //lineVisible: false
@@ -524,7 +524,7 @@ function jiekouapi(data, look) {
         url: 'toast://保存代码文件时自动获取，版本:'
     });
     d.push({
-        title: '接口类型：'+ getMyVar('apitype',''),
+        title: '源大类型：'+ getMyVar('apitype',''),
         col_type: 'text_1',
         url: $(runTypes,2,"接口类型").select(() => {
             putMyVar('apitype',input);
@@ -536,7 +536,7 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '接口分组：'+ getMyVar('apigroup',''),
+        title: '源小分组：'+ getMyVar('apigroup',''),
         col_type: 'text_1',
         url: $('#noLoading#').lazyRule(()=>{
             let selectTag = getMyVar('apigroup','').split(',').filter(item => item !== '');
@@ -591,9 +591,9 @@ function jiekouapi(data, look) {
         }
     });
     d.push({
-        title: '接口图标',
+        title: '源图标',
         col_type: 'input',
-        desc:"接口图标可留空",
+        desc:"源图标没有可留空",
         extra: {
             defaultValue: getMyVar('apiimg') || "",
             titleVisible: false,
@@ -609,7 +609,7 @@ function jiekouapi(data, look) {
         ilkindex = parseInt(getMyVar('apiilk')) -1;
     }
     d.push({
-        title: '选择源类型：'+ (ilkindex>-1?ilks[ilkindex]:''),
+        title: '选择源种类：'+ (ilkindex>-1?ilks[ilkindex]:''),
         col_type: 'text_1',
         url: $(ilks, 2, "选择源类型：").select(() => {
             if(input=="主页源"){
@@ -791,63 +791,12 @@ function jiekouapi(data, look) {
             title: '保存',
             col_type: 'text_3',
             url: $().lazyRule((data) => {
-                /*
-                if (!getMyVar('apiname')) {
-                    return "toast://名称不能为空";
-                }
-                if (!getMyVar('apiversion')) {
-                    return "toast://源版本号不能为空";
-                }
-                if (!getMyVar('apitype')) {
-                    return "toast://类型没有选择";
-                }
-                if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
-                    return "toast://规则文件不存在";
-                }
-                if (!getMyVar('apiilk')) {
-                    return "toast://源类型没有选择";
-                }
-            
-                let name = getMyVar('apiname');
-                let author = getMyVar('apiauthor');
-                let version = getMyVar('apiversion');
-                let ruleurl = getMyVar('apiruleurl');
-                let img = getMyVar('apiimg');
-                let type = getMyVar('apitype');
-                let group = getMyVar('apigroup');
-                let ilk = getMyVar('apiilk');
-                
-                let newid = Date.now().toString();
-                let newapi = {
-                    id: data?data.id:newid,
-                    name: name,
-                    type: type,
-                    url: ruleurl,
-                    ilk: ilk,
-                    tmpl: storage0.getMyVar('tmpldata') || data.tmpl
-                }
-                if(author){
-                    newapi['author'] = author;
-                }
-                if(version){
-                    newapi['version'] = version;
-                }
-                if(group){
-                    newapi['group'] = group;
-                }
-                if(img){
-                    newapi['img'] = img;
-                }
-                if(data){
-                    newapi['oldid'] = data.id;
-                }
-                */
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
                 let newapi = outputNewData(data);
                 if(typeof newapi == 'string'){
                     return newapi;
                 }
-                xlog(newapi);
+
                 let urls = [];
                 urls.push(newapi);
                 let jknum = jiekousave(urls);
@@ -887,49 +836,17 @@ function jiekouapi(data, look) {
         title:'测试',
         col_type:'text_3',
         url: $('#noLoading#').lazyRule((data)=>{
-            if(!data){
-                if (!getMyVar('apiname')) {
-                    return "toast://名称不能为空";
-                }
-                if (!getMyVar('apitype')) {
-                    return "toast://类型没有选择";
-                }
-                if (!getMyVar('apiruleurl') || !fetch(getMyVar('apiruleurl'))) {
-                    return "toast://规则文件不存在";
-                }
-            }
-            let name = getMyVar('apiname');
-            let author = getMyVar('apiauthor');
-            let ruleurl = getMyVar('apiruleurl');
-            let img = getMyVar('apiimg');
-            let type = getMyVar('apitype');
-            let group = getMyVar('apigroup');
-            let ilk = getMyVar('apiilk');
-            
-            let newid = Date.now().toString();
-            data = {
-                id: data?data.id:newid,
-                name: name || data.name,
-                type: type || data.type,
-                url: ruleurl || data.url,
-                ilk: ilk || data.ilk,
-                tmpl: storage0.getMyVar('tmpldata') || data.tmpl
-            }
-            if(author){
-                data['author'] = author;
-            }
-            if(group){
-                data['group'] = group;
-            }
-            if(img){
-                data['img'] = img;
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+            let newapi = outputNewData(data);
+            if(typeof newapi == 'string'){
+                return newapi;
             }
             
             return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                 setPageTitle(data.name+"-接口测试");
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                 yiji(data);
-            }, data);
+            }, newapi);
         }, data),
         extra: {
             longClick: [{

@@ -857,14 +857,14 @@ function excludeLoadingItems() {
         }
     })
     writeFile(sortfile, JSON.stringify(sort));
-    if(getItem('自动禁用失败的源')=="1"){
-        // 失败10以上的接口自动禁用
+    if(getItem('自动禁用失败的源') == true){
+        // 失败15以上的接口自动禁用
         datalist.forEach(it=>{
             if(!it.stop){
                 try{
                     let jksort = sort[it.id] || {};
                     let fail = jksort.fail || 0;
-                    if(fail>=10){
+                    if(fail>=15){
                         it.stop = 1;
                     }
                 }catch(e){}

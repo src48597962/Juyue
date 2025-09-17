@@ -1074,6 +1074,13 @@ function getFastestUrl(list, timeout) {
     results = results.sort((a, b) => a.time - b.time);
     return results.length>0?results[0].url:'';
 }
+//插件文件本地化
+function downPlugins(update){
+    
+    try{
+        requireDownload(代码仓 + "img/聚影.png", 'hiker://files/cache/src/聚影.png');
+    }catch(e){}
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

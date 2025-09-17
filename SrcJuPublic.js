@@ -963,6 +963,51 @@ function jkItemList(jkdatalist){
     })
     return d;
 }
+// 源接口编辑保存输出data
+function outputNewData(data){
+    let apiname = getMyVar('apiname');
+    let apiauthor = getMyVar('apiauthor');
+    let apiversion = getMyVar('apiversion');
+    let apitype = getMyVar('apitype');
+    let apigroup = getMyVar('apigroup');
+    let apiruleurl = getMyVar('apiruleurl');
+    let apiimg = getMyVar('apiimg');
+    let apiilk = getMyVar('apiilk');
+    let apitmpldata = storage0.getMyVar('tmpldata');
+    if (!apiname) {
+        return "toast://名称不能为空";
+    }
+    if (!apiversion) {
+        return "toast://版本号不能为空";
+    }
+    if (!apitype) {
+        return "toast://大类没有选择";
+    }
+    if (!apiruleurl || !fetch(apiruleurl)) {
+        return "toast://规则文件不存在";
+    }
+    if (!apiilk) {
+        return "toast://源种类没有选择";
+    }
+    
+    let newid = Date.now().toString();
+    let newapi = {
+        id: data?data.id:newid,
+        name: apiname,
+        author: apiauthor,
+        version: apiversion,
+        type: apitype,
+        group: apigroup,
+        url: apiruleurl,
+        img: apiimg,
+        ilk: apiilk,
+        tmpl: apitmpldata
+    }
+    if(data){
+        newapi['oldid'] = data.id;
+    }
+    return newapi;
+}
 // 批量检测源方法
 function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {

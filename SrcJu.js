@@ -1855,7 +1855,12 @@ function getMark(url, sid) {
     let markfile = rulepath + "mark.json";
     let markdata = fetch(markfile);
     if (markdata != "") {
-        eval("marklist=" + markdata + ";");
+        try{
+            eval("marklist=" + markdata + ";");
+        }catch(e){
+            toast('加载mark.json异常，详见日志');
+            xlog(rulepath + "mark.json" + "文件无法加载>" + e.message);
+        }
     }
     let mark = marklist.filter(it => {
         return it.url==url && it.sid==sid;
@@ -1885,7 +1890,7 @@ function setMark(data) {
     if (marklist.length > 100) {
         marklist.splice(0, 1);
     }
-    writeFile(markfile, JSON.stringify(marklist));
+    writeFile(markfile, $.stringify(marklist));
     return 1;
 }
 //新搜索页

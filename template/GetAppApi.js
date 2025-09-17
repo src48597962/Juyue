@@ -16,10 +16,6 @@ let parse = {
         //init: 120, //可选项，qijiappapi为120，才需要
         //rank: 1 //可选项，没有主页推荐，才需要
     },
-    模板: {
-        id: '1756086251723',
-        name: 'GetAppApi'
-    },
     /*//此为自定义解析逻辑，需要则去除注释
     解析: function(url, appconfig){
         appconfig = parse.配置;

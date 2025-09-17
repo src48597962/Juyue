@@ -965,15 +965,15 @@ function jkItemList(jkdatalist){
 }
 // 源接口编辑保存输出data
 function outputNewData(data){
-    let apiname = getMyVar('apiname');
-    let apiauthor = getMyVar('apiauthor');
-    let apiversion = getMyVar('apiversion');
-    let apitype = getMyVar('apitype');
-    let apigroup = getMyVar('apigroup');
-    let apiruleurl = getMyVar('apiruleurl');
-    let apiimg = getMyVar('apiimg');
-    let apiilk = getMyVar('apiilk');
-    let apitmpldata = storage0.getMyVar('tmpldata');
+    let apiname = getMyVar('apiname') || undefined;
+    let apiauthor = getMyVar('apiauthor') || undefined;
+    let apiversion = getMyVar('apiversion') || undefined;
+    let apitype = getMyVar('apitype') || undefined;
+    let apigroup = getMyVar('apigroup') || undefined;
+    let apiruleurl = getMyVar('apiruleurl') || undefined;
+    let apiimg = getMyVar('apiimg') || undefined;
+    let apiilk = getMyVar('apiilk') || undefined;
+    let apitmpldata = storage0.getMyVar('tmpldata') || undefined;
     if (!apiname) {
         return "toast://名称不能为空";
     }

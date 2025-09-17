@@ -644,7 +644,7 @@ function jiekouapi(data, look) {
         tmpldatas.forEach(it=>{
             tmpllist.push(it.name);
         })
-        if(getMyVar('apiilk')=='code4'){
+        if(getMyVar('apiilk')=='4'){
             tmpllist.push('string');
         }
         d.push({
@@ -791,6 +791,7 @@ function jiekouapi(data, look) {
             title: '保存',
             col_type: 'text_3',
             url: $().lazyRule((data) => {
+                /*
                 if (!getMyVar('apiname')) {
                     return "toast://名称不能为空";
                 }
@@ -840,8 +841,13 @@ function jiekouapi(data, look) {
                 if(data){
                     newapi['oldid'] = data.id;
                 }
+                */
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-
+                let newapi = outputNewData(data);
+                if(typeof newapi == 'string'){
+                    return newapi;
+                }
+                xlog(newapi);
                 let urls = [];
                 urls.push(newapi);
                 let jknum = jiekousave(urls);

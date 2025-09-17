@@ -644,9 +644,6 @@ function jiekouapi(data, look) {
         tmpldatas.forEach(it=>{
             tmpllist.push(it.name);
         })
-        if(getMyVar('apiilk')=='4'){
-            tmpllist.push('string');
-        }
         d.push({
             title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
             url: $(tmpllist, 2, '选择模板类型').select(()=>{

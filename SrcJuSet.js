@@ -479,7 +479,7 @@ function jiekouapi(data, look) {
         if(getMyVar('isload', '0')=="0"){
             putMyVar('apiname', data.name);
             putMyVar('apiauthor', data.author||"");
-            putMyVar('apiversion', data.version||$.dateFormat(new Date(),"yyyyMMdd").toString());
+            putMyVar('apiversion', data.version||"");
             putMyVar('apiimg', data.img||"");
             putMyVar('apitype', data.type||"");
             putMyVar('apigroup', data.group||"");

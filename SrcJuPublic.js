@@ -967,7 +967,7 @@ function jkItemList(jkdatalist){
 function outputNewData(data){
     let apiname = getMyVar('apiname') || undefined;
     let apiauthor = getMyVar('apiauthor') || undefined;
-    let apiversion = getMyVar('apiversion') || undefined;
+    let apiversion = getMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString());
     let apitype = getMyVar('apitype') || undefined;
     let apigroup = getMyVar('apigroup') || undefined;
     let apiruleurl = getMyVar('apiruleurl') || undefined;
@@ -976,9 +976,6 @@ function outputNewData(data){
     let apitmpldata = storage0.getMyVar('tmpldata') || undefined;
     if (!apiname) {
         return "toast://名称不能为空";
-    }
-    if (!apiversion) {
-        return "toast://版本号不能为空";
     }
     if (!apitype) {
         return "toast://大类没有选择";

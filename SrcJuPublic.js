@@ -857,7 +857,7 @@ function excludeLoadingItems() {
         }
     })
     writeFile(sortfile, JSON.stringify(sort));
-    if(getItem('自动禁用失败的源') == true){
+    if(getItem('自动禁用失败的源') == '1'){
         // 失败15以上的接口自动禁用
         datalist.forEach(it=>{
             if(!it.stop){

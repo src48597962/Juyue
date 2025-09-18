@@ -11,21 +11,6 @@ if(!getMyVar('SrcJu_config')){
     downloadPlugins();//插件本地化执行
     putMyVar('SrcJu_config', '1');
 }
-//插件文件本地化
-function downloadPlugins(update){
-    try{
-        let 代码仓 = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-        let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js'];
-        files.forEach(it=>{
-            if(update){
-                deleteFile(libspath + it);
-            }
-            requireDownload(代码仓 + it, libspath + it);
-        })
-    }catch(e){
-        xlog('插件文件本地化失败>' + e.message);
-    }
-}
 // 对象转js文本
 function objconvertjs(obj) {
     let str = 'let parse = {\n';

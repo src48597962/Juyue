@@ -1,25 +1,15 @@
 // 本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 // 检测依赖
 if(!getMyVar('SrcJu_config')){
-    /*
     if(!config.聚阅 && getPublicItem('聚阅','')){
         initConfig({
             聚阅: getPublicItem('聚阅','')
         });
     }
-    */
-    if (!config.聚阅) {
-        let srcHome = $.require('ghproxy?rule=聚阅').getSrcHome();
-        if (srcHome) {
-            initConfig({
-                聚阅: srcHome
-            });
-            setPublicItem('聚阅', srcHome);
-        }
-    }
+
     xlog("当前依赖库>" + config.聚阅);
     downloadPlugins();//插件本地化执行
-    getMyVar('SrcJu_config', '1');
+    putMyVar('SrcJu_config', '1');
 }
 
 // 对象转js文本

@@ -2099,6 +2099,7 @@ function Version() {
                     title: '发现新版本，是否更新？',
                     content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.hint,
                     confirm: $.toString((nowtime,newVersion) => {
+                        downloadPlugins(true);//插件本地化文件更新
                         setItem('Version', newVersion);
                         setItem('VersionChecktime', nowtime + 'time');
                         deleteCache();

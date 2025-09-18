@@ -1075,7 +1075,7 @@ function getFastestUrl(list, timeout) {
     return results.length>0?results[0].url:'';
 }
 //插件文件本地化
-function downPlugins(update){
+function downloadPlugins(update){
     try{
         let 代码仓 = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
         let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js'];
@@ -1165,5 +1165,6 @@ if(!getMyVar('SrcJu_config')){
         }
     }
     xlog("当前依赖库>" + config.聚阅);
+    downloadPlugins();//插件本地化执行
     getMyVar('SrcJu_config', '1');
 }

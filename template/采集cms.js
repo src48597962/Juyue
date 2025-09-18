@@ -6,10 +6,6 @@ let parse = {
         //parse_url: "https://jx.yparse.com/index.php?url=",
         //搜索: false
     },
-    模板: {
-        id: '1756685891015',
-        name: '采集cms'
-    },
     /*//此为自定义解析逻辑，需要则去除注释
     解析: function(url, appconfig){
         appconfig = parse.配置;

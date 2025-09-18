@@ -1086,6 +1086,7 @@ function batchTestSource(){
         setResult(d);
     })
 }
+/*
 // 检测依赖
 if(!getVar('SrcJu_config')){
     if(!config.聚阅 && getPublicItem('聚阅','')){
@@ -1096,3 +1097,4 @@ if(!getVar('SrcJu_config')){
     xlog("当前依赖库>" + config.聚阅);
     putVar('SrcJu_config', '1');
 }
+*/

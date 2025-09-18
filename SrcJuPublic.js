@@ -11,7 +11,21 @@ if(!getMyVar('SrcJu_config')){
     downloadPlugins();//插件本地化执行
     putMyVar('SrcJu_config', '1');
 }
-
+//插件文件本地化
+function downloadPlugins(update){
+    try{
+        let 代码仓 = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
+        let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js'];
+        files.forEach(it=>{
+            if(update){
+                deleteFile(libspath + it);
+            }
+            requireDownload(代码仓 + it, libspath + it);
+        })
+    }catch(e){
+        xlog('插件文件本地化失败>' + e.message);
+    }
+}
 // 对象转js文本
 function objconvertjs(obj) {
     let str = 'let parse = {\n';
@@ -490,7 +504,7 @@ function selectSource(selectGroup) {
         return selectSource2(selectGroup);
     }
     //hikerPop插件
-    const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+    const hikerPop = $.require(libspath + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
     let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){

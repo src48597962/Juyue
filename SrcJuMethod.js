@@ -1078,7 +1078,7 @@ function getFastestUrl(list, timeout) {
 function downloadPlugins(update){
     try{
         let 代码仓 = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-        let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js'];
+        let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js','template/GetAppApi.js','template/parseCode.js','template/采集cms.js'];
         files.forEach(it=>{
             if(update){
                 deleteFile(libspath + it);

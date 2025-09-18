@@ -196,7 +196,7 @@ function bookCase() {
         title: '设置菜单',
         url: $('#noLoading#').lazyRule((case_cols) => {
             let updatetiming = ["每次打开收藏都更新", "软件启动后只更新一次", "不自动更新只下拉更新"];
-            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 

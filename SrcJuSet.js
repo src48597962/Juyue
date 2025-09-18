@@ -971,7 +971,7 @@ function JYshare(input,data) {
     if(sharelist.length==0){
         return "toast://有效接口数为0，无法分享";
     }
-    let gzip = $.require(codePath + "plugins/gzip.js");
+    let gzip = $.require(libspath + "plugins/gzip.js");
     let sharetxt = gzip.zip(JSON.stringify(sharelist));
     let sharetxtlength = sharetxt.length;
     if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
@@ -1043,7 +1043,7 @@ function JYimport(input) {
             text = pasteurl;
         }
         if(pasteurl&&!/^error/.test(text)){
-            let gzip = $.require(codePath + "plugins/gzip.js");
+            let gzip = $.require(libspath + "plugins/gzip.js");
             let sharetxt = gzip.unzip(text);
             let pastedata = JSON.parse(sharetxt);           
             let urlnum = 0;
@@ -1105,7 +1105,7 @@ function importConfirm(jsfile) {
             name = input.split('￥')[0];
             /*
             if(name=="聚影资源码" && input.split('￥')[2]=="文件分享"){
-                let gzip = $.require(codePath + "plugins/gzip.js");
+                let gzip = $.require(libspath + "plugins/gzip.js");
                 let textcontent = gzip.unzip(code);
                 let pastedata = JSON.parse(textcontent);
 
@@ -1183,7 +1183,7 @@ function importConfirm(jsfile) {
                             text = code;
                         }
                         if(text && !/^error/.test(text)){
-                            let gzip = $.require(codePath + "plugins/gzip.js");
+                            let gzip = $.require(libspath + "plugins/gzip.js");
                             let sharetxt = gzip.unzip(text);
                             importdatas = JSON.parse(sharetxt); 
                             storage0.putMyVar('importConfirm', importdatas);
@@ -2225,7 +2225,7 @@ function themeIconSet() {
                         if(text && !/^error/.test(text)){
                             let importTheme = [];
                             try{
-                                let gzip = $.require(codePath + "plugins/gzip.js");
+                                let gzip = $.require(libspath + "plugins/gzip.js");
                                 importTheme = JSON.parse(gzip.unzip(parsePaste(pasteurl)));
                             }catch(e){
                                 importTheme = JSON.parse(parsePaste(pasteurl));//兼容一下旧的分享口令
@@ -2281,7 +2281,7 @@ function themeIconSet() {
                             }
                         })
 
-                        let gzip = $.require(codePath + "plugins/gzip.js");
+                        let gzip = $.require(libspath + "plugins/gzip.js");
                         let sharetxt = gzip.zip(JSON.stringify(currentTheme));
 
                         let pastes = getPastes();

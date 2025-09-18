@@ -700,12 +700,8 @@ function jiekouapi(data, look) {
                         tmpl = tmplparse;
                     }else{
                         try{
-                            tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/${apitmpl}.js`, 96);
+                            tmpl= fetch(libspath + `template/${apitmpl}.js`);
                         }catch(e){}
-                        if(!tmpl){
-                            tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + 'template/tmplCode.js', 96);
-                            tmpl = tmpl.replace(`模板id`, `${tmpldata.id}`).replace(`模板名称`, `${tmpldata.name}`);
-                        }
                     }
                 }
                 if(tmpl){

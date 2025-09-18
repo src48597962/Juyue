@@ -1,20 +1,27 @@
 // 本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
-/*
-let libspath = "hiker://files/data/聚阅/"; //依赖文件路径
-let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
-let cachepath = "hiker://files/_cache/Juyue/"; //缓存文件路径
-let jkfilespath = rulepath + "jiekou/"; //接口数据文件路径
-let jkfile = rulepath + "jiekou.json";
-let cfgfile = rulepath + "config.json";
-let sortfile = rulepath + "jksort.json";
-*/
-let codepath = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
-
-/*
-if(codepath && !codePath){
-    codePath = codepath;
+// 检测依赖
+if(!getMyVar('SrcJu_config')){
+    /*
+    if(!config.聚阅 && getPublicItem('聚阅','')){
+        initConfig({
+            聚阅: getPublicItem('聚阅','')
+        });
+    }
+    */
+    if (!config.聚阅) {
+        let srcHome = $.require('ghproxy?rule=聚阅').getSrcHome();
+        if (srcHome) {
+            initConfig({
+                聚阅: srcHome
+            });
+            setPublicItem('聚阅', srcHome);
+        }
+    }
+    xlog("当前依赖库>" + config.聚阅);
+    downloadPlugins();//插件本地化执行
+    getMyVar('SrcJu_config', '1');
 }
-*/
+
 // 对象转js文本
 function objconvertjs(obj) {
     let str = 'let parse = {\n';
@@ -766,7 +773,7 @@ function getIcon(icon, nochange, color2) {
     if(!icon){
         return '';
     }else if(!icon.includes('/')){
-        icon = codepath + 'img/' + icon;
+        icon = codePath + 'img/' + icon;
     }
     if(!icon.includes('.svg')){
         return icon;
@@ -1086,15 +1093,3 @@ function batchTestSource(){
         setResult(d);
     })
 }
-/*
-// 检测依赖
-if(!getVar('SrcJu_config')){
-    if(!config.聚阅 && getPublicItem('聚阅','')){
-        initConfig({
-            聚阅: getPublicItem('聚阅','')
-        });
-    }
-    xlog("当前依赖库>" + config.聚阅);
-    putVar('SrcJu_config', '1');
-}
-*/

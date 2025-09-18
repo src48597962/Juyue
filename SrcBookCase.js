@@ -83,7 +83,7 @@ function bookCase() {
         })
     }else{
         if(getItem("聚阅收藏加锁")=="1" && getMyVar('SrcJu_已验证指纹')!='1'){
-            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+            const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
             if (hikerPop.canBiometric() !== 0) {
                 toast("调用生物学验证出错");
             }

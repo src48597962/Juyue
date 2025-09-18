@@ -66,7 +66,7 @@ function SRCSet() {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let groupNames = getGroupNames();
 
-                const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 hikerPop.setUseStartActivity(false);
 
                 let inputBox;
@@ -291,7 +291,7 @@ function SRCSet() {
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');//先临时放着吧
                     let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
                     if(lockgroups.indexOf(it)>-1){
-                        const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                        const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                         if (hikerPop.canBiometric() !== 0) {
                             return "toast://无法调用生物学验证";
                         }
@@ -555,7 +555,7 @@ function jiekouapi(data, look) {
                 return it;
             })
             
-            const hikerPop = $.require(config.聚阅.replace(/[^/]*$/,'') + "plugins/hikerPop.js");
+            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
             let pop = hikerPop.FlexMenuBottom({
@@ -1115,7 +1115,7 @@ function importConfirm(jsfile) {
                     url: "hiker://empty",
                     col_type: "text_center_1"
                 });
-                const hikerPop = $.require(config.聚影.replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 let fruit = Object.keys(pastedata);
                 hikerPop.multiChoice({
                     title: "选择要导入本地的项", 
@@ -1663,7 +1663,7 @@ function manageSet(){
             eval(fetch(getItem("依赖","").replace(/[^/]*$/,'') + 'SrcTmplVersion.js'));
             let updateRecords = newVersion.JYUpdateRecords || [];
 
-            const hikerPop = $.require(getItem("依赖","").replace(/[^/]*$/,'') + 'plugins/hikerPop.js');
+            const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
             hikerPop.updateRecordsBottom(updateRecords);
             
             return "hiker://empty";

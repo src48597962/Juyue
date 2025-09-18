@@ -1074,7 +1074,21 @@ function getFastestUrl(list, timeout) {
     results = results.sort((a, b) => a.time - b.time);
     return results.length>0?results[0].url:'';
 }
-
+//插件文件本地化
+function downloadPlugins(update){
+    try{
+        let 代码仓 = (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'');
+        let files = ['plugins/hikerPop.js','plugins/gzip.js','plugins/pinyin-match.js'];
+        files.forEach(it=>{
+            if(update){
+                deleteFile(libspath + it);
+            }
+            requireDownload(代码仓 + it, libspath + it);
+        })
+    }catch(e){
+        xlog('插件文件本地化失败>' + e.message);
+    }
+}
 //来自阿尔法大佬的主页幻灯片
 function banner(start, arr, data, cfg){
     if(!data || data.length==0){return;}

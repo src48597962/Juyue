@@ -1537,7 +1537,7 @@ function manageSet(){
                 sm = '关闭自动禁用失败的源';
             }else{
                 setItem('自动禁用失败的源','1');
-                sm = '开启自动禁用失败次数大于10的源';
+                sm = '开启自动禁用失败次数大于15的源';
             }
             refreshPage();
             return 'toast://' + sm;

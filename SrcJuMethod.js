@@ -645,8 +645,6 @@ function removeByValue(arr, val) {
 
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
-    // 重新劫持定义juItem
-    let juItem = juItemF(jkdata.id);
     // 读取接口对象规则内容
     function getSource(input) {
         let rule;
@@ -667,19 +665,17 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            /*
             const parse = (function(jkdata) {
                 let juItem = juItemF(jkdata.id);
                 eval(rule);
                 return parse;
             })(input);
-            */
-            eval(rule);
             return parse;
         }else{
             return {};
         }
     }
+    
     try{
         let parse = getSource(jkdata);
         let tmpldata = jkdata.tmpl || parse['模板'];

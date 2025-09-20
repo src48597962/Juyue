@@ -942,7 +942,7 @@ function jkItemList(jkdatalist){
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":""),
+            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + (it.tmpl?"  模板:"+it.tmpl.name:""),
             img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {

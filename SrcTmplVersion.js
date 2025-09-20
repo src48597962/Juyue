@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu": "1.4",
+    "SrcJu": "1.5",
     "hint": "",
     "JYUpdateRecords": [{
-        title: "beta V1.5",
+        title: "2025/09/20 V1.5",
         records: [
             "优化：去除getSource全局方法",
             "优化：优化juItem劫持，降低串源几率",

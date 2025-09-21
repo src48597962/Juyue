@@ -223,6 +223,13 @@ function bookCase() {
                         change();
                         return "toast://选择了:" + a;
                     }});
+                }else if (s=="自动更新二级源接口") {
+                    if(getItem("自动更新二级源接口")=="0"){
+                        clearItem("自动更新二级源接口");
+                    }else{
+                        setItem("自动更新二级源接口", "0");
+                    }
+                    officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }else if (s=="退出重置为软件收藏") {
                     if(getItem("退出重置收藏")=="1"){
                         clearItem("退出重置收藏");

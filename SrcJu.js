@@ -1538,7 +1538,11 @@ function erji() {
                 erLoadData.sid = jkdata.id;
                 erLoadData.url = MY_URL;
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
-                addBookCase(erLoadData.caseData, true);//更新收藏书架数据
+                let caseObj = erLoadData.caseData;
+                if(getItem("自动更新二级源接口")=="0"){
+                    caseObj = {id: erLoadData.caseData.id}
+                }
+                addBookCase(caseObj, true);//更新收藏书架数据
             }else if(saveCache){
                 writeFile(erCacheFile, $.stringify(erLoadData));//线路或分页变化强制保存缓存
             }

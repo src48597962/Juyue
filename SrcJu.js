@@ -513,6 +513,7 @@ function erji() {
         if(getMyVar('从书架进二级')){
             refreshPage(false);
         }
+        clearMyVar('二级切换站源');
     }));
 
     clearMyVar('二级加载扩展列表');
@@ -964,6 +965,7 @@ function erji() {
                         deleteItemByCls('Juloadlist');
 
                         clearMyVar('换源变更列表id');
+                        putMyVar('二级切换站源', '1');
                         require(config.聚阅);
                         //showLoading('搜源中,请稍后.');
                         erjisousuo(name, group);
@@ -1539,8 +1541,13 @@ function erji() {
                 erLoadData.url = MY_URL;
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
                 let caseObj = erLoadData.caseData;
-                if(getItem("自动更新二级源接口")=="0"){
-                    caseObj = {id: erLoadData.caseData.id}
+                if(getItem("自动更新二级源接口")=="0" && !getMyVar('二级切换站源')){
+                    caseObj = {
+                        id: erLoadData.caseData.id,
+                        params: {
+                            url: erLoadData.caseData.params.url
+                        }
+                    }
                 }
                 addBookCase(caseObj, true);//更新收藏书架数据
             }else if(saveCache){

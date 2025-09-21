@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.5",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V1.6",
+        records: [
+            "新增：收藏书架设置菜单增加自动切换站源开关"
+        ]
+    },{
         title: "2025/09/20 V1.5",
         records: [
             "优化：去除getSource全局方法",

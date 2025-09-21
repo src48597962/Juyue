@@ -201,7 +201,7 @@ function bookCase() {
             let setItems = [
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
                 SettingItem("自动获取更新时机", updatetiming[juItem2.get("bookCase_UpdateTiming", 1)]), 
-                SettingItem("自动更新二级源接口", getItem("自动更新二级源接口")=="0"?false:true), 
+                SettingItem("自动切换二级源接口", getItem("自动切换二级源接口")=="0"?false:true), 
                 SettingItem(), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
             ]
@@ -223,11 +223,11 @@ function bookCase() {
                         change();
                         return "toast://选择了:" + a;
                     }});
-                }else if (s=="自动更新二级源接口") {
-                    if(getItem("自动更新二级源接口")=="0"){
-                        clearItem("自动更新二级源接口");
+                }else if (s=="自动切换二级源接口") {
+                    if(getItem("自动切换二级源接口")=="0"){
+                        clearItem("自动切换二级源接口");
                     }else{
-                        setItem("自动更新二级源接口", "0");
+                        setItem("自动切换二级源接口", "0");
                     }
                     officeItem.setSelected(officeItem.getSelected() === 1 ? -1 : 1);
                 }else if (s=="退出重置为软件收藏") {

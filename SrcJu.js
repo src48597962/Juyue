@@ -1541,7 +1541,7 @@ function erji() {
                 erLoadData.url = MY_URL;
                 writeFile(erCacheFile, $.stringify(erLoadData));//第一次打开页面保存缓存
                 let caseObj = erLoadData.caseData;
-                if(getItem("自动更新二级源接口")=="0" && !getMyVar('二级切换站源')){
+                if(getItem("自动切换二级源接口")=="0" && !getMyVar('二级切换站源')){
                     delete caseObj.params.params;
                 }
                 addBookCase(caseObj, true);//更新收藏书架数据

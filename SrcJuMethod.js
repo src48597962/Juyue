@@ -267,7 +267,7 @@ function getYiData(datatype, jkdata, dd) {
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
 
-    if(!yijkdata || (yijkdata && parse['二级标识'] && !yijkdata['二级标识'])){
+    if(!yijkdata || (parse['二级标识'] && !yijkdata['erjisign'])){
         if(parse['二级标识']){
             jkdata['erjisign'] = parse['二级标识'];
         }

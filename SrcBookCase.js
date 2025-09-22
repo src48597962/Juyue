@@ -208,8 +208,11 @@ function bookCase() {
             if(MY_NAME=="海阔视界"){
                 setItems.push(SettingItem("退出重置为软件收藏", getItem("退出重置收藏")=="1"?true:false));
             }
-            setItems.push(SettingItem());
-            setItems.push(SettingItem("清空收藏书架列表", "谨慎操作"));
+            if(getItem("切换收藏列表")=="聚阅收藏"){
+                setItems.push(SettingItem());
+                setItems.push(SettingItem("清空收藏书架列表", "谨慎操作"));
+            }
+            
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
                 if (s=="列表/书架样式") {
                     hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(a) {
@@ -263,6 +266,7 @@ function bookCase() {
                         confirm() {
                             let caselist = [];
                             writeFile(casefile, $.stringify(caselist));
+                            toast('已清空');
                         },
                         cancel() {
                             //return "hiker://empty";

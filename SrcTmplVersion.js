@@ -4,6 +4,7 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V1.6",
         records: [
+            "修复：一级转二级，二级转三级页面标识的问题",
             "新增：收藏书架设置菜单增加自动切换站源开关"
         ]
     },{

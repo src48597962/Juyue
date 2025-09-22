@@ -402,10 +402,13 @@ function deleteData(data){
 }
 //执行切换源接口
 function changeSource(sourcedata) {
+    // 设置源接口使用次数
+    setJkSort(sourcedata.id, {use: 1});
+
     if (homeSourceId==sourcedata.id) {
         return 'toast://主页源：' + sourcedata.name;
     }
-    setJkSort(sourcedata.id, {use: 1});
+    
     if (typeof (unRegisterTask) != "undefined") {
         unRegisterTask("juyue");
         unRegisterTask("lunbo");

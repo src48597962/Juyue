@@ -251,6 +251,21 @@ function bookCase() {
                         setItem("聚阅收藏加锁", "1");
                         officeItem.setSelected(1);
                     }
+                }else if (s=="清空收藏书架列表") {
+                    hikerPop.confirm({
+                        content: "想好再操作哦，清空无法恢复",
+                        title: "清空聚阅收藏",
+                        okTitle: "确认清空",
+                        cancelTitle: "我再想想",
+                        hideCancel: false,
+                        confirm() {
+                            let caselist = [];
+                            writeFile(casefile, $.stringify(caselist));
+                        },
+                        cancel() {
+                            //return "hiker://empty";
+                        }
+                    });
                 }
                 change();
             }, onDismiss() {

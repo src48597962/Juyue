@@ -587,9 +587,9 @@ function erji() {
                 if(parse['二级']){
                     eval("let 二级获取 = " + parse['二级'])
                     erLoadData = 二级获取.call(parse, MY_URL);
-
-                    let caseData = getCaseData();
-                    erLoadData.caseData = caseData;
+                    if(erLoadData){
+                        erLoadData.caseData = getCaseData();
+                    }
                 }else{
                     xlog("parse不存在二级方法");
                 }
@@ -623,10 +623,12 @@ function erji() {
             let addCaseObj = [{
                 title: "加入收藏书架🗄",
                 js: $.toString((caseData) => {
-                    try{
-                        return addBookCase(caseData);
-                    }catch(e){
-                        xlog('加入收藏处理异常>' + e.message);
+                    if(caseData){
+                        try{
+                            return addBookCase(caseData);
+                        }catch(e){
+                            xlog('加入收藏处理异常>' + e.message);
+                        }
                     }
                     return 'toast://失败，书架数据获取失败';
                 }, erLoadData.caseData)

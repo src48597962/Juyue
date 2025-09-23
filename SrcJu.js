@@ -1533,10 +1533,9 @@ function erji() {
                 if (getData.length > 0) {
                     jkdata['erjisign'] = parse['二级标识'];
                     getData.forEach(item => {
-                        let extra = item.extra || {};
-                        extra['cls'] = extra['cls']?extra['cls']+' Juloadlist':extra['cls'];
-                        item.extra = extra;
                         item = toerji(item, jkdata);
+                        item.extra = item.extra || {};
+                        item.extra['cls'] = item.extra['cls']?(item.extra['cls']+" Juloadlist"):"Juloadlist";
                     })
                 }
                 d = getData;

@@ -730,34 +730,54 @@ function erji() {
                 //线路名除评论的线路选集修正排序
                 if(列表.length>0 && 线路s[lineid]!='评论'){
                     function checkAndReverseArray(arr) {
-                        try{
+                        try {
                             const numbers = [];
-                            arr.slice(0, 50).forEach(it=>{
-                                const digits = it.title.match(/\d+/);
+                            arr.slice(0, 50).forEach(it => {
+                                const digits = it.title.match(/\d+/g);
                                 if (digits) {
-                                    numbers.push(parseInt(digits[0]));
+                                    numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
                             })
 
-                            if (numbers.length < 10) {
+                            if (numbers.length < 5) {
                                 return arr;
                             }
+
                             let increasingCount = 0;
                             let decreasingCount = 0;
                             for (let i = 1; i < numbers.length; i++) {
-                                if (numbers[i] > numbers[i - 1]) {
+                                // 新增：多级数字比较逻辑
+                                const prev = numbers[i - 1];
+                                const curr = numbers[i];
+                                let comparison = 0;
+                                const minLen = Math.min(prev.length, curr.length);
+
+                                // 逐位比较数字，优先级：前面的数字 > 后面的数字
+                                for (let j = 0; j < minLen; j++) {
+                                    if (curr[j] > prev[j]) {
+                                        comparison = 1;
+                                        break;
+                                    } else if (curr[j] < prev[j]) {
+                                        comparison = -1;
+                                        break;
+                                    }
+                                }
+
+                                if (comparison > 0) {
                                     increasingCount++;
-                                } else if (numbers[i] < numbers[i - 1]) {
+                                } else if (comparison < 0) {
                                     decreasingCount++;
                                 }
                             }
+
                             if (increasingCount > decreasingCount) {
                                 return arr;
                             } else {
                                 return arr.reverse();
                             }
-                        }catch(e){
+                        } catch (e) {
                             //xlog('强制修正选集顺序失败>'+e.message)
+                            return arr;
                         }
                     }
                     

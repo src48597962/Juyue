@@ -986,6 +986,7 @@ function erji() {
                         });
                         deleteItemByCls('Juloadlist');
 
+                        clearMyVar('线路显示翻页内容');
                         clearMyVar('换源变更列表id');
                         putMyVar('二级切换站源', '1');
                         require(config.聚阅);

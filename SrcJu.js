@@ -739,7 +739,7 @@ function erji() {
                                 }
                             })
 
-                            if (numbers.length < 3) {
+                            if (numbers.length < 10) {
                                 return arr;
                             }
                             let increasingCount = 0;
@@ -1491,6 +1491,7 @@ function erji() {
                 col_type: "pic_1_center",
                 url: "hiker://empty",
                 extra: {
+                    cls: 'Juloadlist',
                     cls: "loading_gif"
                 }
             })
@@ -1510,6 +1511,9 @@ function erji() {
                 if (getData.length > 0) {
                     jkdata['erjisign'] = parse['二级标识'];
                     getData.forEach(item => {
+                        let extra = item.extra || {};
+                        extra['cls'] = extra['cls']?extra['cls']+' Juloadlist':extra['cls'];
+                        item.extra = extra;
                         item = toerji(item, jkdata);
                     })
                 }

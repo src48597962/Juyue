@@ -317,7 +317,7 @@ function getYiData(datatype, jkdata, dd) {
             (parse["频道"].包含项 || [z1,z2,z3]).forEach(it=>{
                 let itname,iticon,itcol,itide,iturl;
                 if($.type(it)=="object"){
-                    itname = it.名称 || it.name;
+                    itname = it.名称 || it.name || it.title;
                     iticon = it.图标 || it.img || it.pic_url;
                     itcol = it.样式 || it.col_type;
                     itide = it.标识 || it.ide;

@@ -39,6 +39,10 @@ function juItemF(id, s){
                 return;
             }
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
             let items = this.items();
             let item = items[id] || {};
             item[key] = str;
@@ -48,6 +52,10 @@ function juItemF(id, s){
         'get': function (key, str, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
             let items = this.items();
             let item = items[id] || {};
             if (item[key] !== undefined && item[key] !== null) {
@@ -60,6 +68,10 @@ function juItemF(id, s){
         'clear': function (key, id2) {
             if(!key) return;
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
             let items = this.items();
             let item = items[id] || {};
             if(item[key]){

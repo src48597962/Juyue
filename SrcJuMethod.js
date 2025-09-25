@@ -51,7 +51,10 @@ function juItemF(id, s){
         },
         'get': function (key, str, id2) {
             if(!key) return;
-            log('juItem-id'+id);
+            if(id != 'Juyue'){
+                log('juItem-id>'+id+'>key>'+key);
+            }
+
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
             if(!id){
                 xlog(key+':id获取失败');

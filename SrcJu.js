@@ -87,7 +87,7 @@ function yiji(testSource) {
                     return "toast://已处理";
                 }, jkdata)
             })
-            if(juItem.get('versionCheckTime')!=''){
+            if(juItem.get('versionCheckTime', '', jkdata.id) !== ''){
                 longClick.push({
                     title: "更新",
                     js: $.toString((jkdata) => {
@@ -608,7 +608,7 @@ function erji() {
 
     if(MY_PAGE==1){
         try {
-            let detailObj = (isJuDetail()&&erLoadData.detail1?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
+            let detailObj = (isJuDetail(jkdata.id)&&erLoadData.detail1?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erjiextra.img = pic;
@@ -1099,7 +1099,7 @@ function erji() {
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
-                    morecols.push("自定义封面样式:"+(isJuDetail()?"否":"是"))
+                    morecols.push("自定义封面样式:"+(isJuDetail(jkdata.id)?"否":"是"))
                 }
                 
                 d.push({

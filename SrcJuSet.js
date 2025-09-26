@@ -10,6 +10,7 @@ function SRCSet() {
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
         clearMyVar('similarTitles');
+        clearMyVar('lookFailDatas');
         clearMyVar('selectGroup');
     }));
 
@@ -30,7 +31,7 @@ function SRCSet() {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有","分组排序",getMyVar('similarTitles')?"退出相似":"查看相似"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有","分组排序",getMyVar('similarTitles')?"退出相似":"查看相似",getMyVar('lookFailDatas')?"退出失败":"查看失败"], 2).select(() => {
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
@@ -131,6 +132,19 @@ function SRCSet() {
                         return "toast://进入仅显示相似列表，阀值"+input;
                     })
                 }
+            }else if(input=="查看失败"||input=="退出失败"){
+                if(getMyVar('lookFailDatas')){
+                    clearMyVar('lookFailDatas');
+                    refreshPage(false);
+                    return "toast://退出仅显示失败列表";
+                }else{
+                    return $(getMyVar('lookFailDatas','10'),"查看失败大于多少次的源").input(() => {
+                        if(!parseInt(input)||parseInt(input)<0){return 'toast://输入有误，请输入大于1的数字'}
+                        putMyVar('lookFailDatas', input);
+                        refreshPage(false);
+                        return "toast://进入仅显示指定失败次数列表，阀值"+input;
+                    })
+                }
             }
         }),
         img: getIcon(jkIcons[1].img, false, jkIcons[1].color),
@@ -162,7 +176,10 @@ function SRCSet() {
         xlog('查看相似耗时：' + (t2-t1) + 'ms');
     }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
+    }else if(getMyVar('lookFailDatas')){
+        datalist = datalist.filter(item => (item.fail||0)>parseInt(getMyVar('lookFailDatas')));
     }
+    
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));
     let yxdatalist = jkdatalist.filter(it=>{
         return !it.stop;

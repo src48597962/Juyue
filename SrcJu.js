@@ -100,7 +100,7 @@ function yiji(testSource) {
             }
         }
         let homeIcons = getThemeList(true)['主页图标'];
-        let icon5_col = (MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322) ? 'icon_5_no_crop' : 'icon_5';
+        let icon5_col = ((MY_NAME=="海阔视界"&&getAppVersion()>=5579)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2322)) ? 'icon_5_no_crop' : 'icon_5';
         d.push({
             title: jkdata.name || "切源",
             url: testSource?"toast://测试模式下不能更换站源":$('#noLoading#').lazyRule(() => {

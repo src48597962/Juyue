@@ -622,17 +622,7 @@ function erji() {
             detailextra.longClick = detailextra.longClick || [];
             let addCaseObj = [];
             if(erLoadData.caseData){
-                addCaseObj.push({
-                    title: isBookCase()?"加入收藏书架🗄":"加入收藏书架🗄",
-                    js: $.toString((caseData) => {
-                        try{
-                            return addBookCase(caseData);
-                        }catch(e){
-                            xlog('收藏处理异常>' + e.message);
-                        }
-                        return 'toast://失败，看日志';
-                    }, erLoadData.caseData)
-                })
+                addCaseObj.push(getCaseClick(erLoadData.caseData))
             }
 
             if(!noShow.封面){

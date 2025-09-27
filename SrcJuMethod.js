@@ -816,10 +816,11 @@ function toerji(item, jkdata) {
                 let caseid = getCaseID(caseData);
                 if(caseid){
                     caseData.id = caseid;
-                    let longClick = extra.longClick || [];
-                    longClick = longClick.filter(v => !v.title.includes("收藏"))
-                    longClick.push(getCaseClick(caseData))
-                    item.extra.longClick = longClick;
+                    //let longClick = extra.longClick || [];
+                    //longClick = longClick.filter(v => !v.title.includes("收藏"))
+                    //longClick.push(getCaseClick(caseData))
+                    item.extra.longClick = item.extra.longClick || [];
+                    item.extra.longClick.push(getCaseClick(caseData));
                     //extra.longClick = longClick;
                     //item.extra = extra;
                 }

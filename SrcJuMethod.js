@@ -774,6 +774,7 @@ function getObjCode(jkdata, key) {
 }
 // 修正按钮元素
 function toerji(item, jkdata) {
+    log('调用'+item.title);
     try{
         if(item.url && item.url!='hiker://empty'){
             jkdata = jkdata || storage0.getMyVar('一级源接口信息');

@@ -975,6 +975,7 @@ function removeBookCase(caseid){
     eval('let caselist = ' + (fetch(casefile)||'[]'));
     caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
     writeFile(casefile, JSON.stringify(caselist));
+    return 'toast://已去除';
 }
 // 是否存在聚阅收藏
 function isBookCase(caseid, caselist){

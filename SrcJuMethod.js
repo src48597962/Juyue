@@ -817,10 +817,10 @@ function toerji(item, jkdata) {
                 if(caseid){
                     caseData.id = caseid;
                     let longClick = extra.longClick || [];
-                    log(longClick);
                     //longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
-                    log(longClick);
+                    item.extra.longClick = longClick;
+                    log(item.extra.longClick);
                     //item.extra = extra;
                 }
             }

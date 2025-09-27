@@ -177,7 +177,11 @@ function SRCSet() {
     }else if(getMyVar('onlyStopJk')){
         datalist = datalist.filter(item => item.stop);
     }else if(getMyVar('lookFailDatas')){
-        datalist = datalist.filter(item => (item.fail||0)>parseInt(getMyVar('lookFailDatas')));
+        let sort = {};
+        if(fetch(sortfile)){
+            eval("sort = " + fetch(sortfile));
+        }
+        datalist = datalist.filter(item => (sort[item.id].fail||0)>parseInt(getMyVar('lookFailDatas')));
     }
     
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));

@@ -622,7 +622,7 @@ function erji() {
             detailextra.longClick = detailextra.longClick || [];
             let addCaseObj = [];
             if(erLoadData.caseData){
-                addCaseObj.push(getCaseClick(erLoadData.caseData))
+                addCaseObj.push(getCaseClick(erLoadData.caseData, true));
             }
 
             if(!noShow.封面){

@@ -795,7 +795,7 @@ function toerji(item, jkdata) {
                 extra.data = jkdata;
                 item.extra = extra;
             }
-            
+            // 一级加入收藏长按菜单
             if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && (!/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)||item.col_type=='icon_1_left_pic')){
                 let caseExtra = Object.assign({}, extra);
                 delete caseExtra.longClick;
@@ -820,7 +820,7 @@ function toerji(item, jkdata) {
                     //longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
                     extra.longClick = longClick;
-                    item.extra = extra;
+                    //item.extra = extra;
                 }
             }
         }
@@ -899,7 +899,7 @@ function getCaseClick(caseData){
         }, caseData)
     }
 }
-// 获取case书架数据
+// 获取二级case书架数据
 function getCaseData() {
     let obj = {
         type: '二级列表',

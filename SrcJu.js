@@ -620,19 +620,20 @@ function erji() {
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];
-            let addCaseObj = [{
-                title: "加入收藏书架🗄",
-                js: $.toString((caseData) => {
-                    if(caseData){
+            let addCaseObj = [];
+            if(erLoadData.caseData){
+                addCaseObj.push({
+                    title: isBookCase()?"加入收藏书架🗄":"加入收藏书架🗄",
+                    js: $.toString((caseData) => {
                         try{
                             return addBookCase(caseData);
                         }catch(e){
-                            xlog('加入收藏处理异常>' + e.message);
+                            xlog('收藏处理异常>' + e.message);
                         }
-                    }
-                    return 'toast://失败，书架数据获取失败';
-                }, erLoadData.caseData)
-            }];
+                        return 'toast://失败，看日志';
+                    }, erLoadData.caseData)
+                })
+            }
 
             if(!noShow.封面){
                 detailextra.longClick = detailextra.longClick.concat(addCaseObj);

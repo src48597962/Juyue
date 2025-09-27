@@ -820,7 +820,7 @@ function toerji(item, jkdata) {
                     log(longClick);
                     //longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
-
+                    log(longClick);
                     //item.extra = extra;
                 }
             }

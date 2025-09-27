@@ -780,7 +780,7 @@ function toerji(item, jkdata) {
             if(!jkdata.url){
                 jkdata = storage0.getMyVar('一级源接口信息');
             }
-            let extra = Object.assign({}, item.extra);
+            let extra = item.extra;
             let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
             let excludeurl = ['.m3u8?', '.mp4?']
             if(!extra.noDetail && !/select:|@|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.toString().includes(ext))){
@@ -793,7 +793,7 @@ function toerji(item, jkdata) {
                     erji();
                 })
                 extra.data = jkdata;
-                item.extra = Object.assign({}, extra);
+                item.extra = extra;
             }
             // 一级加入收藏长按菜单
             if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && (!/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)||item.col_type=='icon_1_left_pic')){
@@ -816,12 +816,11 @@ function toerji(item, jkdata) {
                 let caseid = getCaseID(caseData);
                 if(caseid){
                     caseData.id = caseid;
-                    let caseExtra2 = Object.assign({}, item.extra);
-                    let longClick = caseExtra2.longClick || [];
+                    let longClick = extra.longClick || [];
+                    log(longClick);
                     //longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
-                    caseExtra2.longClick = longClick;
-                    item.extra = Object.assign({}, caseExtra2);
+
                     //item.extra = extra;
                 }
             }

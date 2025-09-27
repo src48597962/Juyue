@@ -889,15 +889,16 @@ function getCaseID(item) {
     return md5(item.title+(item.params.url+'').split('&')[0].split('#')[0]);
 }
 // 获取case书架长按按钮
-function getCaseClick(caseData){
-    let isCase = isBookCase(caseData.id);
-    log(caseData.title+caseData.id);
-    log(isCase);
+function getCaseClick(caseData, refresh){
+    let isCase = refresh?isBookCase(caseData.id):false;
     return {
         title: isCase?"去除收藏":"加入收藏书架🗄",
-        js: isCase?removeBookCase(caseData.id):$.toString((caseData) => {
+        js: isCase?removeBookCase(caseData.id, refresh):$.toString((caseData, refresh) => {
+            if(refresh){
+                refreshPage(false);
+            }
             return addBookCase(caseData);
-        }, caseData)
+        }, caseData, refresh)
     }
 }
 // 获取二级case书架数据
@@ -973,10 +974,13 @@ function addBookCase(obj, update) {
     }
 }
 // 去除聚阅收藏
-function removeBookCase(caseid){
+function removeBookCase(caseid, refresh){
     eval('let caselist = ' + (fetch(casefile)||'[]'));
     caselist = caselist.filter(item => (item.id||getCaseID(item)) != caseid);
     writeFile(casefile, JSON.stringify(caselist));
+    if(refresh){
+        refreshPage(false);
+    }
     return 'toast://已去除';
 }
 // 是否存在聚阅收藏

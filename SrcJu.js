@@ -812,7 +812,9 @@ function erji() {
                 let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
                 eval("let 解析2 = " + parse['解析']);
                 return 解析2.call(parse, input);
-            }, jkdata):'';
+            }, jkdata):$.toString(() => {
+                return ;
+            });
             
             if(!noShow.简介){
                 let erIcons = getThemeList(true)['二级图标'];

@@ -891,6 +891,8 @@ function getCaseID(item) {
 // 获取case书架长按按钮
 function getCaseClick(caseData){
     let isCase = isBookCase(caseData.id);
+    log(caseData.title+caseData.id);
+    log(isCase);
     return {
         title: isCase?"去除收藏":"加入收藏书架🗄",
         js: isCase?removeBookCase(caseData.id):$.toString((caseData) => {

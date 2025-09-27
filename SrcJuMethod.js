@@ -819,7 +819,7 @@ function toerji(item, jkdata) {
                     let longClick = extra.longClick || [];
                     //longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
-                    extra.longClick = longClick;
+                    //extra.longClick = longClick;
                     //item.extra = extra;
                 }
             }

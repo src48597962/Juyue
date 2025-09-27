@@ -774,7 +774,6 @@ function getObjCode(jkdata, key) {
 }
 // 修正按钮元素
 function toerji(item, jkdata) {
-    log('调用'+item.title);
     try{
         if(item.url && item.url!='hiker://empty'){
             jkdata = jkdata || storage0.getMyVar('一级源接口信息');
@@ -818,11 +817,9 @@ function toerji(item, jkdata) {
                 if(caseid){
                     caseData.id = caseid;
                     let longClick = extra.longClick || [];
-                    //longClick = longClick.filter(v => !v.title.includes("收藏"))
+                    longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
                     item.extra.longClick = longClick;
-                    log(item.extra.longClick);
-                    //item.extra = extra;
                 }
             }
         }
@@ -893,7 +890,7 @@ function getCaseID(item) {
 }
 // 获取case书架长按按钮
 function getCaseClick(caseData){
-    let isCase = isBookCase(caseData);
+    let isCase = isBookCase(caseData.id);
     return {
         title: isCase?"去除收藏":"加入收藏书架🗄",
         js: isCase?removeBookCase(caseData.id):$.toString((caseData) => {

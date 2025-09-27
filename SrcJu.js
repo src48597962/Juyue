@@ -808,15 +808,11 @@ function erji() {
                     return SrcParseS.聚阅(url, dataObj);
                 }
             }, dataObj);
-            let download = $.toString((jkdata) => {
+            let download = parse['解析']?$.toString((jkdata) => {
                 let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
-                if(parse['解析']){
-                    eval("let 解析2 = " + parse['解析']);
-                    return 解析2.call(parse, input);
-                }else{
-                    return "toast://没找到解析方法";
-                }
-            }, jkdata);
+                eval("let 解析2 = " + parse['解析']);
+                return 解析2.call(parse, input);
+            }, jkdata):'';
             
             if(!noShow.简介){
                 let erIcons = getThemeList(true)['二级图标'];

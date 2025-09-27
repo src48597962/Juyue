@@ -181,7 +181,7 @@ function SRCSet() {
         if(fetch(sortfile)){
             eval("sort = " + fetch(sortfile));
         }
-        datalist = datalist.filter(item => (sort[item.id].fail||0)>parseInt(getMyVar('lookFailDatas')));
+        datalist = datalist.filter(item => (sort[item.id]?(sort[item.id].fail||0):0)>parseInt(getMyVar('lookFailDatas')));
     }
     
     let jkdatalist = getGroupLists(datalist, getMyVar("selectGroup","全部"));

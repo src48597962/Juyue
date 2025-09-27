@@ -506,8 +506,7 @@ function convertItem(item, listcol, sjType){
             extra.longClick = [{
                 title: "取消收藏",
                 js: $.toString((caseid) => {
-                    removeBookCase(caseid);
-                    refreshPage();
+                    removeBookCase(caseid, true);
                 }, item.id)
             }]
         }

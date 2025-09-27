@@ -817,7 +817,7 @@ function toerji(item, jkdata) {
                 if(caseid){
                     caseData.id = caseid;
                     let longClick = extra.longClick || [];
-                    //longClick = longClick.filter(v => !v.title.includes("收藏"))
+                    longClick = longClick.filter(v => !v.title.includes("收藏"))
                     longClick.push(getCaseClick(caseData))
                     item.extra.longClick = longClick;
                     //extra.longClick = longClick;

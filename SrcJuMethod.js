@@ -813,17 +813,15 @@ function toerji(item, jkdata) {
                         params: caseExtra
                     }
                 }
-
-                let longClick = extra.longClick || [];
-                longClick = longClick.filter(v=>v.title!="加入收藏书架🗄")
-                longClick.push({
-                    title: "加入收藏书架🗄",
-                    js: $.toString((caseData) => {
-                        return addBookCase(caseData);
-                    }, caseData)
-                })
-                extra.longClick = longClick;
-                item.extra = extra;
+                let caseid = getCaseID(caseData);
+                if(caseid){
+                    caseData.id = caseid;
+                    let longClick = extra.longClick || [];
+                    //longClick = longClick.filter(v => !v.title.includes("收藏"))
+                    longClick.push(getCaseClick(caseData))
+                    extra.longClick = longClick;
+                    item.extra = extra;
+                }
             }
         }
     }catch(e){
@@ -890,6 +888,16 @@ function searchRecord(lx, input) {
 // 获取case数据id
 function getCaseID(item) {
     return md5(item.title+(item.params.url+'').split('&')[0].split('#')[0]);
+}
+// 获取case书架长按按钮
+function getCaseClick(caseData){
+    let isCase = isBookCase(caseData);
+    return {
+        title: isCase?"去除收藏":"加入收藏书架🗄",
+        js: isCase?removeBookCase(caseData.id):$.toString((caseData) => {
+            return addBookCase(caseData);
+        }, caseData)
+    }
 }
 // 获取case书架数据
 function getCaseData() {

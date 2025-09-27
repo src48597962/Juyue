@@ -797,7 +797,7 @@ function toerji(item, jkdata) {
             }
             // 一级加入收藏长按菜单
             if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && (!/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)||item.col_type=='icon_1_left_pic')){
-                let caseExtra = Object.assign({}, item.extra);
+                let caseExtra = Object.assign({}, extra);
                 delete caseExtra.longClick;
                 caseExtra.data = caseExtra.data || {
                     name: jkdata.name,

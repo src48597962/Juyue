@@ -984,7 +984,6 @@ function removeBookCase(caseid, refresh){
     if(refresh){
         refreshPage(false);
     }
-    return 'toast://已去除';
 }
 // 是否存在聚阅收藏
 function isBookCase(caseid, caselist){

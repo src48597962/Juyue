@@ -780,7 +780,7 @@ function toerji(item, jkdata) {
             if(!jkdata.url){
                 jkdata = storage0.getMyVar('一级源接口信息');
             }
-            let extra = item.extra;
+            let extra = item.extra || {};
             let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
             let excludeurl = ['.m3u8?', '.mp4?']
             if(!extra.noDetail && !/select:|@|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.toString().includes(ext))){

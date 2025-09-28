@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.6",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V1.7",
+        records: [
+            "修复：toerji方法中生成extra未补偿错误"
+        ]
+    },{
         title: "2025/09/28 V1.6",
         records: [
             "修复：一级转二级，二级转三级页面标识的问题",

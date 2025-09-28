@@ -95,17 +95,6 @@ if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
 
-if(!getMyVar('SrcJu_临时删除') || Juconfig['bookCase_col_type']){
-    Object.keys(Juconfig).forEach(it=>{
-        if(it.includes('_Source')){
-            delete Juconfig[it];
-        }
-    })
-    delete Juconfig['bookCase_col_type'];
-    putMyVar('SrcJu_临时删除', '1');
-    writeFile(cfgfile, JSON.stringify(Juconfig));
-}
-
 let runTypes = ["漫画", "视频", "音频", "小说", "图集", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
 let homeSourceS = Juconfig["homeSourceS"] || {};

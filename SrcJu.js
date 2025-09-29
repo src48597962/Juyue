@@ -465,6 +465,15 @@ function yiji(testSource) {
         try{
             let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
             if((isLockGroups(jkdata, lockgroups) || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('SrcJu_已验证指纹')!='1'){
+                d.push({
+                    title: homeGroup + " 当前分组加锁，需要验证指纹",
+                    url: 'hiker://empty',
+                    col_type: "text_center_1",
+                    extra: {
+                        lineVisible: false
+                    }
+                })
+                setResult(d);
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 if (hikerPop.canBiometric() !== 0) {
                     return "toast://调用生物学验证出错";

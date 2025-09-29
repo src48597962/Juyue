@@ -466,12 +466,9 @@ function yiji(testSource) {
             let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
             if((isLockGroups(jkdata, lockgroups) || (parseInt(getMyVar('点播下滑num','0'))>1&&lockgroups.length>0)) && getMyVar('SrcJu_已验证指纹')!='1'){
                 d.push({
-                    title: homeGroup + " 当前分组加锁，需要验证指纹",
+                    title: "当前分组加锁，需要验证指纹",
                     url: 'hiker://empty',
-                    col_type: "text_center_1",
-                    extra: {
-                        lineVisible: false
-                    }
+                    col_type: "text_center_1"
                 })
                 setResult(d);
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');

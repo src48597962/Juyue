@@ -624,7 +624,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    let ilks = ["主页源","搜索源","完整源","模板源"];
+    let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
     let ilkindex = -1;
     if(getMyVar('apiilk')){
         ilkindex = parseInt(getMyVar('apiilk')) -1;
@@ -633,15 +633,7 @@ function jiekouapi(data, look) {
         title: '选择源种类：'+ (ilkindex>-1?ilks[ilkindex]:''),
         col_type: 'text_1',
         url: $(ilks, 2, "选择源类型：").select(() => {
-            if(input=="主页源"){
-                putMyVar('apiilk','1');
-            }else if(input=="搜索源"){
-                putMyVar('apiilk','2');
-            }else if(input=="完整源"){
-                putMyVar('apiilk','3');
-            }else if(input=="模板源"){
-                putMyVar('apiilk','4');
-            }
+            putMyVar('apiilk', MY_INDEX+1);
             refreshPage(false);
             return 'hiker://empty';
         }),
@@ -650,7 +642,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    if(getMyVar('apiilk')!='4'){
+    if(['1', '2', '3'].includes(getMyVar('apiilk',''))){
         let tmpldatas = storage0.getMyVar('tmpldatas');
         if(!tmpldatas){
             tmpldatas = getDatas('tmpl', true).map(it=>{

@@ -43,51 +43,6 @@ function decodeUnicodeEscapes(str) {
         return String.fromCharCode(parseInt(p1, 16));
     });
 }
-function oldtonew() {
-    if(!fileExist(jkfile) && fileExist("hiker://files/rules/Src/Ju/jiekou.json")){
-        let olddatalist = JSON.parse(fetch("hiker://files/rules/Src/Ju/jiekou.json"));
-    
-        olddatalist.forEach(it=>{
-            if(it.parse&&it.erparse){
-                it.ilk = '3';
-            }else if(it.parse){
-                it.ilk = '1';
-            }else if(it.erparse){
-                it.ilk = '2';
-            }
-            it.public = (it.public||"{}").replace(/公共/g, 'parse');
-            it.parse = (it.parse||"{}").replace(/公共/g, 'parse').replace(/searchMain:/g,'searchAAMain:').replace(/\.searchMain/g,'.searchAAMain').replace(/searchMain.*?\);/g,'').replace(/\.searchAAMain/g,'.searchMain').replace(/searchAAMain:/g,'searchMain:').replace(/, stype: "听书"/g, '').replace(/sname: sourcename,/g, '');
-            it.erparse = (it.erparse||"{}").replace(/公共/g, 'parse');
-            it.public = it.public.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-            it.parse = it.parse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-            it.erparse = it.erparse.replace(/config\.依赖/g, 'config.聚阅').replace(/标识\.split\("_"\)\[1\]/g, 'jkdata.name').replace(/标识\.split\('_'\)\[1\]/g, 'jkdata.name');
-            it.parse = it.parse.replace('四大金刚', '静态分类');
-
-            eval("let public = " + it.public);
-            eval("let parse = " + it.parse);
-            eval("let erparse = " + it.erparse);
-            let newjkjson = Object.assign({}, public, parse, erparse);
-            if(parse['作者']&&erparse['作者']&&parse['作者']!=erparse['作者']){
-                erparse['作者'] = parse['作者'] + '&' +erparse['作者'];
-            }
-
-            it.author = erparse['作者'];
-            it.group = it.type=="听书"?"听书":it.group;
-            it.type = it.type=="听书"?"音频":it.type;
-            it.group = it.type=="影视"?"影视":it.group;
-            it.type = it.type=="影视"?"视频":it.type;
-            it.id = Date.now().toString();
-            it.url = jkfilespath + it.id + '.txt';
-            delete it.updatetime;
-            delete it.public;
-            delete it.parse;
-            delete it.erparse;
-            writeFile(it.url, objconvertjs(newjkjson));
-            java.lang.Thread.sleep(10);
-        })
-        writeFile(jkfile, JSON.stringify(olddatalist));
-    }
-}
 
 let Juconfig = {};
 let Jucfg = fetch(cfgfile);
@@ -101,6 +56,7 @@ let homeSourceS = Juconfig["homeSourceS"] || {};
 let homeSource = homeSourceS[homeGroup] || {};
 let homeSourceId = homeSource.id || "";
 let sourcename = homeSource.name || "";
+let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -113,9 +69,9 @@ function getDatas(lx, isyx) {
     }
      
     if (lx == "yi") {
-        datalist = datalist.filter(it => it.ilk != "2" && it.ilk != "4");
+        datalist = datalist.filter(it => it.ilk == "1" || it.ilk == "3");
     } else if (lx == "er") {
-        datalist = datalist.filter(it => it.ilk != "1" && it.ilk != "4");
+        datalist = datalist.filter(it => it.ilk == "2" || it.ilk == "3");
     } else if (lx == "tmpl") {
         datalist = datalist.filter(it => it.ilk == "4");
     }
@@ -331,7 +287,7 @@ function getDataTitle(data, ide) {
     if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
         dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + (data.version?'\nV'+data.version:'') + '</font></small>';
     }else{
-        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + (data.ilk=="1"?" [主页源]":data.ilk=="2"?" [搜索源]":data.ilk=="3"?" [完整源]":data.ilk=="4"?" [模板源]":"") + '</font></small>';
+        dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  <small><font color=grey>'+(data.author?' ('+data.author+')':'') + ' ['+ilks[parseInt(data.ilk||1)-1]+']</font></small>';
     }
     return dataTitle;
 }
@@ -934,7 +890,7 @@ function jkItemList(jkdatalist){
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + (it.tmpl?("  模板:"+it.tmpl.name):""),
+            desc: (it.group||it.type) + (it.group?"("+it.type+")":"") + "  ["+ilks[parseInt(it.ilk||1)-1]+"]" + (it.tmpl?("  模板:"+it.tmpl.name):""),
             img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
             col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
             extra: {
@@ -995,7 +951,7 @@ function outputNewData(data){
 }
 // 批量检测源方法
 function batchTestSource(){
-    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule((ilks) => {
         addListener("onClose", $.toString(() => {
             clearMyVar("批量检测_待检列表");
             clearMyVar("批量检测_待检列表2");
@@ -1038,7 +994,7 @@ function batchTestSource(){
                 let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
                 it = {
-                    title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + "  " + (it.ilk=="1"?"[主页源]":it.ilk=="2"?"[搜索源]":it.ilk=="3"?"[完整源]":it.ilk=="4"?"[模板源]":"") + '</font></small>',
+                    title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + ' ['+ilks[parseInt(it.ilk||1)-1] + ']</font></small>',
                     url: $(selectmenu, 2).select((data) => {
                         data = JSON.parse(base64Decode(data));
                         if (input == "删除") {
@@ -1072,5 +1028,5 @@ function batchTestSource(){
         })
 
         setResult(d);
-    })
+    }, ilks)
 }

@@ -624,7 +624,7 @@ function jiekouapi(data, look) {
         }
     });
 
-    let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
+    //let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
     let ilkindex = -1;
     if(getMyVar('apiilk')){
         ilkindex = parseInt(getMyVar('apiilk')) -1;

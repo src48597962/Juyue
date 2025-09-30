@@ -530,11 +530,11 @@ function jiekouapi(data, look) {
     d.push({
         title: '源作者：'+ getMyVar('apiauthor',''),
         col_type: 'text_1',
-        url: getMyVar('apitmpl')=='string'?$(getMyVar('apiauthor',''), "输入源作者").input(() => {
+        url: $(getMyVar('apiauthor',''), "输入源作者").input(() => {
             putMyVar('apiauthor',input);
             refreshPage(false);
             return 'toast://源作者已设置为：' + input;
-        }):'toast://保存代码文件时自动获取，作者:',
+        }),
         extra: {
             //lineVisible: false
         }
@@ -660,9 +660,6 @@ function jiekouapi(data, look) {
         d.push({
             title: '选择模板：' + getMyVar('apitmpl', 'parseCode'),
             url: $(tmpllist, 2, '选择模板类型').select(()=>{
-                if(input=='string'){
-                    toast('字符串模板自定义调用，其他源接口不要用此模板');
-                }
                 putMyVar('apitmpl', input);
                 
                 let index = MY_INDEX - 1;
@@ -689,8 +686,8 @@ function jiekouapi(data, look) {
             if(isnew && !file){
                 let tmpl;
                 let apitmpl = getMyVar('apitmpl', 'parseCode');
-                if(apitmpl=='string'){
-                    tmpl= '//字符串类型模板，完全由自己自定义调用，其他源接口请勿直接调用此模板';
+                if(getMyVar('apiilk') == '5'){
+                    tmpl= '//依赖源，作者自定义调用，其他源接口请勿直接调用此模板';
                 }else if(apitmpl=='parseCode'){
                     tmpl= fc(config.聚阅.replace(/[^/]*$/,'') + `template/parseCode.js`, 96);
                 }else{
@@ -728,7 +725,7 @@ function jiekouapi(data, look) {
                 let jsstr = $.toString((file)=>{
                     try {
                         let filestr = fetch(file);
-                        if(!filestr.includes('let parse = {')){
+                        if(getMyVar('apiilk') == '5'){//依赖源
                             putMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString());
                         }else{
                             eval(filestr); 

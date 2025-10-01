@@ -368,7 +368,9 @@ function SRCSet() {
                 return $("确定要删除选择的"+selectlist.length+"个接口？").confirm((selectlist)=>{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     deleteData(selectlist);
-                    refreshPage(false);
+                    //refreshPage(false);
+                    let ids = selectlist.map(v=>v.id);
+                    deleteItem(ids);
                     return 'toast://已删除选择';
                 }, selectlist)
             }),
@@ -769,7 +771,8 @@ function jiekouapi(data, look) {
                 url: $("确定删除接口："+data.name).confirm((data)=>{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     deleteData(data);
-                    back(true);
+                    back(false);
+                    deleteItem(data.id);
                     return "toast://已删除";
                 }, data)
             });   

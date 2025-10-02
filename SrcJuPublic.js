@@ -959,6 +959,14 @@ function outputNewData(data){
     }
     return newapi;
 }
+// 输出检索接口列表
+function outputSearchList(jkdatalist, input){
+    let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
+    jkdatalist = jkdatalist.filter(it=>{
+        return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
+    })
+    return jkdatalist;
+}
 // 批量检测源方法
 function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule((ilks) => {

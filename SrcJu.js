@@ -749,6 +749,7 @@ function erji() {
                             let totalComparisons = 0; // 记录有效比较的总数
 
                             for (let i = 1; i < numbers.length; i++) {
+                                log(i);
                                 const prev = numbers[i - 1];
                                 const curr = numbers[i];
                                 let comparison = 0;

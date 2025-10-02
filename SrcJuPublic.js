@@ -344,6 +344,15 @@ function deleteData(data){
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
     clearMyVar('duodatalist');
+    // 删除接口搜索临时列表
+    if(getMyVar("seacrhDataList")){
+        let seacrhDataList = storage0.getMyVar("seacrhDataList");
+        dellist.forEach(it => {
+            let index = seacrhDataList.indexOf(seacrhDataList.filter(d => it.id==d.id)[0]);
+            seacrhDataList.splice(index, 1);
+        })
+        storage0.putMyVar(seacrhDataList, seacrhDataList);
+    }
 }
 //执行切换源接口
 function changeSource(sourcedata) {

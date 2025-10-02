@@ -785,7 +785,7 @@ function erji() {
                             const decreasingRatio = decreasingCount / totalComparisons;
 
                             // 当递减比例超过50%时才反转，避免因个别大数字导致误判
-                            if (decreasingRatio > 0.5) {
+                            if (decreasingRatio > 0.8) {
                                 return arr.reverse();
                             } else {
                                 return arr;

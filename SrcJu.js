@@ -760,6 +760,7 @@ function erji() {
                                         comparison = 1;
                                         break;
                                     } else if (curr[j] < prev[j]) {
+                                        log(curr[j]+'|'+prev[j]);
                                         comparison = -1;
                                         break;
                                     }

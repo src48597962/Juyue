@@ -1075,7 +1075,7 @@ function JYimport(input) {
     }
 }
 // 云口令导入确认页
-function importConfirm(jsfile) {
+function importConfirm() {
     let importfile = "hiker://files/_cache/Juyue/cloudimport.txt";
     addListener("onClose", $.toString((importfile) => {
         deleteFile(importfile);
@@ -1102,110 +1102,46 @@ function importConfirm(jsfile) {
         });
     }
     
-    if(!jsfile){
-        //云口令导入
-        let input = fetch(importfile);
-        if(input.includes('云口令：')){
-            input = input.split('云口令：')[1].split('@import=')[0];
-        }
-        try{
-            code = aesDecode('Juyue', input.split('￥')[1]);
-            name = input.split('￥')[0];
-            /*
-            if(name=="聚影资源码" && input.split('￥')[2]=="文件分享"){
-                let gzip = $.require(libspath + "plugins/gzip.js");
-                let textcontent = gzip.unzip(code);
-                let pastedata = JSON.parse(textcontent);
-
-                d.push({
-                    title: '以增量方式导入，不会清除原有的',
-                    desc: "包含资源：" + Object.keys(pastedata).join(','),
-                    url: "hiker://empty",
-                    col_type: "text_center_1"
-                });
-                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                let fruit = Object.keys(pastedata);
-                hikerPop.multiChoice({
-                    title: "选择要导入本地的项", 
-                    options: fruit, 
-                    checkedIndexs: Array.from(fruit.keys()), 
-                    onChoice(i, isChecked) {
-                        //xlog(i + ":" + isChecked);
-                    }, 
-                    rightTitle: "确认导入", 
-                    rightClick(options, checked) {
-                        if(options.filter((v, i) => checked[i]).length==0){
-                            return "toast://没有选择导入项";
-                        }
-                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
-                        let jknum = 0, jxnum = 0, ypnum = 0, tvnum = 0, ghnum = 0;
-                        hikerPop.runOnNewThread(() => {
-                            options.forEach((option,i)=>{
-                                if(checked[i]){
-                                    if(option=="ghproxy"){
-                                        let ghproxy = pastedata.ghproxy||[];
-                                        if(ghproxy.length>0){
-                                            oldproxy = Juconfig['ghproxy'] || [];
-                                            ghproxy.forEach(gh=>{
-                                                if(!oldproxy.some(item => gh.url==item.url)){
-                                                    oldproxy.push(gh);
-                                                    ghnum++;
-                                                }
-                                            })
-                                            Juconfig['ghproxy'] = oldproxy;
-                                        }
-                                    }else if(option=="接口"){
-                                        let jkdatalist = pastedata.接口||[];
-                                        jknum = jiekousave(jkdatalist, 1);
-                                    }
-                                }
-                            })
-                            writeFile(cfgfile, JSON.stringify(Juconfig));
-                                xlog("更新同步订阅资源完成；新增接口："+jknum+"，ghproxy："+ghnum);
-                            back(false);
-                            return "toast://更新同步文件资源完成；";
-                        })
-                    }, 
-                    leftTitle: "取消",
-                    leftClick() {
-                        back(false);
-                    }
-                });
-            }else{
-                */
-                if(name=="聚阅接口"){
-                    sm = "接口";
-                    lx = "jk";
-                }else{
-                    toast("聚阅：无法识别的口令>" + name);
-                }
-                importdatas = storage0.getMyVar('importConfirm', []);
-                if(importdatas.length==0){
-                    try{
-                        let text;
-                        if(/^http|^云/.test(code)){
-                            showLoading('获取数据中，请稍后...');
-                            text = parsePaste(code);
-                            hideLoading();
-                        }else{
-                            text = code;
-                        }
-                        if(text && !/^error/.test(text)){
-                            let gzip = $.require(libspath + "plugins/gzip.js");
-                            let sharetxt = gzip.unzip(text);
-                            importdatas = JSON.parse(sharetxt); 
-                            storage0.putMyVar('importConfirm', importdatas);
-                        }
-                    } catch (e) {
-                        toast("聚阅：无法识别的口令>"+e.message);
-                    }
-                }
-            //}
-        }catch(e){
-            toast("聚阅：口令有误>"+e.message);
-        }
+    //云口令导入
+    let input = fetch(importfile);
+    if(input.includes('云口令：')){
+        input = input.split('云口令：')[1].split('@import=')[0];
     }
-    if(name!="聚阅资源码"){
+    try{
+        code = aesDecode('Juyue', input.split('￥')[1]);
+        name = input.split('￥')[0];
+        if(name=="聚阅接口"){
+            sm = "接口";
+            lx = "jk";
+        }else{
+            toast("聚阅：无法识别的口令前缀>" + name);
+        }
+        importdatas = storage0.getMyVar('importConfirm', []);
+        if(importdatas.length==0){
+            try{
+                let text;
+                if(/^http|^云/.test(code)){
+                    showLoading('获取数据中，请稍后...');
+                    text = parsePaste(code);
+                    hideLoading();
+                }else{
+                    text = code;
+                }
+                if(text && !/^error/.test(text)){
+                    let gzip = $.require(libspath + "plugins/gzip.js");
+                    let sharetxt = gzip.unzip(text);
+                    importdatas = JSON.parse(sharetxt); 
+                    storage0.putMyVar('importConfirm', importdatas);
+                }
+            } catch (e) {
+                toast("聚阅：无法识别的口令>"+e.message);
+            }
+        }
+    }catch(e){
+        toast("聚阅：口令有误>"+e.message);
+    }
+
+    if(lx=="jk"){
         //获取现有接口
         datalist = [];
         let sourcedata = fetch(jkfile);

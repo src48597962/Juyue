@@ -783,7 +783,9 @@ function erji() {
                             // 计算递增和递减的比例
                             const increasingRatio = increasingCount / totalComparisons;
                             const decreasingRatio = decreasingCount / totalComparisons;
-
+                            log('递增的' + increasingCount);
+                            log('递减的' + decreasingCount);
+                            log('递减的比例' + decreasingRatio);
                             // 当递减比例超过50%时才反转，避免因个别大数字导致误判
                             if (decreasingRatio > 0.8) {
                                 return arr.reverse();

@@ -229,7 +229,6 @@ function SRCSet() {
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let jkdatalist = storage0.getMyVar("jkdatalist");
                 jkdatalist = outputSearchList(jkdatalist, input);
-                storage0.putMyVar("seacrhDataList", jkdatalist);
                 addItemBefore('jkItemLoading', jkItemList(jkdatalist));
             }
             return 'hiker://empty';

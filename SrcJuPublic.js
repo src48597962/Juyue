@@ -351,7 +351,7 @@ function deleteData(data){
             let index = seacrhDataList.indexOf(seacrhDataList.filter(d => it.id==d.id)[0]);
             seacrhDataList.splice(index, 1);
         })
-        storage0.putMyVar(seacrhDataList, seacrhDataList);
+        storage0.putMyVar("seacrhDataList", seacrhDataList);
     }
 }
 //执行切换源接口

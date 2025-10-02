@@ -738,7 +738,7 @@ function erji() {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
                             });
-
+                            log(numbers);
                             // 至少需要5个有效数字序列
                             if (numbers.length < 5) {
                                 return arr;
@@ -789,7 +789,7 @@ function erji() {
                             log('递减的比例' + decreasingRatio);
                             // 当递减比例超过50%时才反转，避免因个别大数字导致误判
                             if (decreasingRatio > 0.8) {
-                                //return arr.reverse();
+                                return arr.reverse();
                             } else {
                                 return arr;
                             }

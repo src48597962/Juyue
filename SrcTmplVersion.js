@@ -4,7 +4,9 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V1.7",
         records: [
-            "修复：toerji方法中生成extra未补偿错误"
+            "修复：toerji方法中生成extra未补偿错误",
+            "优化：接口管理删除改为动态删除，不刷新页面",
+            "优化：接口管理保存刷新和换分组时优先搜索列表"
         ]
     },{
         title: "2025/09/28 V1.6",

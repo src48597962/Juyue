@@ -736,22 +736,24 @@ function erji() {
                                 if (digits) {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
-                            })
+                            });
 
+                            // 至少需要5个有效数字序列
                             if (numbers.length < 5) {
                                 return arr;
                             }
 
                             let increasingCount = 0;
                             let decreasingCount = 0;
+                            let totalComparisons = 0; // 记录有效比较的总数
+
                             for (let i = 1; i < numbers.length; i++) {
-                                // 新增：多级数字比较逻辑
                                 const prev = numbers[i - 1];
                                 const curr = numbers[i];
                                 let comparison = 0;
                                 const minLen = Math.min(prev.length, curr.length);
 
-                                // 逐位比较数字，优先级：前面的数字 > 后面的数字
+                                // 逐位比较数字
                                 for (let j = 0; j < minLen; j++) {
                                     if (curr[j] > prev[j]) {
                                         comparison = 1;
@@ -762,23 +764,38 @@ function erji() {
                                     }
                                 }
 
-                                if (comparison > 0) {
-                                    increasingCount++;
-                                } else if (comparison < 0) {
-                                    decreasingCount++;
+                                // 只统计有明确增减关系的情况
+                                if (comparison !== 0) {
+                                    if (comparison > 0) {
+                                        increasingCount++;
+                                    } else {
+                                        decreasingCount++;
+                                    }
+                                    totalComparisons++;
                                 }
                             }
 
-                            if (increasingCount > decreasingCount) {
+                            // 如果没有足够的有效比较，不进行反转
+                            if (totalComparisons < 3) {
                                 return arr;
-                            } else {
+                            }
+
+                            // 计算递增和递减的比例
+                            const increasingRatio = increasingCount / totalComparisons;
+                            const decreasingRatio = decreasingCount / totalComparisons;
+
+                            // 当递减比例超过50%时才反转，避免因个别大数字导致误判
+                            if (decreasingRatio > 0.5) {
                                 return arr.reverse();
+                            } else {
+                                return arr;
                             }
                         } catch (e) {
                             //xlog('强制修正选集顺序失败>'+e.message)
                             return arr;
                         }
                     }
+
                     
                     列表 = checkAndReverseArray(列表);
                     if (getMyVar(sname + 'sort') == '1') {

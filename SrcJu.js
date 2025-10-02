@@ -737,7 +737,7 @@ function erji() {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
                             });
-
+                            log(numbers);
                             // 至少需要5个有效数字序列
                             if (numbers.length < 5) {
                                 return arr;

@@ -731,13 +731,14 @@ function erji() {
                     function checkAndReverseArray(arr) {
                         try {
                             const numbers = [];
+                            log(arr.slice(0, 50).map(v=>v.title));
                             arr.slice(0, 50).forEach(it => {
                                 const digits = it.title.match(/\d+/g);
                                 if (digits) {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
                             });
-                            log(numbers);
+
                             // 至少需要5个有效数字序列
                             if (numbers.length < 5) {
                                 return arr;

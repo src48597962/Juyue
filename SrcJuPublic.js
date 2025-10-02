@@ -965,6 +965,7 @@ function outputSearchList(jkdatalist, input){
     jkdatalist = jkdatalist.filter(it=>{
         return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
     })
+    storage0.putMyVar("seacrhDataList", jkdatalist);
     return jkdatalist;
 }
 // 批量检测源方法

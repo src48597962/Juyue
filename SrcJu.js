@@ -730,10 +730,10 @@ function erji() {
                 if(列表.length>0 && 线路s[lineid]!='评论'){
                     function checkAndReverseArray(arr) {
                         try {
-                            const numbers = [];
+                            let numbers = [];
                             log(arr.slice(0, 50).map(v=>v.title));
                             arr.slice(0, 50).forEach(it => {
-                                const digits = it.title.match(/\d+/g);
+                                let digits = it.title.match(/\d+/g);
                                 if (digits) {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
@@ -750,10 +750,10 @@ function erji() {
 
                             for (let i = 1; i < numbers.length; i++) {
                                 log(i);
-                                const prev = numbers[i - 1];
-                                const curr = numbers[i];
+                                let prev = numbers[i - 1];
+                                let curr = numbers[i];
                                 let comparison = 0;
-                                const minLen = Math.min(prev.length, curr.length);
+                                let minLen = Math.min(prev.length, curr.length);
 
                                 // 逐位比较数字
                                 for (let j = 0; j < minLen; j++) {
@@ -784,8 +784,7 @@ function erji() {
                             }
 
                             // 计算递增和递减的比例
-                            const increasingRatio = increasingCount / totalComparisons;
-                            const decreasingRatio = decreasingCount / totalComparisons;
+                            let decreasingRatio = decreasingCount / totalComparisons;
                             log('递增的' + increasingCount);
                             log('递减的' + decreasingCount);
                             log('递减的比例' + decreasingRatio);

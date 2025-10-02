@@ -468,7 +468,13 @@ function SRCSet() {
             }
         })
     }
-
+    if(getMyVar('seacrhJiekou')){
+        let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
+        jkdatalist = jkdatalist.filter(it=>{
+            return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
+        })
+    }
+    
     d = d.concat(jkItemList(jkdatalist));
     
     d.push({

@@ -228,10 +228,7 @@ function SRCSet() {
                 putMyVar("seacrhJiekou", input);
                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let jkdatalist = storage0.getMyVar("jkdatalist");
-                let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
-                jkdatalist = jkdatalist.filter(it=>{
-                    return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
-                })
+                jkdatalist = outputSearchList(jkdatalist, input);
                 storage0.putMyVar("seacrhDataList", jkdatalist);
                 addItemBefore('jkItemLoading', jkItemList(jkdatalist));
             }
@@ -469,10 +466,7 @@ function SRCSet() {
         })
     }
     if(getMyVar('seacrhJiekou')){
-        let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
-        jkdatalist = jkdatalist.filter(it=>{
-            return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
-        })
+        jkdatalist = outputSearchList(jkdatalist, getMyVar('seacrhJiekou'));
     }
     
     d = d.concat(jkItemList(jkdatalist));

@@ -731,25 +731,22 @@ function erji() {
                     function checkAndReverseArray(arr) {
                         try {
                             let numbers = [];
-                            log(arr.slice(0, 50).map(v=>v.title));
                             arr.slice(0, 50).forEach(it => {
                                 let digits = it.title.match(/\d+/g);
                                 if (digits) {
                                     numbers.push(digits.map(numStr => parseInt(numStr, 10)));
                                 }
                             });
-                            log(numbers);
+
                             // 至少需要5个有效数字序列
                             if (numbers.length < 5) {
                                 return arr;
                             }
 
-                            let increasingCount = 0;
                             let decreasingCount = 0;
                             let totalComparisons = 0; // 记录有效比较的总数
 
                             for (let i = 1; i < numbers.length; i++) {
-                                log(i);
                                 let prev = numbers[i - 1];
                                 let curr = numbers[i];
                                 let comparison = 0;
@@ -761,17 +758,14 @@ function erji() {
                                         comparison = 1;
                                         break;
                                     } else if (curr[j] < prev[j]) {
-                                        log(curr[j]+'|'+prev[j]);
                                         comparison = -1;
                                         break;
                                     }
                                 }
 
-                                // 只统计有明确增减关系的情况
+                                // 只统计有明确增减关系的递减数量和总数
                                 if (comparison !== 0) {
-                                    if (comparison > 0) {
-                                        increasingCount++;
-                                    } else {
+                                    if (comparison < 0) {
                                         decreasingCount++;
                                     }
                                     totalComparisons++;
@@ -783,13 +777,10 @@ function erji() {
                                 return arr;
                             }
 
-                            // 计算递增和递减的比例
+                            // 计算递减的比例
                             let decreasingRatio = decreasingCount / totalComparisons;
-                            log('递增的' + increasingCount);
-                            log('递减的' + decreasingCount);
-                            log('递减的比例' + decreasingRatio);
-                            // 当递减比例超过50%时才反转，避免因个别大数字导致误判
-                            if (decreasingRatio > 0.8) {
+                            // 当递减比例超过60%时才反转，避免因个别大数字导致误判
+                            if (decreasingRatio > 0.6) {
                                 return arr.reverse();
                             } else {
                                 return arr;

@@ -425,10 +425,6 @@ function getYiData(datatype, jkdata, dd) {
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
-                banner = (function(jkdata, banner) {
-                    jkdata = jkdata;
-                    return banner;
-                })(jkdata, banner);
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -1145,11 +1141,11 @@ function banner(start, arr, data, cfg){
         unRegisterTask(id)
         return
     }
-    xlog(jkdata);
+
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        jkdata: typeof jkdata != "undefined" ? jkdata : storage0.getMyVar('一级源接口信息'),
+        jkdata: storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
     registerTask(id, time, $.toString((obj) => {

@@ -1141,7 +1141,7 @@ function banner(start, arr, data, cfg){
         unRegisterTask(id)
         return
     }
-    xlog(jkdata);
+    xlog(parse.jkdata);
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',

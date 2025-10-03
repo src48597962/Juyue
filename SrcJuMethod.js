@@ -1148,6 +1148,7 @@ function banner(start, arr, data, cfg){
         jkdata: storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
+    log(obj.jkdata);
     registerTask(id, time, $.toString((obj) => {
         let data = obj.data;
         let rum = getMyVar('rnum');

@@ -425,6 +425,7 @@ function getYiData(datatype, jkdata, dd) {
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
+                let banner = banner;
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -1141,7 +1142,7 @@ function banner(start, arr, data, cfg){
         unRegisterTask(id)
         return
     }
-    xlog(parse.jkdata);
+    xlog(jkdata);
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',

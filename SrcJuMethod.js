@@ -426,6 +426,7 @@ function getYiData(datatype, jkdata, dd) {
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
                 banner = (function(jkdata, banner) {
+                    jkdata = jkdata;
                     return banner;
                 })(jkdata, banner);
 

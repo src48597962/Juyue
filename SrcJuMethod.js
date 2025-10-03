@@ -788,12 +788,13 @@ function toerji(item, jkdata) {
                 extra.img = extra.img || item.pic_url || item.img;
                 extra.pageTitle = extra.pageTitle || extra.name;
                 extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+                extra.data = extra.data || jkdata;
+                item.extra = extra;
+
                 item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                     require(config.聚阅);
                     erji();
                 })
-                extra.data = jkdata;
-                item.extra = extra;
             }
             // 一级加入收藏长按菜单
             if(/video:|pics:|\.m3u8|\.mp4|@rule=|@lazyRule=/.test(item.url) && (!/text_icon|rich_text|avatar|_button|icon_|text_/.test(item.col_type)||item.col_type=='icon_1_left_pic')){
@@ -1148,7 +1149,7 @@ function banner(start, arr, data, cfg){
         jkdata: storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
-    log(obj.jkdata);
+
     registerTask(id, time, $.toString((obj) => {
         let data = obj.data;
         let rum = getMyVar('rnum');

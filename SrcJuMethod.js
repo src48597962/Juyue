@@ -279,7 +279,7 @@ function getYiData(datatype, jkdata, dd) {
     let parse = getObjCode(jkdata, 'yi');
     parse["频道"] = parse["频道"] || {};
 
-    if(!yijkdata || (parse['二级标识'] && !yijkdata['erjisign'])){
+    if(!yijkdata || (yijkdata.id==jkdata.id && parse['二级标识'] && !yijkdata['erjisign'])){
         if(parse['二级标识']){
             jkdata['erjisign'] = parse['二级标识'];
         }
@@ -713,7 +713,7 @@ function getObjCode(jkdata, key) {
         parse['sourcename'] = jkdata.name;
         parse['jkdata'] = jkdata;
         parse['页码'] = parse['页码'] || {};
-        if((key=='yi'||key=='ss') && parse['二级'] && isJuDetail(jkdata.id)){
+        if((key=='yi'||key=='ss') && parse['二级'] && isJuDetail(jkdata.id)){//去除二级页面标识
             let ercodestr = parse['二级'].toString();
             if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
                 delete parse['二级标识'];

@@ -426,7 +426,9 @@ function getYiData(datatype, jkdata, dd) {
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
                 // 保存原函数的引用
-                const originalbanner = banner;
+                const originalbanner = (function(jkdata) {
+                    return banner;
+                })(jkdata);
                 // 重新定义
                 banner = function(start, arr, data, cfg) {
                     originalbanner(start, arr, data, cfg);

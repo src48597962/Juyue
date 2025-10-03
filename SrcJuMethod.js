@@ -425,14 +425,9 @@ function getYiData(datatype, jkdata, dd) {
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
                 deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
-                // 保存原函数的引用
-                const originalbanner = (function(jkdata) {
+                banner = (function(jkdata) {
                     return banner;
                 })(jkdata);
-                // 重新定义
-                banner = function(start, arr, data, cfg) {
-                    originalbanner(start, arr, data, cfg);
-                };
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];

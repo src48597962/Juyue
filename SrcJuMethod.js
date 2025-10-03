@@ -1132,7 +1132,7 @@ function banner(start, arr, data, cfg){
     arr.push({
         title: item.title,
         url: item.url,
-        img: item.img,
+        img: item.img || item.pic_url,
         desc: desc,
         col_type: col_type,
         extra: extra
@@ -1145,13 +1145,13 @@ function banner(start, arr, data, cfg){
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        info: storage0.getMyVar('一级源接口信息'),
+        jkdata: typeof jkdata != "undefined" ? jkdata : storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
     registerTask(id, time, $.toString((obj) => {
-        var data = obj.data;
-        var rum = getMyVar('rnum');
-        var i = Number(getMyVar('banneri', '0'));
+        let data = obj.data;
+        let rum = getMyVar('rnum');
+        let i = Number(getMyVar('banneri', '0'));
         if (rum != '') {
             i = Number(rum) + 1
             clearMyVar('rnum')
@@ -1161,10 +1161,10 @@ function banner(start, arr, data, cfg){
         if (i > data.length - 1) {
             i = 0
         }
-        var item = data[i];
+        let item = data[i];
         try {
             require(obj.method);
-            updateItem('bar', toerji(item, obj.info));
+            updateItem('bar', toerji(item, obj.jkdata));
         } catch (e) {
             obj.xlog("幻灯片更新异常>" + e.message);
             unRegisterTask('juyue');

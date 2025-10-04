@@ -1146,7 +1146,7 @@ function banner(start, arr, data, cfg){
     let obj = {
         data: data,
         method: config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'SrcJuMethod.js',
-        jkdata: storage0.getMyVar('一级源接口信息'),
+        jkdata: cfg.jkdata || storage0.getMyVar('一级源接口信息'),
         xlog: xlog
     };
 

@@ -1175,8 +1175,8 @@ function banner(start, arr, data, cfg){
     }, obj))
 }
 // x5中转聚阅二级
-function x5toerji(jkdata, extra) {
-    //MY_RULE = JSON.parse(fetch("hiker://home@聚阅"));
+function x5toerji(jkdata, extra, MY_RULE) {
+    MY_RULE = MY_RULE || JSON.parse(fetch("hiker://home@聚阅"));
     extra.data = jkdata;
     return $.toString((MY_RULE, jkdata, extra) => {
         fba.open(JSON.stringify({

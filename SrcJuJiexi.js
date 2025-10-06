@@ -1,5 +1,5 @@
 //解析新增或编辑
-function jiexi(data) {
+function jiexiapi(data) {
     addListener("onClose", $.toString(() => {
         clearMyVar('parsename');
         clearMyVar('parseurl');

@@ -1241,6 +1241,7 @@ function importConfirm() {
                     url: $().lazyRule((i)=>{
                         putMyVar("选择列表项", i);
                         refreshPage();
+                        return "hiker://empty";
                     }, i),
                     col_type: 'text_3'
                 });

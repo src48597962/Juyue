@@ -543,7 +543,11 @@ function jiekouapi(data, look) {
     d.push({
         title: '源版本号：'+ getMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString()),
         col_type: 'text_1',
-        url: 'toast://保存代码文件时自动获取，版本:'
+        url: $(getMyVar('apiversion', $.dateFormat(new Date(),"yyyyMMdd").toString()), "输入源版本号").input(() => {
+            putMyVar('apiversion',input);
+            refreshPage(false);
+            return 'toast://源版本号已设置为：' + input;
+        })
     });
     d.push({
         title: '源大类型：'+ getMyVar('apitype',''),

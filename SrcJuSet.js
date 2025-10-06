@@ -1237,16 +1237,13 @@ function importConfirm() {
             let listtype = ["全部列表", "新增加的", "已存在的"];
             listtype.forEach((it, i)=>{
                 d.push({
-                    title: it,
+                    title: getMyVar("选择列表项","0")==i?`““””<b><span style="color: `+"#20" + Color.replace('#','')+`">`+it+`</span></b>`:it,
                     url: $().lazyRule((i)=>{
                         putMyVar("选择列表项", i);
                         refreshPage();
                         return "hiker://empty";
                     }, i),
-                    col_type: 'text_3',
-                    extra: {
-                        backgroundColor: getMyVar("选择列表项","0")==i?"#20" + Color.replace('#',''):""
-                    }
+                    col_type: 'text_3'
                 });
             })
         }

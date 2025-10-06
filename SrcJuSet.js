@@ -1200,10 +1200,10 @@ function importConfirm() {
             img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
             col_type: 'icon_small_3'
         });
-        let listtype = ["全部列表", "新增加", "已存在"];
+        let listtype = ["全列表", "新增加", "已存在"];
         d.push({
             title: listtype[parseInt(getMyVar("选择列表项","0"))],
-            url: $(["全部列表", "新增加", "已存在"], "选择列表项").select(()=>{
+            url: $(listtype, 3, "选择列表项").select(()=>{
                 getMyVar("选择列表项", MY_INDEX);
                 refreshPage();
             }),

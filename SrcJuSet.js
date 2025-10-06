@@ -1080,6 +1080,7 @@ function importConfirm() {
     addListener("onClose", $.toString((importfile) => {
         deleteFile(importfile);
         clearMyVar('importConfirm');
+        clearMyVar("选择列表项");
     },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
@@ -1151,14 +1152,16 @@ function importConfirm() {
             }catch(e){}
         }
         let newdatas = [];
+        let olddatas = [];
         importdatas.forEach(it=>{
+            it.id = it.id.toString();
             if(!datalist.some(v=>v.id==it.id)){
                 newdatas.push(it);
             }else{
                 let olddata = datalist.filter(v=>v.id==it.id)[0];
                 it.oldversion = olddata.version || "";
+                olddatas.push(it);
             }
-            it.id = it.id.toString();
         })
         const prop = 'oldversion';
         importdatas.sort((a, b) => {
@@ -1197,9 +1200,13 @@ function importConfirm() {
             img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
             col_type: 'icon_small_3'
         });
+        let listtype = ["全部列表", "新增加", "已存在"];
         d.push({
-            title: "",
-            url: "hiker://empty",
+            title: listtype[parseInt(getMyVar("选择列表项","0"))],
+            url: $(["全部列表", "新增加", "已存在"], "选择列表项").select(()=>{
+                getMyVar("选择列表项", MY_INDEX);
+                refreshPage();
+            }),
             col_type: 'icon_small_3'
         });
         d.push({
@@ -1231,6 +1238,12 @@ function importConfirm() {
             col_type: 'icon_small_3'
         });
         
+        if(getMyVar("选择列表项", "0") == "1"){
+            importdatas = newdatas;
+        }else if(getMyVar("选择列表项", "0") == "2"){
+            importdatas = olddatas;
+        }
+
         importdatas.forEach(it=>{
             let isnew = newdatas.some(v=>v.id==it.id);
             let datamenu = ["确定导入", "修改名称"];

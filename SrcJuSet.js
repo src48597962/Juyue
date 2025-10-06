@@ -1200,14 +1200,10 @@ function importConfirm() {
             img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
             col_type: 'icon_small_3'
         });
-        let listtype = ["全部列表", "新增加的", "已存在的"];
         d.push({
-            title: listtype[parseInt(getMyVar("选择列表项","0"))],
-            url: $(listtype, 3, "选择列表项").select(()=>{
-                getMyVar("选择列表项", MY_INDEX);
-                refreshPage();
-            }),
-            col_type: 'text_3'
+            title: "",
+            url: "hiker://empty",
+            col_type: 'icon_small_3'
         });
         d.push({
             title: "全量导入",
@@ -1237,6 +1233,19 @@ function importConfirm() {
             img: getIcon("管理-全量导入.svg"),
             col_type: 'icon_small_3'
         });
+        if(newdatas.length>0 && olddatas.length>0){
+            let listtype = ["全部列表", "新增加的", "已存在的"];
+            listtype.forEach((it, i)=>{
+                d.push({
+                    title: it,
+                    url: $().lazyRule((i)=>{
+                        putMyVar("选择列表项", i);
+                        refreshPage();
+                    }, i),
+                    col_type: 'text_3'
+                });
+            })
+        }
         
         if(getMyVar("选择列表项", "0") == "1"){
             importdatas = newdatas;

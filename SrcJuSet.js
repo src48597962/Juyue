@@ -1243,7 +1243,10 @@ function importConfirm() {
                         refreshPage();
                         return "hiker://empty";
                     }, i),
-                    col_type: 'text_3'
+                    col_type: 'text_3',
+                    extra: {
+                        backgroundColor: getMyVar("选择列表项","0")==i?"#20" + Color.replace('#',''):""
+                    }
                 });
             })
         }

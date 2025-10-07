@@ -939,7 +939,10 @@ function jiekousave(urls, mode) {
             }
         })
         //setJkSort(datalist, {fail: 0});
-        if(num>0){writeFile(jkfile, JSON.stringify(datalist));}
+        if(num>0){
+            writeFile(jkfile, JSON.stringify(datalist));
+            clearMyVar('SrcJu_searchMark');//接口变化，清搜索结果缓存
+        }
     } catch (e) {
         xlog("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
         return -1;

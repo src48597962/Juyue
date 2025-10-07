@@ -1195,7 +1195,7 @@ function importConfirm() {
             let num = jiekousave(importlist, 1);
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
-        },lx):$("全部覆盖导入，确认？").confirm(()=>{
+        }):$("全部覆盖导入，确认？").confirm(()=>{
             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             let importlist = storage0.getMyVar('importConfirm', []);
             let num = jiekousave(importlist, 1);
@@ -1228,13 +1228,9 @@ function importConfirm() {
 
     importdatas.forEach(it=>{
         let isnew = newdatas.some(v=>v.id==it.id);
-        let datamenu = ["确定导入", "修改名称"];
-        if(lx=="jk"){
-            datamenu.push("设定分组");
-            datamenu.push("接口测试");
-            if(!it.url.startsWith('http')){
-                datamenu.push("查看文件");
-            }
+        let datamenu = ["确定导入", "修改名称", "设定分组", "接口测试"];
+        if(!it.url.startsWith('http')){
+            datamenu.push("查看文件");
         }
         let ittitle,itimg,itcol;
         if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){

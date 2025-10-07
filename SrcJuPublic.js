@@ -1087,10 +1087,32 @@ function importConfirm(importStr) {
 
     d.push({
         title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
-        desc: '',//(sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
+        desc: '加载中...',//(sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
         url: "hiker://empty",
         col_type: 'text_center_1'
     });
+
+    for(let i=0;i<2;i++){
+        d.push({
+            title: "",
+            url: "hiker://empty",
+            col_type: "text_1",
+            extra: {
+                lineVisible: false,
+                cls: "loading_gif"
+            }
+        })
+    }
+    d.push({
+        pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+        col_type: "pic_1_center",
+        url: "hiker://empty",
+        extra: {
+            cls: "loading_gif"
+        }
+    })
+    setResult(d);
+    /*
 
     d.push({
         title: "增量导入",
@@ -1141,8 +1163,7 @@ function importConfirm(importStr) {
         col_type: 'icon_small_3'
     });
 
-
-
+    
 
 
 
@@ -1352,5 +1373,5 @@ function importConfirm(importStr) {
             });
         })
     }
-    setResult(d);
+    */
 }

@@ -155,8 +155,8 @@ function SRCSet() {
             if(input==""){
                 return 'toast://不能为空';
             }
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            return importConfirm(input);
+            writeFile("hiker://files/_cache/Juyue/cloudimport.txt", input);
+            return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
         }),
         img: getIcon(jkIcons[2].img, false, jkIcons[2].color),
         col_type: "icon_small_4"

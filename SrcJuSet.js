@@ -1,4 +1,4 @@
-////本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
+//本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
 //本地接口管理
 function SRCSet() {
@@ -80,8 +80,7 @@ function SRCSet() {
                         title: '确定',
                         defaultValue: groupNames.join(',') || "",
                         click(s, manage) {
-                            Juconfig['groupSort'] = s;
-                            writeFile(cfgfile, JSON.stringify(Juconfig));
+                            juItem2.set('groupSort', s);
                             pop.dismiss();
                             refreshPage(false);
                         },
@@ -255,7 +254,7 @@ function SRCSet() {
     groupNames.unshift("全部");
     let Color = getItem('主题颜色','#3399cc');
     let groupColtype = getItem("groupColtype", "flex_button");
-    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
+    let lockgroups = juItem2.get('lockgroups') || [];
     let hidegroups = juItem2.get('hidegroups') || [];
     groupNames.forEach(it =>{
         let obj = {
@@ -305,8 +304,7 @@ function SRCSet() {
             obj.extra.longClick = [{
                 title: lockgroups.indexOf(it)>-1?"解锁":"加锁",
                 js: $.toString((it) => {
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');//先临时放着吧
-                    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
+                    let lockgroups = juItem2.get('lockgroups') || [];
                     if(lockgroups.indexOf(it)>-1){
                         const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                         if (hikerPop.canBiometric() !== 0) {

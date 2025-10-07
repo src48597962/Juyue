@@ -57,6 +57,7 @@ let homeSource = homeSourceS[homeGroup] || {};
 let homeSourceId = homeSource.id || "";
 let sourcename = homeSource.name || "";
 let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
+let Juconfig2 = juItem2.getAll();
 
 //获取接口列表数据
 function getDatas(lx, isyx) {

@@ -1189,21 +1189,19 @@ function importConfirm() {
         extra: {
             longClick: [{
                 title: "输入云口令",
-                js: $.toString((extractimport) => {
-                    return $('', '支持多口令').input((extractimport)=>{
-                        if(!input){
-                            toast('未获取到云口令');
+                js: $('', '支持多口令').input((extractimport)=>{
+                    if(!input){
+                        toast('未获取到云口令');
+                    }else{
+                        let importdatas = extractimport(input);
+                        if(importdatas.length==0){
+                            toast('未获取到源接口，检查网络或口令');
                         }else{
-                            let importdatas = extractimport(input);
-                            if(importdatas.length==0){
-                                toast('未获取到源接口，检查网络或口令');
-                            }else{
-                                storage0.putMyVar('importConfirm', importdatas);
-                                refreshPage();
-                            }
+                            storage0.putMyVar('importConfirm', importdatas);
+                            refreshPage();
                         }
-                        return 'hiker://empty';
-                    }, extractimport)
+                    }
+                    return 'hiker://empty';
                 }, extractimport)
             }]
         }

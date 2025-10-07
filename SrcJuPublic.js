@@ -58,6 +58,9 @@ let homeSourceId = homeSource.id || "";
 let sourcename = homeSource.name || "";
 let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
 let Juconfig2 = juItem2.getAll();
+//临时放着
+delete Juconfig['groupSort'];
+delete Juconfig['lockgroups'];
 
 //获取接口列表数据
 function getDatas(lx, isyx) {
@@ -170,8 +173,8 @@ function getJkGroups(datas, isgroup) {
             }
         })
     })
-    if(Juconfig['groupSort']){
-        groupNames = sortBWithNonAAtEnd(Juconfig['groupSort'].split(','), groupNames);
+    if(Juconfig2['groupSort']){
+        groupNames = sortBWithNonAAtEnd(Juconfig2['groupSort'].split(','), groupNames);
     }else{
         groupNames.sort((a, b) =>
             a.localeCompare(b, 'zh-CN', {
@@ -240,7 +243,7 @@ function getSearchLists(group) {
     }
     /*
     else{
-        let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
+        let lockgroups = Juconfig2["lockgroups"] || [];
         datalist = datalist.filter(it=>{
             return lockgroups.indexOf(it.group||it.type)==-1;
         })
@@ -428,7 +431,7 @@ function selectSource2(selectGroup) {
 }
 // 判断源是否在加锁分组中，返回bool
 function isLockGroups(jkdata, lockgroups) {
-    lockgroups = lockgroups || juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
+    lockgroups = lockgroups || Juconfig2('lockgroups') || [];
     if(juItem2.get('noShowType')!='1'){
         return lockgroups.indexOf(jkdata.type)>-1 || (jkdata.group||"").split(',').some(item => lockgroups.includes(item));
     }else{
@@ -449,7 +452,7 @@ function selectSource(selectGroup) {
     //hikerPop插件
     const hikerPop = $.require(libspath + "plugins/hikerPop.js");
     let sourceList = getDatas("yi", true);
-    let lockgroups = juItem2.get('lockgroups') || Juconfig["lockgroups"] || [];
+    let lockgroups = Juconfig2["lockgroups"] || [];
     if(getMyVar('SrcJu_已验证指纹')!='1'){
         sourceList = sourceList.filter(it=>{
             return !isLockGroups(it, lockgroups);

@@ -1059,7 +1059,7 @@ function importConfirm(importStr) {
     let importdatas = storage0.getMyVar('importConfirm', []);
     if(!getMyVar('importConfirm')){
         //云口令导入
-        let input = fetch(importfile);
+        let input = importStr || fetch(importfile);
         if(!input){
             toast('未获取到云口令');
         }else{
@@ -1072,7 +1072,7 @@ function importConfirm(importStr) {
     }
     //获取现有接口
     let datalist = [];
-    let sourcedata = importStr || fetch(jkfile);
+    let sourcedata = fetch(jkfile);
     if(sourcedata != ""){
         try{
             eval("datalist = " + sourcedata+ ";");

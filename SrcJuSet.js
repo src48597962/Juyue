@@ -155,7 +155,7 @@ function SRCSet() {
             if(input==""){
                 return 'toast://不能为空';
             }
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuJiekou.js');
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             return importConfirm(input);
         }),
         img: getIcon(jkIcons[2].img, false, jkIcons[2].color),

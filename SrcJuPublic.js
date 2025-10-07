@@ -1190,7 +1190,7 @@ function importConfirm() {
             longClick: [{
                 title: "输入云口令",
                 js: $.toString((extractimport) => {
-                    return $('', '支持多口令').input(()=>{
+                    return $('', '支持多口令').input((extractimport)=>{
                         if(!input){
                             toast('未获取到云口令');
                         }else{
@@ -1202,7 +1202,7 @@ function importConfirm() {
                             }
                         }
                         return 'hiker://empty';
-                    })
+                    }, extractimport)
                 }, extractimport)
             }]
         }

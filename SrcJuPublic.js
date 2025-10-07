@@ -1054,6 +1054,38 @@ function batchTestSource(){
     }, ilks)
 }
 
+//云口令提取
+function extractimport(importStr){
+    showLoading('获取数据中，请稍后...');
+    let strs = importStr.replace(/\\n|云口令：/g, '').split('@import=');
+    strs = strs.filter(v=>v&&v.includes('聚阅接口￥'));
+    let datas = [];
+    strs.forEach(it=>{
+        try{
+            let code = aesDecode('Juyue', it.split('￥')[1]);
+            let text;
+            if(/^http|^云/.test(code)){//云分享
+                text = parsePaste(code);
+            }else{//文件分享
+                text = code;
+            }
+            if(text && !/^error/.test(text)){
+                let gzip = $.require(libspath + "plugins/gzip.js");
+                let sharetxt = gzip.unzip(text);
+                let imports = JSON.parse(sharetxt); 
+                imports.forEach(item=>{
+                    if(!datas.some(v=>v.id==item.id)){
+                        datas.push(item);
+                    }
+                })
+            }
+        } catch (e) {
+            xlog("聚阅：获取口令数据出错>" + e.message);
+        }
+    })
+    hideLoading();
+    return datas;
+}
 // 云口令导入确认页
 function importConfirm() {
     let importfile = "hiker://files/_cache/Juyue/cloudimport.txt";
@@ -1065,39 +1097,6 @@ function importConfirm() {
 
     let importdatas = storage0.getMyVar('importConfirm', []);
     if(!getMyVar('importConfirm')){
-        //云口令提取
-        function extractimport(importStr){
-            showLoading('获取数据中，请稍后...');
-            let strs = importStr.replace(/\\n|云口令：/g, '').split('@import=');
-            strs = strs.filter(v=>v&&v.includes('聚阅接口￥'));
-            let datas = [];
-            strs.forEach(it=>{
-                try{
-                    let code = aesDecode('Juyue', it.split('￥')[1]);
-                    let text;
-                    if(/^http|^云/.test(code)){//云分享
-                        text = parsePaste(code);
-                    }else{//文件分享
-                        text = code;
-                    }
-                    if(text && !/^error/.test(text)){
-                        let gzip = $.require(libspath + "plugins/gzip.js");
-                        let sharetxt = gzip.unzip(text);
-                        let imports = JSON.parse(sharetxt); 
-                        imports.forEach(item=>{
-                            if(!datas.some(v=>v.id==item.id)){
-                                datas.push(item);
-                            }
-                        })
-                    }
-                } catch (e) {
-                    xlog("聚阅：获取口令数据出错>" + e.message);
-                }
-            })
-            hideLoading();
-            return datas;
-        }
-
         //云口令导入
         let input = fetch(importfile);
         if(!input){

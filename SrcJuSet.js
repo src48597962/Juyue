@@ -1076,6 +1076,7 @@ function JYimport(input) {
         return "toast://聚阅：无法识别的口令>" + e.message + " 错误行#" + e.lineNumber;
     }
 }
+/*
 // 云口令导入确认页
 function importConfirm() {
     let importfile = "hiker://files/_cache/Juyue/cloudimport.txt";
@@ -1379,7 +1380,7 @@ function importConfirm() {
     }
     setResult(d);
 }
-
+*/
 // 管理中心
 function manageSet(){
     addListener("onClose", $.toString(() => {

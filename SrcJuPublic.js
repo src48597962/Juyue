@@ -1055,15 +1055,13 @@ function batchTestSource(){
 }
 
 // 云口令导入确认页
-function importConfirm(importStr) {
+function importConfirm() {
     let importfile = "hiker://files/_cache/Juyue/cloudimport.txt";
     addListener("onClose", $.toString((importfile) => {
         deleteFile(importfile);
         clearMyVar('importConfirm');
         clearMyVar("选择列表项");
-    }, importfile));
-
-    let Color = getItem('主题颜色','#3399cc');
+    },importfile));
     let code,name,lx,sm,importdatas,datalist;
     let d = [];
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
@@ -1084,99 +1082,13 @@ function importConfirm(importStr) {
             url: 'hiker://empty',
         });
     }
-
-    d.push({
-        title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
-        desc: '加载中...',//(sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
-        url: "hiker://empty",
-        col_type: 'text_center_1'
-    });
-
-    for(let i=0;i<2;i++){
-        d.push({
-            title: "",
-            url: "hiker://empty",
-            col_type: "text_1",
-            extra: {
-                lineVisible: false,
-                cls: "loading_gif"
-            }
-        })
+    //云口令提取
+    function extractimport(importStr){
+        
     }
-    d.push({
-        pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
-        col_type: "pic_1_center",
-        url: "hiker://empty",
-        extra: {
-            cls: "loading_gif"
-        }
-    })
-    setResult(d);
-    /*
 
-    d.push({
-        title: "增量导入",
-        url: $("跳过已存在，只导入新增，确认？").confirm((lx)=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            let importlist = storage0.getMyVar('importConfirm', []);
-            let num;
-            if(lx=="jk"){
-                num = jiekousave(importlist, 0);
-            }else{
-                return "toast://类型异常";
-            }
-            back(false);
-            return "toast://增量导入"+(num<0?"失败":num);
-        },lx),
-        img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
-        col_type: 'icon_small_3'
-    });
-    d.push({
-        title: "",
-        url: "hiker://empty",
-        col_type: 'icon_small_3'
-    });
-    d.push({
-        title: "全量导入",
-        url: importdatas.length>0&&oldnum==0?$().lazyRule((lx)=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            let importlist = storage0.getMyVar('importConfirm', []);
-            if(lx=="jk"){
-                num = jiekousave(importlist, 1);
-            }else{
-                return "toast://类型异常";
-            }
-            back(false);
-            return "toast://全量导入"+(num<0?"失败":num);
-        },lx):$("全部覆盖导入，确认？").confirm((lx)=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-            let importlist = storage0.getMyVar('importConfirm', []);
-            if(lx=="jk"){
-                num = jiekousave(importlist, 1);
-            }else{
-                return "toast://类型异常";
-            }
-            back(false);
-            return "toast://全量导入"+(num<0?"失败":num);
-        },lx),
-        img: getIcon("管理-全量导入.svg"),
-        col_type: 'icon_small_3'
-    });
-
-    
-
-
-
-
-
-
-
-    //云口令提取逻辑
-    function extractImport() {
-
-    }
     //云口令导入
-    let input = importStr || fetch(importfile);
+    let input = fetch(importfile);
     if(input.includes('云口令：')){
         input = input.split('云口令：')[1].split('@import=')[0];
     }
@@ -1246,7 +1158,65 @@ function importConfirm(importStr) {
         });
         
         let oldnum = importdatas.length - newdatas.length;
-        
+        let Color = getItem('主题颜色','#3399cc');
+        d.push({
+            title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
+            desc: (sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
+            url: "hiker://empty",
+            col_type: 'text_center_1'
+        });
+
+        d.push({
+            title: importdatas.length>0&&oldnum==0?"":"增量导入",
+            url: importdatas.length>0&&oldnum==0?"hiker://empty":$("跳过已存在，只导入新增，确认？").confirm((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                let num;
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 0);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://增量导入"+(num<0?"失败":num);
+            },lx),
+            img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
+            col_type: 'icon_small_3'
+        });
+        d.push({
+            title: "",
+            url: "hiker://empty",
+            col_type: 'icon_small_3'
+        });
+        d.push({
+            title: "全量导入",
+            url: importdatas.length>0&&oldnum==0?$().lazyRule((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 1);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://全量导入"+(num<0?"失败":num);
+            },lx):$("全部覆盖导入，确认？").confirm((lx)=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                let importlist = storage0.getMyVar('importConfirm', []);
+                if(lx=="jk"){
+                    num = jiekousave(importlist, 1);
+                }else{
+                    return "toast://类型异常";
+                }
+                clearMyVar('SrcJu_searchMark');
+                back(false);
+                return "toast://全量导入"+(num<0?"失败":num);
+            },lx),
+            img: getIcon("管理-全量导入.svg"),
+            col_type: 'icon_small_3'
+        });
         if(newdatas.length>0 && olddatas.length>0){
             let listtype = ["全部列表", "新增加的", "已存在的"];
             listtype.forEach((it, i)=>{
@@ -1305,6 +1275,7 @@ function importConfirm(importStr) {
                             }else{
                                 return "toast://类型异常";
                             }
+                            clearMyVar('SrcJu_searchMark');
                             let importlist = storage0.getMyVar('importConfirm', []);
                             if(importlist.length==1){
                                 back(false);
@@ -1362,6 +1333,21 @@ function importConfirm(importStr) {
                     }else if (input == "查看文件") {
                         writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
                         return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
+                    }else if (input == "删除文件") {
+                        return $("删除"+data.ext+"，确认？").confirm((data)=>{
+                            deleteFile(data.ext);
+                            clearMyVar('SrcJu_searchMark');
+                            let importlist = storage0.getMyVar('importConfirm', []);
+                            if(importlist.length==1){
+                                back(false);
+                            }else{
+                                let index2 = importlist.findIndex(item => item.id === data.id);
+                                importlist.splice(index2, 1);
+                                storage0.putMyVar('importConfirm', importlist);
+                                deleteItem(data.id);
+                            }
+                            return "toast://已删除";
+                        }, data)
                     }
                 }, lx, base64Encode(JSON.stringify(it)), isnew),
                 desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在") + "</font></b>" + (it.version?(it.version==it.oldversion?"":"<font color="+Color+"0>")+"-云V"+it.version:""),
@@ -1373,5 +1359,5 @@ function importConfirm(importStr) {
             });
         })
     }
-    */
+    setResult(d);
 }

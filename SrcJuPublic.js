@@ -1165,7 +1165,20 @@ function importConfirm() {
     d.push({
         title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
-        url: "hiker://empty",
+        url: $('', '支持多口令').input((extractimport)=>{
+            if(!input){
+                toast('未获取到云口令');
+            }else{
+                let importdatas = extractimport(input);
+                if(importdatas.length==0){
+                    toast('未获取到源接口，检查网络或口令');
+                }else{
+                    storage0.putMyVar('importConfirm', importdatas);
+                    refreshPage();
+                }
+            }
+            return 'hiker://empty';
+        }, extractimport),
         col_type: 'text_center_1'
     });
 
@@ -1184,28 +1197,7 @@ function importConfirm() {
     d.push({
         title: "",
         url: "hiker://empty",
-        col_type: 'icon_small_3',
-        extra: {
-            longClick: [{
-                title: "输入云口令",
-                js: $.toString((extractimport) => {
-                    return $('', '支持多口令').input((extractimport)=>{
-                        if(!input){
-                            toast('未获取到云口令');
-                        }else{
-                            let importdatas = extractimport(input);
-                            if(importdatas.length==0){
-                                toast('未获取到源接口，检查网络或口令');
-                            }else{
-                                storage0.putMyVar('importConfirm', importdatas);
-                                refreshPage();
-                            }
-                        }
-                        return 'hiker://empty';
-                    }, extractimport)
-                }, extractimport)
-            }]
-        }
+        col_type: 'icon_small_3'
     });
     d.push({
         title: "全量导入",

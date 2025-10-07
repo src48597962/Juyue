@@ -1053,3 +1053,304 @@ function batchTestSource(){
         setResult(d);
     }, ilks)
 }
+
+// 云口令导入确认页
+function importConfirm(importStr) {
+    let importfile = "hiker://files/_cache/Juyue/cloudimport.txt";
+    addListener("onClose", $.toString((importfile) => {
+        deleteFile(importfile);
+        clearMyVar('importConfirm');
+        clearMyVar("选择列表项");
+    }, importfile));
+
+    let Color = getItem('主题颜色','#3399cc');
+    let code,name,lx,sm,importdatas,datalist;
+    let d = [];
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+    }
+
+    d.push({
+        title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
+        desc: '',//(sm||"") + " 共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
+        url: "hiker://empty",
+        col_type: 'text_center_1'
+    });
+
+    d.push({
+        title: "增量导入",
+        url: $("跳过已存在，只导入新增，确认？").confirm((lx)=>{
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            let importlist = storage0.getMyVar('importConfirm', []);
+            let num;
+            if(lx=="jk"){
+                num = jiekousave(importlist, 0);
+            }else{
+                return "toast://类型异常";
+            }
+            back(false);
+            return "toast://增量导入"+(num<0?"失败":num);
+        },lx),
+        img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
+        col_type: 'icon_small_3'
+    });
+    d.push({
+        title: "",
+        url: "hiker://empty",
+        col_type: 'icon_small_3'
+    });
+    d.push({
+        title: "全量导入",
+        url: importdatas.length>0&&oldnum==0?$().lazyRule((lx)=>{
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            let importlist = storage0.getMyVar('importConfirm', []);
+            if(lx=="jk"){
+                num = jiekousave(importlist, 1);
+            }else{
+                return "toast://类型异常";
+            }
+            back(false);
+            return "toast://全量导入"+(num<0?"失败":num);
+        },lx):$("全部覆盖导入，确认？").confirm((lx)=>{
+            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            let importlist = storage0.getMyVar('importConfirm', []);
+            if(lx=="jk"){
+                num = jiekousave(importlist, 1);
+            }else{
+                return "toast://类型异常";
+            }
+            back(false);
+            return "toast://全量导入"+(num<0?"失败":num);
+        },lx),
+        img: getIcon("管理-全量导入.svg"),
+        col_type: 'icon_small_3'
+    });
+
+
+
+
+
+
+
+
+
+
+    //云口令提取逻辑
+    function extractImport() {
+
+    }
+    //云口令导入
+    let input = importStr || fetch(importfile);
+    if(input.includes('云口令：')){
+        input = input.split('云口令：')[1].split('@import=')[0];
+    }
+    try{
+        code = aesDecode('Juyue', input.split('￥')[1]);
+        name = input.split('￥')[0];
+        if(name=="聚阅接口"){
+            sm = "接口";
+            lx = "jk";
+        }else{
+            toast("聚阅：无法识别的口令前缀>" + name);
+        }
+        importdatas = storage0.getMyVar('importConfirm', []);
+        if(importdatas.length==0){
+            try{
+                let text;
+                if(/^http|^云/.test(code)){
+                    showLoading('获取数据中，请稍后...');
+                    text = parsePaste(code);
+                    hideLoading();
+                }else{
+                    text = code;
+                }
+                if(text && !/^error/.test(text)){
+                    let gzip = $.require(libspath + "plugins/gzip.js");
+                    let sharetxt = gzip.unzip(text);
+                    importdatas = JSON.parse(sharetxt); 
+                    storage0.putMyVar('importConfirm', importdatas);
+                }
+            } catch (e) {
+                toast("聚阅：无法识别的口令>"+e.message);
+            }
+        }
+    }catch(e){
+        toast("聚阅：口令有误>"+e.message);
+    }
+
+    if(lx=="jk"){
+        //获取现有接口
+        datalist = [];
+        let sourcedata = fetch(jkfile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist = " + sourcedata+ ";");
+            }catch(e){}
+        }
+        let newdatas = [];
+        let olddatas = [];
+        importdatas.forEach(it=>{
+            it.id = it.id.toString();
+            if(!datalist.some(v=>v.id==it.id)){
+                newdatas.push(it);
+            }else{
+                let olddata = datalist.filter(v=>v.id==it.id)[0];
+                it.oldversion = olddata.version || "";
+                olddatas.push(it);
+            }
+        })
+        const prop = 'oldversion';
+        importdatas.sort((a, b) => {
+            let hasA = prop in a;
+            let hasB = prop in b;
+
+            if (hasA && !hasB) return -1;
+            if (!hasA && hasB) return 1;
+            return 0;
+        });
+        
+        let oldnum = importdatas.length - newdatas.length;
+        
+        if(newdatas.length>0 && olddatas.length>0){
+            let listtype = ["全部列表", "新增加的", "已存在的"];
+            listtype.forEach((it, i)=>{
+                d.push({
+                    title: getMyVar("选择列表项","0")==i?`““””<b><span style="color: `+"#20" + Color.replace('#','')+`">`+it+`</span></b>`:it,
+                    url: $().lazyRule((i)=>{
+                        putMyVar("选择列表项", i);
+                        refreshPage();
+                        return "hiker://empty";
+                    }, i),
+                    col_type: 'text_3'
+                });
+            })
+        }
+        
+        if(getMyVar("选择列表项", "0") == "1"){
+            importdatas = newdatas;
+        }else if(getMyVar("选择列表项", "0") == "2"){
+            importdatas = olddatas;
+        }
+
+        importdatas.forEach(it=>{
+            let isnew = newdatas.some(v=>v.id==it.id);
+            let datamenu = ["确定导入", "修改名称"];
+            if(lx=="jk"){
+                datamenu.push("设定分组");
+                datamenu.push("接口测试");
+                if(!it.url.startsWith('http')){
+                    datamenu.push("查看文件");
+                }
+            }
+            let ittitle,itimg,itcol;
+            if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
+                ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.oldversion?"-本V"+it.oldversion:"");
+                itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+                itcol = "icon_1_left_pic";
+            }else{
+                ittitle = it.name + "<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + "{" + (isnew?"新增加":"已存在") + "}";
+                itimg = getIcon("管理-箭头.svg");
+                itcol = "text_icon";
+            }
+            d.push({
+                title: ittitle,
+                url: $(datamenu, 2).select((lx, data, isnew) => {
+                    data = JSON.parse(base64Decode(data));
+
+                    if (input == "确定导入") {
+                        function iConfirm(lx,data) {
+                            let dataid = data.id;
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            let datas = [];
+                            datas.push(data);
+                            let num;
+                            if(lx=="jk"){
+                                num = jiekousave(datas, 1);
+                            }else{
+                                return "toast://类型异常";
+                            }
+                            let importlist = storage0.getMyVar('importConfirm', []);
+                            if(importlist.length==1){
+                                back(false);
+                            }else{
+                                let index2 = importlist.findIndex(item => item.id === dataid);
+                                importlist.splice(index2, 1);
+                                storage0.putMyVar('importConfirm', importlist);
+                                deleteItem(dataid);
+                            }
+                            return "toast://导入"+(num<0?"失败":num);
+                        }
+                        if(isnew){
+                            return iConfirm(lx,data);
+                        }else{
+                            return $("导入将覆盖本地，确认？").confirm((lx,data,iConfirm)=>{
+                                return iConfirm(lx,data);
+                            },lx,data,iConfirm);
+                        }
+                    }else if (input == "修改名称") {
+                        return $(data.name, "请输入新名称").input((data)=>{
+                            if(!input.trim()){
+                                return "toast://不能为空";
+                            }
+                            let dataid = data.id;
+                            let importlist = storage0.getMyVar('importConfirm', []);
+                            let index = importlist.findIndex(item => item.id === dataid);
+                            importlist[index].name = input;
+                            storage0.putMyVar('importConfirm', importlist);
+                            refreshPage(false);
+                            return "toast://已修改名称";
+                        }, data);
+                    }else if (input == "设定分组") {
+                        let dataid = data.id;
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        let groupNames = getGroupNames();
+                        groupNames.unshift("清除");
+                        return $(groupNames, 2, "选择分组").select((dataid) => {
+                            let importlist = storage0.getMyVar('importConfirm', []);
+                            let index = importlist.findIndex(item => item.id === dataid);
+                            if(input=="清除"){
+                                delete importlist[index].group;
+                            }else{
+                                importlist[index].group = input;
+                            }
+                            storage0.putMyVar('importConfirm', importlist);
+                            refreshPage(false);
+                            return 'toast://已设置分组';
+                        },dataid)
+                    }else if (input == "接口测试") {
+                        return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                            setPageTitle(data.name+"-接口测试");
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                            yiji(data);
+                        },data)
+                    }else if (input == "查看文件") {
+                        writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
+                        return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
+                    }
+                }, lx, base64Encode(JSON.stringify(it)), isnew),
+                desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在") + "</font></b>" + (it.version?(it.version==it.oldversion?"":"<font color="+Color+"0>")+"-云V"+it.version:""),
+                img: itimg,
+                col_type: itcol,
+                extra: {
+                    id: it.id
+                }
+            });
+        })
+    }
+    setResult(d);
+}

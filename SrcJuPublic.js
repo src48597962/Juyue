@@ -1109,27 +1109,6 @@ function importConfirm() {
         }
         storage0.putMyVar('importConfirm', importdatas);
     }
-
-    let d = [];
-    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
-        for(let i=0;i<2;i++){
-            d.push({
-                title: "",
-                url: "hiker://empty",
-                col_type: "text_1",
-                extra: {
-                    lineVisible: false
-                }
-            })
-        }
-    }else{
-        d.push({
-            col_type: 'pic_1_full',
-            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
-            url: 'hiker://empty',
-        });
-    }
-
     //获取现有接口
     let datalist = [];
     let sourcedata = fetch(jkfile);
@@ -1159,9 +1138,28 @@ function importConfirm() {
         if (!hasA && hasB) return 1;
         return 0;
     });
-    
     let oldnum = importdatas.length - newdatas.length;
     let Color = getItem('主题颜色','#3399cc');
+
+    let d = [];
+    if(isDarkMode() || getItem('不显示沉浸图')=='1'){
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false
+                }
+            })
+        }
+    }else{
+        d.push({
+            col_type: 'pic_1_full',
+            img: "http://123.56.105.145/weisyr/img/TopImg0.png",
+            url: 'hiker://empty',
+        });
+    }
     d.push({
         title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
@@ -1181,7 +1179,6 @@ function importConfirm() {
         }, extractimport),
         col_type: 'text_center_1'
     });
-
     d.push({
         title: importdatas.length>0&&oldnum==0?"":"增量导入",
         url: importdatas.length>0&&oldnum==0?"hiker://empty":$("跳过已存在，只导入新增，确认？").confirm(()=>{
@@ -1230,12 +1227,12 @@ function importConfirm() {
                 col_type: 'text_3'
             });
         })
-    }
-    
-    if(getMyVar("选择列表项", "0") == "1"){
-        importdatas = newdatas;
-    }else if(getMyVar("选择列表项", "0") == "2"){
-        importdatas = olddatas;
+        
+        if(getMyVar("选择列表项", "0") == "1"){
+            importdatas = newdatas;
+        }else if(getMyVar("选择列表项", "0") == "2"){
+            importdatas = olddatas;
+        }
     }
 
     importdatas.forEach(it=>{

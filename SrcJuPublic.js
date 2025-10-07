@@ -1185,7 +1185,27 @@ function importConfirm() {
     d.push({
         title: "",
         url: "hiker://empty",
-        col_type: 'icon_small_3'
+        col_type: 'icon_small_3',
+        extra: {
+            longClick: [{
+                title: "输入云口令",
+                js: $.toString((extractimport) => {
+                    return $('', '支持多口令').input(()=>{
+                        if(!input){
+                            toast('未获取到云口令');
+                        }else{
+                            let importdatas = extractimport(input);
+                            if(importdatas.length==0){
+                                toast('未获取到源接口，检查网络或口令');
+                            }else{
+                                storage0.putMyVar('importConfirm', importdatas);
+                            }
+                        }
+                        return 'hiker://empty';
+                    })
+                }, extractimport)
+            }]
+        }
     });
     d.push({
         title: "全量导入",

@@ -239,7 +239,7 @@ function yiji(testSource) {
                 }else if(MY_INDEX==3){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('管理中心');
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuManage.js');
                         manageSet();
                     })
                 }

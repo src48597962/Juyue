@@ -79,6 +79,15 @@ function juItemF(id, s){
                 items[id] = item;
                 writeFile(this.file, JSON.stringify(items));
             }
+        },
+        'getAll': function (id2) {
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return '';
+            }
+            let items = this.items();
+            return items[id] || {};
         }
     }
     return juItemO;

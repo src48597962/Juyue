@@ -1199,6 +1199,7 @@ function importConfirm() {
                                 toast('未获取到源接口，检查网络或口令');
                             }else{
                                 storage0.putMyVar('importConfirm', importdatas);
+                                refreshPage();
                             }
                         }
                         return 'hiker://empty';

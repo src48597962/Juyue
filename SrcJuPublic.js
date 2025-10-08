@@ -1019,7 +1019,7 @@ function batchTestSource(){
                                 sccess = 1;
                             }
                         }catch(e){
-                            xlog(item.title + ">检测失败>" + e.message);
+                            xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
                         }
                         
                         resolve(sccess);

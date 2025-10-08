@@ -1024,7 +1024,7 @@ function batchTestSource(){
                             return $("确定删除："+data.name).confirm((data)=>{
                                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                                 deleteData(data);
-                                refreshPage(false);
+                                deleteItem('test-' + data.id);
                                 return 'toast://已删除:'+data.name;
                             }, data)
                         } else if (input == "测试") {

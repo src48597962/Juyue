@@ -972,6 +972,64 @@ function outputSearchList(jkdatalist, input){
     storage0.putMyVar("seacrhDataList", jkdatalist);
     return jkdatalist;
 }
+// 测试
+function testData(datatype, jkdata) {
+    let parse = getObjCode(jkdata, 'yi');
+    if (typeof MY_PAGE == "undefined") {
+        var MY_PAGE = 1;
+    }
+    let page = MY_PAGE;
+    let d = [];
+
+    try {
+        if(parse['host']){
+            MY_URL = parse['host'];
+        }
+        if(parse[datatype]){
+            let 执行str = parse[datatype].toString();
+            let obj = parse['静态分类'] || {};
+            if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
+                createClass(d, obj);
+            }
+
+            执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+            //全局变量劫持
+            const setResult2 = setResult;
+            const setPreResult2 = setPreResult;
+            try {
+                let sourcename = jkdata.name;
+                let getData = [];
+                eval(evalPublicStr);
+                let resultd,resultd2;
+                setResult = function(rd) { resultd = rd; };
+                setPreResult = function(prd) { resultd2 = prd; };
+
+                eval("let 数据 = " + 执行str);
+                getData = 数据.call(parse) || [];
+                if(resultd){
+                    getData = resultd;
+                }
+                if(resultd2){
+                    getData = resultd2.concat(getData);
+                }
+                if (getData.length > 0) {
+                    return {
+                        error: 0,
+                        vodlists: getData
+                    };//测试，返回成功
+                }
+            } catch (e) {
+                xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
+            }
+            //恢复全局变量
+            setResult = setResult2;
+            setPreResult = setPreResult2;
+        }
+    } catch (e) {
+        xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+    }
+    return {error: 1};//测试，返回失败
+}
 // 批量检测源方法
 function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule((ilks) => {
@@ -1011,8 +1069,9 @@ function batchTestSource(){
                     return new Promise((resolve) => {
                         let sccess;
                         try{
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             let jkdata = item.extra.data;
-                            let result = getYiData('testSource', jkdata);
+                            let result = testData('主页', jkdata);
                             if(result.error){
                                 sccess = 0;
                             }else{

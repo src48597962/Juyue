@@ -59,6 +59,12 @@ let sourcename = homeSource.name || "";
 let ilks = ["主页源","搜索源","完整源","模板源","依赖源"];
 let Juconfig2 = juItem2.getAll();
 //临时放着
+if(Juconfig['groupSort'] && !Juconfig2['groupSort']){
+    juItem2.set('groupSort', Juconfig['groupSort']);
+}
+if(Juconfig['lockgroups'] && !Juconfig2['lockgroups']){
+    juItem2.set('lockgroups', Juconfig['lockgroups']);
+}
 delete Juconfig['groupSort'];
 delete Juconfig['lockgroups'];
 

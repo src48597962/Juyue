@@ -1012,11 +1012,12 @@ function batchTestSource(){
         let checkSourceList = storage0.getMyVar("批量检测_待检列表2");
         if(!checkSourceList){
             let sourceList = storage0.getMyVar("批量检测_待检列表") || [];
-            sourceList.forEach(it => {
+            checkSourceList = []; 
+            sourceList.filter(v=>['1', '2', '3'].includes(v.ilk)).forEach(it => {
                 let selectmenu = ["删除", "测试"];
                 let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
-                it = {
+                checkSourceList.push({
                     title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + ' ['+ilks[parseInt(it.ilk||1)-1] + ']</font></small>',
                     url: $(selectmenu, 2).select((data) => {
                         data = JSON.parse(base64Decode(data));
@@ -1041,10 +1042,9 @@ function batchTestSource(){
                     extra: {
                         id: 'test-' + it.id
                     }
-                };
+                });
             })
-            checkSourceList = sourceList;
-            storage0.putMyVar("批量检测_待检列表2", sourceList);
+            storage0.putMyVar("批量检测_待检列表2", checkSourceList);
         }
         checkSourceList.forEach(it=>{
             d.push(it);

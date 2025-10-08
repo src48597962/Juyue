@@ -460,7 +460,7 @@ function bookCase() {
                 }
             });
             if(sjType=="聚阅收藏"){
-                addBookCase(results.filter(v=>v).reverse(), true);
+                addBookCase(results.reverse(), true);
             }
             xlog('收藏书架列表最新、足迹更新完成');
         }

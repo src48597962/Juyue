@@ -979,7 +979,7 @@ function testData(datatype, jkdata) {
         var MY_PAGE = 1;
     }
     let page = MY_PAGE;
-    let d = [];
+    let message = '';
 
     try {
         if(parse['host']){
@@ -989,7 +989,7 @@ function testData(datatype, jkdata) {
             let 执行str = parse[datatype].toString();
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
-                createClass(d, obj);
+                createClass([], obj);
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
@@ -1019,16 +1019,19 @@ function testData(datatype, jkdata) {
                     };//测试，返回成功
                 }
             } catch (e) {
-                xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
+                message = e.message;
             }
             //恢复全局变量
             setResult = setResult2;
             setPreResult = setPreResult2;
         }
     } catch (e) {
-        xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
+        message = e.message;
     }
-    return {error: 1};//测试，返回失败
+    return {
+        error: 1,
+        message: message
+    };//最后返回失败
 }
 // 批量检测源方法
 function batchTestSource(){
@@ -1099,9 +1102,13 @@ function batchTestSource(){
         // 异步更新最新
         checkSourceList.forEach(item=>{
             const promise = Async(item)
-                .then((error) => {
-                    if(error){
-                         addItemBefore('checkLoading', item);
+                .then((msg) => {
+                    if(msg){
+                        item.desc = msg;
+                        addItemAfter('checkLoading', item);
+                        updateItem('checkLoading', {
+                            desc: '已检：' + promises.length + ' 剩余：' + (checkSourceList.length-promises.length)
+                        });
                     }
                     // 返回当前结果，供Promise.all()收集
                     return {};
@@ -1116,19 +1123,19 @@ function batchTestSource(){
         // 异步检测
         function Async(item) {
             return new Promise((resolve) => {
-                let error;
+                let msg;
                 try{
                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     let jkdata = item.data;
                     let result = testData('主页', jkdata);
                     if(result.error){
-                        error = 1;
+                        msg = message;
                     }
                 }catch(e){
                     xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
                 }
                 
-                resolve(error);
+                resolve(msg);
             });
         }
     }, ilks)

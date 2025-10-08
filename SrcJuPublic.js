@@ -988,7 +988,43 @@ function batchTestSource(){
             title: '开始检测',
             col_type: 'text_3',
             url: $().lazyRule(()=>{
-                
+                let checkSourceList = storage0.getMyVar("批量检测_待检列表2");
+                // 收集所有异步操作的Promise
+                let promises = [];
+                // 异步更新最新
+                checkSourceList.forEach(item=>{
+                    const promise = Async(item)
+                        .then((sccess) => {
+                            updateItem('test-' + item.id, {desc: sccess?"成功":"失败"})
+                            // 返回当前结果，供Promise.all()收集
+                            return {};
+                        })
+                    promises.push(promise);
+                })  
+                // 等待所有异步操作完成后再处理结果
+                Promise.all(promises)
+                    .then((results) => {
+                        
+                    })
+                // 异步检测
+                function Async(item) {
+                    return new Promise((resolve) => {
+                        let sccess;
+                        try{
+                            let jkdata = item.extra.data;
+                            let result = getYiData('testSource', jkdata);
+                            if(result.error){
+                                sccess = 0;
+                            }else{
+                                sccess = 1;
+                            }
+                        }catch(e){
+                            xlog(item.title + ">检测失败>" + e.message);
+                        }
+                        
+                        resolve(sccess);
+                    });
+                }
                 return "hiker://empty";
             })
         });
@@ -1040,7 +1076,8 @@ function batchTestSource(){
                     img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
                     col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
                     extra: {
-                        id: 'test-' + it.id
+                        id: 'test-' + it.id,
+                        data: it
                     }
                 });
             })

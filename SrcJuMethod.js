@@ -960,11 +960,7 @@ function addBookCase(obj, update) {
             it.id = it.id || getCaseID(it);
             let index = caselist.findIndex(v => (v.id||getCaseID(v))==it.id);
             if(index>-1){
-                if(it.params.params){
-                    it = Object.assign({}, caselist[index], it);
-                }else{
-                    it = Object.assign({}, caselist[index]);
-                }
+                it = Object.assign({}, caselist[index], it);
                 caselist.splice(index, 1);
             }else if(update){
                 return;//更新时，本地没有的跳过

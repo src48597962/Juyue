@@ -1101,7 +1101,7 @@ function batchTestSource(){
         let promises = [];
         // 异步更新最新
         checkSourceList.forEach(item=>{
-            const promise = Async(item)
+            Async(item)
                 .then((msg) => {
                     if(msg){
                         item.desc = msg;
@@ -1110,16 +1110,10 @@ function batchTestSource(){
                             desc: '已检：' + promises.length + ' 剩余：' + (checkSourceList.length-promises.length)
                         });
                     }
-                    // 返回当前结果，供Promise.all()收集
-                    return {};
+                    promises.push(item.data);
                 })
-            promises.push(promise);
         })  
-        // 等待所有异步操作完成后再处理结果
-        Promise.all(promises)
-            .then((results) => {
-                
-            })
+
         // 异步检测
         function Async(item) {
             return new Promise((resolve) => {

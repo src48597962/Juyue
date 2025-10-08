@@ -1099,8 +1099,8 @@ function batchTestSource(){
         // 异步更新最新
         checkSourceList.forEach(item=>{
             const promise = Async(item)
-                .then((sccess) => {
-                    if(!sccess){
+                .then((error) => {
+                    if(error){
                          addItemBefore('checkLoading', item);
                     }
                     // 返回当前结果，供Promise.all()收集
@@ -1116,20 +1116,18 @@ function batchTestSource(){
         // 异步检测
         function Async(item) {
             return new Promise((resolve) => {
-                let sccess;
+                let error;
                 try{
                     let jkdata = item.data;
                     let result = testData('主页', jkdata);
                     if(result.error){
-                        sccess = 0;
-                    }else{
-                        sccess = 1;
+                        error = 1;
                     }
                 }catch(e){
                     xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
                 }
                 
-                resolve(sccess);
+                resolve(error);
             });
         }
     }, ilks)

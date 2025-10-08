@@ -1018,7 +1018,7 @@ function batchTestSource(){
                 let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
                 checkSourceList.push({
-                    title: it.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '\n' + (it.group||it.type) + ' ['+ilks[parseInt(it.ilk||1)-1] + ']</font></small>',
+                    title: it.name + '  ‘‘’’<small><font color=grey>'+(it.author?'  ['+it.author+']':'') + '\n' + (it.group||it.type) + ' ['+ilks[parseInt(it.ilk||1)-1] + ']</font></small>',
                     url: $(selectmenu, 2).select((data) => {
                         data = JSON.parse(base64Decode(data));
                         if (input == "删除") {

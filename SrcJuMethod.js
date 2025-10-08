@@ -122,7 +122,7 @@ function createClass(d, obj) {
         fyarea = isAll ? fyAll : getMyVar("fyarea_id", area_url.length > 0 ? area_url[0] : "");
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
         fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
-        if (MY_PAGE == 1) {
+        if ((typeof MY_PAGE == "undefined"? 1: MY_PAGE) == 1) {
             let Color = obj.textColor || '#2E9465';
             let backColor = obj.backgroundColor || "#20" + Color.replace('#','');
             if(class_name.length>0){
@@ -266,7 +266,7 @@ function createClass(d, obj) {
             return resultUrl;
         }
 
-        MY_URL = generatePageUrl(MY_URL, MY_PAGE);
+        MY_URL = generatePageUrl(MY_URL, typeof MY_PAGE == "undefined"? 1: MY_PAGE);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)

@@ -61,9 +61,11 @@ let Juconfig2 = juItem2.getAll();
 //临时放着
 if(Juconfig['groupSort'] && !Juconfig2['groupSort']){
     juItem2.set('groupSort', Juconfig['groupSort']);
+    Juconfig2['groupSort'] = Juconfig['groupSort'];
 }
 if(Juconfig['lockgroups'] && !Juconfig2['lockgroups']){
     juItem2.set('lockgroups', Juconfig['lockgroups']);
+    Juconfig2['lockgroups'] = Juconfig['lockgroups'];
 }
 delete Juconfig['groupSort'];
 delete Juconfig['lockgroups'];

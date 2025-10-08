@@ -122,7 +122,7 @@ function createClass(d, obj) {
         fyarea = isAll ? fyAll : getMyVar("fyarea_id", area_url.length > 0 ? area_url[0] : "");
         fyyear = isAll ? fyAll : getMyVar("fyyear_id", year_url.length > 0 ? year_url[0] : "");
         fysort = isAll ? fyAll : getMyVar("fysort_id", sort_url.length > 0 ? sort_url[0] : "");
-        if ((typeof MY_PAGE == "undefined"? 1: MY_PAGE) == 1) {
+        if (MY_PAGE == 1) {
             let Color = obj.textColor || '#2E9465';
             let backColor = obj.backgroundColor || "#20" + Color.replace('#','');
             if(class_name.length>0){
@@ -266,7 +266,7 @@ function createClass(d, obj) {
             return resultUrl;
         }
 
-        MY_URL = generatePageUrl(MY_URL, typeof MY_PAGE == "undefined"? 1: MY_PAGE);
+        MY_URL = generatePageUrl(MY_URL, MY_PAGE);
     }
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)
@@ -294,8 +294,10 @@ function getYiData(datatype, jkdata, dd) {
         }
         storage0.putMyVar('一级源接口信息', jkdata);
     }
-    
-    let page = typeof MY_PAGE == "undefined"? 1: MY_PAGE;
+    if (istest && typeof MY_PAGE == "undefined") {
+        var MY_PAGE = 1;
+    }
+    let page = MY_PAGE;
     let sourcemenu = [];
     let d = dd || [];
     // 动态刷新组件待处理列表

@@ -1118,6 +1118,7 @@ function batchTestSource(){
             return new Promise((resolve) => {
                 let error;
                 try{
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                     let jkdata = item.data;
                     let result = testData('主页', jkdata);
                     if(result.error){

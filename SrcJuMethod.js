@@ -946,7 +946,7 @@ function addBookCase(obj, update) {
     }
     let waitlist= [];
     if($.type(obj)=='object'){
-        if(!obj.params.url){
+        if(!update && !obj.params && !obj.params.url){
             return 'toast://数据错误';
         }
         waitlist.push(obj);

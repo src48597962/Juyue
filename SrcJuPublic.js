@@ -995,7 +995,7 @@ function batchTestSource(){
                 checkSourceList.forEach(item=>{
                     const promise = Async(item)
                         .then((sccess) => {
-                            updateItem('test-' + item.id, {desc: sccess?"成功":"失败"})
+                            updateItem('test-' + item.extra.data.id, {desc: sccess?"成功":"失败"})
                             // 返回当前结果，供Promise.all()收集
                             return {};
                         })

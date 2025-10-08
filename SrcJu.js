@@ -1510,7 +1510,7 @@ function erji() {
             title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + (parse['模板名']?"，模板："+parse['模板名']:"") + "</font></small></small>",
             url: stype=="小说"?'hiker://empty':$('#noLoading#').lazyRule(()=>{
                 const hikerPop = $.require("http://123.56.105.145/weisyr/js/hikerPop.js");
-                hikerPop.scrollSmooth("detailid", true, 30);
+                hikerPop.scrollSmooth("detailid", true, 20);
                 return 'toast://温馨提示：且用且珍惜！';
             }),
             col_type: getMyVar('线路显示翻页内容')?'blank_block':'text_center_1',

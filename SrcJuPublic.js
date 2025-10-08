@@ -1129,7 +1129,7 @@ function batchTestSource(){
                     let jkdata = item.data;
                     let result = testData('主页', jkdata);
                     if(result.error){
-                        msg = message;
+                        msg = result.message;
                     }
                 }catch(e){
                     xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);

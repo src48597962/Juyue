@@ -271,9 +271,6 @@ function createClass(d, obj) {
 }
 // 获到一级数据(数据类型，接口数据，页面头元素)
 function getYiData(datatype, jkdata, dd) {
-    let istest = datatype=='testSource'?1:0;
-    datatype = istest?'主页':datatype;
-
     addListener('onRefresh', $.toString((datatype) => {
         clearMyVar(datatype+'动态加载loading');
     },datatype));
@@ -294,7 +291,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         storage0.putMyVar('一级源接口信息', jkdata);
     }
-    if (istest && typeof MY_PAGE == "undefined") {
+    if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = 1;
     }
     let page = MY_PAGE;
@@ -455,12 +452,6 @@ function getYiData(datatype, jkdata, dd) {
                     getData.forEach(item => {
                         item = toerji(item, jkdata);
                     })
-                    if(istest){
-                        return {
-                            error: 0,
-                            vodlists: getData
-                        };//测试，返回成功
-                    }
                 }
                 d = d.concat(getData);
             } catch (e) {
@@ -492,9 +483,6 @@ function getYiData(datatype, jkdata, dd) {
     } catch (e) {
         toast(datatype + "执行获取代码报错，请查看日志");
         xlog("报错信息>" + e.message + " 错误行#" + e.lineNumber);
-    }
-    if(istest){
-        return {error: 1};//测试，返回失败
     }
     setResult(d);
     if(datatype=="主页"){

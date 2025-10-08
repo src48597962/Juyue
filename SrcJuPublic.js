@@ -1041,74 +1041,10 @@ function batchTestSource(){
             refreshPage(true);
         }));
         
-        let d = [];
-        d.push({
-            title: '开始检测',
-            col_type: 'text_3',
-            url: $().lazyRule(()=>{
-                let checkSourceList = storage0.getMyVar("批量检测_待检列表2");
-                // 收集所有异步操作的Promise
-                let promises = [];
-                // 异步更新最新
-                checkSourceList.forEach(item=>{
-                    const promise = Async(item)
-                        .then((sccess) => {
-                            updateItem('test-' + item.extra.data.id, {desc: sccess?"成功":"失败"})
-                            // 返回当前结果，供Promise.all()收集
-                            return {};
-                        })
-                    promises.push(promise);
-                })  
-                // 等待所有异步操作完成后再处理结果
-                Promise.all(promises)
-                    .then((results) => {
-                        
-                    })
-                // 异步检测
-                function Async(item) {
-                    return new Promise((resolve) => {
-                        let sccess;
-                        try{
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            let jkdata = item.extra.data;
-                            let result = testData('主页', jkdata);
-                            if(result.error){
-                                sccess = 0;
-                            }else{
-                                sccess = 1;
-                            }
-                        }catch(e){
-                            xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
-                        }
-                        
-                        resolve(sccess);
-                    });
-                }
-                return "hiker://empty";
-            })
-        });
-        d.push({
-            title: '开始检测',
-            col_type: 'text_3',
-            url: $().lazyRule(()=>{
-                
-                return "hiker://empty";
-            })
-        });
-        d.push({
-            title: '开始检测',
-            col_type: 'text_3',
-            url: $().lazyRule(()=>{
-                
-                return "hiker://empty";
-            })
-        });
-
-        let checkSourceList = storage0.getMyVar("批量检测_待检列表2");
-        if(!checkSourceList){
+        let checkSourceList = storage0.getMyVar("批量检测_待检列表2") || [];
+        if(!getMyVar("批量检测_待检列表2")){
             let sourceList = storage0.getMyVar("批量检测_待检列表") || [];
-            checkSourceList = []; 
-            sourceList.filter(v=>['1', '2', '3'].includes(v.ilk)).forEach(it => {
+            sourceList.filter(v=>['1', '3'].includes(v.ilk)).forEach(it => {
                 let selectmenu = ["删除", "测试"];
                 let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
@@ -1135,18 +1071,67 @@ function batchTestSource(){
                     img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
                     col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
                     extra: {
-                        id: 'test-' + it.id,
-                        data: it
-                    }
+                        id: 'test-' + it.id
+                    },
+                    data: it,
+                    id: it.id
                 });
             })
             storage0.putMyVar("批量检测_待检列表2", checkSourceList);
         }
-        checkSourceList.forEach(it=>{
-            d.push(it);
-        })
+        let d = [];
+        d.push({
+            title: '源主页检测中',
+            desc: '待检测源：' + checkSourceList.length,
+            col_type: 'text_center_1',
+            url: $().lazyRule(()=>{
+                return "hiker://empty";
+            }),
+            extra: {
+                id: 'checkLoading'
+            }
+        });
 
         setResult(d);
+
+        // 收集所有异步操作的Promise
+        let promises = [];
+        // 异步更新最新
+        checkSourceList.forEach(item=>{
+            const promise = Async(item)
+                .then((sccess) => {
+                    if(!sccess){
+                         addItemBefore('checkLoading', item);
+                    }
+                    // 返回当前结果，供Promise.all()收集
+                    return {};
+                })
+            promises.push(promise);
+        })  
+        // 等待所有异步操作完成后再处理结果
+        Promise.all(promises)
+            .then((results) => {
+                
+            })
+        // 异步检测
+        function Async(item) {
+            return new Promise((resolve) => {
+                let sccess;
+                try{
+                    let jkdata = item.data;
+                    let result = testData('主页', jkdata);
+                    if(result.error){
+                        sccess = 0;
+                    }else{
+                        sccess = 1;
+                    }
+                }catch(e){
+                    xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
+                }
+                
+                resolve(sccess);
+            });
+        }
     }, ilks)
 }
 // 只显示名称相近的接口

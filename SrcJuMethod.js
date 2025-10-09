@@ -1011,6 +1011,8 @@ function setJkSort(data, so) {
     let waitlist= [];
     if($.type(data)=='string'){
         waitlist.push(data);
+    }else if($.type(data)=='object'){
+        waitlist = [data];
     }else if($.type(data)=='array'){
         waitlist = data;
     }

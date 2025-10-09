@@ -523,8 +523,12 @@ function erji() {
     }));
 
     clearMyVar('二级加载扩展列表');
-
     let erCacheFile = cachepath + "erdataCache.json";//二级加载完后的临时数据文件
+
+    addListener('onRefresh', $.toString((erCacheFile) => {
+        deleteFile(erCacheFile);
+    }, erCacheFile));
+
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
     let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据

@@ -773,9 +773,9 @@ function getObjCode(jkdata, key) {
 function toerji(item, jkdata) {
     try{
         if(item.url && item.url!='hiker://empty'){
-            jkdata = jkdata || storage0.getMyVar('一级源接口信息');
+            jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息');
             if(!jkdata.url){
-                jkdata = storage0.getMyVar('一级源接口信息');
+                jkdata = storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息');
             }
             let extra = item.extra || {};
             let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];

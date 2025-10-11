@@ -291,10 +291,8 @@ function getYiData(datatype, jkdata, dd) {
         }
         storage0.putMyVar('一级源接口信息', jkdata);
     }
-    xlog($.type(MY_PAGE));
-    
+
     let page = MY_PAGE || 1;
-    xlog(page);
     let sourcemenu = [];
     let d = dd || [];
     // 动态刷新组件待处理列表
@@ -596,9 +594,11 @@ function getSsData(name, jkdata, page) {
     page = page || 1;
     let error = "";
     let getData = [];
+    /*
     if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = page;
     }
+    */
     let parse = getObjCode(jkdata, 'ss');
 
     //全局变量劫持

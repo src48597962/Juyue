@@ -1,6 +1,6 @@
 var newVersion = {
     "SrcJu": "1.7",
-    "hint": "",
+    "hint": "改动较大，建议升级",
     "JYUpdateRecords": [{
         title: "2025/10/11 V1.7",
         records: [

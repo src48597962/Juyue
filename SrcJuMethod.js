@@ -291,8 +291,10 @@ function getYiData(datatype, jkdata, dd) {
         }
         storage0.putMyVar('一级源接口信息', jkdata);
     }
-
-    let page = MY_PAGE;
+    xlog($.type(MY_PAGE));
+    
+    let page = MY_PAGE || 1;
+    xlog(page);
     let sourcemenu = [];
     let d = dd || [];
     // 动态刷新组件待处理列表

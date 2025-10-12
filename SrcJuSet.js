@@ -438,9 +438,9 @@ function SRCSet() {
             title: "批量检测",
             url: !config.聚阅.includes('000')?"toast://暂未上线":$('#noLoading#').lazyRule(() => {
                 let duoselect = storage0.getMyVar('duodatalist') || [];
-                duoselect = duoselect.filter(v=>!v.stop);
+                duoselect = duoselect.filter(v=>!v.stop && ['1', '3'].includes(v.ilk));
                 if(duoselect.length==0){
-                    return "toast://未选择";
+                    return "toast://未选择有效的待检源";
                 }
                 storage0.putMyVar('批量检测_待检列表', duoselect);//写入待检测源
                 

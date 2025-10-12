@@ -502,7 +502,8 @@ function getYiData(datatype, jkdata, dd) {
         }else if(sourcemenu.length==1){
             updateItem("sourcemenu", {
                 title: sourcemenu[0].title,
-                url: sourcemenu[0].url
+                url: sourcemenu[0].url,
+                extra: sourcemenu[0].extra
             })
         }else if(parse["频道"].显示为){
             updateItem("sourcemenu", {

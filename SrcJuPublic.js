@@ -981,7 +981,7 @@ function outputSearchList(jkdatalist, input){
     return jkdatalist;
 }
 // 测试
-function testData(datatype, jkdata) {
+function getTestData(datatype, jkdata) {
     let parse = getObjCode(jkdata, 'yi');
     if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = 1;
@@ -1041,6 +1041,87 @@ function testData(datatype, jkdata) {
         message: message
     };//最后返回失败
 }
+function testSourceS(){
+    function dataItem(it){
+        let selectmenu = ["删除", "测试"];
+        let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+
+        return {
+            title: it.name + '  ‘‘’’<small><font color=grey>'+(it.author?'  ['+it.author+']':'') + '\n' + (it.group||it.type) + '</font></small>',
+            url: $(selectmenu, 2).select((data) => {
+                data = JSON.parse(base64Decode(data));
+                if (input == "删除") {
+                    return $("确定删除："+data.name).confirm((data)=>{
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                        deleteData(data);
+                        deleteItem('test-' + data.id);
+                        return 'toast://已删除:'+data.name;
+                    }, data)
+                } else if (input == "测试") {
+                    return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                        setPageTitle(data.name+"-接口测试");
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                        yiji(data);
+                    }, data);
+                }
+            }, base64Encode(JSON.stringify(it))),
+            desc: '',
+            img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
+            col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
+            extra: {
+                id: 'test-' + it.id
+            }
+        };
+    }
+    let task = function (jkdata) {
+        return (function() {
+            let msg;
+            try{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let result = getTestData('主页', jkdata);
+                if(result.error){
+                    msg = result.message;
+                }
+            }catch(e){
+                xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
+            }
+            return {item:jkdata, msg:msg};
+        })();
+    }
+    let checkSourceList = storage0.getMyVar("批量检测_待检列表");
+    let list = checkSourceList.map((item) => {
+        return {
+            func: task,
+            param: item,
+            id: item.id
+        }
+    });
+
+    if (list.length > 0) {
+        let checks = 0;
+        let errors = 0;
+        be(list, {
+            func: function (obj, id, error, taskResult) {
+                checks++;
+                if(taskResult.msg){
+                    errors++;
+                    let item = dataItem(taskResult.item);
+                    item.desc = taskResult.msg;
+                    addItemAfter('checkLoading', item);
+                    updateItem('checkLoading', {
+                        desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks)
+                    });
+                }
+            },
+            param: {
+            }
+        });
+        updateItem('checkLoading', {
+            title: '检测完成'+errors+'个疑似失效'
+        });
+        xlog('待检'+checkSourceList.length+'个源已完成，有'+errors+'个疑似失效');
+    }
+}
 // 批量检测源方法
 function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
@@ -1057,9 +1138,7 @@ function batchTestSource(){
             title: '源主页检测中',
             desc: '待检测源：' + checkSourceList.length,
             col_type: 'text_center_1',
-            url: $().lazyRule(()=>{
-                return "hiker://empty";
-            }),
+            url: 'hiker://empty',
             extra: {
                 id: 'checkLoading'
             }
@@ -1067,81 +1146,7 @@ function batchTestSource(){
 
         setResult(d);
 
-        function dataItem(it){
-            let selectmenu = ["删除", "测试"];
-            let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
-
-            return {
-                title: it.name + '  ‘‘’’<small><font color=grey>'+(it.author?'  ['+it.author+']':'') + '\n' + (it.group||it.type) + '</font></small>',
-                url: $(selectmenu, 2).select((data) => {
-                    data = JSON.parse(base64Decode(data));
-                    if (input == "删除") {
-                        return $("确定删除："+data.name).confirm((data)=>{
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            deleteData(data);
-                            deleteItem('test-' + data.id);
-                            return 'toast://已删除:'+data.name;
-                        }, data)
-                    } else if (input == "测试") {
-                        return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
-                            setPageTitle(data.name+"-接口测试");
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
-                            yiji(data);
-                        }, data);
-                    }
-                }, base64Encode(JSON.stringify(it))),
-                desc: '',
-                img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
-                col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
-                extra: {
-                    id: 'test-' + it.id
-                }
-            };
-        }
-        let task = function (jkdata) {
-            return (function() {
-                let msg;
-                try{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let result = testData('主页', jkdata);
-                    if(result.error){
-                        msg = result.message;
-                    }
-                }catch(e){
-                    xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
-                }
-                return {item:jkdata, msg:msg};
-            })();
-        }
-        let list = checkSourceList.map((item) => {
-            return {
-                func: task,
-                param: item,
-                id: item.id
-            }
-        });
-
-        if (list.length > 0) {
-            let success = 0;
-            let error = 0;
-            be(list, {
-                func: function (obj, id, error, taskResult) {
-                    success++;
-                    if(taskResult.msg){
-                        error++;
-                        let item = dataItem(taskResult.item);
-                        item.desc = taskResult.msg;
-                        addItemAfter('checkLoading', item);
-                        updateItem('checkLoading', {
-                            desc: '已检：' + success + ' 剩余：' + (checkSourceList.length-success)
-                        });
-                    }
-                },
-                param: {
-                }
-            });
-            xlog('待检'+checkSourceList.length+'个源已完成，有'+error+'个疑似失效');
-        }
+        
     })
 }
 // 只显示名称相近的接口

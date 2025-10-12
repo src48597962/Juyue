@@ -1077,7 +1077,6 @@ function testSourceS(){
         return (function() {
             let msg;
             try{
-                let MY_PAGE =1;
                 let result = getTestData('主页', jkdata);
                 if(result.error){
                     msg = result.message;

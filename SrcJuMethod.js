@@ -595,11 +595,11 @@ function getSsData(name, jkdata, page) {
     page = page || 1;
     let error = "";
     let getData = [];
-    /*
+
     if (typeof MY_PAGE == "undefined") {
         var MY_PAGE = page;
     }
-    */
+
     let parse = getObjCode(jkdata, 'ss');
 
     //全局变量劫持

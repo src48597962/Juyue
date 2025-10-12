@@ -1,7 +1,13 @@
 var newVersion = {
     "SrcJu": "1.7",
-    "hint": "改动较大，建议升级",
+    "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V1.8",
+        records: [
+            "修复：只有一个频道时未携带jkdata问题",
+            "修复：主界面搜索中不能使用MY_PAGE问题"
+        ]
+    },{
         title: "2025/10/11 V1.7",
         records: [
             "修复：toerji方法中生成extra未补偿错误",

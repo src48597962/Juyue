@@ -1077,7 +1077,6 @@ function testSourceS(){
         return (function() {
             let msg;
             try{
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                 let result = getTestData('主页', jkdata);
                 if(result.error){
                     msg = result.message;
@@ -1098,6 +1097,7 @@ function testSourceS(){
     });
 
     if (list.length > 0) {
+        showLoading('批量检测中.');
         let checks = 0;
         let errors = 0;
         be(list, {
@@ -1119,6 +1119,7 @@ function testSourceS(){
         updateItem('checkLoading', {
             title: '检测完成'+errors+'个疑似失效'
         });
+        hideLoading();
         xlog('待检'+checkSourceList.length+'个源已完成，有'+errors+'个疑似失效');
     }
 }
@@ -1138,15 +1139,16 @@ function batchTestSource(){
             title: '源主页检测中',
             desc: '待检测源：' + checkSourceList.length,
             col_type: 'text_center_1',
-            url: 'hiker://empty',
+            url: $('#noLoading#').lazyRule(()=>{
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                testSourceS();
+            }),
             extra: {
                 id: 'checkLoading'
             }
         });
 
         setResult(d);
-
-        testSourceS();
     })
 }
 // 只显示名称相近的接口

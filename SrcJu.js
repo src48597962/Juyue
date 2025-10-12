@@ -1697,6 +1697,7 @@ function sousuo() {
 }
 //搜索逻辑代码
 function search(name, sstype, jkdata, blurMatch) {
+    if(sstype=="erji" || sstype=="yiji") MY_PAGE = 1;
     log($.type(MY_PAGE));
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];

@@ -286,12 +286,7 @@ function yiji(testSource) {
             }else if((juItem2.get('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
                 showLoading('搜索中');
-                xlog('aa');
-                var MY_PAGE = 1;
-                xlog(MY_PAGE);
-                xlog('bb');
                 let d = search(input, 'yiji' , jkdata);
-                xlog('cc');
                 hideLoading();
                 if(d.length>0){
                     d.push({
@@ -1702,6 +1697,13 @@ function sousuo() {
 }
 //搜索逻辑代码
 function search(name, sstype, jkdata, blurMatch) {
+    if(sstype=="yiji"){
+        xlog('aa');
+        var MY_PAGE = 1;
+        xlog(MY_PAGE);
+        xlog('bb');
+    }
+    
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
 

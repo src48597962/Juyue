@@ -1105,6 +1105,65 @@ function batchTestSource(){
 
         setResult(d);
 
+        let task = function (item) {
+            return (function() {
+                //收藏更新最新章节
+                let zx;
+                let extra = item.params.params;
+                let jkdata = extra['data'] || {};
+                try{
+                    let parse = getObjCode(jkdata, 'zx');
+                    if (parse['最新']) {
+                        MY_URL = extra.url;
+                        MY_PARAMS = extra;
+
+                        let 最新str = parse['最新'].toString().replace('setResult','return ').replace('getResCode()','request(MY_URL)');
+                        eval("let 最新2 = " + 最新str);
+                        eval(evalPublicStr);
+                        zx = 最新2.call(parse, MY_URL) || "";
+                    }else if(parse['二级']){
+                        zx = "源没写最新"
+                    }
+                }catch(e){
+                    xlog(jkdata.name + '|' + item.title + ">最新获取失败>" + e.message);
+                }
+                return {item:item, zx:zx};
+            })();
+        }
+        let list = checkSourceList.map((item) => {
+            return {
+                func: task,
+                param: item,
+                id: item.id
+            }
+        });
+
+        if (list.length > 0) {
+            let results = [];
+            be(list, {
+                func: function (obj, id, error, taskResult) {
+                    let zx = taskResult.zx;
+                    let item = taskResult.item;
+                    if(zx && zx!=item.lastChapter){
+                        item.lastChapter = zx;
+                        let newitem = convertItem(item, listcol, sjType);
+                        if(newitem){
+                            updateItem(item.id, {
+                                title: newitem.title,
+                                desc: newitem.desc
+                            });
+                        }
+                        results.push({id: item.id, lastChapter: zx, lastClick: item.lastClick});
+                    }
+                },
+                param: {
+                }
+            });
+            if(sjType=="聚阅收藏"){
+                addBookCase(results.reverse(), true);
+            }
+            xlog('收藏书架列表最新、足迹更新完成');
+        }
         // 收集所有异步操作的Promise
         let promises = [];
         // 异步更新最新

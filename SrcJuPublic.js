@@ -1146,7 +1146,7 @@ function batchTestSource(){
 
         setResult(d);
 
-        
+        testSourceS();
     })
 }
 // 只显示名称相近的接口

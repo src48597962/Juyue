@@ -610,7 +610,7 @@ function getSsData(name, jkdata, page) {
             let resultd;
             setResult = function(rd) { resultd = rd; };
             eval("let 数据 = " + parse['搜索'].toString());
-            getData = 数据.call(parse, name, page) || [];
+            getData = 数据.call(parse, name) || [];
             if(resultd){
                 getData = resultd;
             }

@@ -1163,10 +1163,13 @@ function batchTestSource(){
             updateItem('checkLoading', {
                 title: '点击复检，'+errors.length+'个疑似失效',
                 desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
-                url: $("#noLoading#").lazyRule(()=>{
+                url: $("#noLoading#").lazyRule((error)=>{
+                    if(error==0){
+                        return 'toast://没有失效源';
+                    }
                     refreshPage(true);
                     return 'hiker://empty';
-                })
+                },errors.length)
             });
             hideLoading();
             storage0.putMyVar("批量检测_待检列表", errors);

@@ -436,7 +436,7 @@ function SRCSet() {
 
         d.push({
             title: "批量检测",
-            url: !config.聚阅.includes('000')?"toast://暂未上线":$('#noLoading#').lazyRule(() => {
+            url: $('#noLoading#').lazyRule(() => {
                 let duoselect = storage0.getMyVar('duodatalist') || [];
                 duoselect = duoselect.filter(v=>!v.stop && ['1', '3'].includes(v.ilk));
                 if(duoselect.length==0){

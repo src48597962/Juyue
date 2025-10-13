@@ -1005,7 +1005,8 @@ function batchTestSource(){
         setResult(d);
 
         // 测试
-        function getTestData(testType, jkdata) {
+        function getTestData(jkdata) {
+            let testType = 'yi';
             let parse = getObjCode(jkdata, testType);
             let message = '';
 
@@ -1104,7 +1105,7 @@ function batchTestSource(){
             return (function() {
                 let msg;
                 try{
-                    let result = getTestData('主页', jkdata);
+                    let result = getTestData(jkdata);
                     if(result.error){
                         msg = result.message;
                     }

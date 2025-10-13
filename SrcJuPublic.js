@@ -1139,7 +1139,7 @@ function batchTestSource(){
         });
 
         if (list.length > 0) {
-            showLoading('批量检测中.');
+            showLoading('检测中，不要息屏，不要退出');
             let checks = 0;
             let errors = [];
             be(list, {

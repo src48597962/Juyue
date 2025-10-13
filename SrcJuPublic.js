@@ -1046,7 +1046,7 @@ function batchTestSource(){
                             if(resultd2){
                                 getData = resultd2.concat(getData);
                             }
-                            if (getData.length > 0) {
+                            if (getData.length > 1) {
                                 return {
                                     error: 0,
                                     vodlists: getData

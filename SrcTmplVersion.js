@@ -5,7 +5,8 @@ var newVersion = {
         title: "beta V1.8",
         records: [
             "修复：只有一个频道时未携带jkdata问题",
-            "修复：主界面搜索中不能使用MY_PAGE问题"
+            "修复：主界面搜索中不能使用MY_PAGE问题",
+            "新增：接口列表增加批量检测，勿频繁检测"
         ]
     },{
         title: "2025/10/11 V1.7",

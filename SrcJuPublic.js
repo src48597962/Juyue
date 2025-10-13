@@ -986,7 +986,6 @@ function batchTestSource(){
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
         addListener("onClose", $.toString(() => {
             clearMyVar("批量检测_待检列表");
-            clearMyVar('批量选择模式');
             clearMyVar('duodatalist');
             refreshPage(true);
         }));
@@ -994,7 +993,7 @@ function batchTestSource(){
         let checkSourceList = storage0.getMyVar("批量检测_待检列表");
         let d = [];
         d.push({
-            title: '源主页检测中',
+            title: '批量检测中',
             desc: '待检测源：' + checkSourceList.length,
             col_type: 'text_center_1',
             url: 'hiker://empty',
@@ -1006,60 +1005,63 @@ function batchTestSource(){
         setResult(d);
 
         // 测试
-        function getTestData(datatype, jkdata) {
-            let parse = getObjCode(jkdata, 'yi');
-            if (typeof MY_PAGE == "undefined") {
-                var MY_PAGE = 1;
-            }
-            let page = MY_PAGE;
+        function getTestData(testType, jkdata) {
+            let parse = getObjCode(jkdata, testType);
             let message = '';
 
-            try {
-                if(parse['host']){
-                    MY_URL = parse['host'];
+            if(testType=="yi"){
+                    if (typeof MY_PAGE == "undefined") {
+                    var MY_PAGE = 1;
                 }
-                if(parse[datatype]){
-                    let 执行str = parse[datatype].toString();
-                    let obj = parse['静态分类'] || {};
-                    if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
-                        createClass([], obj);
+                let page = MY_PAGE;
+                let datatype = '主页';
+                try {
+                    if(parse['host']){
+                        MY_URL = parse['host'];
                     }
+                    if(parse[datatype]){
+                        let 执行str = parse[datatype].toString();
+                        let obj = parse['静态分类'] || {};
+                        if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
+                            createClass([], obj);
+                        }
 
-                    执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
-                    //全局变量劫持
-                    const setResult2 = setResult;
-                    const setPreResult2 = setPreResult;
-                    try {
-                        let sourcename = jkdata.name;
-                        let getData = [];
-                        eval(evalPublicStr);
-                        let resultd,resultd2;
-                        setResult = function(rd) { resultd = rd; };
-                        setPreResult = function(prd) { resultd2 = prd; };
+                        执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+                        //全局变量劫持
+                        const setResult2 = setResult;
+                        const setPreResult2 = setPreResult;
+                        try {
+                            let sourcename = jkdata.name;
+                            let getData = [];
+                            eval(evalPublicStr);
+                            let resultd,resultd2;
+                            setResult = function(rd) { resultd = rd; };
+                            setPreResult = function(prd) { resultd2 = prd; };
 
-                        eval("let 数据 = " + 执行str);
-                        getData = 数据.call(parse) || [];
-                        if(resultd){
-                            getData = resultd;
+                            eval("let 数据 = " + 执行str);
+                            getData = 数据.call(parse) || [];
+                            if(resultd){
+                                getData = resultd;
+                            }
+                            if(resultd2){
+                                getData = resultd2.concat(getData);
+                            }
+                            if (getData.length > 0) {
+                                return {
+                                    error: 0,
+                                    vodlists: getData
+                                };//测试，返回成功
+                            }
+                        } catch (e) {
+                            message = e.message + " #" + e.lineNumber;
                         }
-                        if(resultd2){
-                            getData = resultd2.concat(getData);
-                        }
-                        if (getData.length > 0) {
-                            return {
-                                error: 0,
-                                vodlists: getData
-                            };//测试，返回成功
-                        }
-                    } catch (e) {
-                        message = e.message;
+                        //恢复全局变量
+                        setResult = setResult2;
+                        setPreResult = setPreResult2;
                     }
-                    //恢复全局变量
-                    setResult = setResult2;
-                    setPreResult = setPreResult2;
+                } catch (e) {
+                    message = e.message;
                 }
-            } catch (e) {
-                message = e.message;
             }
             return {
                 error: 1,
@@ -1106,9 +1108,7 @@ function batchTestSource(){
                     if(result.error){
                         msg = result.message;
                     }
-                }catch(e){
-                    xlog(item.title + ">检测失败>" + e.message + " 错误行#" + e.lineNumber);
-                }
+                }catch(e){}
                 return {item:jkdata, msg:msg};
             })();
         }
@@ -1124,17 +1124,19 @@ function batchTestSource(){
         if (list.length > 0) {
             showLoading('批量检测中.');
             let checks = 0;
-            let errors = 0;
+            let errors = [];
             be(list, {
                 func: function (obj, id, error, taskResult) {
                     checks++;
                     if(taskResult.msg){
-                        errors++;
+                        errors.push(taskResult.item);
                         let item = dataItem(taskResult.item);
                         item.desc = taskResult.msg;
                         addItemAfter('checkLoading', item);
                         updateItem('checkLoading', {
-                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks)
+                            title: '批量检测中',
+                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                            url: 'hiker://emtpy'
                         });
                     }
                 },
@@ -1142,10 +1144,14 @@ function batchTestSource(){
                 }
             });
             updateItem('checkLoading', {
-                title: '检测完成'+errors+'个疑似失效'
+                title: '点击复检，'+errors.length+'个疑似失效',
+                url: $("#noLoading#").lazyRule(()=>{
+                    refreshPage(true);
+                    return 'hiker://empty';
+                })
             });
             hideLoading();
-            xlog('待检'+checkSourceList.length+'个源已完成，有'+errors+'个疑似失效');
+            storage0.putMyVar("批量检测_待检列表", errors);
         }
     })
 }

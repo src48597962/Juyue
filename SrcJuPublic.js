@@ -989,7 +989,6 @@ function batchTestSource(){
             clearMyVar('duodatalist');
             refreshPage(true);
         }));
-        
         let checkSourceList = storage0.getMyVar("批量检测_待检列表");
         let d = [];
         d.push({
@@ -1163,6 +1162,7 @@ function batchTestSource(){
             });
             updateItem('checkLoading', {
                 title: '点击复检，'+errors.length+'个疑似失效',
+                desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
                 url: $("#noLoading#").lazyRule(()=>{
                     refreshPage(true);
                     return 'hiker://empty';

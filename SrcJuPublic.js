@@ -1112,7 +1112,7 @@ function batchTestSource(){
                 return {item:jkdata, msg:msg};
             })();
         }
-        let checkSourceList = storage0.getMyVar("批量检测_待检列表");
+
         let list = checkSourceList.map((item) => {
             return {
                 func: task,

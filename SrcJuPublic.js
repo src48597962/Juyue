@@ -1071,7 +1071,7 @@ function batchTestSource(){
         }
 
         function dataItem(it){
-            let selectmenu = ["删除", "禁用", "测试"];
+            let selectmenu = ["删除", "禁用", "跳过", "测试"];
             let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
 
             return {
@@ -1094,6 +1094,12 @@ function batchTestSource(){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                             yiji(data);
                         }, data);
+                    } else if (input == "跳过") {
+                        deleteItem('test-' + data.id);
+                        let checkList = storage0.getMyVar("批量检测_待检列表");
+                        checkList = checkList.filter(v=>v.id != data.id);
+                        storage0.putMyVar("批量检测_待检列表", checkList);
+                        return 'toast://已跳过';
                     } else if (input == "禁用") {
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let sm = dataHandle(data, input);

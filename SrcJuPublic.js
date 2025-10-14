@@ -1177,6 +1177,7 @@ function batchTestSource(){
                             url: $("#noLoading#").lazyRule(()=>{
                                 showLoading('拦截中');
                                 putMyVar('批量检测中止', '1');
+                                return "hiker://emtpy";
                             })
                         });
                     }

@@ -1033,11 +1033,16 @@ function batchTestSource(){
                         try {
                             let sourcename = jkdata.name;
                             let getData = [];
-                            eval(evalPublicStr);
+                            //eval(evalPublicStr);
                             let resultd,resultd2;
                             setResult = function(rd) { resultd = rd; };
                             setPreResult = function(prd) { resultd2 = prd; };
-
+                            let juItem = juItemF(jkdata.id);
+                            if (parse['预处理1']) {
+                                parse['预处理1'].call(parse);
+                            }else if (parse['预处理']) {
+                                parse['预处理'].call(parse);
+                            }
                             eval("let 数据 = " + 执行str);
                             getData = 数据.call(parse) || [];
                             if(resultd){

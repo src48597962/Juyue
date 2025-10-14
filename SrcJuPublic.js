@@ -919,10 +919,24 @@ function jkItemList(jkdatalist){
                 id: it.id,
                 cls: 'jkItemLoadList',
                 longClick: [{
-                    title: "打开代码文件",
+                    title: "打开代码",
                     js: $.toString((url) => {
                         return 'openFile://'+ url;
                     },it.url)
+                },{
+                    title: "清除变量",
+                    js: $.toString((id) => {
+                        juItem.clear('clearAllKey', id);
+                        return 'toast://已清除';
+                    },it.id)
+                },{
+                    title: "接口编辑",
+                    js: $.toString((data) => {
+                        return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+                            jiekouapi(data);
+                        }, data)
+                    },it)
                 }]
             }
         });

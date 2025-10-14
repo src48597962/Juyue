@@ -997,12 +997,19 @@ function outputSearchList(jkdatalist, input){
 
 // 批量检测源方法
 function batchTestSource(){
+    let oldtime = getItem('checkSourcetime', '0');
+    let nowtime = new Date().getDate().toString();
+    if (nowtime == oldtime) {
+        return "toast://今日机会已用完";
+    }
     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
         addListener("onClose", $.toString(() => {
             clearMyVar("批量检测_待检列表");
             clearMyVar('duodatalist');
+            setItem('checkSourcetime', new Date().getDate().toString());
             refreshPage(true);
         }));
+        
         let checkSourceList = storage0.getMyVar("批量检测_待检列表");
         let d = [];
         d.push({

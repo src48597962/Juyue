@@ -1172,10 +1172,16 @@ function batchTestSource(){
                         item.desc = taskResult.msg;
                         addItemAfter('checkLoading', item);
                         updateItem('checkLoading', {
-                            title: '批量检测中',
+                            title: '批量检测中，点击可中止',
                             desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
-                            url: 'hiker://emtpy'
+                            url: $("#noLoading#").lazyRule(()=>{
+                                showLoading('拦截中');
+                                putMyVar('批量检测中止', '1');
+                            })
                         });
+                    }
+                    if(getMyVar('批量检测中止', '0') == '1'){
+                        return "break";
                     }
                 },
                 param: {
@@ -1220,6 +1226,7 @@ function batchTestSource(){
                 }
             });
             hideLoading();
+            clearMyVar('批量检测中止');
             storage0.putMyVar("批量检测_待检列表", errors);
         }
     })

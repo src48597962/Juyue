@@ -33,7 +33,7 @@ function juItemF(id, s){
             return items;
         },
         'set': function (key, str, id2) {
-            if(!key || str === undefined || str === null || str === '' || key ==='clearAllKey') return;
+            if(!key || str === undefined || str === null || str === '') return;
             if(str.toString().length>1000){
                 xlog(key+':无法写入长度超1000');
                 return;
@@ -73,16 +73,11 @@ function juItemF(id, s){
                 return;
             }
             let items = this.items();
-            if(key === 'clearAllKey' && id2){
-                delete items[id];
+            let item = items[id] || {};
+            if(item[key]){
+                delete item[key];
+                items[id] = item;
                 writeFile(this.file, JSON.stringify(items));
-            }else{
-                let item = items[id] || {};
-                if(item[key]){
-                    delete item[key];
-                    items[id] = item;
-                    writeFile(this.file, JSON.stringify(items));
-                }
             }
         },
         'getAll': function (id2) {
@@ -93,6 +88,12 @@ function juItemF(id, s){
             }
             let items = this.items();
             return items[id] || {};
+        },
+        'clearAll': function (id2) {
+            if(!id2) return;
+            let items = this.items();
+            delete items[id2];
+            writeFile(this.file, JSON.stringify(items));
         }
     }
     return juItemO;

@@ -1010,7 +1010,7 @@ function batchTestSource(){
             refreshPage(true);
         }));
         
-        let checkSourceList = storage0.getMyVar("批量检测_待检列表");
+        let checkSourceList = storage0.getMyVar("批量检测_待检列表") || [];
         let d = [];
         d.push({
             title: '批量检测中',
@@ -1190,7 +1190,34 @@ function batchTestSource(){
                     }
                     refreshPage(true);
                     return 'hiker://empty';
-                },errors.length)
+                },errors.length),
+                extra: {
+                    longClick: [{
+                        title: "全部禁用",
+                        js: $.toString(() => {
+                            return $("确定全部禁用？").confirm(()=>{
+                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                let checkList = storage0.getMyVar("批量检测_待检列表");
+                                dataHandle(checkList, input);
+                                storage0.putMyVar("批量检测_待检列表", []);
+                                back(true);
+                                return 'toast://已全部禁用';
+                            })
+                        })
+                    },{
+                        title: "全部删除",
+                        js: $.toString(() => {
+                            return $("确定全部删除？").confirm(()=>{
+                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                let checkList = storage0.getMyVar("批量检测_待检列表");
+                                deleteData(checkList);
+                                storage0.putMyVar("批量检测_待检列表", []);
+                                back(true);
+                                return 'toast://已全部删除';
+                            })
+                        })
+                    }]
+                }
             });
             hideLoading();
             storage0.putMyVar("批量检测_待检列表", errors);

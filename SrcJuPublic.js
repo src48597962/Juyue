@@ -926,7 +926,7 @@ function jkItemList(jkdatalist){
                 },{
                     title: "清除变量",
                     js: $.toString((id) => {
-                        juItem.clear('clearAllKey', id);
+                        juItem.clearAll(id);
                         return 'toast://已清除';
                     },it.id)
                 },{

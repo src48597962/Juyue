@@ -696,7 +696,7 @@ function getObjCode(jkdata, key) {
     try{
         let parse = getSource(jkdata);
         let tmpldata = jkdata.tmpl || parse['模板'];
-        if(tmpldata){
+        if(tmpldata && $.type(tmpldata)=='object'){
             try{
                 let tmplparse = getSource(tmpldata);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';

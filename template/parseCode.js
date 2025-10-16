@@ -63,11 +63,10 @@ let parse = {
     },
     搜索: function(name){
         let d = [];
-        /*
         if(page>1){
             return d;//如果本身没有第2页，应主动输出为空
         }
-        */
+        
         //实现逻辑
         return d;
     },

@@ -797,7 +797,7 @@ function toerji(item, jkdata) {
                 extra.data = extra.data || jkdata;
                 item.extra = extra;
 
-                item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache##noHistory#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
+                item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {
                     require(config.聚阅);
                     erji();
                 })

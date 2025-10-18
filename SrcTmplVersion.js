@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "1.8",
     "hint": "修复bug",
     "JYUpdateRecords": [{
+        title: "beta V1.9",
+        records: [
+            "优化：切换分组和切换源增加销毁主页x5组件"
+        ]
+    },{
         title: "2025/10/15 V1.8",
         records: [
             "修复：只有一个频道时未携带jkdata问题",

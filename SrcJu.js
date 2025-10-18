@@ -262,6 +262,7 @@ function yiji(testSource) {
                         writeFile(cfgfile, JSON.stringify(Juconfig));
                         clearMyVar('一级源接口信息');
                         clearMyVar('主页动态加载loading');
+                        refreshX5WebView('');//清x5
                         refreshPage(false);
                         return 'hiker://empty';
                     }, it),

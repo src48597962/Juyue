@@ -393,7 +393,7 @@ function changeSource(sourcedata) {
         xlog("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
     }
     try {
-        refreshX5WebView('about:blank');
+        refreshX5WebView('');
     } catch (e) { }
     let sourceGroup = sourcedata.selectGroup || ((sourcedata.type==homeGroup||(sourcedata.group||'').includes(homeGroup))?homeGroup:sourcedata.type);
     Juconfig["homeGroup"] = sourceGroup;

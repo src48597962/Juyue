@@ -392,9 +392,7 @@ function changeSource(sourcedata) {
     } catch (e) {
         xlog("切源清理接口变量异常>" + e.message + " 错误行#" + e.lineNumber);
     }
-    try {
-        refreshX5WebView('');
-    } catch (e) { }
+    refreshX5WebView('');//清x5
     let sourceGroup = sourcedata.selectGroup || ((sourcedata.type==homeGroup||(sourcedata.group||'').includes(homeGroup))?homeGroup:sourcedata.type);
     Juconfig["homeGroup"] = sourceGroup;
     homeSourceS[sourceGroup] = {id: sourcedata.id, name: sourcedata.name};

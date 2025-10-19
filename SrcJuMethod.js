@@ -102,7 +102,8 @@ function juItemF(id, s){
                 return '';
             }
             let items = this.items();
-            return Object.keys(items);
+            let item = items[id] || {};
+            return Object.keys(item);
         }
     }
     return juItemO;

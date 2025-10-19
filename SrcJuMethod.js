@@ -74,11 +74,9 @@ function juItemF(id, s){
             }
             let items = this.items();
             let item = items[id] || {};
-            if(item[key]){
-                delete item[key];
-                items[id] = item;
-                writeFile(this.file, JSON.stringify(items));
-            }
+            delete item[key];
+            items[id] = item;
+            writeFile(this.file, JSON.stringify(items));
         },
         'getAll': function (id2) {
             id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;

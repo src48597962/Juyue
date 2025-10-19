@@ -5,7 +5,7 @@ var newVersion = {
         title: "beta V1.9",
         records: [
             "优化：切换分组和切换源增加销毁主页x5组件",
-            "小程序：升级版本6，修复ghproxy依赖检测"
+            "小程序：升级版本6，修复ghproxy代理检测"
         ]
     },{
         title: "2025/10/15 V1.8",

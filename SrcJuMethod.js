@@ -598,7 +598,7 @@ function updateSourceById(id, parseStr, newVer){
 function ocr(codeurl,headers) {
     headers= headers || {};
     let img = convertBase64Image(codeurl,headers).replace('data:image/jpeg;base64,','');
-    let code = request('https://api-cf.nn.ci/ocr/b64/text', { body: img, method: 'POST', headers: {"Content-Type":"text/html"}});
+    let code = request('https://api.alistgo.com/ocr/b64/text', { body: img, method: 'POST', headers: {"Content-Type":"text/html"}});
     code = code.replace(/o/g, '0').replace(/u/g, '0').replace(/I/g, '1').replace(/l/g, '1').replace(/g/g, '9');
     if(code.includes("+")&&code.includes("=")){
         code = eval(code.split("=")[0]);

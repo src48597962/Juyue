@@ -317,7 +317,9 @@ function getYiData(datatype, jkdata, dd) {
     try {
         let 页码 = parse["页码"] || {};
         if(!页码[datatype] && page>1){
+            page = 1;
             setResult([]);
+            return;
         }
         let ide = parse["频道"].页面标识 || "";
         

@@ -320,7 +320,6 @@ function getYiData(datatype, jkdata, dd) {
             page = 1;
             setResult([]);
             return;
-            xlog(page);
         }
         let ide = parse["频道"].页面标识 || "";
         

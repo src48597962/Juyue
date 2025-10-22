@@ -319,7 +319,6 @@ function getYiData(datatype, jkdata, dd) {
         if(!页码[datatype] && page>1){
             page = 1;
             MY_PAGE = 1;
-            log(MY_PAGE);
             setResult([]);
             return;
         }

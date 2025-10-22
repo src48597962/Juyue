@@ -484,11 +484,7 @@ function yiji(testSource) {
                     }
                 });
             }else{
-                xlog('开始获取一级数据');
-                let t1 = new Date().getTime();
                 getYiData('主页', jkdata, d);
-                let t2 = new Date().getTime();
-                xlog('获取一级数据完成，耗时：' + (t2-t1) + 'ms');
             }
         }catch(e){
             xlog(jkdata.name+'>加载主页异常>' + e.message + ' 错误行#' + e.lineNumber);

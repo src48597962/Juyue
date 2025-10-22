@@ -27,7 +27,7 @@ function yiji(testSource) {
         Version();
         putMyVar('SrcJu_RuleVersionCheck', '1');
     }
-
+    xlog(MY_RULE.url);
     let jkdata = testSource || storage0.getMyVar('一级源接口信息') || {};
     if((!jkdata.name || !fetch(jkdata.url)) && !testSource){
         clearMyVar('一级源接口信息');

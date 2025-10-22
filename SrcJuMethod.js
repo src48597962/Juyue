@@ -322,7 +322,7 @@ function getYiData(datatype, jkdata, dd) {
             return;
         }
         
-        xlog('开始获取'+datatype+' 第'+page+'页数据');
+        xlog('开始获取 '+datatype+' 第'+page+'页数据');
         let t1 = new Date().getTime();
         let ide = parse["频道"].页面标识 || "";
         

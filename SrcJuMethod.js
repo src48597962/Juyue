@@ -318,6 +318,8 @@ function getYiData(datatype, jkdata, dd) {
         let 页码 = parse["页码"] || {};
         if(!页码[datatype] && page>1){
             page = 1;
+            MY_PAGE = 1;
+            log(MY_PAGE);
             setResult([]);
             return;
         }

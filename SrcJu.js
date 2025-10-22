@@ -549,7 +549,9 @@ function erji() {
     let d = [];
 
     if(MY_PAGE>1 && !parse['二级翻页']){
+        MY_PAGE = 1;
         setResult(d);
+        return;
     }
         
     let smark = getMark(MY_URL, sid);//足迹记录

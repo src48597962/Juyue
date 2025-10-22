@@ -307,7 +307,7 @@ function getYiData(datatype, jkdata, dd) {
         }
         storage0.putMyVar('一级源接口信息', jkdata);
     }
-
+    xlog(MY_PAGE);
     let page = MY_PAGE || 1;
     let sourcemenu = [];
     let d = dd || [];

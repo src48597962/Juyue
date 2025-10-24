@@ -1,19 +1,17 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
-let recordfile = "hiker://files/rules/Src/Juying2/parse.json";//取解析设置、上次成功、手工屏蔽的
+let recordfile = "hiker://files/rules/Src/Jiexi/record.json";//取解析设置、上次成功、手工屏蔽的
 let record = fetch(recordfile);
 let parseRecord = {};
 if(record!=""){
     try{
         eval("parseRecord =" + record + ";");
-    }catch(e){
-        parseRecord = {};
-    }
+    }catch(e){}
 }
 
 let excludeurl = parseRecord.excludeurl||[];//屏蔽的播放地址
 let excludeparse = parseRecord.excludeparse||[];//屏蔽的解析
 let playSet = {printlog:0,cachem3u8:0,parsemode:1,video:1,xiutannh:"web",dmRoute:0,isTest:0,mulnum:1};
-let Jucfg = fetch("hiker://files/rules/Src/Juying2/config.json");
+let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
 if(Jucfg != ""){
     try{
         eval("let Juconfig=" + Jucfg+ ";");
@@ -24,6 +22,7 @@ if(Jucfg != ""){
 if(!playSet.printlog){
     log = function (msg) {
         //未开启打印解析日志>不打印
+        return;
     }
 }
 let exclude = /\/404\.m3u8|\/xiajia\.mp4|\.avif|\/余额不足\.m3u8/;//设置排除地址
@@ -71,91 +70,29 @@ function headerObjToStr(obj) {
     const pairs = Object.keys(obj).map(key => `${key}@${obj[key].replace(/;/g,'；；')}`);
     return `{${pairs.join('&&')}}`;
 }
-
-if(!config.聚影 && getPublicItem('聚影','')){
-    initConfig({
-        聚影: getPublicItem('聚影','')
-    });
-}
+// url编码处理
 function decodeURI(input){
     if($.type(input)=="string" && input.includes("%2F%2F")){
         return decodeURIComponent(input);
     }
     return input;
 }
+// 是否为vip正版资源
+function isVipVideo(url){
+    if (/qq\.com|iqiyi\.com|youku\.com|mgtv\.com|bilibili\.com|sohu\.com|ixigua\.com|pptv\.com|miguvideo\.com|le\.com|1905\.com|fun\.tv|cctv\.com/.test(url)){
+        return true;
+    }
+    return false;
+}
 
 var SrcParseS = {
-    聚影: function (vipUrl, dataObj) {
-        //聚影采用新的、独立的解析逻辑
+    解析入口: function (vipUrl, dataObj) {
         vipUrl = decodeURI(vipUrl);
         vipUrl = vipUrl.startsWith('tvbox-xg:')?vipUrl.replace('tvbox-xg:',''):vipUrl.startsWith('push://')?vipUrl.replace('push://',''):vipUrl
-        let isVip = 0;
-        let extrajs;
         dataObj = dataObj || {};
-
-        if(dataObj.stype && /hipy_|py/.test(dataObj.stype)){
-            let play = {url: ""};
-            if(dataObj.stype=="hipy_t3"){
-                let sdata = {name: dataObj.sname, url: dataObj.surl, ext: dataObj.sext}
-                let {GM} = $.require(config.聚影.replace(/[^/]*$/,'') + "plugins/globalmap.js");
-                let drpy = GM.defineModule("SrcJyDrpy", config.聚影.replace(/[^/]*$/,'') + "SrcJyDrpy.js").get(sdata);
-                play = JSON.parse(drpy.play(dataObj.flag, vipUrl, []));
-            }else if(dataObj.stype=="hipy_t4"){
-                play = JSON.parse(fetch(dataObj.surl+(dataObj.surl.includes("?")?"&":"?")+'flag='+dataObj.flag+"&extend="+dataObj.sext+'&play='+vipUrl, {timeout: 10000}));
-            }else if(dataObj.stype=="py"){
-                if(dataObj.surl.startsWith('hiker')){
-                    dataObj.surl = getPath(dataObj.surl).slice(7);
-                }else if(dataObj.surl.startsWith('file://')){
-                    dataObj.surl = dataObj.surl.slice(7);
-                }
-                //const PythonHiker = $.require("hiker://files/plugins/chaquopy/PythonHiker.js");
-                //let pyModule = PythonHiker.runPy(dataObj.surl).callAttr("Spider");
-                require(config.聚影.replace(/[^/]*$/,'') + "plugins/pyDriver.js");
-                let pyModule = initPyModule(dataObj.surl);
-                PythonHiker.callFunc(pyModule, "init", []);
-                play = PythonHiker.callFunc(pyModule, "playerContent", dataObj.flag, vipUrl, []);
-                if($.type(play.url) == "array"){
-                    play.url = play.url[1];
-                }
-            }
-            //log(play);
-            if(play.js){
-                extrajs = play.js;
-            }
-            
-            if(play.url.startsWith('push://')){
-                play.url = play.url.replace('push://', '');
-            }
-            if(play.url.startsWith("pics://")){
-                log(dataObj.stype + "自解析完成，进入漫画模式");
-                return play.url;
-            }
-            if(play.url.startsWith("select://")){
-                let seljson = JSON.parse(play.url.replace("select://",""));
-                if(seljson.options.length==1){
-                    log(dataObj.stype + "自解析完成，进入直接播放");
-                    return "第1部@lazyRule=.js:"+seljson.js;
-                }
-                log(dataObj.stype + "自解析完成，进入选择播放");
-                return play.url;
-            }else if(/\.mp3|\.m4a|\.mp4|\.m3u8/.test(play.url) && play.header){
-                if(/.mp3|\.m4a/.test(play.url)){
-                    play.url = play.url + '#isMusic=true##checkMetadata=false#';
-                }
-                log(dataObj.stype + "自解析完成，进入带headers播放");
-                return JSON.stringify({
-                    urls: [play.url],
-                    headers: [play.header]
-                }); 
-            }else if(/do=quark|do=uc/.test(play.url) && /pan\.quark\.cn|drive\.uc\.cn/.test(vipUrl)){
-                play.url = vipUrl;
-            }else if(/do=ali/.test(play.url) && /alipan\.com|aliyundrive\.com/.test(vipUrl)){
-                play.url = vipUrl;
-            }
-            vipUrl = decodeURI(play.url) || vipUrl;
-        }
-
+        
         log("请求地址："+vipUrl); 
+        let isVip = 0;
         
         if (vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')) {
             if(!fileExist("hiker://files/cache/bidi.dex") || !fileExist("hiker://files/cache/libp2p.so")){
@@ -206,7 +143,7 @@ var SrcParseS = {
             return "hiker://page/list?rule=百度网盘&realurl=" + vipUrl;
         }else if(vipUrl.includes('.123684.com')) {
             return "toast://暂不支持123盘";
-        }else if(/qq\.com|iqiyi\.com|youku\.com|mgtv\.com|bilibili\.com|sohu\.com|ixigua\.com|pptv\.com|miguvideo\.com|le\.com|1905\.com|fun\.tv|cctv\.com/.test(vipUrl)){
+        }else if(isVipVideo(vipUrl)){
             if(vipUrl.indexOf('html?')>-1){
                 vipUrl = vipUrl.split('html?')[0]+'html';
             }
@@ -218,7 +155,7 @@ var SrcParseS = {
                 isWeb: 1,
                 video: playSet.video,
                 music: dataObj.music || (dataObj.sname&&dataObj.sname.includes("[听]")?1:0),
-                js: extrajs,
+                js: dataObj.extrajs,
                 extra: {
                     id: dataObj.id,
                     playUrl: vipUrl,
@@ -230,18 +167,11 @@ var SrcParseS = {
         }
         
         let from;
-        if(dataObj.flag && !isVip){
+        if(dataObj.flag){
             from = dataObj.flag;
-            if(from=="道长在线"){
-                return "toast://解析失败";
-            }
         }else{
             try{
-                if(vipUrl.indexOf('-yanaifei.html') != -1){
-                    from = 'yanaifei';
-                }else if(vipUrl.indexOf('suoyo.cc') != -1){
-                    from = 'duoduozy';
-                }else if(vipUrl.indexOf('.') != -1){
+                if(vipUrl.indexOf('.') != -1){
                     var host = vipUrl.replace('m.tv.','m.').match(/\.(.*?)\//)[1];
                     from = host.split('.')[0];
                     parseRecord['flag'] = parseRecord['flag']||[];
@@ -262,12 +192,12 @@ var SrcParseS = {
 
         let parsemode = playSet.parsemode || 1;//解析模式
         let mulnum = playSet.mulnum || 1;//多线程数
-        let jxfile = "hiker://files/rules/Src/Juying2/jiexi.json";//解析存放文件
+        let jxfile = "hiker://files/rules/Src/Jiexi/jiexi.json";//解析存放文件
         let parselist = [];//待进线程执行的解析列表
         let jxList= [];//读取解析列表
 
         if(dataObj.parse){
-            //指定解析用于测试
+            //有指定解析
             dataObj.parse["stype"] = "test";
             parselist.push(dataObj.parse);
         }else{
@@ -707,7 +637,7 @@ var SrcParseS = {
                             if(tscode.statusCode==-1){
                                 log(name+'>ts段探测超时未拦载，结果未知');
                                 return 1;
-                            }else if(tscode.statusCode!=200 && tscode.statusCode!=403 && tscode.statusCode!=0){
+                            }else if(!/0|200|301|302|403/.test(tscode.statusCode)){
                                 log(name+'>ts段地址疑似失效或网络无法访问，不信去验证一下>'+url);
                                 return 0;
                             }
@@ -719,7 +649,7 @@ var SrcParseS = {
                 if(urlheader.statusCode==-1){
                     log(name+'>mp4探测超时未拦载，结果未知');
                     return 1;
-                }else if(urlheader.statusCode!=200){
+                }else if(!/0|200|301|302|403/.test(urlheader.statusCode)){
                     log(name+'>mp4播放地址疑似失效或网络无法访问，不信去验证一下>'+url);
                     return 0;
                 }else{

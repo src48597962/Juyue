@@ -6,6 +6,10 @@ function jxItem() {
     jiexi();
 }
 
+initConfig({
+    jxCodePath: codePath
+})
+
 $.exports = {
     jxItem: jxItem,
     parse: parse

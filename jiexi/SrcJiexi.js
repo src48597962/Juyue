@@ -538,3 +538,7 @@ function jiexiapi(data) {
     })
     setResult(d);
 }
+
+$.exports = {
+    jiexi: jiexi
+}

@@ -1,4 +1,6 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
+const codePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/") + 1);
+log(codePath);
 let rulepath = "hiker://files/rules/Src/jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
 // 接口管理页

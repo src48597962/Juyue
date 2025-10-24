@@ -538,3 +538,265 @@ function jiexiapi(data) {
     })
     setResult(d);
 }
+// 管理设置
+function manageSet() {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('playSet');
+    }));
+
+    setPageTitle("解析管理设置");
+    let recordfile = rulepath + "record.json";//解析相关记录文件
+    let parseRecord = {};
+    if(fetch(recordfile)){
+        try{
+            eval("parseRecord =" + fetch(recordfile) + ";");
+        }catch(e){}
+    }
+
+    let playSet = storage0.getMyVar('playSet') || Juconfig['playSet'] || {};
+
+    let d = [];
+    let 箭头图标 = getIcon("点播-箭头.svg");
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '功能管理',
+        pic_url: getIcon("点播-功能开关.svg"),
+        col_type: "avatar",
+        url: "hiker://empty"
+    });
+    d.push({
+        title: '本地解析管理',
+        url: $('#noLoading#').lazyRule(() => {
+            putMyVar('guanli','jx');
+            return $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
+                setPageTitle('解析管理');
+                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
+                SRCSet();
+            })
+        }),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '解析日志打印',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            if (playSet['printlog'] != 1) {
+                playSet['printlog'] = 1;
+            } else {
+                playSet['printlog'] = 0;
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://切换成功';
+        }, playSet),
+        pic_url: playSet['printlog']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        col_type: "line_blank"
+    });
+    d.push({
+        title: '解析设置',
+        pic_url: getIcon("点播-解析设置.svg"),
+        col_type: "avatar",
+        url: "hiker://empty"
+    });
+    let parsemode = playSet["parsemode"] || 1;
+    d.push({
+        title: '聚影智能',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            playSet['parsemode'] = 1;
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://聚影智能 | 上次优先>接口自带+私有解析';
+        }, playSet),
+        pic_url: parsemode==1?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '强制嗅探',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            playSet['parsemode'] = 2;
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://强制嗅探 | 将web解析组线路进video播放器';
+        }, playSet),
+        pic_url: parsemode==2?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '手动切换',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            playSet['parsemode'] = 3;
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://手动切换 | 代理播放，在播放页手动选择解析';
+        }, playSet),
+        pic_url: parsemode==3?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        col_type: "line"
+    });
+    d.push({
+        title: '嗅探内核：'+(playSet['xiutannh']||"web"),
+        url: $('#noLoading#').lazyRule((playSet) => {
+            let sm;
+            if(playSet['xiutannh'] == 'x5'){
+                playSet['xiutannh'] = 'web';
+                sm = 'web';
+            }else{
+                playSet['xiutannh'] = 'x5';
+                sm = 'x5';
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://嗅探内核切换为：'+sm;
+        }, playSet),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '嗅探方式：'+(playSet['video']!=0?"video":"WebRule"),
+        url: $('#noLoading#').lazyRule((playSet) => {
+            if (playSet['video'] != 0) {
+                playSet['video'] = 0;
+            } else {
+                playSet['video'] = 1;
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://已切换';
+        }, playSet),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
+    });
+    d.push({
+        col_type: "line"
+    });
+    d.push({
+        title: '无效播放地址',
+        url: $("", "输入无法播放的地址进行屏蔽").input((parseRecord, recordfile) => {
+            parseRecord['excludeurl'] = parseRecord['excludeurl'] || [];
+            let url = input.split(';{')[0].replace(/file.*video\.m3u8##/, '').replace('#isVideo=true#', '');
+            if (parseRecord['excludeurl'].indexOf(url) == -1) {
+                parseRecord['excludeurl'].push(url);
+            }
+            writeFile(recordfile, JSON.stringify(parseRecord));
+            return 'toast://对此播放地址将拦截';
+        }, parseRecord, recordfile),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '清空播放拦截记录',
+        url: $("清空拦截无法播放地址记录？").confirm((parseRecord, recordfile) => {
+            delete parseRecord['excludeurl'];
+            writeFile(recordfile, JSON.stringify(parseRecord));
+            return 'toast://无清空';
+        }, parseRecord, recordfile),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
+    });
+    d.push({
+        col_type: "line"
+    });
+    d.push({
+        title: 'm3u8索引文件缓存',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            if (playSet['cachem3u8'] != 1) {
+                playSet['cachem3u8'] = 1;
+            } else {
+                playSet['cachem3u8'] = 0;
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://切换成功';
+        }, playSet),
+        pic_url: playSet['cachem3u8']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '解析结果有效性检测',
+        desc: "除video方式外，其他解析结果是否开启检测",
+        url: $('#noLoading#').lazyRule((playSet) => {
+            if (playSet['isTest']) {
+                playSet['isTest'] = 0;
+            } else {
+                playSet['isTest'] = 1;
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://切换成功';
+        }, playSet),
+        pic_url: playSet['isTest']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '调用dm盒子弹幕',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            let sm;
+            if (playSet['dmRoute']) {
+                playSet['dmRoute'] = 0;
+                sm = '关闭dm盒子弹幕';
+            } else {
+                playSet['dmRoute'] = 1;
+                sm = '仅针对官网地址有效，需要dm盒子小程序';
+            }
+            storage0.putMyVar('playSet', playSet);
+            refreshPage(false);
+            return 'toast://' + sm;
+        }, playSet),
+        pic_url: playSet['dmRoute']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        col_type: "line"
+    });
+    d.push({
+        title: 'M3U8广告清除规则',
+        url: $('#noLoading#').lazyRule((playSet) => {
+            if (playSet['clearM3u8Ad']) {
+                delete playSet['clearM3u8Ad'];
+                storage0.putMyVar('playSet', playSet);
+                refreshPage(false);
+                return 'toast://关闭订阅M3U8广告清除规则';
+            } else {
+                return $("确认要从聚影订阅M3U8广告清除规则来覆盖软件的？").confirm((playSet)=>{
+                    playSet['clearM3u8Ad'] = 1;
+                    storage0.putMyVar('playSet', playSet);
+                    let m3u8Ad_file = config.聚影.replace(/[^/]*$/,'') + "plugins/m3u8_ad_rule.json";
+                    let m3u8Ad = fetch(m3u8Ad_file);
+                    if(m3u8Ad){
+                        writeFile("hiker://files/rules/m3u8_ad_rule.json", m3u8Ad);
+                        refreshPage(false);
+                        return "toast://开启订阅并已替换软件播放器的M3U8广告清除规则，重启软件生效";
+                    }else{
+                        refreshPage(false);
+                        return "toast://开启订阅";
+                    }
+                },playSet)
+            }
+        }, playSet),
+        pic_url: playSet['clearM3u8Ad']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        col_type: "text_icon",
+        extra: {
+            longClick: [{
+                title: "清除播放器规则",
+                js: $.toString(() => {
+                    writeFile("hiker://files/rules/m3u8_ad_rule.json", "");
+                    return "toast://已清除软件播放器的M3U8广告清除规则，重启软件生效";
+                })
+            }]
+        }
+    });
+    d.push({
+        title: '<br>',
+        col_type: 'rich_text'
+    });
+    setResult(d);
+    Juconfig['playSet'] = playSet;
+    writeFile(cfgfile, JSON.stringify(Juconfig));
+}

@@ -1,15 +1,15 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
-let rulepath = "hiker://files/rules/Src/Juyue/"; //规则文件路径
+let rulepath = "hiker://files/rules/Src/jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
 // 接口管理页
 function jiexi() {
-    setPageTitle('接口管理 | 聚解');
+    setPageTitle('解析管理');
     let d = [];
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
             setPageTitle('增加 | 聚解接口');
-            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiePublic.js');
+            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
             jiexiapi();
         }),
         img: 'http://123.56.105.145/tubiao/more/25.png',
@@ -18,7 +18,7 @@ function jiexi() {
     d.push({
         title: '操作',
         url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
-            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiePublic.js');
+            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
                 if(getMyVar('批量选择模式')){
@@ -33,7 +33,7 @@ function jiexi() {
                 return "toast://"+sm;
             }else if(input=="清空所有"){
                 return $("确定要删除本地所有的源接口吗？").confirm(()=>{
-                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiePublic.js');
+                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
                     deleteData();
                     refreshPage(false);
                     return 'toast://已全部清空';
@@ -113,7 +113,7 @@ function jiexi() {
             if(input != ''){
                 deleteItemByCls('jxItemLoadList');
                 putMyVar("seacrhJiexi", input);
-                require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiePublic.js');
+                require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
                 let jxdatalist = storage0.getMyVar("jxdatalist");
                 jxdatalist = outputSearchList(jxdatalist, input);
                 addItemBefore('jkItemLoading', jxItemList(jxdatalist));
@@ -130,7 +130,7 @@ function jiexi() {
                     deleteItemByCls('jxItemLoadList');
                     clearMyVar('seacrhJiexi');
                     clearMyVar('seacrhDataList');
-                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiePublic.js');
+                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
                     let jxdatalist = storage0.getMyVar("jxdatalist");
                     addItemBefore('jkItemLoading', jxItemList(jxdatalist));
                 }
@@ -210,7 +210,7 @@ function jxItemList(datalist) {
             title: datatitle,
             url: getMyVar('批量选择模式') ? $('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
-                require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js');
+                require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
                 duoselect(data);
                 return "hiker://empty";
             }, base64Encode(JSON.stringify(it))) : $(selectmenu, 2).select((data) => {
@@ -220,21 +220,21 @@ function jxItemList(datalist) {
                         let pastes = getPastes();
                         pastes.push('云口令文件');
                         return $(pastes, 2).select((data) => {
-                            require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js');
+                            require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
                             return JYshare(input, data);
                         }, data)
                     } else {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js');
+                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
                         return JYshare(getItem("sharePaste", ""), data);
                     }
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js');
+                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
                         jiekouapi(data);
                     }, data)
                 } else if (input == "删除") {
                     return $("确定删除：" + data.name).confirm((data) => {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js.js');
+                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js.js');
                         deleteData(data);
                         //refreshPage(false);
                         deleteItem(data.id);
@@ -250,7 +250,7 @@ function jxItemList(datalist) {
                     if (input == "置顶" && getItem("sourceListSort", "更新时间") != "更新时间") {
                         return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
                     }
-                    require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiePublic.js');
+                    require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
                     let sm = dataHandle(data, input);
                     refreshPage(false);
                     return 'toast://' + sm;

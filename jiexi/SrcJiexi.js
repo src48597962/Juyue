@@ -9,7 +9,7 @@ function jiexi() {
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
             setPageTitle('增加 | 聚解接口');
-            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+            require(config.jxCodePath + 'SrcJiexi.js');
             jiexiapi();
         }),
         img: 'http://123.56.105.145/tubiao/more/25.png',
@@ -18,7 +18,7 @@ function jiexi() {
     d.push({
         title: '操作',
         url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
-            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+            require(config.jxCodePath + 'SrcJiexi.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
                 if(getMyVar('批量选择模式')){
@@ -33,7 +33,7 @@ function jiexi() {
                 return "toast://"+sm;
             }else if(input=="清空所有"){
                 return $("确定要删除本地所有的源接口吗？").confirm(()=>{
-                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcJiexi.js');
                     deleteData();
                     refreshPage(false);
                     return 'toast://已全部清空';
@@ -70,7 +70,7 @@ function jiexi() {
                 title: '外部导入',
                 js: $.toString(() => {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                        require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+                        require(config.jxCodePath + 'SrcJiexi.js');
                         importjiexi();
                     })
                 })
@@ -91,7 +91,7 @@ function jiexi() {
     d.push({
         title: '分享',
         url: yxdatalist.length == 0 ? "toast://有效接口为0，无法分享" : $(pastes,2).select(()=>{
-            require(config.聚解.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            require(config.jxCodePath + 'SrcJuSet.js');
             return JYshare(input);
         }),
         img: 'http://123.56.105.145/tubiao/more/3.png',
@@ -124,7 +124,7 @@ function jiexi() {
             if(input != ''){
                 deleteItemByCls('jxItemLoadList');
                 putMyVar("seacrhJiexi", input);
-                require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+                require(config.jxCodePath + 'SrcJiexi.js');
                 let jxdatalist = storage0.getMyVar("jxdatalist");
                 jxdatalist = outputSearchList(jxdatalist, input);
                 addItemBefore('jkItemLoading', jxItemList(jxdatalist));
@@ -141,7 +141,7 @@ function jiexi() {
                     deleteItemByCls('jxItemLoadList');
                     clearMyVar('seacrhJiexi');
                     clearMyVar('seacrhDataList');
-                    require(config.聚解.replace(/[^/]*$/,'') + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcJiexi.js');
                     let jxdatalist = storage0.getMyVar("jxdatalist");
                     addItemBefore('jkItemLoading', jxItemList(jxdatalist));
                 }

@@ -2,7 +2,7 @@
 let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
 // 主页
-function home() {
+function homePage() {
     let dd = [];
     dd.push({
         title: '解析列表',
@@ -31,13 +31,13 @@ function home() {
     setPreResult(dd);
     
     if(getMyVar('主页显示内容', '1')=='1'){
-        jxItem();
+        jxItemPage();
     }else{
         setResult([]);
     }
 }
 // 接口管理页
-function jxItem() {
+function jxItemPage() {
     setPageTitle('解析管理');
     let d = [];
     d.push({

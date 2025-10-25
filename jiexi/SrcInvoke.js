@@ -4,8 +4,12 @@ const codePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/") +
 initConfig({
     jxCodePath: codePath
 })
-
-// 解析管理页面
+// 主界面
+function home() {
+    require(codePath + 'SrcJiexi.js');
+    home();
+}
+// 解析列表
 function jxItem() {
     require(codePath + 'SrcJiexi.js');
     jiexi();
@@ -16,6 +20,7 @@ function parse() {
 }
 
 $.exports = {
+    home: home,
     jxItem: jxItem,
     parse: parse
 }

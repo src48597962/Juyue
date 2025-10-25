@@ -3,8 +3,8 @@ let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
 // 主页
 function home() {
-    let d = [];
-    d.push({
+    let dd = [];
+    dd.push({
         title: '解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
@@ -12,7 +12,7 @@ function home() {
         img: 'http://123.56.105.145/tubiao/more/25.png',
         col_type: "icon_small_3"
     });
-    d.push({
+    dd.push({
         title: '解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
@@ -20,7 +20,7 @@ function home() {
         img: 'http://123.56.105.145/tubiao/more/25.png',
         col_type: "icon_small_3"
     });
-    d.push({
+    dd.push({
         title: '解析测试',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '3');
@@ -28,7 +28,7 @@ function home() {
         img: 'http://123.56.105.145/tubiao/more/25.png',
         col_type: "icon_small_3"
     });
-    setPreResult(d);
+    setPreResult(dd);
     
     if(getMyVar('主页显示内容', '1')=='1'){
         jxItem();

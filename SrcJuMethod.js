@@ -9,6 +9,7 @@ let sortfile = rulepath + "jksort.json";
 let casefile = rulepath + 'case.json';
 
 // 重定义打印日志
+let log2 = log;
 let xlog = log;
 if (getItem('规则日志打印','1') == "0") {
     xlog = function () {

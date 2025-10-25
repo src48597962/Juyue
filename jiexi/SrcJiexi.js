@@ -125,7 +125,7 @@ function jxItemPage() {
                             eval('jxlist = ' + fetch(jxfile));
                             let newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
                             jxlist = jxlist.concat(newadd);
-                            writeFile(jxfile, json.stringify(jxlist));
+                            writeFile(jxfile, JSON.stringify(jxlist));
                         }
                         return 'toast://新增解析：' + newadd.length;
                     })

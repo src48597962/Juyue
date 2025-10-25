@@ -1,3 +1,6 @@
+let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
+let jxfile =  rulepath + 'jiexi.json';
+
 function getDatas() {
     let datalist = [];
     let sourcedata = fetch(jxfile);

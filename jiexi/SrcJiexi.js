@@ -136,17 +136,17 @@ function jxItemPage() {
             }]
         }
     });
-    let pastes = getPastes();
+    
     let jxdatalist = getDatas();
     if(getMyVar('onlyStopJk')){
         jxdatalist = jxdatalist.filter(item => item.stop);
     }
-
     let yxdatalist = jxdatalist.filter(it=>{
         return !it.stop;
     });
     storage0.putMyVar("jxdatalist", jxdatalist);
 
+    let pastes = getPastes();
     d.push({
         title: '分享',
         url: yxdatalist.length == 0 ? "toast://有效接口为0，无法分享" : $(pastes,2).select(()=>{
@@ -207,6 +207,7 @@ function jxItemPage() {
             })
         }
     });
+    d = d.concat(jxItemList(jxdatalist));
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',
@@ -270,7 +271,7 @@ function jxItemList(datalist) {
     datalist.forEach(it => {
         let selectmenu, datatitle;
         selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶", "测试"];
-        if (selectlist.some(item => it.id == item.id)) {
+        if (selectlist.some(item => it.name == item.name)) {
             datatitle = colorTitle(getDataTitle(it, '●'), '#3CB371');
         } else {
             datatitle = getDataTitle(it);
@@ -317,7 +318,7 @@ function jxItemList(datalist) {
                         yiji(data);
                     }, data);
                 } else {//置顶、禁用、启用
-                    if (input == "置顶" && getItem("sourceListSort", "更新时间") != "更新时间") {
+                    if (input == "置顶") {
                         return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
                     }
                     require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');

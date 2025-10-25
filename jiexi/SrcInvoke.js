@@ -7,12 +7,12 @@ initConfig({
 // 主界面
 function home() {
     require(codePath + 'SrcJiexi.js');
-    home();
+    homePage();
 }
 // 解析列表
 function jxItem() {
     require(codePath + 'SrcJiexi.js');
-    jiexi();
+    jxItemPage();
 }
 // 调用解析
 function parse() {

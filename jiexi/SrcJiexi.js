@@ -1,8 +1,43 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
+// 主页
+function home() {
+    let d = [];
+    d.push({
+        title: '解析列表',
+        url: $('#noLoading#').lazyRule(() => {
+            putMyVar('主页显示内容', '1');
+        }),
+        img: 'http://123.56.105.145/tubiao/more/25.png',
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '解析设置',
+        url: $('#noLoading#').lazyRule(() => {
+            putMyVar('主页显示内容', '2');
+        }),
+        img: 'http://123.56.105.145/tubiao/more/25.png',
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '解析测试',
+        url: $('#noLoading#').lazyRule(() => {
+            putMyVar('主页显示内容', '3');
+        }),
+        img: 'http://123.56.105.145/tubiao/more/25.png',
+        col_type: "icon_small_3"
+    });
+    setPreResult(d);
+    
+    if(getMyVar('主页显示内容')=='1'){
+        jxItem();
+    }else{
+        setResult([]);
+    }
+}
 // 接口管理页
-function jiexi() {
+function jxItem() {
     setPageTitle('解析管理');
     let d = [];
     d.push({
@@ -71,7 +106,7 @@ function jiexi() {
                 js: $.toString(() => {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
                         require(config.jxCodePath + 'SrcJiexi.js');
-                        importjiexi();
+                        extImport();
                     })
                 })
             }]

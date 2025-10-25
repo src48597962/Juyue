@@ -122,7 +122,7 @@ function jxItemPage() {
                         if(addarr.length>0){
                             let jxlist = [];
                             let jxfile = 'hiker://files/rules/Src/Jiexi/jiexi.json';
-                            eval('jxlist = ' + fecth(jxfile));
+                            eval('jxlist = ' + fetch(jxfile));
                             let newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
                             jxlist = jxlist.concat(newadd);
                             writeFile(jxfile, json.stringify(jxlist));

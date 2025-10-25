@@ -17,14 +17,17 @@ function getDatas() {
 
     return result;
 }
-
+// 对应标识
+function getJxIde(data){
+    return data.stop?'Ⓓ':data.type=0?"ⓦ":data.type=1?"ⓙ":data.type=2?"ⓕ":"";
+}
 // 文字上色
 function colorTitle(title, Color) {
     return '<font color="' + Color + '">' + title + '</font>';
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
-    let dataTitle = (ide||(getMyVar('批量选择模式')?'○':''))+(data.stop?'Ⓓ':'')+data.name + '  ‘‘’’<small><font color=grey>'+(data.author?'  ['+data.author+']':'') + '</font></small>';
+    let dataTitle = (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + '  ‘‘’’<small><font color=grey>' + (data.type!=2?'  ['+data.url+']':'') + '</font></small>';
     return dataTitle;
 }
 // 接口多选处理方法

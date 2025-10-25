@@ -10,7 +10,16 @@ if(record!=""){
 
 let excludeurl = parseRecord.excludeurl||[];//屏蔽的播放地址
 let excludeparse = parseRecord.excludeparse||[];//屏蔽的解析
-let playSet = {printlog:0,cachem3u8:0,parsemode:1,video:1,xiutannh:"web",dmRoute:0,isTest:0,mulnum:1};
+let playSet = {
+    printlog: 0,
+    cachem3u8: 0,
+    parsemode: 1,
+    video: 1,
+    xiutannh: "web",
+    danmu: 0,
+    checkVideo: 0,
+    mulnum: 1
+};
 let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
 if(Jucfg != ""){
     try{
@@ -20,7 +29,7 @@ if(Jucfg != ""){
 }
 
 if(!playSet.printlog){
-    log = function (msg) {
+    log = function () {
         //未开启打印解析日志>不打印
         return;
     }
@@ -338,7 +347,7 @@ var SrcParseS = {
             };
         }else if(parsemode==2){//强制嗅探走video，没法指定header
             let dm;
-            if(isVip && playSet.dmRoute==1){
+            if(isVip && playSet.danmu==1){
                 dm = this.弹幕(vipUrl);
             }
             let list = parselist.filter(v => v.type==0);
@@ -376,7 +385,7 @@ var SrcParseS = {
                         ulist: list,
                         vipUrl: vipUrl,
                         video: playSet.video,
-                        testVideo: playSet.isTest?this.testVideo:undefined,
+                        testVideo: playSet.checkVideo?this.testVideo:undefined,
                         parsemode: 1
                     },
                     id: list.parse
@@ -533,7 +542,7 @@ var SrcParseS = {
         //播放
         if(playurl){
             let dm;
-            if(isVip && playSet.dmRoute==1){
+            if(isVip && playSet.danmu==1){
                 dm = this.弹幕(vipUrl);
             }
             if(urls.length>1){

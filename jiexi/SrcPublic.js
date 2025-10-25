@@ -66,7 +66,7 @@ function jxItemList(datalist) {
             title: datatitle,
             url: getMyVar('批量选择模式') ? $('#noLoading#').lazyRule((data) => {
                 data = JSON.parse(base64Decode(data));
-                require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
+                require(config.jxCodePath + 'SrcPublic.js');
                 duoselect(data);
                 return "hiker://empty";
             }, base64Encode(JSON.stringify(it))) : $(selectmenu, 2).select((data) => {
@@ -76,17 +76,17 @@ function jxItemList(datalist) {
                         let pastes = getPastes();
                         pastes.push('云口令文件');
                         return $(pastes, 2).select((data) => {
-                            require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
+                            require(config.jxCodePath + 'SrcPublic.js');
                             return JYshare(input, data);
                         }, data)
                     } else {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
+                        require(config.jxCodePath + 'SrcPublic.js');
                         return JYshare(getItem("sharePaste", ""), data);
                     }
                 } else if (input == "编辑") {
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
-                        jiekouapi(data);
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        jiexiapi(data);
                     }, data)
                 } else if (input == "删除") {
                     return $("确定删除：" + data.name).confirm((data) => {
@@ -103,10 +103,7 @@ function jxItemList(datalist) {
                         yiji(data);
                     }, data);
                 } else {//置顶、禁用、启用
-                    if (input == "置顶") {
-                        return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
-                    }
-                    require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcPublic.js');
                     let sm = dataHandle(data, input);
                     refreshPage(false);
                     return 'toast://' + sm;

@@ -119,13 +119,14 @@ function jxItemPage() {
                                 })
                             }
                         }
+                        let newadd = [];
                         if(addarr.length>0){
                             let jxlist = [];
                             let jxfile = 'hiker://files/rules/Src/Jiexi/jiexi.json';
                             try{
                                 eval('jxlist = ' + fetch(jxfile));
                             }catch(e){}
-                            let newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
+                            newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
                             jxlist = jxlist.concat(newadd);
                             writeFile(jxfile, JSON.stringify(jxlist));
                         }

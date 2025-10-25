@@ -104,9 +104,31 @@ function jxItemPage() {
             longClick: [{
                 title: '外部导入',
                 js: $.toString(() => {
-                    return $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                        require(config.jxCodePath + 'SrcJiexi.js');
-                        extImport();
+                    return $(['聚影解析'], 2).select(() => {
+                        let addarr = [];
+                        if(input=='聚影解析'){
+                            let jxfile = 'hiker://files/rules/Src/Juying2/jiexi.json';
+                            let jxstr = fetch(jxfile);
+                            if(jxstr){
+                                addarr = JSON.parse(jxstr).map(it=>{
+                                    return {
+                                        name: it.name,
+                                        url: it.url,
+                                        type: it.url.includes('function')?2:it.type
+                                    }
+                                })
+                            }
+                        }
+                        if(addarr.length>0){
+                            let jxlist = [];
+                            let jxfile = 'hiker://files/rules/Src/Jiexi/jiexi.json';
+                            eval('jxlist = ' + fecth(jxfile));
+                            let newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
+                            jxlist = jxlist.concat(newadd);
+                            writeFile(jxfile, json.stringify(jxlist));
+                            toast('新增解析：' + newadd.length);
+                        }
+                        return 'hikery://empty';
                     })
                 })
             }]

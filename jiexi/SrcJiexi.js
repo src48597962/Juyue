@@ -3,6 +3,15 @@ require(config.jxCodePath + 'SrcPublic.js');
 
 // 主页
 function homePage() {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('duodatalist');
+        clearMyVar("seacrhJiexi");
+        clearMyVar('jxdatalist');
+        clearMyVar('seacrhDataList');
+        clearMyVar('批量选择模式');
+        clearMyVar('onlyStopJk');
+    }));
+
     let dd = [];
     dd.push({
         title: '解析列表',

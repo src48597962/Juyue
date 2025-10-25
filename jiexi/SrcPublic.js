@@ -19,7 +19,7 @@ function getDatas() {
 }
 // 对应标识
 function getJxIde(data){
-    return data.stop?'Ⓓ':data.type=0?"ⓦ":data.type=1?"ⓙ":data.type=2?"ⓕ":"";
+    return data.stop?'Ⓓ':data.type==0?"Ⓦ":data.type==1?"Ⓙ":data.type==2?"Ⓕ":"";
 }
 // 文字上色
 function colorTitle(title, Color) {

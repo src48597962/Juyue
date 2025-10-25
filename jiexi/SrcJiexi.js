@@ -126,9 +126,8 @@ function jxItemPage() {
                             let newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
                             jxlist = jxlist.concat(newadd);
                             writeFile(jxfile, json.stringify(jxlist));
-                            toast('新增解析：' + newadd.length);
                         }
-                        return 'hikery://empty';
+                        return 'toast://新增解析：' + newadd.length;
                     })
                 })
             }]

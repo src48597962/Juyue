@@ -183,7 +183,7 @@ function jxItemPage() {
             if(input != ''){
                 deleteItemByCls('jxItemLoadList');
                 putMyVar("seacrhJiexi", input);
-                require(config.jxCodePath + 'SrcJiexi.js');
+                require(config.jxCodePath + 'SrcPublic.js');
                 let jxdatalist = storage0.getMyVar("jxdatalist");
                 jxdatalist = outputSearchList(jxdatalist, input);
                 addItemBefore('jkItemLoading', jxItemList(jxdatalist));
@@ -211,7 +211,11 @@ function jxItemPage() {
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',
-        col_type: 'text_center_1'
+        col_type: 'text_center_1',
+        extra: {
+            id: 'jxItemLoading',
+            lineVisible: false
+        }
     });
     setResult(d);
 }

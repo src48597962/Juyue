@@ -30,7 +30,7 @@ function home() {
     });
     setPreResult(d);
     
-    if(getMyVar('主页显示内容')=='1'){
+    if(getMyVar('主页显示内容', '1')=='1'){
         jxItem();
     }else{
         setResult([]);

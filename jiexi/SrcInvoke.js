@@ -15,8 +15,9 @@ function jxItem() {
     jxItemPage();
 }
 // 调用解析
-function parse() {
-    
+function parse(input, dataObj) {
+    require(codePath + 'SrcParse.js');
+    return SrcParse(input, dataObj);
 }
 
 $.exports = {

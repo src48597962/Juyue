@@ -786,7 +786,7 @@ function SrcParse(vipUrl, dataObj) {
                             }
                         }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
                             fba.clearVar('getParse');
-                            fba.log("exeWebRule解析到>"+urls[i]);
+                            fba.log("exeWebRule捕获视频>"+urls[i]);
                             return fy_bridge_app.getHeaderUrl(urls[i]) + '#isVideo=true#';
                         }
                     }

@@ -123,7 +123,8 @@ function jxItemPage() {
                                     return {
                                         name: it.name,
                                         url: it.url,
-                                        type: it.url.includes('function')?2:it.type
+                                        type: it.url.includes('function')?'2':it.type+'',
+                                        ext: it.ext
                                     }
                                 })
                             }

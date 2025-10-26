@@ -102,7 +102,7 @@ function SrcParse(vipUrl, dataObj) {
         let isVip = 0;
         log("请求地址："+vipUrl); 
 
-        if (vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')) {
+        if(vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')){
             if(!fileExist("hiker://files/cache/bidi.dex") || !fileExist("hiker://files/cache/libp2p.so")){
                 return "toast://缺少荐片插件，播放失败";
             }
@@ -114,7 +114,7 @@ function SrcParse(vipUrl, dataObj) {
             } catch (e) {
                 return "toast://荐片播放失败";
             }
-        }else if (/(xunlei|magnet:|ed2k:|bt:|ftp:|\.torrent)/.test(vipUrl)) {
+        }else if(/(xunlei|magnet:|ed2k:|bt:|ftp:|\.torrent)/.test(vipUrl)){
             if(fetch("hiker://page/diaoyong?rule=迅雷")){
                 log("优先偿试调用迅雷小程序解析"); 
                 return "hiker://page/diaoyong?rule=迅雷&page=fypage#" + vipUrl
@@ -132,20 +132,20 @@ function SrcParse(vipUrl, dataObj) {
         }else if(/\.mp3|\.m4a/.test(vipUrl)){
             log("直链音乐地址，直接播放"); 
             return vipUrl + '#isMusic=true##checkMetadata=false#';
-        }else if(vipUrl.includes('sa.sogou')) {
+        }else if(vipUrl.includes('sa.sogou')){
             log("优看视频，直接明码解析"); 
             return unescape(request(vipUrl).match(/"url":"([^"]*)"/)[1].replace(/\\u/g, "%u"));
-        }else if(/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)) {
+        }else if(/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)){
             return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
                 require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
                 aliShareUrl(input);
             },vipUrl);
-        }else if(/pan\.quark\.cn|drive\.uc\.cn/.test(vipUrl)) {
+        }else if(/pan\.quark\.cn|drive\.uc\.cn/.test(vipUrl)){
             return "hiker://page/quarkList?rule=Quark.简&realurl=" + encodeURIComponent(vipUrl) + "&sharePwd=";
         }else if(vipUrl.includes('pan.baidu.com')) {
             putVar('urlBaidu', vipUrl);
             return "hiker://page/list?rule=百度网盘&realurl=" + vipUrl;
-        }else if(vipUrl.includes('.123684.com')) {
+        }else if(vipUrl.includes('.123684.com')){
             return "toast://暂不支持123盘";
         }else if(isVipVideo(vipUrl)){
             if(vipUrl.indexOf('html?')>-1){
@@ -178,8 +178,8 @@ function SrcParse(vipUrl, dataObj) {
                 if(vipUrl.indexOf('.') != -1){
                     let host = vipUrl.replace('m.tv.','m.').match(/\.(.*?)\//)[1];
                     from = host.split('.')[0];
-                    parseRecord['flags'] = parseRecord['flags']||[];
-                    if(parseRecord['flags'].indexOf(from)==-1){parseRecord['flags'].push(from)}//记录到片源标识组
+                    parseRecord['flag'] = parseRecord['flag']||[];
+                    if(parseRecord['flag'].indexOf(from)==-1){parseRecord['flag'].push(from)}//记录到片源标识组
                 }else if(vipUrl.indexOf('-') != -1){
                     from = vipUrl.split('-')[0];
                 }else{

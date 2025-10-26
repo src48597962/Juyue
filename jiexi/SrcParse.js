@@ -14,10 +14,9 @@ let playSet = {
     printlog: 0,
     cachem3u8: 0,
     parsemode: 1,
-    video: 1,
-    xiutannh: "web",
+    videoplay: 1,
     danmu: 0,
-    testVideo: 0,
+    testvideo: 0,
     mulnum: 1
 };
 let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
@@ -157,15 +156,9 @@ function SrcParse(vipUrl, dataObj) {
             let obj = {
                 vipUrl: vipUrl,
                 isWeb: 1,
-                video: playSet.video,
-                music: dataObj.music,
-                js: dataObj.js,
-                extra: {
-                    id: dataObj.id,
-                    playUrl: vipUrl,
-                    sniffer: dataObj.sniffer,
-                    cachem3u8: playSet.cachem3u8
-                }
+                videoplay: playSet.videoplay,
+                ismusic: dataObj.ismusic,
+                js: dataObj.js
             }
             return 解析方法(obj);
         }
@@ -392,8 +385,8 @@ function SrcParse(vipUrl, dataObj) {
                     param: {
                         ulist: list,
                         vipUrl: vipUrl,
-                        video: playSet.video,
-                        testVideo: playSet.testVideo?testVideo:undefined,
+                        videoplay: playSet.videoplay,
+                        testVideo: playSet.testvideo?testVideo:undefined,
                         parsemode: 1
                     },
                     id: list.url
@@ -803,7 +796,7 @@ function SrcParse(vipUrl, dataObj) {
                 }catch(e){
                     fba.log("exeWebRule失败>"+e.message);
                 }
-            },music,webUrl), {
+            }, music, webUrl), {
                 blockRules: ['.m4a','.mp3','.gif','.jpg','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js','/klad/*.php','layer.css'],
                 jsLoadingInject: true,
                 js: js,
@@ -816,18 +809,12 @@ function SrcParse(vipUrl, dataObj) {
 
         if(obj.isWeb){
             //网页播放页，非官源解析
-            require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
-            if(obj.music){
+            if(obj.ismusic){
                 return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 1) || "toast://嗅探解析失败";
-            }else if(obj.video){
-                let extra = obj.extra || {};
-                if(obj.js && extra.id){
-                    extra.js = obj.js;
-                    updateItem(extra.id, { extra: getPlayExtra(extra) });
-                }
+            }else if(obj.videoplay){
                 return 'video://'+obj.vipUrl;
             }else{
-                return exeWebRule({webUrl:obj.vipUrl, js:obj.js||extraJS(obj.vipUrl)}, 0) || "toast://WebRule获取失败，可试试video";
+                return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://WebRule获取失败，可试试video";
             }
         }else if(/^function/.test(obj.ulist.url.trim())){
             //js解析
@@ -853,10 +840,10 @@ function SrcParse(vipUrl, dataObj) {
             //url解析
             let taskheader = {withStatusCode:true, timeout:8000};
             let ext = obj.ulist.ext || {};
-            taskheader['header'] = ext.header || taskheader['header'];
+            taskheader['header'] = ext.header;
             let getjson;
             try{
-                getjson = JSON.parse(request(obj.ulist.url+obj.vipUrl,taskheader));
+                getjson = JSON.parse(request(obj.ulist.url+obj.vipUrl, taskheader));
             }catch(e){
                 getjson = {};
                 log(obj.ulist.name+'>解析地址访问失败');
@@ -868,7 +855,27 @@ function SrcParse(vipUrl, dataObj) {
                 var isjson = 0;
                 try {
                     if(ext.decrypt){
-                        require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
+                        // 加密解析
+                        function appDecrypt(ciphertext, decrypt) {
+                            let key = decrypt.key;
+                            let iv = decrypt.iv;
+                            let mode = decrypt.mode || "CryptoJS.mode.ECB";
+                            let padding = decrypt.padding || "CryptoJS.pad.Pkcs7";
+
+                            eval(getCryptoJS());
+
+                            key = CryptoJS.enc.Utf8.parse(key);
+
+                            function decrypt(ciphertext) {
+                                let decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
+                                    mode: mode,
+                                    padding: padding,
+                                    iv: iv
+                                });
+                                return decrypted.toString(CryptoJS.enc.Utf8);
+                            }
+                            return decrypt(ciphertext);
+                        }
                         gethtml = appDecrypt(gethtml, ext.decrypt);
                     }
                     let json =JSON.parse(gethtml);
@@ -881,7 +888,7 @@ function SrcParse(vipUrl, dataObj) {
                         rurl = getjson.url;
                     }else if(/\.m3u8|\.mp4/.test(gethtml) && geturl(gethtml)){
                         rurl = geturl(gethtml);
-                    }else if((MY_NAME=="海阔视界"&&getAppVersion()>=4094)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=1359)){
+                    }else{
                         require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
                         let purl = obj.ulist.url+obj.vipUrl;
                         if(/jx\.playerjy\.com/.test(purl)){

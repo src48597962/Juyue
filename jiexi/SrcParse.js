@@ -786,7 +786,7 @@ function SrcParse(vipUrl, dataObj) {
                             }
                         }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
                             fba.clearVar('getParse');
-                            //fba.log("exeWebRule解析到>"+urls[i]);
+                            fba.log("exeWebRule解析到>"+urls[i]);
                             return fy_bridge_app.getHeaderUrl(urls[i]) + '#isVideo=true#';
                         }
                     }
@@ -811,7 +811,7 @@ function SrcParse(vipUrl, dataObj) {
             }else if(obj.videoplay){
                 return 'video://'+obj.vipUrl;
             }else{
-                return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://WebRule获取失败，可试试video";
+                return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://exeWebRule获取失败，可试试video";
             }
         }else if(/^function/.test(obj.ulist.url.trim())){
             //js解析

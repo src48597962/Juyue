@@ -94,9 +94,8 @@ function isVipVideo(url){
     return false;
 }
 
-let SrcParseS = {
-    //解析入口
-    lazy: function (vipUrl, dataObj) {
+//解析入口
+function SrcParse(vipUrl, dataObj) {
         vipUrl = decodeURI(vipUrl);
         vipUrl = vipUrl.startsWith('tvbox-xg:')?vipUrl.replace('tvbox-xg:',''):vipUrl.startsWith('push://')?vipUrl.replace('push://',''):vipUrl
         dataObj = dataObj || {};
@@ -168,7 +167,7 @@ let SrcParseS = {
                     cachem3u8: playSet.cachem3u8
                 }
             }
-            return this.解析方法(obj);
+            return 解析方法(obj);
         }
         //片源标识
         let from;
@@ -177,10 +176,10 @@ let SrcParseS = {
         }else{
             try{
                 if(vipUrl.indexOf('.') != -1){
-                    var host = vipUrl.replace('m.tv.','m.').match(/\.(.*?)\//)[1];
+                    let host = vipUrl.replace('m.tv.','m.').match(/\.(.*?)\//)[1];
                     from = host.split('.')[0];
-                    parseRecord['flag'] = parseRecord['flag']||[];
-                    if(parseRecord['flag'].indexOf(from)==-1){parseRecord['flag'].push(from)}//记录到片源标识组
+                    parseRecord['flags'] = parseRecord['flags']||[];
+                    if(parseRecord['flags'].indexOf(from)==-1){parseRecord['flags'].push(from)}//记录到片源标识组
                 }else if(vipUrl.indexOf('-') != -1){
                     from = vipUrl.split('-')[0];
                 }else{
@@ -288,7 +287,7 @@ let SrcParseS = {
         let headers = [];//多线路头信息
         let audioUrls = [];//多线路音频分离地址
         let danmu = "";//多线路弹幕
-        let dellist = [];//需从本地解析中删除列表
+        let faillist = [];//解析失败待处理列表
         let myJXchange = 0;//私有解析是否有变化需要保存
         let x5jxlist = [];
         let x5namelist = [];
@@ -342,11 +341,11 @@ let SrcParseS = {
                 }else{
                     return '';
                 }
-            },parselist,vipUrl,this.解析方法,this.mulheader,log));
+            },parselist,vipUrl,解析方法,mulheader,log));
             parselist.forEach((item) => {
                 urls.push(u + "?name=" + item.name + "#.m3u8#pre#");
                 names.push(item.name);
-                headers.push(item.header || this.mulheader(vipUrl));
+                headers.push(item.header || mulheader(vipUrl));
             })
             return {
                 urls: urls,
@@ -356,7 +355,7 @@ let SrcParseS = {
         }else if(parsemode==2){//模式2，强制嗅探，手工选择，走video没法指定header
             let dm;
             if(isVip && playSet.danmu==1){
-                dm = this.弹幕(vipUrl);
+                dm = 弹幕(vipUrl);
             }
             let list = parselist.filter(v => v.type==0);
             let weburls = list.map(item => "video://" + item.url +vipUrl);
@@ -388,15 +387,15 @@ let SrcParseS = {
             let UrlParses = UrlList.map((list)=>{
                 if (/^\/\//.test(list.url)) { list.url = 'https:' + list.url }
                 return {
-                    func: this.解析方法,
+                    func: 解析方法,
                     param: {
                         ulist: list,
                         vipUrl: vipUrl,
                         video: playSet.video,
-                        testVideo: playSet.testVideo?this.testVideo:undefined,
+                        testVideo: playSet.testVideo?testVideo:undefined,
                         parsemode: 1
                     },
-                    id: list.parse
+                    id: list.url
                 }
             });
 
@@ -429,7 +428,7 @@ let SrcParseS = {
 
             for(let k in beparses){
                 var parseurl = beparses[k].url;
-                if(beerrors[k]==null&&beurls[k]){//&&contain.test(beurls[k])&&!exclude.test(beurls[k])&&excludeurl.indexOf(beurls[k])==-1
+                if(beerrors[k]==null&&beurls[k]){
                     if(playurl==""){playurl = beurls[k];}
                     //记录最快的，做为下次优先
                     if(beparses[k].name==lastparse){
@@ -469,7 +468,7 @@ let SrcParseS = {
                             let maudioUrls = urljson.audioUrls || [];
                             for(let j=0;j<murls.length;j++){
                                 if(!/yue|480|360/.test(mnames[j])){//屏蔽全全-优酷的不必要线路
-                                    let MulUrl = this.formatMulUrl(murls[j], urls.length);
+                                    let MulUrl = formatMulUrl(murls[j], urls.length);
                                     urls.push(MulUrl.url);
                                     if(mnames.length>0){
                                         names.push(mnames[j]);
@@ -491,32 +490,32 @@ let SrcParseS = {
                             log('判断多线路地址对象有错：'+e.message);
                         }
                     }else{
-                        let MulUrl = this.formatMulUrl(beurls[k], urls.length);
+                        let MulUrl = formatMulUrl(beurls[k], urls.length);
                         urls.push(MulUrl.url);
                         names.push(beparses[k].name || '线路'+urls.length);
                         headers.push(MulUrl.header);
                     }
                     //if(ismul==0){break;}
                 }else{
-                    dellist.push(beparses[k]);
+                    faillist.push(beparses[k]);
                 }
             }//排队解析结果循环
         }//解析全列表循环
 
         let failparse = [];
         //失败的解析，处理
-        for(let p=0;p<dellist.length;p++){
-            if(dellist[p].stype=="myjx"){
+        for(let p=0;p<faillist.length;p++){
+            if(faillist[p].stype=="myjx"){
                 for(let j=0;j<jxList.length;j++){
-                    if(dellist[p].url==jxList[j].url){
-                        if(dellist[p].x5==1){
+                    if(faillist[p].url==jxList[j].url){
+                        if(faillist[p].x5==1){
                             jxList[j]['type'] = 0;
                         }
                         jxList[j]['sort'] = jxList[j]['sort']||0;
                         jxList[j].sort = jxList[j].sort + 1;
+                        failparse.push(jxList[j].name);//加入提示失败列表
                         /*
                         //解析失败的,且排序大于5次从私有中排除片源
-                        failparse.push(jxList[j].name);//加入提示失败列表，仅提示
                         if(jxList[j].sort>5 && jxList[j].stopfrom.indexOf(from)==-1){
                             jxList[j].stopfrom[jxList[j].stopfrom.length] = from;
                             log(jxList[j].name+'>解析失败大于5次，排除片源'+from);
@@ -527,11 +526,11 @@ let SrcParseS = {
                     }
                 }
             }
-            if(dellist[p].stype=="app"){
+            if(faillist[p].stype=="app"){
                 //app自带的解析在解析失败时，直接加入黑名单
                 parseRecord['excludeparse'] = parseRecord['excludeparse']||[];
-                if(parseRecord['excludeparse'].indexOf(dellist[p].url)==-1){
-                    parseRecord['excludeparse'].push(dellist[p].url);
+                if(parseRecord['excludeparse'].indexOf(faillist[p].url)==-1){
+                    parseRecord['excludeparse'].push(faillist[p].url);
                 }
             }
         }
@@ -551,7 +550,7 @@ let SrcParseS = {
         if(playurl){
             let dm;
             if(isVip && playSet.danmu==1){
-                dm = this.弹幕(vipUrl);
+                dm = 弹幕(vipUrl);
             }
             if(urls.length>1){
                 log('进入多线路播放');
@@ -565,7 +564,7 @@ let SrcParseS = {
             }else{
                 log('进入单线路播放');
                 if(dm){
-                    let MulUrl = this.formatMulUrl(playurl, 0);
+                    let MulUrl = formatMulUrl(playurl, 0);
                     urls = [];
                     headers= [];
                     urls.push(MulUrl.url);
@@ -576,7 +575,7 @@ let SrcParseS = {
                         danmu: dm 
                     }); 
                 }else{
-                    return this.formatUrl(playurl);
+                    return formatUrl(playurl);
                 }
             }
         }else{
@@ -598,28 +597,9 @@ let SrcParseS = {
                 return 'toast://解析失败';
             }
         }
-    },
-    //处理多线路播放地址
-    formatMulUrl: function (url,i) {
-        try {
-            let header = this.mulheader(url);
-            url = url.split(';{')[0];
-            if ((playSet.cachem3u8)&&url.indexOf('.m3u8')>-1) {// || url.indexOf('vkey=')>-1
-                log("缓存m3u8索引文件");
-                let name = 'video'+parseInt(i)+'.m3u8';
-                url = cacheM3u8(url, {headers: header, timeout: 3000}, name)+'#pre#';
-            }
-            if(url.indexOf('#isVideo=true#')==-1 && i==0){
-                url = url + '#isVideo=true#';
-            }
-            return {url:url, header:header};
-        } catch (e) {
-            log("错误："+e.message);
-            return url;
-        }   
-    },
+    }
     //测试视频地址有效性
-    testVideo: function (url,name,times) {
+    function testVideo(url,name,times) {
         if(!url){return 0}
         if(!name){name = "解析"}
         if(!times){times = 60}
@@ -682,8 +662,79 @@ let SrcParseS = {
             log(name+'>错误：探测异常未拦截，可能是失败的>'+e.message);
             return 1;
         }
-    },
-    弹幕: function(vipUrl){
+    }
+    //处理单线路播放地址
+    function formatUrl(url, i) {
+        try {
+            if (url.trim() == "") {
+                return "toast://解析失败，建议切换线路或更换解析方式";
+            } else if(/^{/.test(url)){
+                return url;
+            }else {
+                if (url[0] == '/') { url = 'https:' + url }
+                if (i == undefined) {
+                    if (playSet.cachem3u8 && url.indexOf('.m3u8')>-1) {
+                        url = cacheM3u8(url, {timeout: 2000});
+                    }
+                    if(url.indexOf('User-Agent')==-1){
+                        if (/wkfile/.test(url)) {
+                            url = url + ';{User-Agent@Mozilla/5.0&&Referer@https://fantuan.tv/}';
+                        } else if (/bilibili|bilivideo/.test(url)) {
+                            url = url + ";{User-Agent@bili2021&&Referer@https://www.bilibili.com/}";
+                        } else if (/mgtv/.test(url)) {
+                            url = url + ";{User-Agent@Mozilla/5.0}";
+                        }/* else {
+                            url = url + ";{User-Agent@Mozilla/5.0}";
+                        }*/
+                    }
+                } else {
+                    if ((playSet.cachem3u8)&&url.indexOf('.m3u8')>-1) {// || url.indexOf('vkey=')>-1
+                        url = cacheM3u8(url, {timeout: 2000}, 'video' + parseInt(i) + '.m3u8') + '#pre#';
+                    }
+                }
+                if(url.indexOf('#isVideo=true#')==-1){
+                    url = url + '#isVideo=true#';
+                }
+                return url;
+            }
+        } catch (e) {
+            return url;
+        }
+    }
+    //处理多线路播放地址
+    function formatMulUrl(url,i) {
+        try {
+            let header = mulheader(url);
+            url = url.split(';{')[0];
+            if ((playSet.cachem3u8)&&url.indexOf('.m3u8')>-1) {// || url.indexOf('vkey=')>-1
+                log("缓存m3u8索引文件");
+                let name = 'video'+parseInt(i)+'.m3u8';
+                url = cacheM3u8(url, {headers: header, timeout: 3000}, name)+'#pre#';
+            }
+            if(url.indexOf('#isVideo=true#')==-1 && i==0){
+                url = url + '#isVideo=true#';
+            }
+            return {url:url, header:header};
+        } catch (e) {
+            log("错误："+e.message);
+            return url;
+        }   
+    }
+    //获取多线路中需要的头信息
+    function mulheader (url) {
+        let header = {};
+        if(url.includes(';{')){
+            header = headerStrToObj('{'+url.split(';{')[1].replace('#isVideo=true#',''))
+        }else if (/mgtv/.test(url)) {
+            header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'www.mgtv.com' };
+        } else if (/bilibili|bilivideo/.test(url)) {
+            header = { 'User-Agent': 'bili2021', 'Referer': 'www.bilibili.com' };
+        } else if (/wkfile/.test(url)) {
+            header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'fantuan.tv' };
+        }
+        return header;
+    }
+    function 弹幕(vipUrl) {
         //dm盒子弹幕
         log("开始获取弹幕");
         let dm = "";
@@ -696,8 +747,8 @@ let SrcParseS = {
             log("获取弹幕失败");
         }
         return dm;
-    },
-    解析方法: function(obj) {
+    }
+    function 解析方法(obj) {
         function geturl(gethtml) {
             let rurl = "";
             try {
@@ -847,7 +898,7 @@ let SrcParseS = {
                         rurl = exeWebRule({webUrl:purl,head:head}, 0, extraJS(purl)) || "";
                     }
                 }
-                var x5 = 0;
+                let x5 = 0;
                 if(!rurl){
                     if(!/404 /.test(gethtml)&&obj.ulist.url.indexOf('key=')==-1&&isjson==0){
                         x5 = 1;
@@ -864,55 +915,5 @@ let SrcParseS = {
                 return {url: "", ulist: obj.ulist, error: 1};//网页无法访问状态码不等于200 
             }
         }
-    },
-    formatUrl: function (url, i) {
-        try {
-            if (url.trim() == "") {
-                return "toast://解析失败，建议切换线路或更换解析方式";
-            } else if(/^{/.test(url)){
-                return url;
-            }else {
-                if (url[0] == '/') { url = 'https:' + url }
-                if (i == undefined) {
-                    if (playSet.cachem3u8 && url.indexOf('.m3u8')>-1) {
-                        url = cacheM3u8(url, {timeout: 2000});
-                    }
-                    if(url.indexOf('User-Agent')==-1){
-                        if (/wkfile/.test(url)) {
-                            url = url + ';{User-Agent@Mozilla/5.0&&Referer@https://fantuan.tv/}';
-                        } else if (/bilibili|bilivideo/.test(url)) {
-                            url = url + ";{User-Agent@bili2021&&Referer@https://www.bilibili.com/}";
-                        } else if (/mgtv/.test(url)) {
-                            url = url + ";{User-Agent@Mozilla/5.0}";
-                        }/* else {
-                            url = url + ";{User-Agent@Mozilla/5.0}";
-                        }*/
-                    }
-                } else {
-                    if ((playSet.cachem3u8)&&url.indexOf('.m3u8')>-1) {// || url.indexOf('vkey=')>-1
-                        url = cacheM3u8(url, {timeout: 2000}, 'video' + parseInt(i) + '.m3u8') + '#pre#';
-                    }
-                }
-                if(url.indexOf('#isVideo=true#')==-1){
-                    url = url + '#isVideo=true#';
-                }
-                return url;
-            }
-        } catch (e) {
-            return url;
-        }
-    },
-    mulheader: function (url) {
-        let header = {};
-        if(url.includes(';{')){
-            header = headerStrToObj('{'+url.split(';{')[1].replace('#isVideo=true#',''))
-        }else if (/mgtv/.test(url)) {
-            header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'www.mgtv.com' };
-        } else if (/bilibili|bilivideo/.test(url)) {
-            header = { 'User-Agent': 'bili2021', 'Referer': 'www.bilibili.com' };
-        } else if (/wkfile/.test(url)) {
-            header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'fantuan.tv' };
-        }
-        return header;
     }
-}
+    

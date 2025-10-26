@@ -135,10 +135,7 @@ function SrcParse(vipUrl, dataObj) {
             log("优看视频，直接明码解析"); 
             return unescape(request(vipUrl).match(/"url":"([^"]*)"/)[1].replace(/\\u/g, "%u"));
         }else if(/www\.aliyundrive\.com|www\.alipan\.com/.test(vipUrl)){
-            return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
-                aliShareUrl(input);
-            },vipUrl);
+            return "hiker://page/aliyun?page=fypage&rule=云盘君.简&realurl=" + vipUrl;
         }else if(/pan\.quark\.cn|drive\.uc\.cn/.test(vipUrl)){
             return "hiker://page/quarkList?rule=Quark.简&realurl=" + encodeURIComponent(vipUrl) + "&sharePwd=";
         }else if(vipUrl.includes('pan.baidu.com')) {
@@ -889,12 +886,72 @@ function SrcParse(vipUrl, dataObj) {
                     }else if(/\.m3u8|\.mp4/.test(gethtml) && geturl(gethtml)){
                         rurl = geturl(gethtml);
                     }else{
-                        require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
+                        //可用于注入js模似点击
+                        function extraJS(playUrl) {
+                            function click1(p1,p2) {
+                                return $.toString((p1,p2) => {
+                                    function check() {
+                                        try {
+                                            let iframe = document.querySelector(p1);
+                                            let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                                            iframeDocument.querySelector(p2).click();
+                                        } catch (e) {
+                                            setTimeout(check, 100);
+                                        }
+                                    }
+                                    check();
+                                },p1,p2)
+                            }
+                            function click2() {
+                                return $.toString(() => {
+                                    function check() {
+                                        var is = 0;
+                                        // 获取所有具有 id 属性的元素
+                                        var elementsWithId = Array.from(document.querySelectorAll('[id]'));
+                                        // 遍历每个元素，检查文本内容并触发点击事件
+                                        elementsWithId.forEach(element => {
+                                            // 检查元素的文本内容是否包含 "点击播放"
+                                            if (element.outerHTML.includes("播放")) {
+                                                element.click();
+                                                is = 1;
+                                            }
+                                        });
+                                        if(is==0){
+                                            setTimeout(check, 100);
+                                        }
+                                    }
+                                    check();
+                                })
+                            }
+                            function click3(p1) {
+                                return $.toString((p1) => {
+                                    function check() {
+                                        try {
+                                            document.getElementsByClassName(p1)[0].click();
+                                        } catch (e) {
+                                            setTimeout(check, 100);
+                                        }
+                                    }
+                                    check();
+                                },p1)
+                            }
+                            if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
+                                return click1('#playleft iframe','#start');
+                            }else if(/media\.staticfile\.link/.test(playUrl)){
+                                return click2();
+                            }else if(/maolvys\.com/.test(playUrl)){
+                                return click3();
+                            }else{
+                                return undefined;
+                            }
+                        }
+                        //"document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
+                        
                         let purl = obj.ulist.url+obj.vipUrl;
                         if(/jx\.playerjy\.com/.test(purl)){
                             taskheader['referer'] = purl;
-                            let burl = pd(fetch(purl),"iframe&&src");
-                            purl = pd(fetch(burl),"iframe&&src");
+                            let burl = pd(fetch(purl), "iframe&&src", purl);
+                            purl = pd(fetch(burl), "iframe&&src", purl);
                             log("获取到iframe地址>" + purl);
                         }
                         rurl = exeWebRule({webUrl:purl, head:taskheader, js:ext.js||extraJS(purl)}, 0) || "";

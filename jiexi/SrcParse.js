@@ -198,7 +198,7 @@ function SrcParse(vipUrl, dataObj) {
         let mulnum = playSet.mulnum || 1;//多线程数
         let jxfile = "hiker://files/rules/Src/Jiexi/jiexi.json";//解析存放文件
         let parselist = [];//待进线程执行的解析列表
-        let jxList= [];//读取解析列表
+        let jxList= [];//读取本地的解析列表
 
         if(dataObj.parse){
             //有指定解析

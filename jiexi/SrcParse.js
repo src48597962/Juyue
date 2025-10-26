@@ -159,7 +159,7 @@ function SrcParse(vipUrl, dataObj) {
                 isWeb: 1,
                 video: playSet.video,
                 music: dataObj.music,
-                js: dataObj.extrajs,
+                js: dataObj.js,
                 extra: {
                     id: dataObj.id,
                     playUrl: vipUrl,
@@ -342,7 +342,7 @@ function SrcParse(vipUrl, dataObj) {
                 }else{
                     return '';
                 }
-            },parselist,vipUrl,解析方法,mulheader,log));
+            }, parselist, vipUrl, 解析方法, mulheader, log));
             parselist.forEach((item) => {
                 urls.push(u + "?name=" + item.name + "#.m3u8#pre#");
                 names.push(item.name);
@@ -383,7 +383,7 @@ function SrcParse(vipUrl, dataObj) {
                 Namelist.push(parselist[s].name);
                 i=s;
             }
-            log("本轮排队解析："+Namelist);
+            log("本轮排队解析：" + Namelist);
 
             let UrlParses = UrlList.map((list)=>{
                 if (/^\/\//.test(list.url)) { list.url = 'https:' + list.url }
@@ -416,8 +416,6 @@ function SrcParse(vipUrl, dataObj) {
                             log("线程中止，已捕获视频");
                             return "break";
                         }
-                    }else{
-                        //if(taskResult.ulist.x5==0){log(taskResult.ulist.name + '>解析失败');}
                     }
                 },
                 param: {
@@ -771,12 +769,11 @@ function SrcParse(vipUrl, dataObj) {
             return rurl;
         }
         
-        function exeWebRule(webObj, music, js) {
+        function exeWebRule(webObj, music) {
             let head = webObj.head || {};
             let webUrl = webObj.webUrl;
-            if(webUrl.includes('=http')){
-                
-            }
+            let js = webObj.js;
+
             return executeWebRule(webUrl, $.toString((music,webUrl) => {
                 try{
                     if (typeof (request) == 'undefined' || !request) {
@@ -821,7 +818,7 @@ function SrcParse(vipUrl, dataObj) {
             //网页播放页，非官源解析
             require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
             if(obj.music){
-                return exeWebRule({webUrl:obj.vipUrl}, 1, obj.js) || "toast://嗅探解析失败";
+                return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 1) || "toast://嗅探解析失败";
             }else if(obj.video){
                 let extra = obj.extra || {};
                 if(obj.js && extra.id){
@@ -830,7 +827,7 @@ function SrcParse(vipUrl, dataObj) {
                 }
                 return 'video://'+obj.vipUrl;
             }else{
-                return exeWebRule({webUrl:obj.vipUrl}, 0, obj.js||extraJS(obj.vipUrl)) || "toast://WebRule获取失败，可试试video";
+                return exeWebRule({webUrl:obj.vipUrl, js:obj.js||extraJS(obj.vipUrl)}, 0) || "toast://WebRule获取失败，可试试video";
             }
         }else if(/^function/.test(obj.ulist.url.trim())){
             //js解析
@@ -854,7 +851,7 @@ function SrcParse(vipUrl, dataObj) {
             return {url: rurl || "", ulist: obj.ulist}; 
         }else{
             //url解析
-            let taskheader = {withStatusCode:true,timeout:8000};
+            let taskheader = {withStatusCode:true, timeout:8000};
             let ext = obj.ulist.ext || {};
             taskheader['header'] = ext.header || taskheader['header'];
             let getjson;
@@ -888,12 +885,12 @@ function SrcParse(vipUrl, dataObj) {
                         require((config.聚影||getPublicItem('聚影','')).replace(/[^/]*$/,'') + 'SrcJyMethod.js');
                         let purl = obj.ulist.url+obj.vipUrl;
                         if(/jx\.playerjy\.com/.test(purl)){
-                            head['referer'] = purl;
+                            taskheader['referer'] = purl;
                             let burl = pd(fetch(purl),"iframe&&src");
                             purl = pd(fetch(burl),"iframe&&src");
                             log("获取到iframe地址>" + purl);
                         }
-                        rurl = exeWebRule({webUrl:purl,head:head}, 0, extraJS(purl)) || "";
+                        rurl = exeWebRule({webUrl:purl, head:taskheader, js:ext.js||extraJS(purl)}, 0) || "";
                     }
                 }
                 let x5 = 0;

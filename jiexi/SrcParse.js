@@ -14,7 +14,7 @@ let playSet = {
     printlog: 1,
     cachem3u8: 0,
     parsemode: 1,
-    videoplay: 1,
+    videoplay: 0,
     danmu: 0,
     testvideo: 0,
     mulnum: 1

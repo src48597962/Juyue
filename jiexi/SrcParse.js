@@ -213,7 +213,7 @@ function SrcParse(vipUrl, dataObj) {
                     if(appParses.length>0){
                         for (let i in appParses) {
                             if(excludeparse.indexOf(appParses[i])==-1){
-                                parselist.push({stype:'app',type:3,name:'app'+i,url:appParses[i],sort:0});
+                                parselist.push({stype:'app', type:'3', name:'app'+i, url:appParses[i], sort:0, ext:{}});
                             }
                         }
                         log("选集自带解析数："+appParses.length); 
@@ -230,7 +230,7 @@ function SrcParse(vipUrl, dataObj) {
                             if(excludeparse.indexOf(appParses[i].url)==-1){
                                 let appParse = appParses[i];
                                 let appext = appParse.ext||{};
-                                parselist.push({stype:'app',type:appParse.type||3,name:appParse.name,url:appParse.url,sort:0,header:appext.header,ext:appext});
+                                parselist.push({stype:'app', type:appParse.type||'3', name:appParse.name, url:appParse.url, sort:0, ext:appext});
                             }
                         }
                         log("选集传入解析数："+appParses.length); 
@@ -254,7 +254,7 @@ function SrcParse(vipUrl, dataObj) {
                             flag.push("qiyi");
                         }
                         if((flag.length==0 && isVip) || flag.indexOf(from)>-1){
-                            parselist.push({stype:'myjx',type:it.type,name:it.name,url:it.url,sort:it.sort||0,header:ext.header,ext:ext});
+                            parselist.push({stype:'myjx', type:it.type, name:it.name, url:it.url, sort:it.sort||0, ext:ext});
                         }
                     }
                 })
@@ -322,13 +322,14 @@ function SrcParse(vipUrl, dataObj) {
                     }catch(e){
                         urltype = "string";
                     }
+                    let headers;
                     if(urltype=="object"){
-                        ulist.header = urljson.headers && urljson.headers.length>0?urljson.headers[0]:ulist.header;
+                        headers = urljson.headers && urljson.headers.length>0?urljson.headers[0]:ulist.ext.header;
                         playUrl = urljson.urls[0];
                     }
-                    log(parsename+">播放地址>"+playUrl)
+                    log(parsename+">代理播放地址>"+playUrl)
                     if(playUrl.includes(".m3u8")){
-                        let f = cacheM3u8(playUrl, {header: ulist.header || getheader(playUrl), timeout: 2000});
+                        let f = cacheM3u8(playUrl, {headers: headers || getheader(playUrl), timeout: 2000});
                         return f?readFile(f.split("##")[0]):playUrl; //'#isVideo=true#';
                     }else{
                         return JSON.stringify({
@@ -345,7 +346,7 @@ function SrcParse(vipUrl, dataObj) {
             parselist.forEach((item) => {
                 urls.push(u + "?name=" + item.name + "#.m3u8#pre#");
                 names.push(item.name);
-                headers.push(item.header || mulheader(vipUrl));
+                headers.push(item.ext.header || mulheader(vipUrl));
             })
             return {
                 urls: urls,
@@ -357,7 +358,7 @@ function SrcParse(vipUrl, dataObj) {
             if(isVip && playSet.danmu==1){
                 dm = 弹幕(vipUrl);
             }
-            let list = parselist.filter(v => v.type==0);
+            let list = parselist.filter(v => v.type=='0');
             let weburls = list.map(item => "video://" + item.url +vipUrl);
             let webnames = list.map(item => item.name);
             return JSON.stringify({
@@ -855,10 +856,7 @@ function SrcParse(vipUrl, dataObj) {
             //url解析
             let taskheader = {withStatusCode:true,timeout:8000};
             let ext = obj.ulist.ext || {};
-            let head = obj.ulist.header || {};
-            if(JSON.stringify(head) != "{}"){
-                taskheader['header'] = head;
-            }
+            taskheader['header'] = ext.header || taskheader['header'];
             let getjson;
             try{
                 getjson = JSON.parse(request(obj.ulist.url+obj.vipUrl,taskheader));

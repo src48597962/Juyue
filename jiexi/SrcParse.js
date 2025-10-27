@@ -11,7 +11,7 @@ if(record!=""){
 let excludeurl = parseRecord.excludeurl||[];//屏蔽的播放地址
 let excludeparse = parseRecord.excludeparse||[];//屏蔽的解析
 let playSet = {
-    printlog: 1,
+    printlog: 0,
     cachem3u8: 0,
     parsemode: 1,
     videoplay: 0,

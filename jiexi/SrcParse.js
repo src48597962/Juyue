@@ -2,14 +2,14 @@
 let recordfile = "hiker://files/rules/Src/Jiexi/record.json";//取解析设置、上次成功、手工屏蔽的
 let record = fetch(recordfile);
 let parseRecord = {};
-if(record!=""){
+if(record != ""){
     try{
-        eval("parseRecord =" + record + ";");
+        eval("parseRecord = " + record + ";");
     }catch(e){}
 }
 
-let excludeurl = parseRecord.excludeurl||[];//屏蔽的播放地址
-let excludeparse = parseRecord.excludeparse||[];//屏蔽的解析
+let excludeurl = parseRecord.excludeurl || [];//屏蔽的播放地址
+let excludeparse = parseRecord.excludeparse || [];//屏蔽的解析
 let playSet = {
     printlog: 0,
     cachem3u8: 0,
@@ -22,7 +22,7 @@ let playSet = {
 let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
 if(Jucfg != ""){
     try{
-        eval("let Juconfig=" + Jucfg+ ";");
+        eval("let Juconfig= " + Jucfg+ ";");
         playSet = Juconfig['playSet'] || playSet;
     }catch(e){}
 }
@@ -58,7 +58,7 @@ function removeByValue(arr, val) {
 }
 // 头信息字符串转对象
 function headerStrToObj(str) {
-    if (!str.startsWith('{') ||!str.endsWith('}')) {
+    if (!str.startsWith('{') || !str.endsWith('}')) {
         log('组多线路传入的头信息字符串不正确');
     }
     const pairs = str.slice(1, -1).split('&&');
@@ -69,7 +69,6 @@ function headerStrToObj(str) {
     });
     return obj;
 }
-
 // 头信息对象转字符串
 function headerObjToStr(obj) {
     if (!obj || typeof obj !== 'object') {
@@ -168,8 +167,10 @@ function SrcParse(vipUrl, dataObj) {
             if(vipUrl.indexOf('.') != -1){
                 let host = vipUrl.replace('m.tv.','m.').match(/\.(.*?)\//)[1];
                 from = host.split('.')[0];
-                parseRecord['flag'] = parseRecord['flag']||[];
-                if(parseRecord['flag'].indexOf(from)==-1){parseRecord['flag'].push(from)}//记录到片源标识组
+                parseRecord['flag'] = parseRecord['flag'] || [];
+                if(parseRecord['flag'].indexOf(from)==-1){
+                    parseRecord['flag'].push(from);//记录到片源标识组
+                }
             }else if(vipUrl.indexOf('-') != -1){
                 from = vipUrl.split('-')[0];
             }else{
@@ -417,7 +418,7 @@ function SrcParse(vipUrl, dataObj) {
 
         for(let k in beparses){
             var parseurl = beparses[k].url;
-            if(beerrors[k]==null&&beurls[k]){
+            if(beerrors[k]==null && beurls[k]){
                 if(playurl==""){playurl = beurls[k];}
                 //记录最快的，做为下次优先
                 if(beparses[k].name==lastparse){
@@ -433,6 +434,7 @@ function SrcParse(vipUrl, dataObj) {
                         //解析成功的,排序+1
                         let jxsort = jxList[j].sort||0;
                         if(jxsort>0){
+                            jxList[j].type = beparses[k].type;
                             jxList[j].sort = jxsort - 1;
                             myJXchange = 1;
                         }
@@ -484,7 +486,6 @@ function SrcParse(vipUrl, dataObj) {
                     names.push(beparses[k].name || '线路'+urls.length);
                     headers.push(MulUrl.header);
                 }
-                //if(ismul==0){break;}
             }else{
                 faillist.push(beparses[k]);
             }
@@ -497,11 +498,8 @@ function SrcParse(vipUrl, dataObj) {
         if(faillist[p].stype=="myjx"){
             for(let j=0;j<jxList.length;j++){
                 if(faillist[p].url==jxList[j].url){
-                    if(faillist[p].x5==1){
-                        jxList[j]['type'] = 0;
-                    }
-                    jxList[j]['sort'] = jxList[j]['sort']||0;
-                    jxList[j].sort = jxList[j].sort + 1;
+                    jxList[j]['type'] = faillist[p]['type'];//修正类型
+                    jxList[j]['sort'] = (jxList[j]['sort']||0) + 1;//降权排序
                     failparse.push(jxList[j].name);//加入提示失败列表
                     /*
                     //解析失败的,且排序大于5次从私有中排除片源
@@ -517,7 +515,7 @@ function SrcParse(vipUrl, dataObj) {
         }
         if(faillist[p].stype=="app"){
             //app自带的解析在解析失败时，直接加入黑名单
-            parseRecord['excludeparse'] = parseRecord['excludeparse']||[];
+            parseRecord['excludeparse'] = parseRecord['excludeparse'] || [];
             if(parseRecord['excludeparse'].indexOf(faillist[p].url)==-1){
                 parseRecord['excludeparse'].push(faillist[p].url);
             }
@@ -530,7 +528,7 @@ function SrcParse(vipUrl, dataObj) {
         //私有解析失败的统一提示
         if(failparse.length>0&&printlog==1){log(failparse+'<以上私有解析失败，降序+1')}
         //记录上次优先解析和自带解析有加入黑名单的保存                
-        parseRecord['lastparse'] = parseRecord['lastparse']||{};
+        parseRecord['lastparse'] = parseRecord['lastparse'] || {};
         parseRecord['lastparse'][from] = lastparse;
         writeFile(recordfile, JSON.stringify(parseRecord));
     } 
@@ -815,7 +813,7 @@ function 解析方法(obj) {
         }
     }else if(/^function/.test(obj.ulist.url.trim())){
         //js解析
-        obj.ulist['x5'] = 0;
+        obj.ulist['type'] = '2';
         let rurl;
         try{
             eval('var JSparse = '+obj.ulist.url)
@@ -847,9 +845,9 @@ function 解析方法(obj) {
         }
         //log(getjson);
         if (getjson.body && getjson.statusCode==200){
-            var gethtml = getjson.body;
-            var rurl = "";
-            var isjson = 0;
+            let gethtml = getjson.body;
+            let rurl = "";
+            let isjson = 0;
             try {
                 if(ext.decrypt){
                     // 加密解析
@@ -877,6 +875,7 @@ function 解析方法(obj) {
                 //log(json);
                 isjson = 1;
                 rurl = json.url||json.urll||json.data.url||json.data;
+                obj.ulist['type'] = '1';
             } catch (e) {
                 //log("非json>"+e.message);
                 if(/\.m3u8|\.mp4/.test(getjson.url) && getjson.url.indexOf('=http')==-1){
@@ -957,18 +956,17 @@ function 解析方法(obj) {
                     rurl = exeWebRule({webUrl: purl, head: taskheader, js: ext.js||extraJS(purl)}, 0) || "";
                 }
             }
-            let x5 = 0;
+
             if(!rurl){
                 if(!/404 /.test(gethtml) && obj.ulist.url.indexOf('key=')==-1 && isjson==0){
-                    x5 = 1;
+                    obj.ulist['type'] = '0';
                 }
             }else if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl, obj.ulist.name)==0){
                 rurl = "";
             }
-            obj.ulist['x5'] = x5;
+            
             return {url: rurl, ulist: obj.ulist}; 
         }else{
-            obj.ulist['x5'] = 0;
             return {url: "", ulist: obj.ulist, error: 1};//网页无法访问状态码不等于200 
         }
     }

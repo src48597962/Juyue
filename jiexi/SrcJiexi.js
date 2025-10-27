@@ -52,8 +52,8 @@ function jxItemPage() {
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-            setPageTitle('增加 | 聚解接口');
-            require(config.jxCodePath + 'SrcJiexi.js');
+            setPageTitle('增加 | 解析接口');
+            require(config.jxCodePath + 'SrcPublic.js');
             jiexiapi();
         }),
         img: 'http://123.56.105.145/tubiao/more/25.png',

@@ -959,13 +959,11 @@ function 解析方法(obj) {
             }
             let x5 = 0;
             if(!rurl){
-                if(!/404 /.test(gethtml)&&obj.ulist.url.indexOf('key=')==-1&&isjson==0){
+                if(!/404 /.test(gethtml) && obj.ulist.url.indexOf('key=')==-1 && isjson==0){
                     x5 = 1;
                 }
-            }else{
-                if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl,obj.ulist.name)==0){
-                    rurl = "";
-                }
+            }else if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl, obj.ulist.name)==0){
+                rurl = "";
             }
             obj.ulist['x5'] = x5;
             return {url: rurl, ulist: obj.ulist}; 

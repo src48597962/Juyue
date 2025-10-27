@@ -809,7 +809,7 @@ function 解析方法(obj) {
         if(obj.ismusic){
             return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 1) || "toast://嗅探解析失败";
         }else if(obj.videoplay){
-            return 'video://'+obj.vipUrl;
+            return 'video://' + obj.vipUrl;
         }else{
             return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://exeWebRule获取失败，可试试video";
         }
@@ -826,7 +826,7 @@ function 解析方法(obj) {
         }
         if(rurl){
             if(/^toast/.test(rurl)){
-                log(obj.ulist.name+'>提示：'+rurl.replace('toast://',''));
+                log(obj.ulist.name + '>提示：' + rurl.replace('toast://',''));
                 rurl = "";
             }else if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl,obj.ulist.name)==0){
                 rurl = "";
@@ -854,13 +854,11 @@ function 解析方法(obj) {
                 if(ext.decrypt){
                     // 加密解析
                     function appDecrypt(ciphertext, decrypt) {
+                        eval(getCryptoJS());
                         let key = decrypt.key;
                         let iv = decrypt.iv;
-                        let mode = decrypt.mode || "CryptoJS.mode.ECB";
-                        let padding = decrypt.padding || "CryptoJS.pad.Pkcs7";
-
-                        eval(getCryptoJS());
-
+                        let mode = decrypt.mode || CryptoJS.mode.ECB;
+                        let padding = decrypt.padding || CryptoJS.pad.Pkcs7;
                         key = CryptoJS.enc.Utf8.parse(key);
 
                         function decrypt(ciphertext) {
@@ -875,7 +873,7 @@ function 解析方法(obj) {
                     }
                     gethtml = appDecrypt(gethtml, ext.decrypt);
                 }
-                let json =JSON.parse(gethtml);
+                let json = JSON.parse(gethtml);
                 //log(json);
                 isjson = 1;
                 rurl = json.url||json.urll||json.data.url||json.data;
@@ -883,9 +881,11 @@ function 解析方法(obj) {
                 //log("非json>"+e.message);
                 if(/\.m3u8|\.mp4/.test(getjson.url) && getjson.url.indexOf('=http')==-1){
                     rurl = getjson.url;
-                }else if(/\.m3u8|\.mp4/.test(gethtml) && geturl(gethtml)){
+                }else if(/\.m3u8|\.mp4/.test(gethtml)){
                     rurl = geturl(gethtml);
-                }else{
+                }
+                //明码失败，最后一步走嗅探
+                if(!rurl){
                     //可用于注入js模似点击
                     function extraJS(playUrl) {
                         function click1(p1,p2) {
@@ -954,7 +954,7 @@ function 解析方法(obj) {
                         purl = pd(fetch(burl), "iframe&&src", purl);
                         log("获取到iframe地址>" + purl);
                     }
-                    rurl = exeWebRule({webUrl:purl, head:taskheader, js:ext.js||extraJS(purl)}, 0) || "";
+                    rurl = exeWebRule({webUrl: purl, head: taskheader, js: ext.js||extraJS(purl)}, 0) || "";
                 }
             }
             let x5 = 0;

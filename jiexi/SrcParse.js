@@ -26,7 +26,7 @@ if(Jucfg != ""){
         playSet = Juconfig['playSet'] || playSet;
     }catch(e){}
 }
-
+let log = typeof log2 =='undefined' ? log :log2;
 if(!playSet.printlog){
     log = function () {
         //未开启打印解析日志>不打印

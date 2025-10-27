@@ -193,7 +193,7 @@ function jiexiapi(data) {
     });
     let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
     d.push({
-	    title: '解析类型：' + parseTypes[parseInt(data?data.type:getMyVar('parsetype', '0'))],
+	    title: '解析类型：' + parseTypes[parseInt(getMyVar('parsetype', data?data.type:'0'))],
         col_type: 'text_1',
         url: $(parseTypes, 1).select(() => {
             putMyVar('parsetype', MY_INDEX);
@@ -203,8 +203,11 @@ function jiexiapi(data) {
             }
 
             refreshPage(false);
-            return "toast://是否为web解析，只用于判断进入video播放";
-        })
+            return "toast://WEB解析，可用于进入video播放";
+        }),
+        extra: {
+            lineVisible: false
+        }
     });
     d.push({
         title: 'ext数据',

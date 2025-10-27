@@ -27,7 +27,7 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
-    let dataTitle = (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + '  ‘‘’’<small><font color=grey>' + (data.type!=2?'  ['+data.url+']':'') + '</font></small>';
+    let dataTitle = (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
     return dataTitle;
 }
 // 接口多选处理方法
@@ -64,6 +64,8 @@ function jxItemList(datalist) {
         } else {
             datatitle = getDataTitle(it);
         }
+        let ext = it.ext || {};
+        let flag = ext.flag || [];
 
         d.push({
             title: datatitle,
@@ -111,7 +113,7 @@ function jxItemList(datalist) {
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: '',
+            desc: flag,
             col_type: "text_1",
             extra: {
                 id: it.name,

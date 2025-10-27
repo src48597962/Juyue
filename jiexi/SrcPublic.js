@@ -93,10 +93,9 @@ function jxItemList(datalist) {
                     }, data)
                 } else if (input == "删除") {
                     return $("确定删除：" + data.name).confirm((data) => {
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJiexi.js.js');
+                        require(config.jxCodePath + 'SrcPublic.js');
                         deleteData(data);
-                        //refreshPage(false);
-                        deleteItem(data.id);
+                        deleteItem(data.name);
                         return 'toast://已删除:' + data.name;
                     }, data)
                 } else if (input == "测试") {
@@ -122,7 +121,36 @@ function jxItemList(datalist) {
     })
     return d;
 }
+//删除解析入口
+function deleteData(data){
+    let sourcedata = fetch(jxfile);
+    eval("let datalist=" + sourcedata + ";");
+    let dellist= [];
+    if(!data){
+        dellist = Object.assign(dellist, datalist);
+    }else if($.type(data)=='object'){
+        dellist.push(data);
+    }else if($.type(data)=='array'){
+        dellist = data;
+    }
 
+    dellist.forEach(it => {
+        let index = datalist.indexOf(datalist.filter(d => it.name==d.name)[0]);
+        datalist.splice(index, 1);
+    })
+
+    writeFile(jkfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist');
+    // 删除接口搜索临时列表
+    if(getMyVar("seacrhDataList")){
+        let seacrhDataList = storage0.getMyVar("seacrhDataList");
+        dellist.forEach(it => {
+            let index = seacrhDataList.indexOf(seacrhDataList.filter(d => it.name==d.name)[0]);
+            seacrhDataList.splice(index, 1);
+        })
+        storage0.putMyVar("seacrhDataList", seacrhDataList);
+    }
+}
 //解析新增或编辑
 function jiexiapi(data) {
     addListener("onClose", $.toString(() => {
@@ -130,16 +158,14 @@ function jiexiapi(data) {
         clearMyVar('parseurl');
         clearMyVar('parsetype');
         clearMyVar('parseext');
-        clearMyVar('isretain');
         clearMyVar('isload');
     }));
     let d = [];
     if(!data){
-        setPageTitle("♥解析管理-新增");
+        setPageTitle("解析管理-新增");
     }else{
         if(getMyVar('isload', '0')=="0"){
-            setPageTitle("♥解析管理-变更");
-            putMyVar('isretain', data.retain||"");
+            setPageTitle("解析管理-变更");
             putMyVar('isload', '1');
         }
     }
@@ -165,16 +191,15 @@ function jiexiapi(data) {
             onChange: 'putMyVar("parseurl",input)'
         }
     });
+    let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
     d.push({
-	        title: '是否为web嗅探解析：' + (getMyVar('parsetype', data?data.type.toString():'0')=="0"?"是":"否"),
+	    title: '解析类型：' + parseTypes[parseInt(data?data.type:getMyVar('parsetype', '0'))],
         col_type: 'text_1',
-        url:$().lazyRule(()=>{
-            if(/^function/.test(getMyVar('parseurl',''))){
-                putMyVar('parsetype','1');
-            }else if(getMyVar('parsetype')=="1"){
-                putMyVar('parsetype','0');
-            }else{
-                putMyVar('parsetype','1');
+        url: $(parseTypes, 1).select(() => {
+            putMyVar('parsetype', MY_INDEX);
+
+            if(getMyVar('parseurl','').includes('function') && MY_INDEX!=2){
+                return "toast://选择的类型错误了";
             }
 
             refreshPage(false);
@@ -182,23 +207,9 @@ function jiexiapi(data) {
         })
     });
     d.push({
-        title: getMyVar('isretain', '')!="1"?'强制保留：否':'强制保留：是',
-        desc: getMyVar('isretain', '')!="1"?'':'全量更新时保留此接口',
-        col_type:'text_1',
-        url:$('#noLoading#').lazyRule(()=>{
-            if(getMyVar('isretain', '')!="1"){
-                putMyVar('isretain', '1');
-            }else{
-                clearMyVar('isretain');
-            }
-            refreshPage(false);
-            return 'toast://已切换';
-        })
-    });
-    d.push({
         title: 'ext数据',
         col_type: 'input',
-        desc: "ext对象数据{}，如headers、flag, 可以留空",
+        desc: "ext对象数据{}，如header、flag、js, 可以留空",
         extra: {
             defaultValue: storage0.getMyVar('parseext', data?data.ext:"") || "",
             titleVisible: false,
@@ -206,7 +217,8 @@ function jiexiapi(data) {
             highlight: true,
             height: 3,
             onChange: $.toString(() => {
-                if (/{|}/.test(input)) {
+                input = input.trim();
+                if (input.startsWith('{') && input.endsWith('}')) {
                     try{
                         storage0.putMyVar("parseext", JSON.parse(input));
                     }catch(e){}
@@ -219,8 +231,8 @@ function jiexiapi(data) {
             title:'删除',
             col_type:'text_3',
             url: $("确定删除解析："+getMyVar('parsename',data.name)).confirm((data)=>{
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyPublic.js');
-                deleteData('jx', data);
+                require(config.jxCodePath + 'SrcPublic.js');
+                deleteData(data);
                 back(true);
                 return "toast://已删除";
             }, data)
@@ -249,19 +261,18 @@ function jiexiapi(data) {
             if(parseext && $.type(parseext)!="object"){
                 return "toast://ext对象数据不正确"
             }
-            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
+            require(config.jxCodePath + 'SrcPublic.js');
             let urls= [];
             let parseurl = getMyVar('parseurl');
             let parsename = getMyVar('parsename');
-            let parsetype = getMyVar('parsetype','0');
+            let parsetype = getMyVar('parsetype');
             
-            if(parseurl&&parsename){
-                let arr  = { "name": parsename.trim(), "type": parseInt(parsetype),"url": parseurl.trim()};
+            if(parseurl && parsename && parsetype){
+                let arr  = { "name": parsename.trim(), "type": parsetype, "url": parseurl.trim()};
                 if(parseext){
                     arr['ext']=  parseext;
                 }
-                let isretain = getMyVar('isretain')=="1"?1:0;
-                if(isretain){arr['retain'] = 1;}
+
                 if(data){
                     arr['oldurl'] = data.url;
                 }
@@ -281,6 +292,7 @@ function jiexiapi(data) {
                 
         },data)
     });
+    /*
     d.push({
         title:'测试',
         col_type:'text_3',
@@ -376,10 +388,56 @@ function jiexiapi(data) {
             id: 'jxtest'
         }
     });
-    
+    */
     d.push({
         col_type: "line",
         extra:{id:'jxline'}
     })
     setResult(d);
+}
+//解析保存
+function jiexisave(urls, mode) {
+    if(urls.length==0){return 0;}
+    let num = 0;
+    try{
+        let datalist = [];
+        let sourcedata = fetch(jxfile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist=" + sourcedata+ ";");
+            }catch(e){}
+        }
+        if(mode==2){
+            for(let i=0;i<datalist.length;i++){
+                datalist.splice(i,1);
+                i = i - 1;
+            }
+        }
+        
+        urls.forEach(it=>{
+            if(it.oldurl || mode==1){
+                for(let i=0;i<datalist.length;i++){
+                    if(datalist[i].url==it.url||datalist[i].url==it.oldurl){
+                        datalist.splice(i,1);
+                        break;
+                    }
+                }
+            }
+
+            function checkitem(item) {
+                return item.url==it.url;
+            }
+
+            if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){
+                delete it['oldurl'];
+                datalist.push(it);
+                num = num + 1;
+            }
+        })
+        if(num>0){writeFile(jxfile, JSON.stringify(datalist));}
+    } catch (e) {
+        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
+        num = -1;
+    }
+    return num;
 }

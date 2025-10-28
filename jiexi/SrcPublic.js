@@ -27,7 +27,9 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
-    let dataTitle = (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
+    let dataTitle = data.id + '-' + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
+    dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
+
     return dataTitle;
 }
 // 接口多选处理方法
@@ -56,13 +58,14 @@ function duoselect(data){
 function jxItemList(datalist) {
     let selectlist = storage0.getMyVar('duodatalist') || [];
     let d = [];
-    datalist.forEach(it => {
+    datalist.forEach((it, i) => {
         let selectmenu, datatitle;
         selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶", "测试"];
+        let tmpdata = extra = Object.assign({id: i+1}, it);
         if (selectlist.some(item => it.name == item.name)) {
-            datatitle = colorTitle(getDataTitle(it, '●'), '#3CB371');
+            datatitle = colorTitle(getDataTitle(tmpdata, '●'), '#3CB371');
         } else {
-            datatitle = getDataTitle(it);
+            datatitle = getDataTitle(tmpdata);
         }
         let ext = it.ext || {};
         let flag = ext.flag || [];
@@ -113,7 +116,7 @@ function jxItemList(datalist) {
                     return 'toast://' + sm;
                 }
             }, base64Encode(JSON.stringify(it))),
-            desc: flag,
+            desc: flag.join(','),
             col_type: "text_1",
             extra: {
                 id: it.name,
@@ -266,13 +269,13 @@ function jiexiapi(data) {
             if(parseext && $.type(parseext)!="object"){
                 return "toast://ext对象数据不正确"
             }
-            require(config.jxCodePath + 'SrcPublic.js');
-            let urls= [];
+
             let parseurl = getMyVar('parseurl');
             let parsename = getMyVar('parsename');
             let parsetype = getMyVar('parsetype');
             
             if(parseurl && parsename && parsetype){
+                let urls= [];
                 let arr  = { "name": parsename.trim(), "type": parsetype, "url": parseurl.trim()};
                 if(parseext){
                     arr['ext']=  parseext;
@@ -282,6 +285,8 @@ function jiexiapi(data) {
                     arr['oldurl'] = data.url;
                 }
                 urls.push(arr);
+
+                require(config.jxCodePath + 'SrcPublic.js');
                 let num = jiexisave(urls);
                 if(num==1){
                     back(true);

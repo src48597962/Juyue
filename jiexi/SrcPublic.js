@@ -126,63 +126,6 @@ function jxItemList(datalist) {
     })
     return d;
 }
-//删除解析入口
-function deleteData(data){
-    let sourcedata = fetch(jxfile);
-    eval("let datalist=" + sourcedata + ";");
-    let dellist= [];
-    if(!data){
-        dellist = Object.assign(dellist, datalist);
-    }else if($.type(data)=='object'){
-        dellist.push(data);
-    }else if($.type(data)=='array'){
-        dellist = data;
-    }
-
-    dellist.forEach(it => {
-        let index = datalist.indexOf(datalist.filter(d => it.name==d.name)[0]);
-        datalist.splice(index, 1);
-    })
-
-    writeFile(jkfile, JSON.stringify(datalist));
-    clearMyVar('duodatalist');
-    // 删除接口搜索临时列表
-    if(getMyVar("seacrhDataList")){
-        let seacrhDataList = storage0.getMyVar("seacrhDataList");
-        dellist.forEach(it => {
-            let index = seacrhDataList.indexOf(seacrhDataList.filter(d => it.name==d.name)[0]);
-            seacrhDataList.splice(index, 1);
-        })
-        storage0.putMyVar("seacrhDataList", seacrhDataList);
-    }
-}
-// 接口处理公共方法
-function dataHandle(data, input) {
-    let sourcedata = fetch(jxfile);
-    eval("let datalist=" + sourcedata + ";");
-
-    let waitlist= [];
-    if($.type(data)=='object'){
-        waitlist.push(data);
-    }else if($.type(data)=='array'){
-        waitlist = data;
-    }
-    
-    waitlist.forEach(it => {
-        let index = datalist.findIndex(item => item.name === it.name);
-        if(input == "禁用"){
-            datalist[index].stop = 1;
-        }else if(input == "启用"){
-            delete datalist[index].stop;
-        }else if(input == "置顶"){
-            const [target] = datalist.splice(index, 1);
-            datalist.push(target);
-        }
-    })
-    writeFile(jxfile, JSON.stringify(datalist));
-    clearMyVar('duodatalist');
-    return input + '：已处理' + waitlist.length + '个';
-}
 //解析新增或编辑
 function jiexiapi(data) {
     addListener("onClose", $.toString(() => {
@@ -225,7 +168,7 @@ function jiexiapi(data) {
     });
     let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
     d.push({
-	    title: '解析类型：' + parseTypes[parseInt(getMyVar('parsetype', data?data.type:'0'))],
+	    title: '解析类型：' + getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype', data?data.type:'0'))]:'请选择',
         col_type: 'text_1',
         url: $(parseTypes, 1).select(() => {
             putMyVar('parsetype', MY_INDEX);
@@ -477,4 +420,61 @@ function jiexisave(urls, mode) {
         num = -1;
     }
     return num;
+}
+//删除解析入口
+function deleteData(data){
+    let sourcedata = fetch(jxfile);
+    eval("let datalist=" + sourcedata + ";");
+    let dellist= [];
+    if(!data){
+        dellist = Object.assign(dellist, datalist);
+    }else if($.type(data)=='object'){
+        dellist.push(data);
+    }else if($.type(data)=='array'){
+        dellist = data;
+    }
+
+    dellist.forEach(it => {
+        let index = datalist.indexOf(datalist.filter(d => it.name==d.name)[0]);
+        datalist.splice(index, 1);
+    })
+
+    writeFile(jkfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist');
+    // 删除接口搜索临时列表
+    if(getMyVar("seacrhDataList")){
+        let seacrhDataList = storage0.getMyVar("seacrhDataList");
+        dellist.forEach(it => {
+            let index = seacrhDataList.indexOf(seacrhDataList.filter(d => it.name==d.name)[0]);
+            seacrhDataList.splice(index, 1);
+        })
+        storage0.putMyVar("seacrhDataList", seacrhDataList);
+    }
+}
+// 接口处理公共方法
+function dataHandle(data, input) {
+    let sourcedata = fetch(jxfile);
+    eval("let datalist=" + sourcedata + ";");
+
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    
+    waitlist.forEach(it => {
+        let index = datalist.findIndex(item => item.name === it.name);
+        if(input == "禁用"){
+            datalist[index].stop = 1;
+        }else if(input == "启用"){
+            delete datalist[index].stop;
+        }else if(input == "置顶"){
+            const [target] = datalist.splice(index, 1);
+            datalist.push(target);
+        }
+    })
+    writeFile(jxfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist');
+    return input + '：已处理' + waitlist.length + '个';
 }

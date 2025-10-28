@@ -156,6 +156,33 @@ function deleteData(data){
         storage0.putMyVar("seacrhDataList", seacrhDataList);
     }
 }
+// 接口处理公共方法
+function dataHandle(data, input) {
+    let sourcedata = fetch(jxfile);
+    eval("let datalist=" + sourcedata + ";");
+
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    
+    waitlist.forEach(it => {
+        let index = datalist.findIndex(item => item.name === it.name);
+        if(input == "禁用"){
+            datalist[index].stop = 1;
+        }else if(input == "启用"){
+            delete datalist[index].stop;
+        }else if(input == "置顶"){
+            const [target] = datalist.splice(index, 1);
+            datalist.push(target);
+        }
+    })
+    writeFile(jxfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist');
+    return input + '：已处理' + waitlist.length + '个';
+}
 //解析新增或编辑
 function jiexiapi(data) {
     addListener("onClose", $.toString(() => {

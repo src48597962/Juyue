@@ -474,7 +474,7 @@ function dataHandle(data, input) {
             delete datalist[index].stop;
         }else if(input == "置顶"){
             const [target] = datalist.splice(index, 1);
-            datalist.push(target);
+            datalist.unshift(target);
         }
     })
     writeFile(jxfile, JSON.stringify(datalist));

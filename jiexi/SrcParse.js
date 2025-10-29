@@ -11,7 +11,7 @@ if(record != ""){
 let excludeurl = parseRecord.excludeurl || [];//屏蔽的播放地址
 let excludeparse = parseRecord.excludeparse || [];//屏蔽的解析
 let playSet = {
-    printlog: 0,
+    printlog: 1,
     cachem3u8: 0,
     parsemode: 1,
     videoplay: 0,
@@ -23,7 +23,8 @@ let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
 if(Jucfg != ""){
     try{
         eval("let Juconfig= " + Jucfg+ ";");
-        playSet = Juconfig['playSet'] || playSet;
+        let playSetCfg = Juconfig['playSet'] || {};
+        playSet = Object.assign({}, playSet, playSetCfg);
     }catch(e){}
 }
 let log = typeof log2 == 'undefined' ? log :log2;
@@ -33,8 +34,8 @@ if(!playSet.printlog){
         return;
     }
 }
-let exclude = /\/404\.m3u8|\/xiajia\.mp4|\.avif|\/余额不足\.m3u8/;//设置排除地址
-let contain = /\.mp4|\.m3u8|\.flv|\.avi|\.mpeg|\.wmv|\.mov|\.rmvb|\.dat|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
+let exclude = /\/404\.m3u8|\/xiajia\.mp4|limit\/limit|\/余额不足\.m3u8/;//设置排除地址
+let contain = /\.mp4|\.m3u8|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
 let needparse = /suoyo\.cc|fen\.laodi|ruifenglb/;//设置需要解析的视频地址
 
 //数组去重

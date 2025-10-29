@@ -261,7 +261,7 @@ function SrcParse(vipUrl, dataObj) {
         return aa - bb;
     })
 
-    let isFirst = false;//是否优先解析第1个解析
+    let isFirst = false;//是否优先解析首个解析
     let lastparse = parseRecord.lastparse?(parseRecord.lastparse[from] || ""):"";//对应的片源上次解析
     if(lastparse){
         //优先上次成功的
@@ -382,6 +382,7 @@ function SrcParse(vipUrl, dataObj) {
         if(Namelist.length==0){
             return;
         }
+        isFirst = false;//取消优先解析首个解析
 
         let UrlParses = UrlList.map((list)=>{
             if (/^\/\//.test(list.url)) { list.url = 'https:' + list.url }

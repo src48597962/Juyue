@@ -141,6 +141,9 @@ function jiexiapi(data) {
     }else{
         if(getMyVar('isload', '0')=="0"){
             setPageTitle("解析管理-变更");
+            putMyVar('parsename', data.name);
+            putMyVar('parseurl', data.url||"");
+            putMyVar('parsetype', data.type||"");
             putMyVar('isload', '1');
         }
     }
@@ -150,7 +153,7 @@ function jiexiapi(data) {
         desc: "解析名称",
         extra: {
             titleVisible: false,
-            defaultValue: getMyVar('parsename', data?data.name:""),
+            defaultValue: getMyVar('parsename', ""),
             onChange: 'putMyVar("parsename",input)'
         }
     });
@@ -162,13 +165,13 @@ function jiexiapi(data) {
             highlight: true,
             type: "textarea",
             titleVisible: false,
-            defaultValue: getMyVar('parseurl', data?data.url:""),
+            defaultValue: getMyVar('parseurl', ""),
             onChange: 'putMyVar("parseurl",input)'
         }
     });
     let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
     d.push({
-	    title: '解析类型：' + getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype', data?data.type:'0'))]:'请选择',
+	    title: '解析类型：' + (getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype'))]:'请选择'),
         col_type: 'text_1',
         url: $(parseTypes, 1).select(() => {
             putMyVar('parsetype', MY_INDEX);
@@ -208,7 +211,7 @@ function jiexiapi(data) {
         d.push({
             title:'删除',
             col_type:'text_3',
-            url: $("确定删除解析："+getMyVar('parsename',data.name)).confirm((data)=>{
+            url: $("确定删除解析："+getMyVar('parsename')).confirm((data)=>{
                 require(config.jxCodePath + 'SrcPublic.js');
                 deleteData(data);
                 back(true);
@@ -394,7 +397,7 @@ function jiexisave(urls, mode) {
             }
         }
         
-        urls.forEach(it=>{
+        urls.reverse().forEach(it=>{
             if(it.oldurl || mode==1){
                 for(let i=0;i<datalist.length;i++){
                     if(datalist[i].url==it.url||datalist[i].url==it.oldurl){
@@ -410,7 +413,7 @@ function jiexisave(urls, mode) {
 
             if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){
                 delete it['oldurl'];
-                datalist.push(it);
+                datalist.unshift(it);
                 num = num + 1;
             }
         })

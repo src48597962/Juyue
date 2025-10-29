@@ -527,7 +527,7 @@ function SrcParse(vipUrl, dataObj) {
         //私有解析有排除片源
         if(myJXchange == 1){writeFile(jxfile, JSON.stringify(jxList));}
         //私有解析失败的统一提示
-        if(failparse.length>0&&printlog==1){log(failparse+'<以上私有解析失败，降序+1')}
+        if(failparse.length>0&&playSet.printlog==1){log(failparse+'<以上私有解析失败，降序+1')}
         //记录上次优先解析和自带解析有加入黑名单的保存                
         parseRecord['lastparse'] = parseRecord['lastparse'] || {};
         parseRecord['lastparse'][from] = lastparse;

@@ -34,7 +34,7 @@ if(!playSet.printlog){
         return;
     }
 }
-let exclude = /\/404\.m3u8|\/xiajia\.mp4|limit\/limit|\/余额不足\.m3u8/;//设置排除地址
+let exclude = /\/404\.m3u8|\/xiajia\.mp4|limilt\/limit|\/余额不足\.m3u8/;//设置排除地址
 let contain = /\.mp4|\.m3u8|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
 let needparse = /suoyo\.cc|fen\.laodi|ruifenglb/;//设置需要解析的视频地址
 

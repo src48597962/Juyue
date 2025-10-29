@@ -260,6 +260,8 @@ function SrcParse(vipUrl, dataObj) {
         let bb = b.sort||0;
         return aa - bb;
     })
+
+    let isFirst = false;//是否优先解析第1个解析
     let lastparse = parseRecord.lastparse?(parseRecord.lastparse[from] || ""):"";//对应的片源上次解析
     if(lastparse){
         //优先上次成功的
@@ -268,6 +270,7 @@ function SrcParse(vipUrl, dataObj) {
                 let Uparseobj = parselist[i];
                 parselist.splice(i,1);
                 parselist.unshift(Uparseobj);
+                isFirst = true;
                 break;
             }
         }
@@ -368,7 +371,7 @@ function SrcParse(vipUrl, dataObj) {
         var beparses = [];//用于存储多线程解析地址
         var beerrors = [];//用于存储多线程是否有错误
         var sccess = 0;//计算成功的结果数
-        let p = i + mulnum + 2;
+        let p = isFirst? i : i + mulnum + 2;
         if(p>parselist.length){p=parselist.length}
         for(let s=i;s<p;s++){
             UrlList.push(parselist[s]);

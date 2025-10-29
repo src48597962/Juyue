@@ -371,7 +371,7 @@ function SrcParse(vipUrl, dataObj) {
         var beparses = [];//用于存储多线程解析地址
         var beerrors = [];//用于存储多线程是否有错误
         var sccess = 0;//计算成功的结果数
-        let p = isFirst? i : i + mulnum + 2;
+        let p = isFirst? i + 1 : i + mulnum + 2;
         if(p>parselist.length){p=parselist.length}
         for(let s=i;s<p;s++){
             UrlList.push(parselist[s]);
@@ -379,6 +379,9 @@ function SrcParse(vipUrl, dataObj) {
             i=s;
         }
         log("本轮排队解析：" + Namelist);
+        if(Namelist.length==0){
+            return;
+        }
 
         let UrlParses = UrlList.map((list)=>{
             if (/^\/\//.test(list.url)) { list.url = 'https:' + list.url }

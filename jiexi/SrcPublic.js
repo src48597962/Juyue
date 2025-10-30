@@ -696,9 +696,9 @@ function importConfirm(importStr) {
     d.push({
         title: importdatas.length>0&&oldnum==0?"":"增量导入",
         url: importdatas.length>0&&oldnum==0?"hiker://empty":$("跳过已存在，只导入新增，确认？").confirm(()=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiekousave(importlist, 0);
+            let num = jiexisave(importlist, 0);
             back(false);
             return "toast://增量导入"+(num<0?"失败":num);
         }),
@@ -713,15 +713,15 @@ function importConfirm(importStr) {
     d.push({
         title: "全量导入",
         url: importdatas.length>0&&oldnum==0?$().lazyRule(()=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiekousave(importlist, 1);
+            let num = jiexisave(importlist, 1);
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }):$("全部覆盖导入，确认？").confirm(()=>{
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
+            require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiekousave(importlist, 1);
+            let num = jiexisave(importlist, 1);
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }),
@@ -770,8 +770,8 @@ function importConfirm(importStr) {
                 if (input == "确定导入") {
                     function iConfirm(data) {
                         let dataid = data.id;
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                        let num = jiekousave([data], 1);
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        let num = jiexisave([data], 1);
                         let importlist = storage0.getMyVar('importConfirm', []);
                         if(importlist.length==1){
                             back(false);
@@ -806,7 +806,7 @@ function importConfirm(importStr) {
                 }else if (input == "接口测试") {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                         setPageTitle(data.name+"-接口测试");
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                        require(config.jxCodePath + 'SrcPublic.js');
                         yiji(data);
                     }, data)
                 }

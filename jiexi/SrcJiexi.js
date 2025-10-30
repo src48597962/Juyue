@@ -13,9 +13,10 @@ function homePage() {
         clearMyVar('主页显示内容');
     }));
 
+    let Color = getItem('主题颜色','#3399cc');
     let dd = [];
     dd.push({
-        title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: #3399cc">解析列表</span></b>`:'解析列表',
+        title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
             refreshPage();
@@ -25,7 +26,7 @@ function homePage() {
         col_type: "icon_2"
     });
     dd.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: #3399cc">解析设置</span></b>`:'解析设置',
+        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">解析设置</span></b>`:'解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
             refreshPage();

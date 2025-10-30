@@ -10,34 +10,29 @@ function homePage() {
         clearMyVar('seacrhDataList');
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
+        clearMyVar('主页显示内容');
     }));
 
     let dd = [];
     dd.push({
-        title: getMyVar('主页显示内容', '1')=="1"?`““””<b><span style="color: #3399cc">解析列表</span></b>`:'解析列表',
+        title: getMyVar('主页显示内容', '1')=="1"?`<b><span style="color: #3399cc">解析列表</span></b>`:'解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
             refreshPage();
             return "hiker://emtpy";
         }),
         img: 'http://123.56.105.145/tubiao/system/42.png',
-        col_type: "icon_small_3"
+        col_type: "icon_2"
     });
     dd.push({
-        title: '',
-        url: 'hiker://empty',
-        img: '',
-        col_type: "icon_small_3"
-    });
-    dd.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`““””<b><span style="color: #3399cc">解析设置</span></b>`:'解析设置',
+        title: getMyVar('主页显示内容', '1')=="2"?`<b><span style="color: #3399cc">解析设置</span></b>`:'解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
             refreshPage();
             return "hiker://emtpy";
         }),
         img: 'http://123.56.105.145/tubiao/system/43.png',
-        col_type: "icon_small_3"
+        col_type: "icon_2"
     });
     setPreResult(dd);
     

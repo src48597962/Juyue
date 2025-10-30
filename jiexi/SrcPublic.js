@@ -751,10 +751,8 @@ function importConfirm(importStr) {
 
     importdatas.forEach(it=>{
         let isnew = newdatas.some(v=>v.id==it.id);
-        let datamenu = ["确定导入", "修改名称", "设定分组", "接口测试"];
-        if(!it.url.startsWith('http')){
-            datamenu.push("查看文件");
-        }
+        let datamenu = ["确定导入", "修改名称", "接口测试"];
+
         let ittitle,itimg,itcol;
         if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
             ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.oldversion?"-本V"+it.oldversion:"");
@@ -769,7 +767,6 @@ function importConfirm(importStr) {
             title: ittitle,
             url: $(datamenu, 2).select((data, isnew) => {
                 data = JSON.parse(base64Decode(data));
-
                 if (input == "确定导入") {
                     function iConfirm(data) {
                         let dataid = data.id;
@@ -806,46 +803,11 @@ function importConfirm(importStr) {
                         refreshPage(false);
                         return "toast://已修改名称";
                     }, data);
-                }else if (input == "设定分组") {
-                    let dataid = data.id;
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                    let groupNames = getGroupNames();
-                    groupNames.unshift("清除");
-                    return $(groupNames, 2, "选择分组").select((dataid) => {
-                        let importlist = storage0.getMyVar('importConfirm', []);
-                        let index = importlist.findIndex(item => item.id === dataid);
-                        if(input=="清除"){
-                            delete importlist[index].group;
-                        }else{
-                            importlist[index].group = input;
-                        }
-                        storage0.putMyVar('importConfirm', importlist);
-                        refreshPage(false);
-                        return 'toast://已设置分组';
-                    }, dataid)
                 }else if (input == "接口测试") {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                         setPageTitle(data.name+"-接口测试");
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
                         yiji(data);
-                    }, data)
-                }else if (input == "查看文件") {
-                    writeFile('hiker://files/_cache/Juyue/lookimportfile.txt', data.extstr);
-                    return "editFile://hiker://files/_cache/Juyue/lookimportfile.txt";
-                }else if (input == "删除文件") {
-                    return $("删除"+data.ext+"，确认？").confirm((data)=>{
-                        deleteFile(data.ext);
-                        clearMyVar('SrcJu_searchMark');
-                        let importlist = storage0.getMyVar('importConfirm', []);
-                        if(importlist.length==1){
-                            back(false);
-                        }else{
-                            let index2 = importlist.findIndex(item => item.id === data.id);
-                            importlist.splice(index2, 1);
-                            storage0.putMyVar('importConfirm', importlist);
-                            deleteItem(data.id);
-                        }
-                        return "toast://已删除";
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),

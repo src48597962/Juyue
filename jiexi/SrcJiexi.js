@@ -25,7 +25,7 @@ function homePage() {
         title: '',
         url: 'hiker://empty',
         img: '',
-        col_type: "icon_3_fill"
+        col_type: "icon_small_3"
     });
     dd.push({
         title: '解析设置',

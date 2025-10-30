@@ -17,6 +17,7 @@ function homePage() {
         title: '解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
+            return "hiker://emtpy";
         }),
         img: 'http://123.56.105.145/tubiao/system/42.png',
         col_type: "icon_3_fill"//icon_small_3
@@ -31,6 +32,7 @@ function homePage() {
         title: '解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
+            return "hiker://emtpy";
         }),
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_3_fill"

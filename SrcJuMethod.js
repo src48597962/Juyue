@@ -29,7 +29,11 @@ function juItemF(id, s){
             let items = {};
             let itemsstr = fetch(this.file);
             if (itemsstr != "") {
-                eval("items=" + itemsstr + ";");
+                try{
+                    eval("items=" + itemsstr + ";");
+                }catch(e){
+                    xlog("加载juItem存储文件失败>" + e.message + " 错误行#" + e.lineNumber);
+                }
             }
             return items;
         },
@@ -892,8 +896,13 @@ function getEvalResult(evalStr) {
 }
 // 搜索历史记录操作方法
 function searchRecord(lx, input) {
+    let recordlist = [];
     let filepath = 'hiker://files/rules/Src/Juyue/searchRecord.json';
-    eval("let recordlist = " + (fetch(filepath)||'[]'));
+    try{
+        eval("recordlist = " + (fetch(filepath)||'[]'));
+    }catch(e){
+        xlog("加载searchRecord搜索历史文件失败>" + e.message + " 错误行#" + e.lineNumber);
+    }
     if(storage0.getItem('searchrecord')){
         recordlist = storage0.getItem('searchrecord');
         clearItem('searchrecord');
@@ -1046,7 +1055,11 @@ function setJkSort(data, so) {
     }
     let sort = {};
     if(fetch(sortfile)){
-        eval("sort = " + fetch(sortfile));
+        try{
+            eval("sort = " + fetch(sortfile));
+        }catch(e){
+            xlog("加载使用记录sort文件失败>" + e.message + " 错误行#" + e.lineNumber);
+        }
     }
     waitlist.forEach(it=>{
         let key;

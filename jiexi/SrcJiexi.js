@@ -159,8 +159,8 @@ function jxItemPage() {
     let pastes = getPastes();
     d.push({
         title: '分享',
-        url: yxdatalist.length == 0 ? "toast://有效接口为0，无法分享" : $(pastes,2).select(()=>{
-            require(config.jxCodePath + 'SrcJuSet.js');
+        url: jxdatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+            require(config.jxCodePath + 'SrcPublic.js');
             return JYshare(input);
         }),
         img: 'http://123.56.105.145/tubiao/more/3.png',

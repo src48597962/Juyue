@@ -18,24 +18,16 @@ function homePage() {
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
         }),
-        img: 'http://123.56.105.145/tubiao/more/25.png',
-        col_type: "icon_small_3"
+        img: 'http://123.56.105.145/tubiao/system/42.png',
+        col_type: "icon_2"
     });
     dd.push({
         title: '解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
         }),
-        img: 'http://123.56.105.145/tubiao/more/25.png',
-        col_type: "icon_small_3"
-    });
-    dd.push({
-        title: '解析测试',
-        url: $('#noLoading#').lazyRule(() => {
-            putMyVar('主页显示内容', '3');
-        }),
-        img: 'http://123.56.105.145/tubiao/more/25.png',
-        col_type: "icon_small_3"
+        img: 'http://123.56.105.145/tubiao/system/43.png',
+        col_type: "icon_2"
     });
     setPreResult(dd);
     

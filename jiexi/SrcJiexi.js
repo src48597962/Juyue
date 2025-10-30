@@ -19,13 +19,13 @@ function homePage() {
             putMyVar('主页显示内容', '1');
         }),
         img: 'http://123.56.105.145/tubiao/system/42.png',
-        col_type: "icon_small_3"
+        col_type: "icon_3_fill"//icon_small_3
     });
     dd.push({
         title: '',
         url: 'hiker://empty',
         img: '',
-        col_type: "icon_small_3"
+        col_type: "icon_3_fill"
     });
     dd.push({
         title: '解析设置',
@@ -33,7 +33,7 @@ function homePage() {
             putMyVar('主页显示内容', '2');
         }),
         img: 'http://123.56.105.145/tubiao/system/43.png',
-        col_type: "icon_small_3"
+        col_type: "icon_3_fill"
     });
     setPreResult(dd);
     

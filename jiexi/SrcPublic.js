@@ -805,7 +805,7 @@ function jiexiTest(data) {
             title: key,
             url: $().lazyRule((input)=>{
                 let dataObj = {parse: storage0.getMyVar('当前测试解析')}
-                require(codePath + 'SrcParse.js');
+                require(config.jxCodePath + 'SrcParse.js');
                 return SrcParse(input, dataObj);
             }, testUrls[key]),
             col_type: "text_3",

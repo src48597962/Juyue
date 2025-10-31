@@ -130,7 +130,8 @@ function jxItemPage() {
                             let jxfile = 'hiker://files/rules/DuanNian/MyParse.json';
                             let jxstr = fetch(jxfile);
                             if(jxstr){
-                                let jxlist = JSON.parse(jxstr);
+                                eval("let jxlist = " + jxstr);
+                                log('111');
                                 addarr = jxlist.title.map(it=>{
                                     let itstr = jxlist.codes[it].toString();
                                     return {

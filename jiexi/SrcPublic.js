@@ -719,6 +719,10 @@ function importConfirm(importStr) {
 }
 // 解析测试
 function jiexiTest(data) {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('当前测试解析');
+    }));
+
     let testlist= [];
     if($.type(data)=='object'){
         testlist.push(data);
@@ -747,11 +751,11 @@ function jiexiTest(data) {
     })
 
     let testUrls = Juconfig['testUrls'] || [];
-    testUrls.unshift('测试管理');
+    testUrls.unshift('添加站点');
     testUrls.forEach(it=>{
         d.push({
             title: it.name,
-            url: it.name=='测试管理'?$().lazyRule(()=>{
+            url: it.name=='添加站点'?$('#noLoading#').lazyRule(()=>{
                 const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
                 hikerPop.inputTwoRow({
                     titleHint: "站点名称",
@@ -777,100 +781,5 @@ function jiexiTest(data) {
             }
         })
     })
-
-    d.push({
-        title:'测试',
-        col_type:'text_3',
-        url: $().lazyRule(()=>{
-            let dataurl = getMyVar('parseurl');
-            let dataname = getMyVar('parsename')||'测试';
-            let datatype = getMyVar('parsetype','0');
-            let dataext = storage0.getMyVar('parseext') || {};
-            if(!dataurl||!/^http|^functio/.test(dataurl.trim())){
-                return "toast://获取解析地址失败，无法测试";
-            }
-
-            addItemAfter('jxline',{
-                title: '选择测试片源',
-                col_type: "rich_text",
-                extra:{
-                    id: 'jxfrom',
-                    cls: 'jxtest'
-                }
-            })
-            addItemAfter('jxfrom',{
-                col_type: "line",
-                extra:{
-                    id: 'jxline2',
-                    cls: 'jxtest'
-                }
-            })
-            let filepath = globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
-            let datafile = fetch(filepath);
-            if(datafile != ""){
-                eval("var urls=" + datafile+ ";");
-            }else{
-                var urls = {
-                    "1905": "https://vip.1905.com/play/1659382.shtml",
-                    "爱奇艺": "https://www.iqiyi.com/v_1e6upn2xiek.html",
-                    "优酷": "https://v.youku.com/v_show/id_XNjQwMzkxNzU1Mg==.html",
-                    "腾讯": "https://v.qq.com/x/cover/mzc002007n0xa7w/j4100ne9iw8.html",
-                    "芒果": "https://www.mgtv.com/b/638338/21190020.html",
-                    "哔哩哔哩": "https://www.bilibili.com/bangumi/play/ep828752",
-                    "搜狐": "https://tv.sohu.com/v/MjAyMzA5MjEvbjYwMTMzNDI0Ni5zaHRtbA==.html",
-                    "西瓜": "https://www.ixigua.com/6915270027096621576",
-                    "PPTV": "https://v.pptv.com/show/UKm0M5sBca8SkPg.html",
-                    "咪咕": "https://m.miguvideo.com/m/detail/919226692",
-                    "乐视": "https://www.le.com/ptv/vplay/24093071.html"
-                }
-                writeFile(filepath, JSON.stringify(urls));
-            }
-
-            let dataObj = {};
-            dataObj.parse = {name:dataname,url:dataurl,type:parseInt(datatype),ext:dataext};
-
-            urls['自定义'] = "";
-            for(let key in urls){
-                addItemBefore('jxline2', {
-                    title: key,
-                    url: key!="自定义"?$('#noRecordHistory##noHistory#').lazyRule((vipUrl,dataObj)=>{
-                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                        return SrcParseS.聚影(vipUrl, dataObj);
-                    },urls[key],dataObj):$("","输入自定义播放地址").input((dataObj) => {
-                        if(input==""){
-                            return "toast://未输入自定义地址，无法测试";
-                        }else{
-                            return $().lazyRule((vipUrl,dataObj)=>{
-                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                                return SrcParseS.聚影(vipUrl, dataObj);
-                            }, input, dataObj)
-                        }
-                    }, dataObj),
-                    col_type: "text_3",
-                    extra:{
-                        cls: 'jxtest',
-                        jsLoadingInject: true,
-                        blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'] 
-                    }
-                })
-            }
-            addItemBefore('jxline2', {
-                title: '编辑测试',
-                url: $('#noRecordHistory##noHistory#').lazyRule(()=>{
-                    return "editFile://" + globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
-                }),
-                col_type: "text_3",
-                extra:{
-                    cls: 'jxtest'
-                }
-            })
-            updateItem('jxtest', {
-                url: "hiker://empty"
-            })
-            return "hiker://empty";
-        }),
-        extra:{
-            id: 'jxtest'
-        }
-    });
+    setResult(d);
 }

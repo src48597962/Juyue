@@ -408,7 +408,7 @@ function jiexisave(urls, mode) {
             }
 
             function checkitem(item) {
-                return item.name==it.name;
+                return item.name==it.name || item.url==it.url;
             }
 
             if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){

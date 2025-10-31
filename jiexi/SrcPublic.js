@@ -222,8 +222,9 @@ function jiexiapi(data) {
             url: $("确定删除解析："+getMyVar('parsename')).confirm((data)=>{
                 require(config.jxCodePath + 'SrcPublic.js');
                 deleteData(data);
-                back(true);
-                return "toast://已删除";
+                deleteItem(data.name);
+                back(false);
+                return 'toast://已删除:' + data.name;
             }, data)
         });    
     }else{

@@ -127,7 +127,7 @@ function jxItemPage() {
                                 })
                             }
                         }else if(input=='断插'){
-                            let jxfile = 'hiker://files/rules/rules/DuanNian/MyParse.json';
+                            let jxfile = 'hiker://files/rules/DuanNian/MyParse.json';
                             let jxstr = fetch(jxfile);
                             if(jxstr){
                                 let jxlist = JSON.parse(jxstr);

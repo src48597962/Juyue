@@ -1,5 +1,6 @@
 let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
+let Color = getItem('主题颜色','#3399cc');
 
 function getDatas() {
     let datalist = [];
@@ -106,8 +107,8 @@ function jxItemList(datalist) {
                 } else if (input == "测试") {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                         setPageTitle(data.name + "-接口测试");
-                        require(config.聚解.replace(/[^/]*$/, '') + 'SrcJu.js');
-                        yiji(data);
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        jiexiTest(data);
                     }, data);
                 } else {//置顶、禁用、启用
                     require(config.jxCodePath + 'SrcPublic.js');
@@ -210,7 +211,7 @@ function jiexiapi(data) {
     if(data){
         d.push({
             title:'删除',
-            col_type:'text_3',
+            col_type:'text_2',
             url: $("确定删除解析："+getMyVar('parsename')).confirm((data)=>{
                 require(config.jxCodePath + 'SrcPublic.js');
                 deleteData(data);
@@ -221,7 +222,7 @@ function jiexiapi(data) {
     }else{
         d.push({
             title:'清空',
-            col_type:'text_3',
+            col_type:'text_2',
             url:$("确定要清空上面填写的内容？").confirm(()=>{
                 clearMyVar('parsename');
                 clearMyVar('parseurl');
@@ -233,7 +234,7 @@ function jiexiapi(data) {
     } 
     d.push({
         title:'保存',
-        col_type:'text_3',
+        col_type:'text_2',
         url: $().lazyRule((data)=>{
             if(!/^http|^functio/.test(getMyVar('parseurl',''))){
                 return "toast://解析地址不正确"
@@ -275,107 +276,6 @@ function jiexiapi(data) {
                 
         },data)
     });
-    /*
-    d.push({
-        title:'测试',
-        col_type:'text_3',
-        url: $().lazyRule(()=>{
-            let dataurl = getMyVar('parseurl');
-            let dataname = getMyVar('parsename')||'测试';
-            let datatype = getMyVar('parsetype','0');
-            let dataext = storage0.getMyVar('parseext') || {};
-            if(!dataurl||!/^http|^functio/.test(dataurl.trim())){
-                return "toast://获取解析地址失败，无法测试";
-            }
-
-            addItemAfter('jxline',{
-                title: '选择测试片源',
-                col_type: "rich_text",
-                extra:{
-                    id: 'jxfrom',
-                    cls: 'jxtest'
-                }
-            })
-            addItemAfter('jxfrom',{
-                col_type: "line",
-                extra:{
-                    id: 'jxline2',
-                    cls: 'jxtest'
-                }
-            })
-            let filepath = globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
-            let datafile = fetch(filepath);
-            if(datafile != ""){
-                eval("var urls=" + datafile+ ";");
-            }else{
-                var urls = {
-                    "1905": "https://vip.1905.com/play/1659382.shtml",
-                    "爱奇艺": "https://www.iqiyi.com/v_1e6upn2xiek.html",
-                    "优酷": "https://v.youku.com/v_show/id_XNjQwMzkxNzU1Mg==.html",
-                    "腾讯": "https://v.qq.com/x/cover/mzc002007n0xa7w/j4100ne9iw8.html",
-                    "芒果": "https://www.mgtv.com/b/638338/21190020.html",
-                    "哔哩哔哩": "https://www.bilibili.com/bangumi/play/ep828752",
-                    "搜狐": "https://tv.sohu.com/v/MjAyMzA5MjEvbjYwMTMzNDI0Ni5zaHRtbA==.html",
-                    "西瓜": "https://www.ixigua.com/6915270027096621576",
-                    "PPTV": "https://v.pptv.com/show/UKm0M5sBca8SkPg.html",
-                    "咪咕": "https://m.miguvideo.com/m/detail/919226692",
-                    "乐视": "https://www.le.com/ptv/vplay/24093071.html"
-                }
-                writeFile(filepath, JSON.stringify(urls));
-            }
-
-            let dataObj = {};
-            dataObj.parse = {name:dataname,url:dataurl,type:parseInt(datatype),ext:dataext};
-
-            urls['自定义'] = "";
-            for(let key in urls){
-                addItemBefore('jxline2', {
-                    title: key,
-                    url: key!="自定义"?$('#noRecordHistory##noHistory#').lazyRule((vipUrl,dataObj)=>{
-                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                        return SrcParseS.聚影(vipUrl, dataObj);
-                    },urls[key],dataObj):$("","输入自定义播放地址").input((dataObj) => {
-                        if(input==""){
-                            return "toast://未输入自定义地址，无法测试";
-                        }else{
-                            return $().lazyRule((vipUrl,dataObj)=>{
-                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                                return SrcParseS.聚影(vipUrl, dataObj);
-                            }, input, dataObj)
-                        }
-                    }, dataObj),
-                    col_type: "text_3",
-                    extra:{
-                        cls: 'jxtest',
-                        jsLoadingInject: true,
-                        blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'] 
-                    }
-                })
-            }
-            addItemBefore('jxline2', {
-                title: '编辑测试',
-                url: $('#noRecordHistory##noHistory#').lazyRule(()=>{
-                    return "editFile://" + globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
-                }),
-                col_type: "text_3",
-                extra:{
-                    cls: 'jxtest'
-                }
-            })
-            updateItem('jxtest', {
-                url: "hiker://empty"
-            })
-            return "hiker://empty";
-        }),
-        extra:{
-            id: 'jxtest'
-        }
-    });
-    */
-    d.push({
-        col_type: "line",
-        extra:{id:'jxline'}
-    })
     setResult(d);
 }
 //解析保存
@@ -652,7 +552,6 @@ function importConfirm(importStr) {
         }
     })
     let oldnum = importdatas.length - newdatas.length;
-    let Color = getItem('主题颜色','#3399cc');
 
     let d = [];
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
@@ -810,4 +709,127 @@ function importConfirm(importStr) {
     })
 
     setResult(d);
+}
+// 解析测试
+function jiexiTest(data) {
+    let testlist= [];
+    if($.type(data)=='object'){
+        testlist.push(data);
+    }else if($.type(data)=='array'){
+        testlist = data;
+    }
+
+    let testData = storage0.getMyVar('当前测试解析', {});
+    let d = [];
+    testlist.forEach(it=>{
+        d.push({
+            title: testData.name==it.name?"““””<big><b><font color="+Color+">"+it.name+"</font></b></big>":it.name,
+            url: $("#noLoading#").lazyRule((data)=>{
+                storage0.putMyVar('当前测试解析', data);
+                refreshPage();
+                return "toast://当前测试解析：" + data.name;
+            }, it),
+            col_type: 'text_3'
+        });
+    })
+    d.push({
+        col_type: "blank_block"
+    })
+    
+
+    d.push({
+        title:'测试',
+        col_type:'text_3',
+        url: $().lazyRule(()=>{
+            let dataurl = getMyVar('parseurl');
+            let dataname = getMyVar('parsename')||'测试';
+            let datatype = getMyVar('parsetype','0');
+            let dataext = storage0.getMyVar('parseext') || {};
+            if(!dataurl||!/^http|^functio/.test(dataurl.trim())){
+                return "toast://获取解析地址失败，无法测试";
+            }
+
+            addItemAfter('jxline',{
+                title: '选择测试片源',
+                col_type: "rich_text",
+                extra:{
+                    id: 'jxfrom',
+                    cls: 'jxtest'
+                }
+            })
+            addItemAfter('jxfrom',{
+                col_type: "line",
+                extra:{
+                    id: 'jxline2',
+                    cls: 'jxtest'
+                }
+            })
+            let filepath = globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
+            let datafile = fetch(filepath);
+            if(datafile != ""){
+                eval("var urls=" + datafile+ ";");
+            }else{
+                var urls = {
+                    "1905": "https://vip.1905.com/play/1659382.shtml",
+                    "爱奇艺": "https://www.iqiyi.com/v_1e6upn2xiek.html",
+                    "优酷": "https://v.youku.com/v_show/id_XNjQwMzkxNzU1Mg==.html",
+                    "腾讯": "https://v.qq.com/x/cover/mzc002007n0xa7w/j4100ne9iw8.html",
+                    "芒果": "https://www.mgtv.com/b/638338/21190020.html",
+                    "哔哩哔哩": "https://www.bilibili.com/bangumi/play/ep828752",
+                    "搜狐": "https://tv.sohu.com/v/MjAyMzA5MjEvbjYwMTMzNDI0Ni5zaHRtbA==.html",
+                    "西瓜": "https://www.ixigua.com/6915270027096621576",
+                    "PPTV": "https://v.pptv.com/show/UKm0M5sBca8SkPg.html",
+                    "咪咕": "https://m.miguvideo.com/m/detail/919226692",
+                    "乐视": "https://www.le.com/ptv/vplay/24093071.html"
+                }
+                writeFile(filepath, JSON.stringify(urls));
+            }
+
+            let dataObj = {};
+            dataObj.parse = {name:dataname,url:dataurl,type:parseInt(datatype),ext:dataext};
+
+            urls['自定义'] = "";
+            for(let key in urls){
+                addItemBefore('jxline2', {
+                    title: key,
+                    url: key!="自定义"?$('#noRecordHistory##noHistory#').lazyRule((vipUrl,dataObj)=>{
+                        require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                        return SrcParseS.聚影(vipUrl, dataObj);
+                    },urls[key],dataObj):$("","输入自定义播放地址").input((dataObj) => {
+                        if(input==""){
+                            return "toast://未输入自定义地址，无法测试";
+                        }else{
+                            return $().lazyRule((vipUrl,dataObj)=>{
+                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                                return SrcParseS.聚影(vipUrl, dataObj);
+                            }, input, dataObj)
+                        }
+                    }, dataObj),
+                    col_type: "text_3",
+                    extra:{
+                        cls: 'jxtest',
+                        jsLoadingInject: true,
+                        blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'] 
+                    }
+                })
+            }
+            addItemBefore('jxline2', {
+                title: '编辑测试',
+                url: $('#noRecordHistory##noHistory#').lazyRule(()=>{
+                    return "editFile://" + globalMap0.getVar('Src_Jy_gmParams').libspath + "testurls.json";
+                }),
+                col_type: "text_3",
+                extra:{
+                    cls: 'jxtest'
+                }
+            })
+            updateItem('jxtest', {
+                url: "hiker://empty"
+            })
+            return "hiker://empty";
+        }),
+        extra:{
+            id: 'jxtest'
+        }
+    });
 }

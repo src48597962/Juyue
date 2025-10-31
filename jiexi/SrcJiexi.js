@@ -132,7 +132,7 @@ function jxItemPage() {
                             if(jxstr){
                                 let jxlist = JSON.parse(jxstr);
                                 addarr = jxlist.title.map(it=>{
-                                    let itstr = jxlist[it].toString();
+                                    let itstr = jxlist.codes[it].toString();
                                     return {
                                         name: it,
                                         url: itstr,

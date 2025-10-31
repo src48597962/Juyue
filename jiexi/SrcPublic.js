@@ -810,6 +810,7 @@ function jiexiTest(data) {
             }, testUrls[key]),
             col_type: "text_3",
             extra:{
+                cls: "playlist",
                 jsLoadingInject: true,
                 blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'],
                 longClick: [{

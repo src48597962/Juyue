@@ -43,13 +43,13 @@ function duoselect(data){
 
     let selectlist = storage0.getMyVar('duodatalist') || [];
     waitlist.forEach(data=>{
-        if(!selectlist.some(item => data.id==item.id)){
+        if(!selectlist.some(item => data.name==item.name)){
             selectlist.push(data);
-            updateItem(data.id, {title: colorTitle(getDataTitle(data, '●'),'#3CB371')});
+            updateItem(data.name, {title: colorTitle(getDataTitle(data, '●'),'#3CB371')});
         }else{
-            let index = selectlist.indexOf(selectlist.filter(d => data.id==d.id)[0]);
+            let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.id, {title:data.stop?colorTitle(getDataTitle(data, '○'),'grey'):getDataTitle(data)});
+            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '○'),'grey'):getDataTitle(data)});
         }
     })
     storage0.putMyVar('duodatalist',selectlist);
@@ -255,7 +255,7 @@ function jiexiapi(data) {
                 }
 
                 if(data){
-                    arr['oldurl'] = data.url;
+                    arr['oldname'] = data.name;
                 }
                 urls.push(arr);
 
@@ -398,9 +398,9 @@ function jiexisave(urls, mode) {
         }
         
         urls.reverse().forEach(it=>{
-            if(it.oldurl || mode==1){
+            if(it.oldname || mode==1){
                 for(let i=0;i<datalist.length;i++){
-                    if(datalist[i].url==it.url||datalist[i].url==it.oldurl){
+                    if(datalist[i].name==it.name||datalist[i].name==it.oldname){
                         datalist.splice(i,1);
                         break;
                     }
@@ -408,11 +408,11 @@ function jiexisave(urls, mode) {
             }
 
             function checkitem(item) {
-                return item.url==it.url;
+                return item.name==it.name;
             }
 
             if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){
-                delete it['oldurl'];
+                delete it['oldname'];
                 datalist.unshift(it);
                 num = num + 1;
             }
@@ -596,9 +596,9 @@ function extractimport(str){
                 let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
                 let sharetxt = gzip.unzip(text);
                 let imports = JSON.parse(sharetxt); 
-                imports.forEach(item=>{
-                    if(!datas.some(v=>v.name==item.name||v.url==item.url)){
-                        datas.push(item);
+                imports.forEach(it=>{
+                    if(!datas.some(v=>v.name==it.name && v.url==it.url)){
+                        datas.push(it);
                     }
                 })
             }
@@ -643,11 +643,10 @@ function importConfirm(importStr) {
     let newdatas = [];
     let olddatas = [];
     importdatas.forEach(it=>{
-        it.id = it.id.toString();
-        if(!datalist.some(v=>v.name==it.name||v.url==it.url)){
+        if(!datalist.some(v=>v.name==it.name)){
             newdatas.push(it);
         }else{
-            let olddata = datalist.filter(v=>v.name==it.name||v.url==it.url)[0];
+            let olddata = datalist.filter(v=>v.name==it.name)[0];
             it.oldversion = olddata.version || "";
             olddatas.push(it);
         }
@@ -702,7 +701,7 @@ function importConfirm(importStr) {
             back(false);
             return "toast://增量导入"+(num<0?"失败":num);
         }),
-        img: importdatas.length>0&&oldnum==0?"":getIcon("管理-增量导入.svg"),
+        img: importdatas.length>0&&oldnum==0?"":"http://123.56.105.145/tubiao/circle/26.png",
         col_type: 'icon_small_3'
     });
     d.push({
@@ -725,7 +724,7 @@ function importConfirm(importStr) {
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }),
-        img: getIcon("管理-全量导入.svg"),
+        img: "http://123.56.105.145/tubiao/circle/25.png",
         col_type: 'icon_small_3'
     });
     if(newdatas.length>0 && olddatas.length>0){
@@ -750,36 +749,27 @@ function importConfirm(importStr) {
     }
 
     importdatas.forEach(it=>{
-        let isnew = newdatas.some(v=>v.id==it.id);
+        let isnew = newdatas.some(v=>v.name==it.name);
         let datamenu = ["确定导入", "修改名称", "接口测试"];
+        let ext = it.ext || {};
+        let flag = ext.flag || [];
 
-        let ittitle,itimg,itcol;
-        if((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305)){
-            ittitle = it.name + "‘‘’’<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + (it.oldversion?"-本V"+it.oldversion:"");
-            itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
-            itcol = "icon_1_left_pic";
-        }else{
-            ittitle = it.name + "<small><font color=grey>(" + it.type + ")" + (it.author?"["+it.author+"]":"") + "{" + (isnew?"新增加":"已存在") + "}";
-            itimg = getIcon("管理-箭头.svg");
-            itcol = "text_icon";
-        }
         d.push({
-            title: ittitle,
+            title: getDataTitle(it) + "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}",
             url: $(datamenu, 2).select((data, isnew) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "确定导入") {
                     function iConfirm(data) {
-                        let dataid = data.id;
                         require(config.jxCodePath + 'SrcPublic.js');
                         let num = jiexisave([data], 1);
                         let importlist = storage0.getMyVar('importConfirm', []);
                         if(importlist.length==1){
                             back(false);
                         }else{
-                            let index2 = importlist.findIndex(item => item.id === dataid);
+                            let index2 = importlist.findIndex(item => item.name === data.name);
                             importlist.splice(index2, 1);
                             storage0.putMyVar('importConfirm', importlist);
-                            deleteItem(dataid);
+                            deleteItem(data.name);
                         }
                         return "toast://导入"+(num<0?"失败":num);
                     }
@@ -795,9 +785,9 @@ function importConfirm(importStr) {
                         if(!input.trim()){
                             return "toast://不能为空";
                         }
-                        let dataid = data.id;
+
                         let importlist = storage0.getMyVar('importConfirm', []);
-                        let index = importlist.findIndex(item => item.id === dataid);
+                        let index = importlist.findIndex(item => item.name == data.name);
                         importlist[index].name = input;
                         storage0.putMyVar('importConfirm', importlist);
                         refreshPage(false);
@@ -811,11 +801,10 @@ function importConfirm(importStr) {
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),
-            desc: "““””<b><font color="+Color+">"+(isnew?"新增加":"已存在") + "</font></b>" + (it.version?(it.version==it.oldversion?"":"<font color="+Color+"0>")+"-云V"+it.version:""),
-            img: itimg,
-            col_type: itcol,
+            desc: flag.join(','),
+            col_type: "text_1",
             extra: {
-                id: it.id
+                id: it.name
             }
         });
     })

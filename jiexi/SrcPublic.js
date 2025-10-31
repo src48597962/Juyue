@@ -1,6 +1,13 @@
 let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  rulepath + 'jiexi.json';
+let cfgfile = rulepath + 'config.json';
 let Color = getItem('主题颜色','#3399cc');
+
+let Juconfig = {};
+let Jucfg = fetch(cfgfile);
+if (Jucfg != "") {
+    eval("Juconfig=" + Jucfg + ";");
+}
 
 function getDatas() {
     let datalist = [];
@@ -718,7 +725,10 @@ function jiexiTest(data) {
     }else if($.type(data)=='array'){
         testlist = data;
     }
-
+    
+    if(testlist.length>0){
+        storage0.putMyVar('当前测试解析', testlist[0]);
+    }
     let testData = storage0.getMyVar('当前测试解析', {});
     let d = [];
     testlist.forEach(it=>{
@@ -735,7 +745,38 @@ function jiexiTest(data) {
     d.push({
         col_type: "blank_block"
     })
-    
+
+    let testUrls = Juconfig['testUrls'] || [];
+    testUrls.unshift('测试管理');
+    testUrls.forEach(it=>{
+        d.push({
+            title: it.name,
+            url: it.name=='测试管理'?$().lazyRule(()=>{
+                const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
+                hikerPop.inputTwoRow({
+                    titleHint: "站点名称",
+                    titleDefault: "",
+                    urlHint: "播放地址",
+                    urlDefault: "",
+                    noAutoSoft: true,
+                    title: "测试地址维护",
+                    confirm(s1, s2) {
+                        return "toast://你输入了:" + s1 + " " + s2;
+                    }
+                });
+                return "hiker://empty";
+            }):$().lazyRule((input)=>{
+                let dataObj = {parse: storage0.getMyVar('当前测试解析')}
+                require(codePath + 'SrcParse.js');
+                return SrcParse(input, dataObj);
+            }, it.url),
+            col_type: "text_3",
+            extra:{
+                jsLoadingInject: true,
+                blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'] 
+            }
+        })
+    })
 
     d.push({
         title:'测试',

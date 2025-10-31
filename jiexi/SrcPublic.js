@@ -733,6 +733,13 @@ function jiexiTest(data) {
     }
     let testData = storage0.getMyVar('当前测试解析', {});
     let d = [];
+    d.push({
+        col_type: "line_blank"
+    })
+    d.push({
+        title: "待检测的解析，点击选择",
+        col_type: 'rich_text'
+    });
     testlist.forEach(it=>{
         d.push({
             title: testData.name==it.name?"““””<big><b><font color="+Color+">"+it.name+"</font></b></big>":it.name,
@@ -745,8 +752,12 @@ function jiexiTest(data) {
         });
     })
     d.push({
-        col_type: "blank_block"
+        col_type: "line_blank"
     })
+    d.push({
+        title: "点击下面的站点测试解析",
+        col_type: 'rich_text'
+    });
     d.push({
         title: '添加站点',
         url: $('#noLoading#').lazyRule(()=>{
@@ -757,9 +768,17 @@ function jiexiTest(data) {
                 urlHint: "播放地址",
                 urlDefault: "",
                 noAutoSoft: true,
-                title: "测试地址维护",
+                title: "添加站点",
                 confirm(s1, s2) {
-                    return "toast://你输入了:" + s1 + " " + s2;
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    let testUrls = Juconfig['testUrls'] || [];
+                    if(testUrls.some(item =>item.url==s2)){
+                        return "toast://播放地址已存在";
+                    }
+                    testUrls.push({name:s1, url:s2});
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    refreshPage();
+                    return "toast://已添加："+s1;
                 }
             });
             return "hiker://empty";
@@ -771,21 +790,7 @@ function jiexiTest(data) {
     testUrls.forEach(it=>{
         d.push({
             title: it.name,
-            url: it.name=='添加站点'?$('#noLoading#').lazyRule(()=>{
-                const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
-                hikerPop.inputTwoRow({
-                    titleHint: "站点名称",
-                    titleDefault: "",
-                    urlHint: "播放地址",
-                    urlDefault: "",
-                    noAutoSoft: true,
-                    title: "测试地址维护",
-                    confirm(s1, s2) {
-                        return "toast://你输入了:" + s1 + " " + s2;
-                    }
-                });
-                return "hiker://empty";
-            }):$().lazyRule((input)=>{
+            url: $().lazyRule((input)=>{
                 let dataObj = {parse: storage0.getMyVar('当前测试解析')}
                 require(codePath + 'SrcParse.js');
                 return SrcParse(input, dataObj);
@@ -793,7 +798,18 @@ function jiexiTest(data) {
             col_type: "text_3",
             extra:{
                 jsLoadingInject: true,
-                blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'] 
+                blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'],
+                longClick: [{
+                    title: "删除",
+                    js: $.toString((url) => {
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        let testUrls = Juconfig['testUrls'] || [];
+                        testUrls = testUrls.filter(v=>v.url!=url);
+                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        refreshPage();
+                        return "toast://已删除"
+                    }, it.url)
+                }]
             }
         })
     })

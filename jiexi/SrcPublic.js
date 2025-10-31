@@ -797,7 +797,7 @@ function importConfirm(importStr) {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                         setPageTitle(data.name+"-接口测试");
                         require(config.jxCodePath + 'SrcPublic.js');
-                        yiji(data);
+                        jiexiTest(data);
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),

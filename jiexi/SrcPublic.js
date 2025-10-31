@@ -771,11 +771,11 @@ function jiexiTest(data) {
                 title: "添加站点",
                 confirm(s1, s2) {
                     require(config.jxCodePath + 'SrcPublic.js');
-                    let testUrls = Juconfig['testUrls'] || [];
-                    if(testUrls.some(item =>item.url==s2)){
-                        return "toast://播放地址已存在";
+                    let testUrls = Juconfig['testUrls'] || {};
+                    if(testUrls[s1]){
+                        return "toast://站点已存在";
                     }
-                    testUrls.push({name:s1, url:s2});
+                    testUrls[s1] = s2;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     refreshPage();
                     return "toast://已添加："+s1;
@@ -786,29 +786,70 @@ function jiexiTest(data) {
         col_type: "text_3"
     })
 
-    let testUrls = Juconfig['testUrls'] || [];
-    testUrls.forEach(it=>{
+    let testUrls = Juconfig['testUrls'] || {};
+    if(Object.keys(testUrls).length==0){
+        Juconfig['testUrls'] = {
+            "爱奇艺": "https://www.iqiyi.com/v_1e6upn2xiek.html",
+            "优酷": "https://v.youku.com/v_show/id_XNjQwMzkxNzU1Mg==.html",
+            "腾讯": "https://v.qq.com/x/cover/mzc002007n0xa7w/j4100ne9iw8.html",
+            "芒果": "https://www.mgtv.com/b/638338/21190020.html",
+            "哔哩哔哩": "https://www.bilibili.com/bangumi/play/ep828752",
+            "搜狐": "https://tv.sohu.com/v/MjAyMzA5MjEvbjYwMTMzNDI0Ni5zaHRtbA==.html"
+        }
+        writeFile(cfgfile, JSON.stringify(Juconfig));
+        testUrls = Juconfig['testUrls'];
+    }
+    
+    Object.keys(testUrls).forEach(key=>{
         d.push({
-            title: it.name,
+            title: key,
             url: $().lazyRule((input)=>{
                 let dataObj = {parse: storage0.getMyVar('当前测试解析')}
                 require(codePath + 'SrcParse.js');
                 return SrcParse(input, dataObj);
-            }, it.url),
+            }, testUrls[key]),
             col_type: "text_3",
             extra:{
                 jsLoadingInject: true,
                 blockRules: ['.m4a','.mp3','.gif','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js'],
                 longClick: [{
-                    title: "删除",
-                    js: $.toString((url) => {
+                    title: "修改",
+                    js: $.toString((key) => {
                         require(config.jxCodePath + 'SrcPublic.js');
-                        let testUrls = Juconfig['testUrls'] || [];
-                        testUrls = testUrls.filter(v=>v.url!=url);
+                        let testUrls = Juconfig['testUrls'] || {};
+                        const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
+                        hikerPop.inputTwoRow({
+                            titleHint: "站点名称",
+                            titleDefault: key,
+                            urlHint: "播放地址",
+                            urlDefault: testUrls[key],
+                            noAutoSoft: true,
+                            title: "修改站点",
+                            confirm(s1, s2) {
+                                require(config.jxCodePath + 'SrcPublic.js');
+                                let testUrls = Juconfig['testUrls'] || {};
+                                delete testUrls[key];
+                                if(testUrls[s1]){
+                                    return "toast://站点已存在";
+                                }
+                                testUrls[s1] = s2;
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                refreshPage();
+                                return "toast://已修改："+s1;
+                            }
+                        });
+                        return "hiker://empty";
+                    }, key)
+                },{
+                    title: "删除",
+                    js: $.toString((key) => {
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        let testUrls = Juconfig['testUrls'] || {};
+                        delete testUrls[key];
                         writeFile(cfgfile, JSON.stringify(Juconfig));
                         refreshPage();
                         return "toast://已删除"
-                    }, it.url)
+                    }, key)
                 }]
             }
         })

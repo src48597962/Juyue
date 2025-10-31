@@ -111,9 +111,9 @@ function jxItemPage() {
             longClick: [{
                 title: '外部导入',
                 js: $.toString(() => {
-                    return $(['聚影解析'], 2).select(() => {
+                    return $(['聚影','断插'], 2).select(() => {
                         let addarr = [];
-                        if(input=='聚影解析'){
+                        if(input=='聚影'){
                             let jxfile = 'hiker://files/rules/Src/Juying2/jiexi.json';
                             let jxstr = fetch(jxfile);
                             if(jxstr){
@@ -123,6 +123,20 @@ function jxItemPage() {
                                         url: it.url,
                                         type: it.url.includes('function')?'2':it.type+'',
                                         ext: it.ext
+                                    }
+                                })
+                            }
+                        }else if(input=='断插'){
+                            let jxfile = 'hiker://files/rules/rules/DuanNian/MyParse.json';
+                            let jxstr = fetch(jxfile);
+                            if(jxstr){
+                                let jxlist = JSON.parse(jxstr);
+                                addarr = jxlist.title.map(it=>{
+                                    let itstr = jxlist[it].toString();
+                                    return {
+                                        name: it,
+                                        url: itstr,
+                                        type: itstr.includes('function')?'2':/key=|json/.test(itstr)?'1':'0'
                                     }
                                 })
                             }

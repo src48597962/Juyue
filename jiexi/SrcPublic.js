@@ -747,9 +747,27 @@ function jiexiTest(data) {
     d.push({
         col_type: "blank_block"
     })
+    d.push({
+        title: '添加站点',
+        url: $('#noLoading#').lazyRule(()=>{
+            const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
+            hikerPop.inputTwoRow({
+                titleHint: "站点名称",
+                titleDefault: "",
+                urlHint: "播放地址",
+                urlDefault: "",
+                noAutoSoft: true,
+                title: "测试地址维护",
+                confirm(s1, s2) {
+                    return "toast://你输入了:" + s1 + " " + s2;
+                }
+            });
+            return "hiker://empty";
+        }),
+        col_type: "text_3"
+    })
 
     let testUrls = Juconfig['testUrls'] || [];
-    testUrls.unshift('添加站点');
     testUrls.forEach(it=>{
         d.push({
             title: it.name,

@@ -446,8 +446,6 @@ function JYimport(input) {
         input = input.replace('云口令：','').trim();;
     }
     let pasteurl,inputname,sm;
-    let inputname;
-    let codelx = "share";
     try{
         pasteurl = aesDecode('Jujiexi', input.split('￥')[1]);
         inputname = input.split('￥')[0];

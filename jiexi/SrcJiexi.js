@@ -131,7 +131,6 @@ function jxItemPage() {
                             let jxstr = fetch(jxfile);
                             if(jxstr){
                                 eval("let jxlist = " + jxstr);
-                                log('111');
                                 addarr = jxlist.title.map(it=>{
                                     let itstr = jxlist.codes[it].toString();
                                     return {
@@ -152,6 +151,7 @@ function jxItemPage() {
                             newadd = addarr.filter(v=>!jxlist.some(it => v.name==it.name || v.url==it.url));
                             jxlist = jxlist.concat(newadd);
                             writeFile(jxfile, JSON.stringify(jxlist));
+                            refreshPage(true);
                         }
                         return 'toast://新增解析：' + newadd.length;
                     })

@@ -271,23 +271,10 @@ function jxSetPage() {
         col_type: "line_blank"
     });
     d.push({
-        title: '功能管理',
+        title: '功能开关',
         pic_url: getJxIcon('功能开关.svg'),
         col_type: "avatar",
         url: "hiker://empty"
-    });
-    d.push({
-        title: '本地解析管理',
-        url: $('#noLoading#').lazyRule(() => {
-            putMyVar('guanli','jx');
-            return $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                setPageTitle('解析管理');
-                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
-                SRCSet();
-            })
-        }),
-        pic_url: 箭头图标,
-        col_type: "text_icon"
     });
     d.push({
         title: '解析日志打印',
@@ -301,6 +288,56 @@ function jxSetPage() {
             return 'toast://切换成功';
         }),
         pic_url: playSet['printlog']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: 'm3u8索引文件缓存',
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['cachem3u8'] = playSet['cachem3u8']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
+            refreshPage(false);
+            return 'toast://切换成功';
+        }),
+        pic_url: playSet['cachem3u8']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '解析结果有效性检测',
+        desc: "除video方式外，其他解析结果是否开启检测",
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['testvideo'] = playSet['testvideo']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
+            refreshPage(false);
+            return 'toast://切换成功';
+        }),
+        pic_url: playSet['testvideo']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
+        title: '调用dm盒子弹幕',
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            let sm;
+            if (playSet['danmu']) {
+                playSet['danmu'] = 0;
+                sm = '关闭dm盒子弹幕';
+            } else {
+                playSet['danmu'] = 1;
+                sm = '仅针对官网地址有效，需要dm盒子小程序';
+            }
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
+            refreshPage(false);
+            return 'toast://' + sm;
+        }),
+        pic_url: playSet['danmu']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -407,59 +444,8 @@ function jxSetPage() {
             }]
         }
     });
-    d.push({
-        col_type: "line"
-    });
-    d.push({
-        title: 'm3u8索引文件缓存',
-        url: $('#noLoading#').lazyRule(() => {
-            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-            let playSet = jxSetCfg['playSet'] || {};
-            playSet['cachem3u8'] = playSet['cachem3u8']!=1?1:0;
-            jxSetCfg['playSet'] = playSet;
-            storage0.putMyVar('jxSetCfg', jxSetCfg);
-            refreshPage(false);
-            return 'toast://切换成功';
-        }),
-        pic_url: playSet['cachem3u8']?getJxIcon("开.svg"):getJxIcon("关.svg"),
-        col_type: "text_icon"
-    });
-    d.push({
-        title: '解析结果有效性检测',
-        desc: "除video方式外，其他解析结果是否开启检测",
-        url: $('#noLoading#').lazyRule(() => {
-            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-            let playSet = jxSetCfg['playSet'] || {};
-            playSet['testvideo'] = playSet['testvideo']!=1?1:0;
-            jxSetCfg['playSet'] = playSet;
-            storage0.putMyVar('jxSetCfg', jxSetCfg);
-            refreshPage(false);
-            return 'toast://切换成功';
-        }),
-        pic_url: playSet['testvideo']?getJxIcon("开.svg"):getJxIcon("关.svg"),
-        col_type: "text_icon"
-    });
-    d.push({
-        title: '调用dm盒子弹幕',
-        url: $('#noLoading#').lazyRule(() => {
-            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-            let playSet = jxSetCfg['playSet'] || {};
-            let sm;
-            if (playSet['danmu']) {
-                playSet['danmu'] = 0;
-                sm = '关闭dm盒子弹幕';
-            } else {
-                playSet['danmu'] = 1;
-                sm = '仅针对官网地址有效，需要dm盒子小程序';
-            }
-            jxSetCfg['playSet'] = playSet;
-            storage0.putMyVar('jxSetCfg', jxSetCfg);
-            refreshPage(false);
-            return 'toast://' + sm;
-        }),
-        pic_url: playSet['danmu']?getJxIcon("开.svg"):getJxIcon("关.svg"),
-        col_type: "text_icon"
-    });
+
+    
     /*
     d.push({
         col_type: "line"

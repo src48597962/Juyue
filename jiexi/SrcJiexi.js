@@ -207,7 +207,7 @@ function jxItemPage(dd) {
                 require(config.jxCodePath + 'SrcPublic.js');
                 let jxdatalist = storage0.getMyVar("jxdatalist");
                 jxdatalist = outputSearchList(jxdatalist, input);
-                addItemBefore('jkItemLoading', jxItemList(jxdatalist));
+                addItemBefore('jxItemLoading', jxItemList(jxdatalist));
             }
             return 'hiker://empty';
         }),

@@ -1745,7 +1745,8 @@ function search(name, sstype, jkdata, blurMatch) {
                 }
             }
         }else if(sstype=="yiji"){
-            if(isMatch(name, it.title)){
+            if(isMatch(name, it.title) || it.retain){
+                delete it.retain;
                 it.extra = it.extra || {};
                 it.extra.cls = "homesousuolist";
                 ssdata.push(it);
@@ -1758,6 +1759,7 @@ function search(name, sstype, jkdata, blurMatch) {
                 ssdata.push(it);
             }
         }else if(isMatch(name, it.title) || !it.url.includes('erji();') || it.retain){
+            delete it.retain;
             ssdata.push(it);
         }
     })

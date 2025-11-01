@@ -413,28 +413,46 @@ function jxSetPage(dd) {
             title: '线路指定优先',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
                 addListener("onClose", $.toString(() => {
-                    clearMyVar('解析数组');
+                    
                 }));
 
                 require(config.jxCodePath + 'SrcPublic.js');
+                let flagParse = Juconfig['flagParse'] || {};
+                let flags = {
+                    "qq": "https://v.qq.com/favicon.ico",
+                    "youku": "https://www.youku.com/favicon.ico",
+                    "iqiyi": "https://www.iqiyi.com/favicon.ico",
+                    "mgtv": "https://www.mgtv.com/favicon.ico",
+                    "bilibili": "https://www.bilibili.com/favicon.ico",
+                    "migu": "https://www.miguvideo.com/favicon.ico",
+                    "souhu": "https://tv.sohu.com/favicon.ico"
+                }
+                let names = getDataNames();
+                names.unshift('清除');
 
-                let flagParse = Juconfig['flagParse'] || [];
                 let d = [];
-                flagParse.forEach(it=>{
-                    d.push({
-                        title: it.name,
-                        desc: it.parse,
-                        url: $('#noLoading#').lazyRule(() => {
 
+                Object.keys(flags).forEach(key=>{
+                    d.push({
+                        title: key,
+                        desc: flagParse[key] || '',
+                        url: $(names, 3, '选择<'+key+'>优先解析').lazyRule((key) => {
+                            require(config.jxCodePath + 'SrcPublic.js');
+                            let flagParse = Juconfig['flagParse'] || {};
+                            if(input=='清除'){
+                                delete flagParse[key];
+                            }else{
+                                flagParse[key] = input;
+                            }
+                            Juconfig['flagParse'] = flagParse;
+                            writeFile(jxcfgfile, JSON.stringify(Juconfig));
                             refreshPage(false);
-                            return 'toast://已切换';
-                        }),
-                        pic_url: it.img,
+                            return 'toast://已设置';
+                        },key),
+                        pic_url: flags[key],
                         col_type: "avatar"
                     })
                 })
-
-                
                 setResult(d);
             }),
             pic_url: 箭头图标,

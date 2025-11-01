@@ -495,6 +495,14 @@ function JYimport(input) {
         return "toast://无法识别的口令>"+e.message;
     }
 }
+	// 手机是否暗黑模式
+function isDarkMode() {
+  const Configuration = android.content.res.Configuration;
+  let cx = getCurrentActivity();
+
+  let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+  return theme == Configuration.UI_MODE_NIGHT_YES;
+}
 //云口令提取
 function extractimport(str){
     showLoading('获取数据中，请稍后...');

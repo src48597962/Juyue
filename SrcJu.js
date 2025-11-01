@@ -214,7 +214,7 @@ function yiji(testSource) {
         })
         d.push({
             title: "管理",
-            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",juItem2.get('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心","本地解析管理"],1).select(()=>{
+            url: testSource?"toast://测试模式下不能进入设置菜单":$(["本地接口管理",juItem2.get('显示快速分组')=="1"?"关闭快速分组":"显示快速分组","切换选源插件","程序管理中心"],1).select(()=>{//,"本地解析管理"
                 if(MY_INDEX==0){
                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                         setPageTitle('本地接口管理');
@@ -1757,7 +1757,7 @@ function search(name, sstype, jkdata, blurMatch) {
                 it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
-        }else if(isMatch(name, it.title) || !it.url.includes('erji();')){
+        }else if(isMatch(name, it.title) || !it.url.includes('erji();') || it.retain){
             ssdata.push(it);
         }
     })

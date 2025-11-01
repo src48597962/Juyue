@@ -408,52 +408,71 @@ function jxSetPage(dd) {
         pic_url: 箭头图标,
         col_type: "text_icon"
     });
-    d.push({
-        title: '多线路数：'+(playSet['mulnum']||"1"),
-        url: $(playSet['mulnum']||"1", "当多线路数大于1时会拖慢解析速度").input(() => {
-            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-            let playSet = jxSetCfg['playSet'] || {};
-            playSet['mulnum'] = parseInt(input) || 1;
-            jxSetCfg['playSet'] = playSet;
-            storage0.putMyVar('jxSetCfg', jxSetCfg);
-            refreshPage(false);
-            return 'toast://已设置多线路数：' + (parseInt(input) || 1);
-        }),
-        pic_url: 箭头图标,
-        col_type: "text_icon"
-    });
-    d.push({
-        title: '无效播放地址',
-        url: $("", "输入无法播放的地址进行屏蔽").input(() => {
-            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-            let parseRecord = jxSetCfg['parseRecord'] || {};
-            parseRecord['excludeurl'] = parseRecord['excludeurl'] || [];
-            let url = input.split(';{')[0].replace(/file.*video\.m3u8##/, '').replace('#isVideo=true#', '');
-            if (parseRecord['excludeurl'].indexOf(url) == -1) {
-                parseRecord['excludeurl'].push(url);
+    if(parsemode==1){
+        d.push({
+            title: '线路指定优先',
+            url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                let playSet = jxSetCfg['playSet'] || {};
+                let num = parseInt(input) || 1;
+                playSet['mulnum'] = num;
+                jxSetCfg['playSet'] = playSet;
+                storage0.putMyVar('jxSetCfg', jxSetCfg);
+                refreshPage(false);
+                return 'toast://当优先上次解析失败后，实际多线路数：1~' + (num +2);
+            }),
+            pic_url: 箭头图标,
+            col_type: "text_icon"
+        });
+        d.push({
+            title: '多线路数：'+(playSet['mulnum']||"1"),
+            url: $(playSet['mulnum']||"1", "当多线路数大于1时可能会拖慢解析速度").input(() => {
+                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                let playSet = jxSetCfg['playSet'] || {};
+                let num = parseInt(input) || 1;
+                playSet['mulnum'] = num;
+                jxSetCfg['playSet'] = playSet;
+                storage0.putMyVar('jxSetCfg', jxSetCfg);
+                refreshPage(false);
+                return 'toast://当优先上次解析失败后，实际多线路数：1~' + (num +2);
+            }),
+            pic_url: 箭头图标,
+            col_type: "text_icon"
+        });
+        d.push({
+            title: '无效播放地址',
+            url: $("", "输入无法播放的地址进行屏蔽").input(() => {
+                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                let parseRecord = jxSetCfg['parseRecord'] || {};
+                parseRecord['excludeurl'] = parseRecord['excludeurl'] || [];
+                let url = input.split(';{')[0].replace(/file.*video\.m3u8##/, '').replace('#isVideo=true#', '');
+                if (parseRecord['excludeurl'].indexOf(url) == -1) {
+                    parseRecord['excludeurl'].push(url);
+                }
+                jxSetCfg['parseRecord'] = parseRecord;
+                storage0.putMyVar('jxSetCfg', jxSetCfg);
+                refreshPage(false);
+                return 'toast://对此播放地址将拦截';
+            }),
+            pic_url: 箭头图标,
+            col_type: "text_icon",
+            extra: {
+                longClick: [{
+                    title: '清空播放拦截记录',
+                    js: $.toString(() => {
+                        let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                        let parseRecord = jxSetCfg['parseRecord'] || {};
+                        delete parseRecord['excludeurl'];
+                        jxSetCfg['parseRecord'] = parseRecord;
+                        storage0.putMyVar('jxSetCfg', jxSetCfg);
+                        refreshPage(false);
+                        return 'toast://无清空';
+                    })
+                }]
             }
-            jxSetCfg['parseRecord'] = parseRecord;
-            storage0.putMyVar('jxSetCfg', jxSetCfg);
-            refreshPage(false);
-            return 'toast://对此播放地址将拦截';
-        }),
-        pic_url: 箭头图标,
-        col_type: "text_icon",
-        extra: {
-            longClick: [{
-                title: '清空播放拦截记录',
-                js: $.toString(() => {
-                    let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-                    let parseRecord = jxSetCfg['parseRecord'] || {};
-                    delete parseRecord['excludeurl'];
-                    jxSetCfg['parseRecord'] = parseRecord;
-                    storage0.putMyVar('jxSetCfg', jxSetCfg);
-                    refreshPage(false);
-                    return 'toast://无清空';
-                })
-            }]
-        }
-    });
+        });
+    }
+    
 
     
     /*

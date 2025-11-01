@@ -19,10 +19,11 @@ let playSet = {
     testvideo: 0,
     mulnum: 1
 };
+let Juconfig = {};
 let Jucfg = fetch("hiker://files/rules/Src/Jiexi/config.json");
 if(Jucfg != ""){
     try{
-        eval("let Juconfig= " + Jucfg+ ";");
+        eval("Juconfig= " + Jucfg+ ";");
         let playSetCfg = Juconfig['playSet'] || {};
         playSet = Object.assign({}, playSet, playSetCfg);
     }catch(e){}

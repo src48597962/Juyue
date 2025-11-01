@@ -9,8 +9,8 @@ let Jucfg = fetch(jxcfgfile);
 if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
-
-function getDatas() {
+// 获取所有解析
+function getDatas(isyx) {
     let datalist = [];
     let sourcedata = fetch(jxfile);
     if(sourcedata != ""){
@@ -19,11 +19,22 @@ function getDatas() {
         }catch(e){ }
     }
     let withoutStop = datalist.filter(item => !item.stop);
+    if(isyx){
+        return withoutStop;
+    }
     // 禁用的放到最后
     let withStop = datalist.filter(item => item.stop);
     // 合并数组
     let result = withoutStop.concat(withStop);
 
+    return result;
+}
+// 获取有效解析名数组
+function getDataNames() {
+    let list = getDatas(true);
+    let result = list.map(it=>{
+        return it.name;
+    })
     return result;
 }
 // 对应标识

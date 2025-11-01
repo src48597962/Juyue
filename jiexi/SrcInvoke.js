@@ -17,7 +17,7 @@ function jxItem() {
 // 解析列表
 function jxSet() {
     require(codePath + 'SrcJiexi.js');
-    jxItemPage();
+    jxSetPage();
 }
 // 调用解析
 function lazy(input, dataObj) {

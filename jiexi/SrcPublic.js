@@ -522,6 +522,7 @@ function extractimport(str){
                 let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
                 let sharetxt = gzip.unzip(text);
                 let imports = JSON.parse(sharetxt); 
+                log(imports);
                 imports.forEach(it=>{
                     if(!datas.some(v=>v.name==it.name && v.url==it.url)){
                         datas.unshift(it);

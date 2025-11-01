@@ -20,7 +20,7 @@ function jxSet() {
     jxItemPage();
 }
 // 调用解析
-function aytmParse(input, dataObj) {
+function lazy(input, dataObj) {
     require(codePath + 'SrcParse.js');
     return SrcParse(input, dataObj);
 }
@@ -29,5 +29,5 @@ $.exports = {
     home: home,
     jxItem: jxItem,
     jxSet: jxSet,
-    aytmParse: aytmParse
+    lazy: lazy
 }

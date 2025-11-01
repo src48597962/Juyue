@@ -34,6 +34,14 @@ function homePage() {
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_2"
     });
+    dd.push({
+        pic_url: config.jxCodePath + "img/Loading.gif",
+        col_type: "pic_1_center",
+        url: "hiker://empty",
+        extra: {
+            cls: "loading_gif"
+        }
+    })
     setPreResult(dd);
     
     if(getMyVar('主页显示内容', '1')=='1'){
@@ -41,6 +49,7 @@ function homePage() {
     }else{
         jxSetPage();
     }
+    deleteItemByCls("loading_gif");
 }
 // 接口管理页
 function jxItemPage() {

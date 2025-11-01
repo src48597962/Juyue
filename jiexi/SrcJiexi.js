@@ -265,9 +265,9 @@ function jxSetPage() {
     let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
     if(!getMyVar('jxSetCfg')){
         let parseRecord = {};
-        if(fetch(recordfile)){
+        if(fetch(jxrecordfile)){
             try{
-                eval("parseRecord =" + fetch(recordfile) + ";");
+                eval("parseRecord =" + fetch(jxrecordfile) + ";");
             }catch(e){}
         }
         jxSetCfg['parseRecord'] = parseRecord;

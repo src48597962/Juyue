@@ -444,7 +444,7 @@ function JYshare(input,data) {
         hideLoading();
         if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
             log('剪贴板地址>'+pasteurl);
-            let code = sm+'￥'+aesEncode('Juying2', pasteurl)+'￥' + sm2 + '('+input+')';
+            let code = sm+'￥'+aesEncode('Jujiexi', pasteurl)+'￥' + sm2 + '('+input+')';
             copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             return "toast://分享口令已生成";
         }else{
@@ -453,49 +453,7 @@ function JYshare(input,data) {
         }
     }
 }
-//资源导入
-function JYimport(input) {
-    if(/^云口令：/.test(input)){
-        input = input.replace('云口令：','').trim();;
-    }
-    let pasteurl,inputname,sm;
-    try{
-        pasteurl = aesDecode('Jujiexi', input.split('￥')[1]);
-        inputname = input.split('￥')[0];
-    }catch(e){
-        return "toast://口令有误>"+e.message;
-    }
-    try{
-        if(inputname=="聚阅解析"){
-            sm = "聚阅解析";
-        }else{
-            return "toast://不是聚阅解析口令";
-        }
-        let text;
-        if(/^http|^云/.test(pasteurl)){
-            showLoading('获取数据中，请稍后...');
-            text = parsePaste(pasteurl);
-            hideLoading();
-        }else{
-            text = pasteurl;
-        }
-        if(pasteurl&&!/^error/.test(text)){
-            let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
-            let sharetxt = gzip.unzip(text);
-            let pastedata = JSON.parse(sharetxt);           
-            let urlnum = jiexisave(pastedata);
-            if(urlnum>0){
-                refreshPage(false);
-            }
-            return "toast://"+sm+"合计："+pastedata.length+"，保存："+urlnum;
-        }else{
-            return "toast://口令错误或已失效";
-        }
-    } catch (e) {
-        return "toast://无法识别的口令>"+e.message;
-    }
-}
-	// 手机是否暗黑模式
+// 手机是否暗黑模式
 function isDarkMode() {
   const Configuration = android.content.res.Configuration;
   let cx = getCurrentActivity();
@@ -511,22 +469,17 @@ function extractimport(str){
     let datas = [];
     strs.forEach(it=>{
         try{
-            log(it);
             let code = aesDecode('Jujiexi', it.split('￥')[1]);
-            log(it.split('￥')[1]);
-            log(code);
             let text;
             if(/^http|^云/.test(code)){//云分享
                 text = parsePaste(code);
             }else{//文件分享
                 text = code;
             }
-            log(text);
             if(text && !/^error/.test(text)){
                 let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
                 let sharetxt = gzip.unzip(text);
                 let imports = JSON.parse(sharetxt); 
-                log(imports);
                 imports.forEach(it=>{
                     if(!datas.some(v=>v.name==it.name && v.url==it.url)){
                         datas.unshift(it);
@@ -631,7 +584,7 @@ function importConfirm(importStr) {
             back(false);
             return "toast://增量导入"+(num<0?"失败":num);
         }),
-        img: importdatas.length>0&&oldnum==0?"":"http://123.56.105.145/tubiao/circle/26.png",
+        img: importdatas.length>0&&oldnum==0?"":getJxIcon('增量导入.svg'),
         col_type: 'icon_small_3'
     });
     d.push({
@@ -654,7 +607,7 @@ function importConfirm(importStr) {
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }),
-        img: "http://123.56.105.145/tubiao/circle/25.png",
+        img: getJxIcon('全量导入.svg'),
         col_type: 'icon_small_3'
     });
     if(newdatas.length>0 && olddatas.length>0){

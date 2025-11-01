@@ -34,14 +34,12 @@ function homePage() {
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_2"
     });
-    //setPreResult(d);
     
     if(getMyVar('主页显示内容', '1')=='1'){
         jxItemPage(d);
     }else{
         jxSetPage(d);
     }
-    //deleteItemByCls("loading_gif");
 }
 // 接口管理页
 function jxItemPage(dd) {

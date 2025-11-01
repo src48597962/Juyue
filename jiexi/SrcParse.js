@@ -181,8 +181,8 @@ function SrcParse(vipUrl, dataObj) {
             from = 'other';
         }
     }
-    if(from == "iqiyi"){
-        from = "qiyi";
+    if(from == "qiyi"){
+        from = "iqiyi";
     }
     log("片源标识："+from+"，需要解析"); 
 
@@ -242,8 +242,8 @@ function SrcParse(vipUrl, dataObj) {
                 if(!it.stop){
                     let ext = it.ext||{};
                     let flag = ext.flag || [];
-                    if(flag.indexOf("iqiyi")>-1 && flag.indexOf("qiyi")==-1){
-                        flag.push("qiyi");
+                    if(flag.indexOf("qiyi")>-1 && flag.indexOf("iqiyi")==-1){
+                        flag.push("iqiyi");
                     }
                     if((flag.length==0 && isVip) || flag.indexOf(from)>-1){
                         parselist.push({stype:'myjx', type:it.type, name:it.name, url:it.url, sort:it.sort||0, ext:ext});
@@ -267,6 +267,19 @@ function SrcParse(vipUrl, dataObj) {
         //优先上次成功的
         for(let i=0; i<parselist.length; i++) {
             if(parselist[i].name==lastparse) {
+                let Uparseobj = parselist[i];
+                parselist.splice(i,1);
+                parselist.unshift(Uparseobj);
+                isFirst = true;
+                break;
+            }
+        }
+    }
+    let priorparse = (Juconfig['flagParse']||{})[from]||"";//对应的片源指定优先解析
+    if(priorparse){
+        //优先片源指定的
+        for(let i=0; i<parselist.length; i++) {
+            if(parselist[i].name==priorparse) {
                 let Uparseobj = parselist[i];
                 parselist.splice(i,1);
                 parselist.unshift(Uparseobj);

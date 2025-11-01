@@ -1,12 +1,13 @@
 var newVersion = {
-    "SrcJu": "1.8",
-    "hint": "修复bug",
+    "SrcJu": "1.9",
+    "hint": "",
     "JYUpdateRecords": [{
-        title: "beta V1.9",
+        title: "2025-11-01 V1.9",
         records: [
             "优化：切换分组和切换源增加销毁x5组件",
             "优化：修正分享导入时的顺序反置问题",
-            "小程序：升级版本6，修复ghproxy代理检测"
+            "升级：hikerPop依赖插件文件升级",
+            "升级：小程序版本6，修复ghproxy代理检测"
         ]
     },{
         title: "2025/10/15 V1.8",

@@ -863,3 +863,12 @@ function getJxIcon(icon, nochange, color2) {
         }
     },color, color2))
 }
+	// 输出检索接口列表
+function outputSearchList(jxdatalist, input){
+    let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
+    jxdatalist = jxdatalist.filter(it=>{
+        return it.name.toLowerCase().includes(input.toLowerCase()) || it.url.includes(input) || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
+    })
+    storage0.putMyVar("seacrhDataList", jxdatalist);
+    return jxdatalist;
+}

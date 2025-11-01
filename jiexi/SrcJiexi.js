@@ -261,9 +261,6 @@ function jxSetPage() {
         }
         jxSetCfg['parseRecord'] = parseRecord;
         jxSetCfg['playSet'] = Juconfig['playSet'] || {};
-        jxSetCfg['jxfile'] = jxfile;
-        jxSetCfg['jxcfgfile'] = jxcfgfile;
-        jxSetCfg['recordfile'] = recordfile;
         storage0.putMyVar('jxSetCfg', jxSetCfg);
     }
     let playSet = jxSetCfg['playSet'] || {};
@@ -433,13 +430,13 @@ function jxSetPage() {
         url: $('#noLoading#').lazyRule(() => {
             let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
             let playSet = jxSetCfg['playSet'] || {};
-            playSet['testplay'] = playSet['testplay']!=1?1:0;
+            playSet['testvideo'] = playSet['testvideo']!=1?1:0;
             jxSetCfg['playSet'] = playSet;
             storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://切换成功';
         }),
-        pic_url: playSet['testplay']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        pic_url: playSet['testvideo']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -463,6 +460,7 @@ function jxSetPage() {
         pic_url: playSet['danmu']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
+    /*
     d.push({
         col_type: "line"
     });
@@ -503,6 +501,7 @@ function jxSetPage() {
             }]
         }
     });
+    */
     d.push({
         title: '<br>',
         col_type: 'rich_text'
@@ -510,4 +509,5 @@ function jxSetPage() {
     setResult(d);
     Juconfig['playSet'] = playSet;
     writeFile(cfgfile, JSON.stringify(Juconfig));
+    writeFile(recordfile, JSON.stringify(jxSetCfg['parseRecord']))
 }

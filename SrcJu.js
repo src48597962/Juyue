@@ -822,8 +822,9 @@ function erji() {
                     eval("let 解析2 = " + parse['解析']);
                     return 解析2.call(parse, url);
                 }else{
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
-                    return SrcParseS.聚阅(url, dataObj);
+                    //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
+                    //return SrcParseS.聚阅(url, dataObj);
+                    return $.require("parseUrl").解析(url);
                 }
             }, dataObj);
             let download = $.toString((jkdata) => {

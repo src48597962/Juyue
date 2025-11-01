@@ -409,7 +409,18 @@ function jxSetPage(dd) {
         col_type: "text_icon"
     });
     d.push({
-        col_type: "line"
+        title: '多线路数：'+(playSet['mulnum']||"1"),
+        url: $(playSet['mulnum']||"1", "当多线路数大于1时会拖慢解析速度").input(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['mulnum'] = parseInt(input) || 1;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
+            refreshPage(false);
+            return 'toast://已设置多线路数：' + (parseInt(input) || 1);
+        }),
+        pic_url: 箭头图标,
+        col_type: "text_icon"
     });
     d.push({
         title: '无效播放地址',

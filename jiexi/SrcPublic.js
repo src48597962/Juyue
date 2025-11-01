@@ -859,3 +859,30 @@ function jiexiTest(data) {
     })
     setResult(d);
 }
+// 获取图标地址
+function getJxIcon(icon, nochange, color2) {
+    if(!icon){
+        return '';
+    }else if(!icon.includes('/')){
+        icon = config.jxCodePath + 'img/' + icon;
+    }
+    if(!icon.includes('.svg')){
+        return icon;
+    }
+    let color = getItem('主题颜色','');
+    return icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color,color2) => {
+        let javaImport = new JavaImporter();
+        javaImport.importPackage(Packages.com.example.hikerview.utils);
+        with(javaImport) {
+            let bytes = FileUtil.toBytes(input);
+            let str = new java.lang.String(bytes, "UTF-8") + "";
+            str = str.replace(/#feb833|#6dc9ff/gi, color);
+            if(color2){
+                const regex = new RegExp(color2, 'gi');
+                str = str.replace(regex, color);
+            }
+            bytes = new java.lang.String(str).getBytes();
+            return FileUtil.toInputStream(bytes);
+        }
+    },color, color2))
+}

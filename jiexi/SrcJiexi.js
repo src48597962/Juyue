@@ -412,14 +412,30 @@ function jxSetPage(dd) {
         d.push({
             title: '线路指定优先',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-                let playSet = jxSetCfg['playSet'] || {};
-                let num = parseInt(input) || 1;
-                playSet['mulnum'] = num;
-                jxSetCfg['playSet'] = playSet;
-                storage0.putMyVar('jxSetCfg', jxSetCfg);
-                refreshPage(false);
-                return 'toast://当优先上次解析失败后，实际多线路数：1~' + (num +2);
+                addListener("onClose", $.toString(() => {
+                    clearMyVar('解析数组');
+                }));
+
+                require(config.jxCodePath + 'SrcPublic.js');
+
+                let flagParse = Juconfig['flagParse'] || [];
+                let d = [];
+                flagParse.forEach(it=>{
+                    d.push({
+                        title: it.name,
+                        desc: it.parse,
+                        url: $('#noLoading#').lazyRule(() => {
+
+                            refreshPage(false);
+                            return 'toast://已切换';
+                        }),
+                        pic_url: it.img,
+                        col_type: "avatar"
+                    })
+                })
+
+                
+                setResult(d);
             }),
             pic_url: 箭头图标,
             col_type: "text_icon"

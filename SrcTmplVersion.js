@@ -5,6 +5,7 @@ var newVersion = {
         title: "beta V1.9",
         records: [
             "优化：切换分组和切换源增加销毁x5组件",
+            "优化：修正分享导入时的顺序反置问题",
             "小程序：升级版本6，修复ghproxy代理检测"
         ]
     },{

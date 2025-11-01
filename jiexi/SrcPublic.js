@@ -504,7 +504,7 @@ function extractimport(str){
                 let imports = JSON.parse(sharetxt); 
                 imports.forEach(it=>{
                     if(!datas.some(v=>v.name==it.name && v.url==it.url)){
-                        datas.push(it);
+                        datas.unshift(it);
                     }
                 })
             }

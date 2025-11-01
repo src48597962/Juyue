@@ -415,51 +415,52 @@ function jxSetPage() {
     });
     d.push({
         title: 'm3u8索引文件缓存',
-        url: $('#noLoading#').lazyRule((playSet) => {
-            if (playSet['cachem3u8'] != 1) {
-                playSet['cachem3u8'] = 1;
-            } else {
-                playSet['cachem3u8'] = 0;
-            }
-            storage0.putMyVar('playSet', playSet);
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['cachem3u8'] = playSet['cachem3u8']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://切换成功';
-        }, playSet),
+        }),
         pic_url: playSet['cachem3u8']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
         title: '解析结果有效性检测',
         desc: "除video方式外，其他解析结果是否开启检测",
-        url: $('#noLoading#').lazyRule((playSet) => {
-            if (playSet['isTest']) {
-                playSet['isTest'] = 0;
-            } else {
-                playSet['isTest'] = 1;
-            }
-            storage0.putMyVar('playSet', playSet);
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['testplay'] = playSet['testplay']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://切换成功';
-        }, playSet),
-        pic_url: playSet['isTest']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        }),
+        pic_url: playSet['testplay']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
         title: '调用dm盒子弹幕',
-        url: $('#noLoading#').lazyRule((playSet) => {
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
             let sm;
-            if (playSet['dmRoute']) {
-                playSet['dmRoute'] = 0;
+            if (playSet['danmu']) {
+                playSet['danmu'] = 0;
                 sm = '关闭dm盒子弹幕';
             } else {
-                playSet['dmRoute'] = 1;
+                playSet['danmu'] = 1;
                 sm = '仅针对官网地址有效，需要dm盒子小程序';
             }
-            storage0.putMyVar('playSet', playSet);
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://' + sm;
-        }, playSet),
-        pic_url: playSet['dmRoute']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        }),
+        pic_url: playSet['danmu']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({

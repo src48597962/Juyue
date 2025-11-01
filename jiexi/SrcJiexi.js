@@ -13,8 +13,8 @@ function homePage() {
         clearMyVar('主页显示内容');
     }));
 
-    let dd = [];
-    dd.push({
+    let d = [];
+    d.push({
         title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
@@ -24,7 +24,7 @@ function homePage() {
         img: 'http://123.56.105.145/tubiao/system/42.png',
         col_type: "icon_2"
     });
-    dd.push({
+    d.push({
         title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">解析设置</span></b>`:'解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
@@ -34,29 +34,19 @@ function homePage() {
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_2"
     });
-    /*
-    dd.push({
-        pic_url: config.jxCodePath + "img/Loading.gif",
-        col_type: "pic_1_center",
-        url: "hiker://empty",
-        extra: {
-            cls: "loading_gif"
-        }
-    })
-    */
-    setPreResult(dd);
+    //setPreResult(d);
     
     if(getMyVar('主页显示内容', '1')=='1'){
-        jxItemPage();
+        jxItemPage(d);
     }else{
-        jxSetPage();
+        jxSetPage(d);
     }
     //deleteItemByCls("loading_gif");
 }
 // 接口管理页
-function jxItemPage() {
+function jxItemPage(dd) {
     setPageTitle('解析列表');
-    let d = [];
+    let d = dd || [];
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
@@ -255,7 +245,7 @@ function jxItemPage() {
 
 
 // 解析设置
-function jxSetPage() {
+function jxSetPage(dd) {
     addListener("onClose", $.toString(() => {
         clearMyVar('jxSetCfg');
     }));
@@ -276,7 +266,7 @@ function jxSetPage() {
     }
     let playSet = jxSetCfg['playSet'] || {};
 
-    let d = [];
+    let d = dd || [];
     let 箭头图标 = getJxIcon('箭头.svg');
     d.push({
         col_type: "line_blank"

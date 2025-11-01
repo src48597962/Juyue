@@ -1,6 +1,7 @@
 let jxrulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  jxrulepath + 'jiexi.json';
 let jxcfgfile = jxrulepath + 'config.json';
+let recordfile = jxrulepath + "record.json";//解析相关记录文件
 let Color = getItem('主题颜色','#3399cc');
 
 let Juconfig = {};

@@ -34,6 +34,7 @@ function homePage() {
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_2"
     });
+    /*
     dd.push({
         pic_url: config.jxCodePath + "img/Loading.gif",
         col_type: "pic_1_center",
@@ -42,6 +43,7 @@ function homePage() {
             cls: "loading_gif"
         }
     })
+    */
     setPreResult(dd);
     
     if(getMyVar('主页显示内容', '1')=='1'){
@@ -49,7 +51,7 @@ function homePage() {
     }else{
         jxSetPage();
     }
-    deleteItemByCls("loading_gif");
+    //deleteItemByCls("loading_gif");
 }
 // 接口管理页
 function jxItemPage() {
@@ -503,6 +505,6 @@ function jxSetPage() {
     });
     setResult(d);
     Juconfig['playSet'] = playSet;
-    writeFile(cfgfile, JSON.stringify(Juconfig));
-    writeFile(recordfile, JSON.stringify(jxSetCfg['parseRecord']))
+    writeFile(jxcfgfile, JSON.stringify(Juconfig));
+    writeFile(jxrecordfile, JSON.stringify(jxSetCfg['parseRecord']))
 }

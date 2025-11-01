@@ -40,12 +40,12 @@ function homePage() {
     if(getMyVar('主页显示内容', '1')=='1'){
         jxItemPage();
     }else{
-        setResult([]);
+        jxSetPage();
     }
 }
 // 接口管理页
 function jxItemPage() {
-    setPageTitle('解析管理');
+    setPageTitle('解析列表');
     let d = [];
     d.push({
         title: '增加',
@@ -244,13 +244,13 @@ function jxItemPage() {
 }
 
 
-// 管理设置
-function manageSet() {
+// 解析设置
+function jxSetPage() {
     addListener("onClose", $.toString(() => {
         clearMyVar('playSet');
     }));
 
-    setPageTitle("解析管理设置");
+    setPageTitle("解析设置");
     let recordfile = rulepath + "record.json";//解析相关记录文件
     let parseRecord = {};
     if(fetch(recordfile)){

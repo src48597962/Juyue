@@ -511,7 +511,10 @@ function extractimport(str){
     let datas = [];
     strs.forEach(it=>{
         try{
+            log(it);
             let code = aesDecode('Jujiexi', it.split('￥')[1]);
+            log(it.split('￥')[1]);
+            log(code);
             let text;
             if(/^http|^云/.test(code)){//云分享
                 text = parsePaste(code);

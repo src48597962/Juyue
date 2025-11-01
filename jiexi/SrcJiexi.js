@@ -13,7 +13,6 @@ function homePage() {
         clearMyVar('主页显示内容');
     }));
 
-    let Color = getItem('主题颜色','#3399cc');
     let dd = [];
     dd.push({
         title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
@@ -247,19 +246,27 @@ function jxItemPage() {
 // 解析设置
 function jxSetPage() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('playSet');
+        clearMyVar('jxSetCfg');
     }));
 
     setPageTitle("解析设置");
 
-    let parseRecord = {};
-    if(fetch(recordfile)){
-        try{
-            eval("parseRecord =" + fetch(recordfile) + ";");
-        }catch(e){}
+    let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+    if(!getMyVar('jxSetCfg')){
+        let parseRecord = {};
+        if(fetch(recordfile)){
+            try{
+                eval("parseRecord =" + fetch(recordfile) + ";");
+            }catch(e){}
+        }
+        jxSetCfg['parseRecord'] = parseRecord;
+        jxSetCfg['playSet'] = Juconfig['playSet'] || {};
+        jxSetCfg['jxfile'] = jxfile;
+        jxSetCfg['jxcfgfile'] = jxcfgfile;
+        jxSetCfg['recordfile'] = recordfile;
+        storage0.putMyVar('jxSetCfg', jxSetCfg);
     }
-
-    let playSet = storage0.getMyVar('playSet') || Juconfig['playSet'] || {};
+    let playSet = jxSetCfg['playSet'] || {};
 
     let d = [];
     let 箭头图标 = getJxIcon('箭头.svg');
@@ -287,16 +294,15 @@ function jxSetPage() {
     });
     d.push({
         title: '解析日志打印',
-        url: $('#noLoading#').lazyRule((playSet) => {
-            if (playSet['printlog'] != 1) {
-                playSet['printlog'] = 1;
-            } else {
-                playSet['printlog'] = 0;
-            }
-            storage0.putMyVar('playSet', playSet);
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['printlog'] = playSet['printlog']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://切换成功';
-        }, playSet),
+        }),
         pic_url: playSet['printlog']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
@@ -312,34 +318,43 @@ function jxSetPage() {
     let parsemode = playSet["parsemode"] || 1;
     d.push({
         title: '智能解析',
-        url: $('#noLoading#').lazyRule((playSet) => {
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
             playSet['parsemode'] = 1;
-            storage0.putMyVar('playSet', playSet);
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://智能解析 | 上次优先>接口自带+私有解析';
-        }, playSet),
+        }),
         pic_url: parsemode==1?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
         title: '强制嗅探',
-        url: $('#noLoading#').lazyRule((playSet) => {
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
             playSet['parsemode'] = 2;
-            storage0.putMyVar('playSet', playSet);
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://强制嗅探 | 将web解析组线路进video播放器';
-        }, playSet),
+        }),
         pic_url: parsemode==2?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
         title: '手动切换',
-        url: $('#noLoading#').lazyRule((playSet) => {
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
             playSet['parsemode'] = 3;
-            storage0.putMyVar('playSet', playSet);
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://手动切换 | 代理播放，在播放页手动选择解析';
-        }, playSet),
+        }),
         pic_url: parsemode==3?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
@@ -347,17 +362,16 @@ function jxSetPage() {
         col_type: "line"
     });
     d.push({
-        title: '嗅探方式：'+(playSet['video']!=0?"video":"WebRule"),
-        url: $('#noLoading#').lazyRule((playSet) => {
-            if (playSet['video'] != 0) {
-                playSet['video'] = 0;
-            } else {
-                playSet['video'] = 1;
-            }
-            storage0.putMyVar('playSet', playSet);
+        title: '嗅探方式：'+(playSet['videoplay']==1?"video":"WebRule"),
+        url: $('#noLoading#').lazyRule(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let playSet = jxSetCfg['playSet'] || {};
+            playSet['videoplay'] = playSet['videoplay']!=1?1:0;
+            jxSetCfg['playSet'] = playSet;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
             refreshPage(false);
             return 'toast://已切换';
-        }, playSet),
+        }),
         pic_url: 箭头图标,
         col_type: "text_icon"
     });
@@ -366,27 +380,35 @@ function jxSetPage() {
     });
     d.push({
         title: '无效播放地址',
-        url: $("", "输入无法播放的地址进行屏蔽").input((parseRecord, recordfile) => {
+        url: $("", "输入无法播放的地址进行屏蔽").input(() => {
+            let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+            let parseRecord = jxSetCfg['parseRecord'] || {};
             parseRecord['excludeurl'] = parseRecord['excludeurl'] || [];
             let url = input.split(';{')[0].replace(/file.*video\.m3u8##/, '').replace('#isVideo=true#', '');
             if (parseRecord['excludeurl'].indexOf(url) == -1) {
                 parseRecord['excludeurl'].push(url);
             }
-            writeFile(recordfile, JSON.stringify(parseRecord));
+            jxSetCfg['parseRecord'] = parseRecord;
+            storage0.putMyVar('jxSetCfg', jxSetCfg);
+            refreshPage(false);
             return 'toast://对此播放地址将拦截';
-        }, parseRecord, recordfile),
+        }),
         pic_url: 箭头图标,
-        col_type: "text_icon"
-    });
-    d.push({
-        title: '清空播放拦截记录',
-        url: $("清空拦截无法播放地址记录？").confirm((parseRecord, recordfile) => {
-            delete parseRecord['excludeurl'];
-            writeFile(recordfile, JSON.stringify(parseRecord));
-            return 'toast://无清空';
-        }, parseRecord, recordfile),
-        pic_url: 箭头图标,
-        col_type: "text_icon"
+        col_type: "text_icon",
+        extra: {
+            longClick: [{
+                title: '清空播放拦截记录',
+                js: $.toString(() => {
+                    let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                    let parseRecord = jxSetCfg['parseRecord'] || {};
+                    delete parseRecord['excludeurl'];
+                    jxSetCfg['parseRecord'] = parseRecord;
+                    storage0.putMyVar('jxSetCfg', jxSetCfg);
+                    refreshPage(false);
+                    return 'toast://无清空';
+                })
+            }]
+        }
     });
     d.push({
         col_type: "line"

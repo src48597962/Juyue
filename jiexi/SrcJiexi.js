@@ -223,7 +223,7 @@ function jxItemPage(dd) {
                     clearMyVar('seacrhDataList');
                     require(config.jxCodePath + 'SrcJiexi.js');
                     let jxdatalist = storage0.getMyVar("jxdatalist");
-                    addItemBefore('jkItemLoading', jxItemList(jxdatalist));
+                    addItemBefore('jxItemLoading', jxItemList(jxdatalist));
                 }
             })
         }

@@ -435,8 +435,8 @@ function jxSetPage(dd) {
                 Object.keys(flags).forEach(key=>{
                     d.push({
                         title: key,
-                        desc: flagParse[key] || '',
-                        url: $(names, 3, '选择<'+key+'>优先解析').lazyRule((key) => {
+                        desc: flagParse[key] || '未指定',
+                        url: $(names, 3, '选择<'+key+'>优先解析').select((key) => {
                             require(config.jxCodePath + 'SrcPublic.js');
                             let flagParse = Juconfig['flagParse'] || {};
                             if(input=='清除'){

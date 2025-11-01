@@ -262,13 +262,13 @@ function jxSetPage() {
     let playSet = storage0.getMyVar('playSet') || Juconfig['playSet'] || {};
 
     let d = [];
-    let 箭头图标 = config.jxCodePath + 'img/箭头.svg';
+    let 箭头图标 = getJxIcon('箭头.svg');
     d.push({
         col_type: "line_blank"
     });
     d.push({
         title: '功能管理',
-        pic_url: config.jxCodePath + 'img/功能开关.svg',
+        pic_url: getJxIcon('功能开关.svg'),
         col_type: "avatar",
         url: "hiker://empty"
     });
@@ -297,7 +297,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://切换成功';
         }, playSet),
-        pic_url: playSet['printlog']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: playSet['printlog']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -305,7 +305,7 @@ function jxSetPage() {
     });
     d.push({
         title: '解析设置',
-        pic_url: getIcon("点播-解析设置.svg"),
+        pic_url: getJxIcon("解析设置.svg"),
         col_type: "avatar",
         url: "hiker://empty"
     });
@@ -318,7 +318,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://聚影智能 | 上次优先>接口自带+私有解析';
         }, playSet),
-        pic_url: parsemode==1?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: parsemode==1?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -329,7 +329,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://强制嗅探 | 将web解析组线路进video播放器';
         }, playSet),
-        pic_url: parsemode==2?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: parsemode==2?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -340,7 +340,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://手动切换 | 代理播放，在播放页手动选择解析';
         }, playSet),
-        pic_url: parsemode==3?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: parsemode==3?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -421,7 +421,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://切换成功';
         }, playSet),
-        pic_url: playSet['cachem3u8']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: playSet['cachem3u8']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -437,7 +437,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://切换成功';
         }, playSet),
-        pic_url: playSet['isTest']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: playSet['isTest']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -455,7 +455,7 @@ function jxSetPage() {
             refreshPage(false);
             return 'toast://' + sm;
         }, playSet),
-        pic_url: playSet['dmRoute']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: playSet['dmRoute']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({
@@ -486,7 +486,7 @@ function jxSetPage() {
                 },playSet)
             }
         }, playSet),
-        pic_url: playSet['clearM3u8Ad']?getIcon("点播-开.svg"):getIcon("关.svg"),
+        pic_url: playSet['clearM3u8Ad']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon",
         extra: {
             longClick: [{

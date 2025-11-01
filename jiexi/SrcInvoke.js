@@ -14,8 +14,13 @@ function jxItem() {
     require(codePath + 'SrcJiexi.js');
     jxItemPage();
 }
+// 解析列表
+function jxSet() {
+    require(codePath + 'SrcJiexi.js');
+    jxItemPage();
+}
 // 调用解析
-function parse(input, dataObj) {
+function aytmParse(input, dataObj) {
     require(codePath + 'SrcParse.js');
     return SrcParse(input, dataObj);
 }
@@ -23,5 +28,6 @@ function parse(input, dataObj) {
 $.exports = {
     home: home,
     jxItem: jxItem,
-    parse: parse
+    jxSet: jxSet,
+    aytmParse: aytmParse
 }

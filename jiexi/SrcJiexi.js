@@ -311,12 +311,12 @@ function jxSetPage() {
     });
     let parsemode = playSet["parsemode"] || 1;
     d.push({
-        title: '聚影智能',
+        title: '智能解析',
         url: $('#noLoading#').lazyRule((playSet) => {
             playSet['parsemode'] = 1;
             storage0.putMyVar('playSet', playSet);
             refreshPage(false);
-            return 'toast://聚影智能 | 上次优先>接口自带+私有解析';
+            return 'toast://智能解析 | 上次优先>接口自带+私有解析';
         }, playSet),
         pic_url: parsemode==1?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
@@ -345,24 +345,6 @@ function jxSetPage() {
     });
     d.push({
         col_type: "line"
-    });
-    d.push({
-        title: '嗅探内核：'+(playSet['xiutannh']||"web"),
-        url: $('#noLoading#').lazyRule((playSet) => {
-            let sm;
-            if(playSet['xiutannh'] == 'x5'){
-                playSet['xiutannh'] = 'web';
-                sm = 'web';
-            }else{
-                playSet['xiutannh'] = 'x5';
-                sm = 'x5';
-            }
-            storage0.putMyVar('playSet', playSet);
-            refreshPage(false);
-            return 'toast://嗅探内核切换为：'+sm;
-        }, playSet),
-        pic_url: 箭头图标,
-        col_type: "text_icon"
     });
     d.push({
         title: '嗅探方式：'+(playSet['video']!=0?"video":"WebRule"),

@@ -442,7 +442,9 @@ function SrcParse(vipUrl, dataObj) {
             if(beerrors[k]==null && beurls[k]){
                 if(playurl==""){playurl = beurls[k];}
                 //记录最快的，做为下次优先
-                if(beparses[k].name==lastparse){
+                if(beparses[k].name==priorparse){
+                    log(beparses[k].name+'>优先指定解析成功>'+beurls[k]);
+                }else if(beparses[k].name==lastparse){
                     log(beparses[k].name+'>优先上次解析成功>'+beurls[k]);
                 }else{
                     log(beparses[k].name+'>解析成功>'+beurls[k]+'，记录为片源'+from+'的优先');

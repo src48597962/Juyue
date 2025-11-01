@@ -262,13 +262,13 @@ function jxSetPage() {
     let playSet = storage0.getMyVar('playSet') || Juconfig['playSet'] || {};
 
     let d = [];
-    let 箭头图标 = getIcon("点播-箭头.svg");
+    let 箭头图标 = config.jxCodePath + 'img/箭头.svg';
     d.push({
         col_type: "line_blank"
     });
     d.push({
         title: '功能管理',
-        pic_url: getIcon("点播-功能开关.svg"),
+        pic_url: config.jxCodePath + 'img/功能开关.svg',
         col_type: "avatar",
         url: "hiker://empty"
     });

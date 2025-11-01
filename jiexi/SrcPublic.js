@@ -518,6 +518,7 @@ function extractimport(str){
             }else{//文件分享
                 text = code;
             }
+            log(text);
             if(text && !/^error/.test(text)){
                 let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
                 let sharetxt = gzip.unzip(text);

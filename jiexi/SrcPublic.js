@@ -1,10 +1,10 @@
-let rulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
-let jxfile =  rulepath + 'jiexi.json';
-let cfgfile = rulepath + 'config.json';
+let jxrulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
+let jxfile =  jxrulepath + 'jiexi.json';
+let jxcfgfile = jxrulepath + 'config.json';
 let Color = getItem('主题颜色','#3399cc');
 
 let Juconfig = {};
-let Jucfg = fetch(cfgfile);
+let Jucfg = fetch(jxcfgfile);
 if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
 }
@@ -350,7 +350,7 @@ function deleteData(data){
         datalist.splice(index, 1);
     })
 
-    writeFile(jkfile, JSON.stringify(datalist));
+    writeFile(jxfile, JSON.stringify(datalist));
     clearMyVar('duodatalist');
     // 删除接口搜索临时列表
     if(getMyVar("seacrhDataList")){
@@ -777,7 +777,7 @@ function jiexiTest(data) {
                         return "toast://站点已存在";
                     }
                     testUrls[s1] = s2;
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    writeFile(jxcfgfile, JSON.stringify(Juconfig));
                     refreshPage();
                     return "toast://已添加："+s1;
                 }
@@ -797,7 +797,7 @@ function jiexiTest(data) {
             "哔哩哔哩": "https://www.bilibili.com/bangumi/play/ep828752",
             "搜狐": "https://tv.sohu.com/v/MjAyMzA5MjEvbjYwMTMzNDI0Ni5zaHRtbA==.html"
         }
-        writeFile(cfgfile, JSON.stringify(Juconfig));
+        writeFile(jxcfgfile, JSON.stringify(Juconfig));
         testUrls = Juconfig['testUrls'];
     }
     
@@ -835,7 +835,7 @@ function jiexiTest(data) {
                                     return "toast://站点已存在";
                                 }
                                 testUrls[s1] = s2;
-                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                writeFile(jxcfgfile, JSON.stringify(Juconfig));
                                 refreshPage();
                                 return "toast://已修改："+s1;
                             }
@@ -848,7 +848,7 @@ function jiexiTest(data) {
                         require(config.jxCodePath + 'SrcPublic.js');
                         let testUrls = Juconfig['testUrls'] || {};
                         delete testUrls[key];
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        writeFile(jxcfgfile, JSON.stringify(Juconfig));
                         refreshPage();
                         return "toast://已删除"
                     }, key)

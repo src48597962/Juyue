@@ -251,7 +251,7 @@ function jxSetPage() {
     }));
 
     setPageTitle("解析设置");
-    let recordfile = rulepath + "record.json";//解析相关记录文件
+
     let parseRecord = {};
     if(fetch(recordfile)){
         try{

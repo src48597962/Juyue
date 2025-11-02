@@ -227,9 +227,7 @@ function jiexiapi(data) {
                     try{
                         eval('let json = ' + input);
                         storage0.putMyVar("parseext", json);
-                    }catch(e){
-                        log(e.message);
-                    }
+                    }catch(e){}
                 }else{
                     clearMyVar('parseext');
                 }

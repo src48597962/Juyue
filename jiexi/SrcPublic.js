@@ -50,7 +50,7 @@ function colorTitle(title, Color) {
 function getDataTitle(data, ide) {
     let dataTitle = data.id + '-' + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
     if(data.desc2){
-        dataTitle = dataTitle + data.desc2;
+        dataTitle = dataTitle + '  ' + data.desc2;
     }
     dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
 

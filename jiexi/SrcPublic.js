@@ -191,7 +191,7 @@ function jiexiapi(data) {
     });
     let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
     d.push({
-	    title: '解析类型：' + (getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype'))]:'请选择'),
+	    title: '解析类型：' + (getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype'))]:'自动识别'),
         col_type: 'text_1',
         url: $(parseTypes, 1).select(() => {
             putMyVar('parsetype', MY_INDEX);
@@ -256,7 +256,8 @@ function jiexiapi(data) {
         title:'保存',
         col_type:'text_2',
         url: $().lazyRule((data)=>{
-            if(!/^http|^functio/.test(getMyVar('parseurl',''))){
+            let parseurl = getMyVar('parseurl','').trim();
+            if(!/^http|^functio/.test(parseurl)){
                 return "toast://解析地址不正确"
             }
             let parseext = storage0.getMyVar('parseext');
@@ -264,9 +265,22 @@ function jiexiapi(data) {
                 return "toast://ext对象数据不正确"
             }
 
-            let parseurl = getMyVar('parseurl');
             let parsename = getMyVar('parsename');
             let parsetype = getMyVar('parsetype');
+            if(!parsetype){
+                if(/^functio/.test(parseurl)){
+                    parsetype = '2';
+                }else{
+                    let testurl = 'https://www.iqiyi.com/v_20k2cdw6m4w.html';
+                    let html = fetch(parseurl + testurl);
+                    try{
+                        let json = JSON.parse(html).url;
+                        parsetype = '1';
+                    }catch(e){
+                        parsetype = '0';
+                    }
+                }
+            }
             
             if(parseurl && parsename && parsetype){
                 let urls= [];

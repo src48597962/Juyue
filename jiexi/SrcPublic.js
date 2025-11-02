@@ -129,7 +129,7 @@ function jxItemList(datalist) {
                     }, data)
                 } else if (input == "测试") {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
-                        setPageTitle(data.name + "-接口测试");
+                        setPageTitle(data.name + "-解析测试");
                         require(config.jxCodePath + 'SrcPublic.js');
                         jiexiTest(data);
                     }, data);

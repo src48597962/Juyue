@@ -229,8 +229,8 @@ function jxItemPage(dd) {
             })
         }
     });
-    parseTypes.unshift('全部');
-    parseTypes.forEach(it=>{
+
+    ['全部'].concat(parseTypes).forEach(it=>{
         let obj = {
             title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
@@ -247,7 +247,10 @@ function jxItemPage(dd) {
         }
         d.push(obj);
     })
-    d = d.concat(jxItemList(jxdatalist, getMyVar("selectGroup","全部")));
+    if(getMyVar("selectGroup","全部") != '全部'){
+        jxdatalist = jxdatalist.filter(v=>v.type==parseTypes.indexOf(getMyVar("selectGroup")));
+    }
+    d = d.concat(jxItemList(jxdatalist));
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',

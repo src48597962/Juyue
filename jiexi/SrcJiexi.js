@@ -238,7 +238,11 @@ function jxItemPage(dd) {
             title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("selectGroup")!=it){
-                    putMyVar("selectGroup",it);
+                    if(it=='全部'){
+                        clearMyVar("selectGroup");
+                    }else{
+                        putMyVar("selectGroup",it);
+                    }
                     refreshPage(false);
                 }
                 return "hiker://empty";

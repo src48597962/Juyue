@@ -225,8 +225,11 @@ function jiexiapi(data) {
                 input = input.trim();
                 if (input.startsWith('{') && input.endsWith('}')) {
                     try{
-                        storage0.putMyVar("parseext", JSON.parse(input));
+                        eval('let json = ' + input);
+                        storage0.putMyVar("parseext", json);
                     }catch(e){}
+                }else{
+                    clearMyVar('parseext');
                 }
             })
         }

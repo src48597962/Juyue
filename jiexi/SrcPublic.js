@@ -47,8 +47,8 @@ function colorTitle(title, Color) {
     return '‘‘’’<font color="' + Color + '">' + title + '</font>';
 }
 // 获取接口对应的显示标题
-function getDataTitle(data, ide) {
-    let dataTitle = data.id + '-' + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
+function getDataTitle(data, ide, i) {
+    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
     if(data.desc2){
         dataTitle = dataTitle + '  ' + data.desc2;
     }
@@ -57,7 +57,7 @@ function getDataTitle(data, ide) {
     return dataTitle;
 }
 // 接口多选处理方法
-function duoselect(data){
+function duoselect(data, i){
     let waitlist= [];
     if($.type(data)=='object'){
         waitlist.push(data);
@@ -68,13 +68,12 @@ function duoselect(data){
     let selectlist = storage0.getMyVar('duodatalist') || [];
     waitlist.forEach(data=>{
         if(!selectlist.some(item => data.name==item.name)){
-            updateItem(data.name, {title: colorTitle(getDataTitle(data, '●'),'#3CB371')});
-            delete data.id;
+            updateItem(data.name, {title: colorTitle(getDataTitle(data, '●', i),'#3CB371')});
             selectlist.push(data);
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '○'),'grey'):getDataTitle(data)});
+            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i),'grey'):getDataTitle(data, '', i)});
         }
     })
     storage0.putMyVar('duodatalist',selectlist);
@@ -86,23 +85,22 @@ function jxItemList(datalist) {
     datalist.forEach((it, i) => {
         let selectmenu, datatitle;
         selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶", "测试"];
-        let tmpdata = extra = Object.assign({id: i+1}, it);
         if (selectlist.some(item => it.name == item.name)) {
-            datatitle = colorTitle(getDataTitle(tmpdata, '●'), '#3CB371');
+            datatitle = colorTitle(getDataTitle(it, '●', i+1), '#3CB371');
         } else {
-            datatitle = getDataTitle(tmpdata);
+            datatitle = getDataTitle(it, '', i+1);
         }
         let ext = it.ext || {};
         let flag = ext.flag || [];
 
         d.push({
             title: datatitle,
-            url: getMyVar('批量选择模式') ? $('#noLoading#').lazyRule((data) => {
+            url: getMyVar('批量选择模式') ? $('#noLoading#').lazyRule((data, i) => {
                 data = JSON.parse(base64Decode(data));
                 require(config.jxCodePath + 'SrcPublic.js');
-                duoselect(data);
+                duoselect(data, i);
                 return "hiker://empty";
-            }, base64Encode(JSON.stringify(tmpdata))) : $(selectmenu, 2).select((data) => {
+            }, base64Encode(JSON.stringify(it)), i+1) : $(selectmenu, 2).select((data) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "分享") {
                     if (getItem("sharePaste", "") == "") {
@@ -658,10 +656,10 @@ function importConfirm(importStr) {
         let datamenu = ["确定导入", "修改名称", "接口测试"];
         let ext = it.ext || {};
         let flag = ext.flag || [];
-        let tmpdata = extra = Object.assign({id: i+1, desc2: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}"}, it);
+        let tmpdata = extra = Object.assign({desc2: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}"}, it);
 
         d.push({
-            title: getDataTitle(tmpdata),
+            title: getDataTitle(tmpdata, '', i+1),
             url: $(datamenu, 2).select((data, isnew) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "确定导入") {

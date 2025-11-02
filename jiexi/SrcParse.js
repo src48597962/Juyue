@@ -454,6 +454,7 @@ function SrcParse(vipUrl, dataObj) {
                 //私有解析成功的，提升一下排序
                 for(let j=0;j<jxList.length;j++){
                     if(beparses[k].url==jxList[j].url){
+                        log(beparses[k].type);
                         jxList[j].type = beparses[k].type;//自动修正解析类型
                         //解析成功的,排序+1
                         let jxsort = jxList[j].sort||0;

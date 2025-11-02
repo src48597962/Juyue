@@ -751,7 +751,7 @@ function jiexiTest(data) {
     });
     testlist.forEach(it=>{
         d.push({
-            title: testData.name==it.name?"““””<big><b><font color="+Color+">"+it.name+"</font></b></big>":it.name,
+            title: testData.name==it.name?"““””<font color="+Color+">"+it.name+"</font>":it.name,
             url: $("#noLoading#").lazyRule((data)=>{
                 storage0.putMyVar('当前测试解析', data);
                 refreshPage();

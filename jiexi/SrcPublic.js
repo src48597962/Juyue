@@ -3,6 +3,7 @@ let jxfile =  jxrulepath + 'jiexi.json';
 let jxcfgfile = jxrulepath + 'config.json';
 let jxrecordfile = jxrulepath + "record.json";//解析相关记录文件
 let Color = getItem('主题颜色','#3399cc');
+let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
 
 let Juconfig = {};
 let Jucfg = fetch(jxcfgfile);
@@ -189,7 +190,7 @@ function jiexiapi(data) {
             onChange: 'putMyVar("parseurl",input)'
         }
     });
-    let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
+    
     d.push({
 	    title: '解析类型：' + (getMyVar('parsetype')?parseTypes[parseInt(getMyVar('parsetype'))]:'自动识别'),
         col_type: 'text_1',

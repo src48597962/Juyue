@@ -4,13 +4,6 @@ require(config.jxCodePath + 'SrcPublic.js');
 // 主页
 function homePage() {
     addListener("onClose", $.toString(() => {
-        clearMyVar('duodatalist');
-        clearMyVar("seacrhJiexi");
-        clearMyVar('jxdatalist');
-        clearMyVar('seacrhDataList');
-        clearMyVar('selectGroup');
-        clearMyVar('批量选择模式');
-        clearMyVar('onlyStopJk');
         clearMyVar('主页显示内容');
     }));
 
@@ -44,6 +37,18 @@ function homePage() {
 }
 // 接口管理页
 function jxItemPage(dd) {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('duodatalist');
+        clearMyVar("seacrhJiexi");
+        clearMyVar('jxdatalist');
+        clearMyVar('seacrhDataList');
+        clearMyVar('selectGroup');
+        clearMyVar('批量选择模式');
+        clearMyVar('onlyStopJk');
+        clearMyVar('similarTitles');
+        clearMyVar('lookFailDatas');
+    }));
+
     setPageTitle('解析列表');
     let d = dd || [];
     d.push({
@@ -90,6 +95,32 @@ function jxItemPage(dd) {
                 }
                 refreshPage(false);
                 return "toast://"+sm;
+            }else if(input=="查看相似"||input=="退出相似"){
+                if(getMyVar('similarTitles')){
+                    clearMyVar('similarTitles');
+                    refreshPage(false);
+                    return "toast://退出仅显示相似列表";
+                }else{
+                    return $(getMyVar('similarTitles','0.8'),"源名相似度0-1").input(() => {
+                        if(!parseFloat(input)||parseFloat(input)>1||parseFloat(input)<0){return 'toast://输入有误，请输入0-1之间1位小数'}
+                        putMyVar('similarTitles', input);
+                        refreshPage(false);
+                        return "toast://进入仅显示相似列表，阀值"+input;
+                    })
+                }
+            }else if(input=="查看失败"||input=="退出失败"){
+                if(getMyVar('lookFailDatas')){
+                    clearMyVar('lookFailDatas');
+                    refreshPage(false);
+                    return "toast://退出仅显示失败列表";
+                }else{
+                    return $(getMyVar('lookFailDatas','10'),"查看失败大于多少次的解析").input(() => {
+                        if(!parseInt(input)||parseInt(input)<0){return 'toast://输入有误，请输入大于1的数字'}
+                        putMyVar('lookFailDatas', input);
+                        refreshPage(false);
+                        return "toast://进入仅显示指定失败次数列表，阀值"+input;
+                    })
+                }
             }
         }),
         img: 'http://123.56.105.145/tubiao/more/290.png',
@@ -160,9 +191,17 @@ function jxItemPage(dd) {
     });
     
     let jxdatalist = getDatas();
-    if(getMyVar('onlyStopJk')){
+    if(getMyVar('similarTitles')){
+        let t1 = new Date().getTime();
+        jxdatalist = similarTitles(jxdatalist, getMyVar('similarTitles'));
+        let t2 = new Date().getTime();
+        xlog('查看相似耗时：' + (t2-t1) + 'ms');
+    }else if(getMyVar('onlyStopJk')){
         jxdatalist = jxdatalist.filter(item => item.stop);
+    }else if(getMyVar('lookFailDatas')){
+        jxdatalist = jxdatalist.filter(item => (item.sort||0)>parseInt(getMyVar('lookFailDatas')));
     }
+
     if(getMyVar("selectGroup")){
         jxdatalist = jxdatalist.filter(v=>v.type==parseTypes.indexOf(getMyVar("selectGroup")));
     }

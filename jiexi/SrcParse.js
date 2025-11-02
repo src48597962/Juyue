@@ -439,7 +439,6 @@ function SrcParse(vipUrl, dataObj) {
         });
 
         for(let k in beparses){
-            var parseurl = beparses[k].url;
             if(beerrors[k]==null && beurls[k]){
                 if(playurl==""){playurl = beurls[k];}
                 //记录最快的，做为下次优先
@@ -454,11 +453,11 @@ function SrcParse(vipUrl, dataObj) {
 
                 //私有解析成功的，提升一下排序
                 for(let j=0;j<jxList.length;j++){
-                    if(parseurl==jxList[j].url){
+                    if(beparses[k].url==jxList[j].url){
+                        jxList[j].type = beparses[k].type;//自动修正解析类型
                         //解析成功的,排序+1
                         let jxsort = jxList[j].sort||0;
                         if(jxsort>0){
-                            jxList[j].type = beparses[k].type;
                             jxList[j].sort = jxsort - 1;
                             myJXchange = 1;
                         }

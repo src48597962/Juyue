@@ -646,14 +646,17 @@ function importConfirm(importStr) {
         }
     }
 
-    importdatas.forEach(it=>{
+    importdatas.forEach((it, i)=>{
         let isnew = newdatas.some(v=>v.name==it.name);
         let datamenu = ["确定导入", "修改名称", "接口测试"];
         let ext = it.ext || {};
         let flag = ext.flag || [];
+        it.id = i+1;
+        let ittitle = getDataTitle(it);
+        delete it.id;
 
         d.push({
-            title: getDataTitle(it) + "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}",
+            title: ittitle,
             url: $(datamenu, 2).select((data, isnew) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "确定导入") {
@@ -699,7 +702,7 @@ function importConfirm(importStr) {
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),
-            desc: flag.join(','),
+            desc: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}" + flag.join(','),
             col_type: "text_1",
             extra: {
                 id: it.name

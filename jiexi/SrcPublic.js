@@ -725,8 +725,8 @@ function jiexiTest(data) {
         clearMyVar('待测试解析列表');
     }));
 
-    let testlist= storage0.getMyVar('待测试解析列表');
-    if(!testlist){
+    let testlist= storage0.getMyVar('待测试解析列表') || [];
+    if(!getMyVar('待测试解析列表')){
         if($.type(data)=='object'){
             testlist.push(data);
         }else if($.type(data)=='array'){

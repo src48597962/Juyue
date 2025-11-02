@@ -8,6 +8,7 @@ function homePage() {
         clearMyVar("seacrhJiexi");
         clearMyVar('jxdatalist');
         clearMyVar('seacrhDataList');
+        clearMyVar('selectGroup');
         clearMyVar('批量选择模式');
         clearMyVar('onlyStopJk');
         clearMyVar('主页显示内容');
@@ -228,7 +229,25 @@ function jxItemPage(dd) {
             })
         }
     });
-    d = d.concat(jxItemList(jxdatalist));
+    parseTypes.unshift('全部');
+    parseTypes.forEach(it=>{
+        let obj = {
+            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+            url: $('#noLoading#').lazyRule((it) => {
+                if(getMyVar("selectGroup")!=it){
+                    putMyVar("selectGroup",it);
+                    refreshPage(false);
+                }
+                return "hiker://empty";
+            },it),
+            col_type: 'scroll_button',
+            extra: {
+                backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + Color.replace('#',''):""
+            }
+        }
+        d.push(obj);
+    })
+    d = d.concat(jxItemList(jxdatalist, getMyVar("selectGroup","全部")));
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',

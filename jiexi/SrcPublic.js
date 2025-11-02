@@ -765,7 +765,7 @@ function jiexiTest(data) {
                         require(config.jxCodePath + 'SrcPublic.js');
                         deleteData(data);
                         let testDatas = storage0.getMyVar('待测试解析列表');
-                        testDatas = testData.filter(v=>v.name!=data.name);
+                        testDatas = testDatas.filter(v=>v.name!=data.name);
                         storage0.putMyVar('待测试解析列表', testDatas);
                         refreshPage();
                         return "toast://已删除"

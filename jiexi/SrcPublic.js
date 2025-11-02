@@ -49,6 +49,9 @@ function colorTitle(title, Color) {
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
     let dataTitle = data.id + '-' + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
+    if(data.desc2){
+        dataTitle = dataTitle + data.desc2;
+    }
     dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
 
     return dataTitle;
@@ -652,8 +655,10 @@ function importConfirm(importStr) {
         let ext = it.ext || {};
         let flag = ext.flag || [];
         it.id = i+1;
+        it.desc2 = "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}";
         let ittitle = getDataTitle(it);
         delete it.id;
+        delete it.desc2;
 
         d.push({
             title: ittitle,
@@ -702,7 +707,7 @@ function importConfirm(importStr) {
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),
-            desc: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}" + flag.join(','),
+            desc: flag.join(','),
             col_type: "text_1",
             extra: {
                 id: it.name

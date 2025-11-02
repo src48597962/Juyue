@@ -732,11 +732,12 @@ function jiexiTest(data) {
     }else if($.type(data)=='array'){
         testlist = data;
     }
-    
-    if(testlist.length>0){
+
+    let testData = storage0.getMyVar('当前测试解析');
+    if(!testData && testlist.length>0){
         storage0.putMyVar('当前测试解析', testlist[0]);
     }
-    let testData = storage0.getMyVar('当前测试解析', {});
+    
     let d = [];
     d.push({
         col_type: "line_blank"

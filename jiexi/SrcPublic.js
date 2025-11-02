@@ -53,7 +53,9 @@ function getDataTitle(data, ide, i) {
         dataTitle = dataTitle + '  ' + data.desc2;
     }
     dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
-
+    if(data.stop){
+        dataTitle = '‘‘’’<font color=red>' + dataTitle + '</font>';
+    }
     return dataTitle;
 }
 // 接口多选处理方法

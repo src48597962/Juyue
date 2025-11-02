@@ -53,9 +53,7 @@ function getDataTitle(data, ide, i) {
         dataTitle = dataTitle + '  ' + data.desc2;
     }
     dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
-    if(data.stop){
-        dataTitle = '‘‘’’<font color=red>' + dataTitle + '</font>';
-    }
+
     return dataTitle;
 }
 // 接口多选处理方法
@@ -75,7 +73,7 @@ function duoselect(data, i){
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
             selectlist.splice(index, 1);
-            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i),'grey'):getDataTitle(data, '', i)});
+            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i), 'red'):getDataTitle(data, '', i)});
         }
     })
     storage0.putMyVar('duodatalist',selectlist);
@@ -91,6 +89,9 @@ function jxItemList(datalist) {
             datatitle = colorTitle(getDataTitle(it, '●', i+1), '#3CB371');
         } else {
             datatitle = getDataTitle(it, '', i+1);
+            if(it.stop){
+                datatitle = '‘‘’’<font color=red>' + dataTitle + '</font>';
+            }
         }
         let ext = it.ext || {};
         let flag = ext.flag || [];

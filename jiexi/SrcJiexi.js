@@ -221,7 +221,7 @@ function jxItemPage(dd) {
                     deleteItemByCls('jxItemLoadList');
                     clearMyVar('seacrhJiexi');
                     clearMyVar('seacrhDataList');
-                    require(config.jxCodePath + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcPublic.js');
                     let jxdatalist = storage0.getMyVar("jxdatalist");
                     addItemBefore('jxItemLoading', jxItemList(jxdatalist));
                 }

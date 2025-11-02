@@ -44,7 +44,7 @@ function getJxIde(data){
 }
 // 文字上色
 function colorTitle(title, Color) {
-    return '<font color="' + Color + '">' + title + '</font>';
+    return '‘‘’’<font color="' + Color + '">' + title + '</font>';
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide) {
@@ -68,8 +68,9 @@ function duoselect(data){
     let selectlist = storage0.getMyVar('duodatalist') || [];
     waitlist.forEach(data=>{
         if(!selectlist.some(item => data.name==item.name)){
-            selectlist.push(data);
             updateItem(data.name, {title: colorTitle(getDataTitle(data, '●'),'#3CB371')});
+            delete data.id;
+            selectlist.push(data);
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
             selectlist.splice(index, 1);
@@ -101,7 +102,7 @@ function jxItemList(datalist) {
                 require(config.jxCodePath + 'SrcPublic.js');
                 duoselect(data);
                 return "hiker://empty";
-            }, base64Encode(JSON.stringify(it))) : $(selectmenu, 2).select((data) => {
+            }, base64Encode(JSON.stringify(tmpdata))) : $(selectmenu, 2).select((data) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "分享") {
                     if (getItem("sharePaste", "") == "") {
@@ -657,14 +658,10 @@ function importConfirm(importStr) {
         let datamenu = ["确定导入", "修改名称", "接口测试"];
         let ext = it.ext || {};
         let flag = ext.flag || [];
-        it.id = i+1;
-        it.desc2 = "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}";
-        let ittitle = getDataTitle(it);
-        delete it.id;
-        delete it.desc2;
+        let tmpdata = extra = Object.assign({id: i+1, desc2: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}"}, it);
 
         d.push({
-            title: ittitle,
+            title: getDataTitle(tmpdata),
             url: $(datamenu, 2).select((data, isnew) => {
                 data = JSON.parse(base64Decode(data));
                 if (input == "确定导入") {

@@ -116,7 +116,7 @@ function juItemF(id, s){
 function juFileF(id){
     let juFileO = {
         'file': function(jkid,filename) {
-            return `hiker://files/data2聚阅/${jkid}/${filename}.txt`
+            return `hiker://files/data2/聚阅/juFile/${jkid}/${filename}.txt`
         },
         'save': function (key, str, id2) {
             if(!key || str === undefined || str === null || str === '') return;

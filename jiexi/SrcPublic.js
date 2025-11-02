@@ -912,7 +912,7 @@ function getJxIcon(icon, nochange, color2) {
         }
     },color, color2))
 }
-	// 输出检索接口列表
+// 输出检索接口列表
 function outputSearchList(jxdatalist, input){
     let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
     jxdatalist = jxdatalist.filter(it=>{
@@ -920,4 +920,86 @@ function outputSearchList(jxdatalist, input){
     })
     storage0.putMyVar("seacrhDataList", jxdatalist);
     return jxdatalist;
+}
+// 只显示名称相近的接口
+function similarTitles(items, similarityThreshold) {
+    // 设置默认相似度阈值
+    similarityThreshold = similarityThreshold || 0.8;
+    
+	    // 计算两个字符串的相似度（0~1）
+    const StringUtil = Packages.com.example.hikerview.utils.StringUtil;
+    function similarity(str1, str2) {
+        let df = 0;
+        df = StringUtil.levenshtein(str1, str2)
+        return df;
+    }
+
+    // Levenshtein 距离计算
+    function levenshteinDistance(s, t) {
+        if (s === t) return 0;
+        if (s.length === 0) return t.length;
+        if (t.length === 0) return s.length;
+
+        let dp = [];
+        for (let i = 0; i <= s.length; i++) {
+            dp[i] = [];
+            dp[i][0] = i;
+        }
+        for (let j = 0; j <= t.length; j++) {
+            dp[0][j] = j;
+        }
+
+        for (i = 1; i <= s.length; i++) {
+            for (j = 1; j <= t.length; j++) {
+                let cost = s[i - 1] === t[j - 1] ? 0 : 1;
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,     // 删除
+                    dp[i][j - 1] + 1,     // 插入
+                    dp[i - 1][j - 1] + cost // 替换
+                );
+            }
+        }
+        return dp[s.length][t.length];
+    }
+
+    // 1. 先分组
+    let groups = [];
+    let visited = {};
+
+    for (let i = 0; i < items.length; i++) {
+        if (visited[i]) continue;
+
+        let currentGroup = [items[i]];
+        visited[i] = true;
+
+        // 查找所有与当前对象相似的
+        for (let j = 0; j < items.length; j++) {
+            if (i === j || visited[j]) continue;
+
+            let sim = similarity(
+                items[i].name.toLowerCase(),
+                items[j].name.toLowerCase()
+            );
+
+            if (sim >= similarityThreshold) {
+                currentGroup.push(items[j]);
+                visited[j] = true;
+            }
+        }
+
+        // 只保留相似项≥2的组
+        if (currentGroup.length >= 2) {
+            groups.push(currentGroup);
+        }
+    }
+
+    // 2. 扁平化分组
+    let result = [];
+    for (let g = 0; g < groups.length; g++) {
+        for (let k = 0; k < groups[g].length; k++) {
+            result.push(groups[g][k]);
+        }
+    }
+
+    return result;
 }

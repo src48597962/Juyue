@@ -736,6 +736,7 @@ function jiexiTest(data) {
     let testData = storage0.getMyVar('当前测试解析');
     if(!testData && testlist.length>0){
         storage0.putMyVar('当前测试解析', testlist[0]);
+        testData = testlist[0];
     }
     
     let d = [];

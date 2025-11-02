@@ -783,7 +783,7 @@ function jiexiTest(data) {
         d.push({
             title: key,
             url: $().lazyRule((input)=>{
-                let dataObj = {parse: storage0.getMyVar('当前测试解析')}
+                let dataObj = {testParse: storage0.getMyVar('当前测试解析')}
                 require(config.jxCodePath + 'SrcParse.js');
                 return SrcParse(input, dataObj);
             }, testUrls[key]),

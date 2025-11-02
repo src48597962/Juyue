@@ -659,7 +659,7 @@ function importConfirm(importStr) {
         let datamenu = ["确定导入", "修改名称", "接口测试"];
         let ext = it.ext || {};
         let flag = ext.flag || [];
-        let tmpdata = extra = Object.assign({desc2: "<small><font color=grey>" + "{" + (isnew?"新增加":"已存在") + "}"}, it);
+        let tmpdata = extra = Object.assign({desc2: "‘‘’’<small><font color=grey>{" + (isnew?"新增加":"已存在") + "}</font></small>"}, it);
 
         d.push({
             title: getDataTitle(tmpdata, '', i+1),

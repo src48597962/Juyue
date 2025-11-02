@@ -70,11 +70,9 @@ function duoselect(data, i){
         if(!selectlist.some(item => data.name==item.name)){
             selectlist.push(data);
             updateItem(data.name, {title: colorTitle(getDataTitle(data, '●', i),'#3CB371')});
-            log(colorTitle(getDataTitle(data, '●', i),'#3CB371'));
         }else{
             let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
             selectlist.splice(index, 1);
-            log(colorTitle(getDataTitle(data, '', i), 'red'));
             updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i), 'red'):getDataTitle(data, '', i)});
         }
     })

@@ -592,6 +592,7 @@ function SrcParse(vipUrl, dataObj) {
         }
     }else{
         if(isTest && dataObj.testParse["url"].startsWith('http') && !dataObj.testParse["url"].includes('key=')){
+            toast('解析失败，转播放器video验证一下');
             return "video://"+dataObj.testParse["url"]+vipUrl;
         }else{
             return 'toast://解析失败';

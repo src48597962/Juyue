@@ -192,11 +192,13 @@ function SrcParse(vipUrl, dataObj) {
     let jxfile = "hiker://files/rules/Src/Jiexi/jiexi.json";//解析存放文件
     let parselist = [];//待进线程执行的解析列表
     let jxList= [];//读取本地的解析列表
+    let isTest;
 
-    if(dataObj.parse){
-        //有指定解析
-        dataObj.parse["stype"] = "test";
-        parselist.push(dataObj.parse);
+    if(dataObj.testParse){
+        //有指定解析测试
+        isTest = 1;
+        dataObj.testParse["stype"] = "test";
+        parselist.push(dataObj.testParse);
     }else{
         if(dataObj.parse_api){
             try{
@@ -223,7 +225,7 @@ function SrcParse(vipUrl, dataObj) {
                         if(excludeparse.indexOf(appParses[i].url)==-1){
                             let appParse = appParses[i];
                             let appext = appParse.ext||{};
-                            parselist.push({stype:'app', type:appParse.type||'3', name:appParse.name, url:appParse.url, sort:0, ext:appext});
+                            parselist.push({stype:'app', type:appParse.type||'3', name:appParse.name||('app'+i), url:appParse.url, sort:0, ext:appext});
                         }
                     }
                     log("选集传入解析数："+appParses.length); 
@@ -298,8 +300,6 @@ function SrcParse(vipUrl, dataObj) {
     let danmu = "";//多线路弹幕
     let faillist = [];//解析失败待处理列表
     let myJXchange = 0;//私有解析是否有变化需要保存
-    let x5jxlist = [];
-    let x5namelist = [];
 
     //模式3手工解析使用代理播放
     if(parsemode==3){
@@ -406,7 +406,7 @@ function SrcParse(vipUrl, dataObj) {
                     ulist: list,
                     vipUrl: vipUrl,
                     videoplay: playSet.videoplay,
-                    testVideo: playSet.testvideo?testVideo:undefined,
+                    checkVideo: playSet.testvideo?checkVideo:undefined,
                     parsemode: 1
                 },
                 id: list.url
@@ -546,7 +546,7 @@ function SrcParse(vipUrl, dataObj) {
         }
     }
     
-    if(!dataObj.parse){
+    if(!isTest){
         //私有解析有排除片源
         if(myJXchange == 1){writeFile(jxfile, JSON.stringify(jxList));}
         //私有解析失败的统一提示
@@ -590,27 +590,15 @@ function SrcParse(vipUrl, dataObj) {
             }
         }
     }else{
-        if(x5namelist.length>0){
-            log('进入嗅探解析列表：' + x5namelist)
-        }
-        
-        if(x5jxlist.length>0){
-            log('开启播放器超级嗅探模式');
-            let weburls = x5jxlist.map(item => "video://" + item +vipUrl);
-            return JSON.stringify({
-                urls: weburls,
-                names: x5namelist,
-                danmu: dm
-            }); 
-        }else if(dataObj.parse && dataObj.parse["stype"]=="test" && dataObj.parse["url"].startsWith('http') && !dataObj.parse["url"].includes('key=')){
-            return "video://"+dataObj.parse["url"]+vipUrl;
+        if(isTest && dataObj.testParse["url"].startsWith('http') && !dataObj.testParse["url"].includes('key=')){
+            return "video://"+dataObj.testParse["url"]+vipUrl;
         }else{
             return 'toast://解析失败';
         }
     }
 }
-//测试视频地址有效性
-function testVideo(url,name,times) {
+//检测视频地址有效性
+function checkVideo(url,name,times) {
     if(!url){return 0}
     if(!name){name = "解析"}
     if(!times){times = 60}
@@ -850,7 +838,7 @@ function 解析方法(obj) {
             if(/^toast/.test(rurl)){
                 log(obj.ulist.name + '>提示：' + rurl.replace('toast://',''));
                 rurl = "";
-            }else if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl,obj.ulist.name)==0){
+            }else if(obj.checkVideo && /^http/.test(rurl) && obj.checkVideo(rurl,obj.ulist.name)==0){
                 rurl = "";
             }
         }
@@ -985,7 +973,7 @@ function 解析方法(obj) {
                 if(!/404 /.test(gethtml) && obj.ulist.url.indexOf('key=')==-1 && isjson==0){
                     obj.ulist['type'] = '0';
                 }
-            }else if(obj.testVideo && /^http/.test(rurl) && obj.testVideo(rurl, obj.ulist.name)==0){
+            }else if(obj.checkVideo && /^http/.test(rurl) && obj.checkVideo(rurl, obj.ulist.name)==0){
                 rurl = "";
             }
             

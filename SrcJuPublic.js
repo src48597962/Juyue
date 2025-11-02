@@ -326,6 +326,30 @@ function duoselect(data){
     storage0.putMyVar('duodatalist',selectlist);
 }
 
+// 递归删除目录的函数
+function deleteDir(dir) {
+    // 只处理真正的目录
+    if (!dir.isDirectory()) {
+        return;
+    }
+
+    // 先遍历目录下的所有条目
+    var children = dir.listFiles();   // 返回 File[] 数组
+    for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (child.isDirectory()) {
+            // 子目录递归删除
+            deleteDir(child);
+        } else {
+            // 文件直接删除
+            child["delete"]();   // 使用数组式调用避免关键字冲突
+        }
+    }
+
+    // 子目录内容全部清除后，删除本目录本身
+    dir["delete"]();
+}
+
 //删除统一入口
 function deleteData(data){
     let sourcedata = fetch(jkfile);
@@ -344,11 +368,18 @@ function deleteData(data){
     if (itemsstr != "") {
         eval("items=" + itemsstr + ";");
     }
+    // 取得 java.io.File 类的引用
+    let File = Packages.java.io.File;
+    
     dellist.forEach(it => {
         if(it.url.includes(jkfilespath)){
             deleteFile(it.url);
         }
         delete items[it.id];
+        let target = new File(getPath("hiker://files/data2/聚阅/juFile/"+it.id).replace("file://", ""));
+        if (target.exists()) {
+            deleteDir(target);
+        }
         let index = datalist.indexOf(datalist.filter(d => it.id==d.id)[0]);
         datalist.splice(index, 1);
     })

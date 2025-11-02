@@ -58,7 +58,7 @@ function jxItemPage(dd) {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有","查看相似","查看失败"], 2).select(() => {
             require(config.jxCodePath + 'SrcJiexi.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
@@ -163,6 +163,9 @@ function jxItemPage(dd) {
     if(getMyVar('onlyStopJk')){
         jxdatalist = jxdatalist.filter(item => item.stop);
     }
+    if(getMyVar("selectGroup")){
+        jxdatalist = jxdatalist.filter(v=>v.type==parseTypes.indexOf(getMyVar("selectGroup")));
+    }
     let yxdatalist = jxdatalist.filter(it=>{
         return !it.stop;
     });
@@ -247,9 +250,94 @@ function jxItemPage(dd) {
         }
         d.push(obj);
     })
-    if(getMyVar("selectGroup","全部") != '全部'){
-        jxdatalist = jxdatalist.filter(v=>v.type==parseTypes.indexOf(getMyVar("selectGroup")));
+
+    if(getMyVar('批量选择模式')){
+        d.push({
+            col_type: "blank_block"
+        });
+        d.push({
+            title: "反向选择",
+            url: $('#noLoading#').lazyRule(() => {
+                let jxdatalist = storage0.getMyVar("seacrhDataList") || storage0.getMyVar("jxdatalist") || [];
+                require(config.jxCodePath + 'SrcPublic.js');
+                duoselect(jxdatalist);
+                return "toast://已反选";
+            }),
+            col_type: 'scroll_button'
+        })
+        d.push({
+            title: "删除所选",
+            url: $('#noLoading#').lazyRule(() => {
+                let selectlist = storage0.getMyVar('duodatalist') || [];
+                if(selectlist.length==0){
+                    return "toast://未选择";
+                }
+                return $("确定要删除选择的"+selectlist.length+"个解析？").confirm((selectlist)=>{
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    deleteData(selectlist);
+                    let ids = selectlist.map(v=>v.name);
+                    deleteItem(ids);
+                    return 'toast://已删除选择';
+                }, selectlist)
+            }),
+            col_type: 'scroll_button'
+        })
+        d.push({
+            title: "禁用所选",
+            url: $('#noLoading#').lazyRule(() => {
+                let selectlist = storage0.getMyVar('duodatalist') || [];
+                if(selectlist.length==0){
+                    return "toast://未选择";
+                }
+                return $("确定要禁用选择的"+selectlist.length+"个解析？").confirm((selectlist)=>{
+                    require(config.聚阅.jxCodePath + 'SrcPublic.js');
+                    let sm = dataHandle(selectlist, '禁用');
+                    refreshPage(false);
+                    return 'toast://' + sm;
+                },selectlist)
+            }),
+            col_type: 'scroll_button'
+        })
+        d.push({
+            title: "启用所选",
+            url: $('#noLoading#').lazyRule(() => {
+                let selectlist = storage0.getMyVar('duodatalist') || [];
+                if(selectlist.length==0){
+                    return "toast://未选择";
+                }
+                return $("确定要启用选择的"+selectlist.length+"个解析？").confirm((selectlist)=>{
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    let sm = dataHandle(selectlist, '启用');
+                    refreshPage(false);
+                    return 'toast://' + sm;
+                },selectlist)
+            }),
+            col_type: 'scroll_button'
+        })
+
+        d.push({
+            title: "批量检测",
+            url: $('#noLoading#').lazyRule(() => {
+                let duoselect = storage0.getMyVar('duodatalist') || [];
+                duoselect = duoselect.filter(v=>!v.stop);
+                if(duoselect.length==0){
+                    return "toast://未选择有效的待检解析";
+                }
+
+                return $("hiker://empty#noRecordHistory##noHistory#").rule((datas) => {
+                    setPageTitle(datas.length + "个解析测试");
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    jiexiTest(datas);
+                }, duoselect);
+            }),
+            col_type: 'scroll_button'
+        })
     }
+
+    if(getMyVar('seacrhJiexi')){
+        jxdatalist = outputSearchList(jxdatalist, getMyVar('seacrhJiexi'));
+    }
+    
     d = d.concat(jxItemList(jxdatalist));
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",

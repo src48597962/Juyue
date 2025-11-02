@@ -90,7 +90,7 @@ function jxItemList(datalist) {
         } else {
             datatitle = getDataTitle(it, '', i+1);
             if(it.stop){
-                datatitle = '‘‘’’<font color=red>' + dataTitle + '</font>';
+                datatitle = '‘‘’’<font color=red>' + datatitle + '</font>';
             }
         }
         let ext = it.ext || {};

@@ -766,8 +766,13 @@ function jiexiTest(data) {
                         deleteData(data);
                         let testDatas = storage0.getMyVar('待测试解析列表');
                         testDatas = testDatas.filter(v=>v.name!=data.name);
+                        deleteItem(data.name);
                         storage0.putMyVar('待测试解析列表', testDatas);
-                        refreshPage();
+                        if(testDatas.length==1){
+                            back();
+                        }else{
+                            refreshPage();
+                        }
                         return "toast://已删除"
                     }, it)
                 }]

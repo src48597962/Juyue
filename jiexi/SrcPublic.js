@@ -722,13 +722,17 @@ function importConfirm(importStr) {
 function jiexiTest(data) {
     addListener("onClose", $.toString(() => {
         clearMyVar('当前测试解析');
+        clearMyVar('待测试解析列表');
     }));
 
-    let testlist= [];
-    if($.type(data)=='object'){
-        testlist.push(data);
-    }else if($.type(data)=='array'){
-        testlist = data;
+    let testlist= storage0.getMyVar('待测试解析列表');
+    if(!testlist){
+        if($.type(data)=='object'){
+            testlist.push(data);
+        }else if($.type(data)=='array'){
+            testlist = data;
+        }
+        storage0.putMyVar('待测试解析列表', testlist);
     }
 
     let testData = storage0.getMyVar('当前测试解析');
@@ -753,7 +757,21 @@ function jiexiTest(data) {
                 refreshPage();
                 return "toast://当前测试解析：" + data.name;
             }, it),
-            col_type: 'text_3'
+            col_type: 'text_3',
+            extra:{
+                longClick: [{
+                    title: "删除",
+                    js: $.toString((data) => {
+                        require(config.jxCodePath + 'SrcPublic.js');
+                        deleteData(data);
+                        let testDatas = storage0.getMyVar('待测试解析列表');
+                        testDatas = testData.filter(v=>v.name!=data.name);
+                        storage0.putMyVar('待测试解析列表', testDatas);
+                        refreshPage();
+                        return "toast://已删除"
+                    }, it)
+                }]
+            }
         });
     })
     d.push({

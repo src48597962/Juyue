@@ -113,12 +113,49 @@ function juItemF(id, s){
     }
     return juItemO;
 }
+function juFileF(id){
+    let juFileO = {
+        'file': function(jkid,filename) {
+            return `hiker://files/data2聚阅/${jkid}/${filename}.txt`
+        },
+        'save': function (key, str, id2) {
+            if(!key || str === undefined || str === null || str === '') return;
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
+            writeFile(this.file(id, key), str);
+        },
+        'read': function (key, id2) {
+            if(!key) return;
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return '';
+            }
+            return fetch(this.file(id, key));
+        },
+        'delete': function (key, id2) {
+            if(!key) return;
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
+            deleteFile(this.file(id, key));
+        }
+    }
+    return juFileO;
+}
 let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 1);
+let juFile = juFileF();
 
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
     let juItem = juItemF(jkdata.id);
+    let juFile = juFileF(jkdata.id);
     if (parse['预处理1'] && !getMyVar(jkdata.id+'执行预处理1')) {
         parse['预处理1'].call(parse);
         putMyVar(jkdata.id+'执行预处理1', '1');
@@ -707,6 +744,7 @@ function getObjCode(jkdata, key) {
         if(rule){
             const parse = (function(jkdata) {
                 let juItem = juItemF(jkdata.id);
+                let juFile = juFileF(jkdata.id);
                 eval(rule);
                 return parse;
             })(input);

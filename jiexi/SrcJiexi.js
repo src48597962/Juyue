@@ -240,7 +240,7 @@ function jxItemPage(dd) {
                 }
                 return "hiker://empty";
             },it),
-            col_type: 'scroll_button',
+            col_type: 'flex_button',
             extra: {
                 backgroundColor: getMyVar("selectGroup","全部")==it?"#20" + Color.replace('#',''):""
             }

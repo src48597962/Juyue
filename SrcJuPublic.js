@@ -695,6 +695,8 @@ function expandSearch(keyword) {
                 addListener("onClose", $.toString(() => {
                     refreshPage(false);
                 }));
+                setPageTitle("扩展搜索管理");
+
                 function expandapi(data) {
                     return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
                         addListener("onClose", $.toString(() => {
@@ -727,7 +729,7 @@ function expandSearch(keyword) {
                         d.push({
                             title:'apicode',
                             col_type: 'input',
-                            desc: "扩索搜索代码",
+                            desc: "扩索搜索代码，不写return，搜索关键词：keyword",
                             extra: {
                                 highlight: true,
                                 type: "textarea",

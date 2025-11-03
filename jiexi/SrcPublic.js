@@ -356,6 +356,7 @@ function jiexisave(urls, mode) {
 
             if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){
                 delete it['oldname'];
+                delete it['sort'];
                 datalist.unshift(it);
                 num = num + 1;
             }

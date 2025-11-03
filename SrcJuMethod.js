@@ -116,7 +116,7 @@ function juItemF(id, s){
 function juFileF(id){
     let juFileO = {
         'file': function(jkid,filename) {
-            return `hiker://files/data2/聚阅/juFile/${jkid}/${filename}.txt`
+            return `hiker://files/data2/聚阅/juFile/${jkid}/${filename}` + (filename.includes('.')?'':'.txt');
         },
         'save': function (key, str, id2) {
             if(!key || str === undefined || str === null || str === '') return;
@@ -144,6 +144,15 @@ function juFileF(id){
                 return;
             }
             deleteFile(this.file(id, key));
+        },
+        'exist': function (key, id2) {
+            if(!key) return;
+            id = id2 || id || (storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息')).id;
+            if(!id){
+                xlog(key+':id获取失败');
+                return;
+            }
+            return fileExist(this.file(id, key));
         }
     }
     return juFileO;

@@ -795,7 +795,8 @@ function expandSearch(keyword) {
             let item = lists.filter(v=>v.name==input);
             if(item.length==1){
                 try{
-                    eval('let lazy = ' + item['code']);
+                    eval('let lazy = ' + item[0]['code']);
+                    log(lazy);
                     return lazy;
                 }catch(e){
                     return 'toast://调用出错>' + e.message;

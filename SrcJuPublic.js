@@ -739,7 +739,7 @@ function expandSearch(keyword) {
                         d.push({
                             title:'保存',
                             col_type:'text_center_1',
-                            url:$().lazyRule((isedit)=>{
+                            url:$().lazyRule((data)=>{
                                 let name = getMyVar('apiname');
                                 let code = getMyVar('apicode');
                                 if(!name || !code){
@@ -747,8 +747,8 @@ function expandSearch(keyword) {
                                 }
                                 let Juconfig = getJuconfig();
                                 let lists = Juconfig['expandSearch'] || [];
-                                if(isedit){
-                                    lists = lists.filter(v=>v.name!=name);
+                                if(data){
+                                    lists = lists.filter(v=>v.name!=data.name);
                                 }else if(lists.some(v=>v.name==name)){
                                     return "toast://已存在";
                                 }
@@ -758,7 +758,7 @@ function expandSearch(keyword) {
                                 back(true);
                                 return "toast://已保存";
                             })
-                        }, data?1:0);
+                        }, data);
                         setResult(d);
                     }, data);
                 }
@@ -766,7 +766,49 @@ function expandSearch(keyword) {
                 d.push({
                     title: "新增",
                     url: expandapi(),
-                    col_type: "text_center_1"
+                    col_type: "text_2"
+                })
+                let pastes = getPastes();
+                d.push({
+                    title: "分享",
+                    url: $(pastes, 2).select(() => {
+                        showLoading('分享生成中，请稍后...');
+                        let Juconfig = getJuconfig();
+                        let lists = Juconfig['expandSearch'] || [];
+                        let sharetxt = base64Encode(JSON.stringify(lists));
+                        let pasteurl = sharePaste(sharetxt, input);
+                        hideLoading();
+                        if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+                            log('剪贴板地址>'+pasteurl);
+                            copy('扩展搜索￥'+aesEncode('expandSearch', pasteurl)+'￥聚阅');
+                            return "toast://分享口令已生成";
+                        }else{
+                            log('分享失败>'+pasteurl);
+                            return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+                        }
+                    }),
+                    col_type: "text_2"
+                })
+                d.push({
+                    title: "导入",
+                    url: $('').input(() => {
+                        let code = aesDecode('expandSearch', input.split('￥')[1]);
+                        let text = parsePaste(code);
+                        let sharetxt = base64Decode(text);
+                        let Juconfig = getJuconfig();
+                        let lists = Juconfig['expandSearch'] || [];
+                        let imports = JSON.parse(sharetxt); 
+                        imports.forEach(it=>{
+                            if(!lists.some(v=>v.name==it.name)){
+                                lists.push(it);
+                            }
+                        })
+                        Juconfig['expandSearch'] = lists;
+                        writeFile(cfgfile, JSON.stringify(Juconfig));
+                        refreshPage();
+                        return 'toast://已导入';
+                    }),
+                    col_type: "text_2"
                 })
                 let Juconfig = getJuconfig();
                 let lists = Juconfig['expandSearch'] || [];
@@ -807,44 +849,6 @@ function expandSearch(keyword) {
             }
         }
     }, keyword)
-    if (sstype == "云盘接口") {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            let d = [];
-            d.push({
-                title: name + "-云盘聚合搜索",
-                url: "hiker://empty",
-                col_type: "text_center_1",
-                extra: {
-                    id: "listloading",
-                    lineVisible: false
-                }
-            })
-            setResult(d);
-            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
-            aliDiskSearch(name);
-        }, input);
-    } else if (sstype == "Alist接口") {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            let d = [];
-            d.push({
-                title: name + "-Alist聚合搜索",
-                url: "hiker://empty",
-                col_type: "text_center_1",
-                extra: {
-                    id: "listloading",
-                    lineVisible: false
-                }
-            })
-            setResult(d);
-            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAlist.js');
-            alistSearch2(name, 1);
-        }, input);
-    } else if (sstype == "百度网盘") {
-        putVar('keyword', input);
-        return "hiker://page/search?fypage&rule=百度网盘";
-    } else {
-        return "hiker://search?rule=聚影&s=" + input;
-    }
 }
 // 按拼音排序
 function sortByPinyin(arr) {

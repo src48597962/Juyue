@@ -580,53 +580,6 @@ function selectSource(selectGroup) {
                     return JYshare(input, data);
                 }, items[i].data)
             });
-            /*
-            hikerPop.selectCenter({
-                options: ["分享", "置顶", "禁用", "删除"],
-                columns: 2,
-                title: s.title,
-                click(input) {
-                    let data = items[i].data;
-                    if(input=='分享'){
-                        let pastes = getPastes();
-                        pastes.push('云口令文件');
-                        return $(pastes, 2).select((data)=>{
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                            return JYshare(input, data);
-                        }, data)
-                    }else{
-                        if(input=='置顶'){
-                            if(getItem("sourceListSort", "更新时间") != "更新时间"){
-                                return "toast://无效操作，接口列表排序方式为：" + getItem("sourceListSort");
-                            }
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            dataHandle(data, input);
-                            index_items.items = index_items.items.filter(x=>x.data.id!=data.id);
-                            const [target] = items.splice(i, 1);
-                            items.unshift(target);
-                            index_items.items.unshift(target);
-                            manage.change(items);
-                        }else if(input=='禁用'){
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            dataHandle(data, input);
-                            index_items.items = index_items.items.filter(x=>x.data.id!=data.id);
-                            items.splice(i, 1);
-                            manage.change(items);
-                        }else if(input=='删除'){
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                            deleteData(data);
-                            index_items.items = index_items.items.filter(x=>x.data.id!=data.id);
-                            items.splice(i, 1);
-                            manage.change(items);
-                        }
-                        hikerPop.runOnNewThread(() => {
-                            sourceList = getDatas("yi", true);
-                        });
-                        return "toast://已" + input;
-                    }
-                }
-            });
-            */
         },
         click(item, i, manage) {
             pop.dismiss();
@@ -736,13 +689,53 @@ function JySearch(sskeyword, sstype) {
 }
 // 视频类扩展搜索管理
 function expandSearch(sskeyword) {
-    let lists = Juconfig
-    if(!config.聚影){
-        let rely = getPublicItem('聚影','https://raw.gitcode.com/src48597962/juying/raw/master/SrcJuying.js');
-        initConfig({
-            聚影: rely
-        });
-    }
+    let lists = Juconfig['expandSearch'] || [];
+    let names = lists.map(v=>v.name);
+    names.push('扩展管理');
+    return $(names, 3).select((keyword) => {
+        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+        let lists = Juconfig['expandSearch'] || [];
+        if(input=='扩展管理'){
+            return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule(() => {
+                addListener("onClose", $.toString(() => {
+                    refreshPage(false);
+                }));
+                let d = [];
+                d.push({
+                    title: "新增",
+                    url: "hiker://empty",
+                    col_type: "text_center_1"
+                })
+                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let lists = Juconfig['expandSearch'] || [];
+                let names = lists.map(v=>v.name);
+                names.forEach(it=>{
+                    d.push({
+                        title: it,
+                        url: $(["删除", "修改"], 2).select(()=>{
+
+                        }),
+                        col_type: "text_2",
+                        extra: {
+                            id: it
+                        }
+                    })
+                })
+                setResult(d);
+            });
+        }else{
+            let item = lists.filter(v=>v.name==input);
+            if(item.length==1){
+                try{
+                    eval(item['url']);
+                }catch(e){
+                    return 'toast://调用出错>' + e.message;
+                }
+            }else{
+                return 'toast://未调用到';
+            }
+        }
+    }, sskeyword)
     if (sstype == "云盘接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
             let d = [];
@@ -758,7 +751,7 @@ function expandSearch(sskeyword) {
             setResult(d);
             require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
             aliDiskSearch(name);
-        }, sskeyword);
+        }, input);
     } else if (sstype == "Alist接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
             let d = [];
@@ -774,12 +767,12 @@ function expandSearch(sskeyword) {
             setResult(d);
             require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAlist.js');
             alistSearch2(name, 1);
-        }, sskeyword);
+        }, input);
     } else if (sstype == "百度网盘") {
-        putVar('keyword',sskeyword);
+        putVar('keyword', input);
         return "hiker://page/search?fypage&rule=百度网盘";
     } else {
-        return "hiker://search?rule=聚影&s=" + sskeyword;
+        return "hiker://search?rule=聚影&s=" + input;
     }
 }
 // 按拼音排序

@@ -161,6 +161,16 @@ let juItem = juItemF();
 let juItem2 = juItemF('Juyue', 1);
 let juFile = juFileF();
 
+// 获取Juconfig
+function getJuconfig(){
+    let Juconfig = {};
+    let Jucfg = fetch(cfgfile);
+    if (Jucfg != "") {
+        eval("Juconfig=" + Jucfg + ";");
+    }
+    return Juconfig;
+}
+
 // 全局公共执行代码前需要加载的
 let evalPublicStr = `
     let juItem = juItemF(jkdata.id);

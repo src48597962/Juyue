@@ -895,10 +895,10 @@ function erji() {
                 if(stype=="视频"){
                     d.push({
                         title: "扩展搜索",
-                        url: $(["聚影接口","云盘接口","Alist接口","百度网盘"], 3).select((sskeyword) => {
+                        url: expandSearch(sskeyword),/*$(["聚影接口","云盘接口","Alist接口","百度网盘"], 3).select((sskeyword) => {
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             return JySearch(sskeyword, input);
-                        }, sskeyword),
+                        }, sskeyword)*/
                         pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                         col_type: 'icon_small_3',
                         extra: {

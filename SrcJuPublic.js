@@ -686,11 +686,11 @@ function JySearch(sskeyword, sstype) {
 function expandSearch(keyword) {
     let lists = Juconfig['expandSearch'] || [];
     let names = lists.map(v=>v.name);
-    names.push('扩展管理');
+    names.push('管理');
     return $(names, 3).select((keyword) => {
         let Juconfig = getJuconfig();
         let lists = Juconfig['expandSearch'] || [];
-        if(input=='扩展管理'){
+        if(input=='管理'){
             return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule(() => {
                 addListener("onClose", $.toString(() => {
                     refreshPage(false);
@@ -739,7 +739,7 @@ function expandSearch(keyword) {
                         d.push({
                             title:'保存',
                             col_type:'text_center_1',
-                            url:$().lazyRule(()=>{
+                            url:$().lazyRule((isedit)=>{
                                 let name = getMyVar('apiname');
                                 let code = getMyVar('apicode');
                                 if(!name || !code){
@@ -747,7 +747,9 @@ function expandSearch(keyword) {
                                 }
                                 let Juconfig = getJuconfig();
                                 let lists = Juconfig['expandSearch'] || [];
-                                if(lists.some(v=>v.name==name)){
+                                if(isedit){
+                                    lists = lists.filter(v=>v.name!=name);
+                                }else if(lists.some(v=>v.name==name)){
                                     return "toast://已存在";
                                 }
                                 lists.push({name: name, code: code})
@@ -756,7 +758,7 @@ function expandSearch(keyword) {
                                 back(true);
                                 return "toast://已保存";
                             })
-                        });
+                        }, data?1:0);
                         setResult(d);
                     }, data);
                 }
@@ -796,7 +798,6 @@ function expandSearch(keyword) {
             if(item.length==1){
                 try{
                     eval('let lazy = ' + item[0]['code']);
-                    log(lazy);
                     return lazy;
                 }catch(e){
                     return 'toast://调用出错>' + e.message;

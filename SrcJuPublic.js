@@ -44,12 +44,7 @@ function decodeUnicodeEscapes(str) {
     });
 }
 
-let Juconfig = {};
-let Jucfg = fetch(cfgfile);
-if (Jucfg != "") {
-    eval("Juconfig=" + Jucfg + ";");
-}
-
+let Juconfig = getJuconfig();
 let runTypes = ["漫画", "视频", "音频", "小说", "图集", "聚合", "其它"];
 let homeGroup = Juconfig["homeGroup"] || "";
 let homeSourceS = Juconfig["homeSourceS"] || {};
@@ -688,36 +683,105 @@ function JySearch(sskeyword, sstype) {
     }
 }
 // 视频类扩展搜索管理
-function expandSearch(sskeyword) {
+function expandSearch(keyword) {
     let lists = Juconfig['expandSearch'] || [];
     let names = lists.map(v=>v.name);
     names.push('扩展管理');
     return $(names, 3).select((keyword) => {
-        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+        let Juconfig = getJuconfig();
         let lists = Juconfig['expandSearch'] || [];
         if(input=='扩展管理'){
             return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule(() => {
                 addListener("onClose", $.toString(() => {
                     refreshPage(false);
                 }));
+                function expandapi(data) {
+                    return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
+                        addListener("onClose", $.toString(() => {
+                            clearMyVar('apiname');
+                            clearMyVar('apicode');
+                            clearMyVar('isload');
+                        }));
+                        
+                        if(!data){
+                            setPageTitle("扩展搜索-新增");
+                        }else{
+                            if(getMyVar('isload', '0')=="0"){
+                                setPageTitle("扩展搜索-变更");
+                                putMyVar('apiname', data.name);
+                                putMyVar('apicode', data.url||"");
+                                putMyVar('isload', '1');
+                            }
+                        }
+                        let d = [];
+                        d.push({
+                            title:'apiname',
+                            col_type: 'input',
+                            desc: "扩索搜索名称",
+                            extra: {
+                                titleVisible: false,
+                                defaultValue: getMyVar('apiname', ""),
+                                onChange: 'putMyVar("apiname",input)'
+                            }
+                        });
+                        d.push({
+                            title:'apicode',
+                            col_type: 'input',
+                            desc: "扩索搜索代码",
+                            extra: {
+                                highlight: true,
+                                type: "textarea",
+                                titleVisible: false,
+                                defaultValue: getMyVar('apicode', ""),
+                                onChange: 'putMyVar("apicode", input)'
+                            }
+                        });
+                        d.push({
+                            title:'保存',
+                            col_type:'text_center_1',
+                            url:$().lazyRule(()=>{
+                                let name = getMyVar('apiname');
+                                let code = getMyVar('apicode');
+                                if(!name || !code){
+                                    return "toast://信息不完整";
+                                }
+                                let Juconfig = getJuconfig();
+                                let lists = Juconfig['expandSearch'] || [];
+                                lists.push({name: name, code: code})
+                                Juconfig['expandSearch'] = lists;
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                back(true);
+                                return "toast://已保存";
+                            })
+                        });
+                    }, data);
+                }
                 let d = [];
                 d.push({
                     title: "新增",
-                    url: "hiker://empty",
+                    url: expandapi(),
                     col_type: "text_center_1"
                 })
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                let Juconfig = getJuconfig();
                 let lists = Juconfig['expandSearch'] || [];
-                let names = lists.map(v=>v.name);
-                names.forEach(it=>{
+                lists.forEach((it)=>{
                     d.push({
-                        title: it,
-                        url: $(["删除", "修改"], 2).select(()=>{
-
-                        }),
+                        title: it.name,
+                        url: $(["删除", "修改"], 2).select((data, expandapi)=>{
+                            let Juconfig = getJuconfig();
+                            let lists = Juconfig['expandSearch'] || [];
+                            if(input=="删除"){
+                                deleteItem(data.name);
+                                lists = lists.filter(v=>v.name!=data.name);
+                                Juconfig['expandSearch'] = lists;
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                            }else if(input=="修改"){
+                                return expandapi(data);
+                            }
+                        }, it, expandapi),
                         col_type: "text_2",
                         extra: {
-                            id: it
+                            id: it.name
                         }
                     })
                 })
@@ -735,7 +799,7 @@ function expandSearch(sskeyword) {
                 return 'toast://未调用到';
             }
         }
-    }, sskeyword)
+    }, keyword)
     if (sstype == "云盘接口") {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
             let d = [];

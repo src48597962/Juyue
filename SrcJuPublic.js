@@ -754,6 +754,7 @@ function expandSearch(keyword) {
                                 return "toast://已保存";
                             })
                         });
+                        setResult(d);
                     }, data);
                 }
                 let d = [];

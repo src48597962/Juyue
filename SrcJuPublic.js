@@ -635,53 +635,6 @@ function selectSource(selectGroup) {
     });
     return 'hiker://empty';
 }
-//聚影搜索调用
-function JySearch(sskeyword, sstype) {
-    if(!config.聚影){
-        let rely = getPublicItem('聚影','https://raw.gitcode.com/src48597962/juying/raw/master/SrcJuying.js');
-        initConfig({
-            聚影: rely
-        });
-    }
-    if (sstype == "云盘接口") {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            let d = [];
-            d.push({
-                title: name + "-云盘聚合搜索",
-                url: "hiker://empty",
-                col_type: "text_center_1",
-                extra: {
-                    id: "listloading",
-                    lineVisible: false
-                }
-            })
-            setResult(d);
-            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAliDisk.js');
-            aliDiskSearch(name);
-        }, sskeyword);
-    } else if (sstype == "Alist接口") {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            let d = [];
-            d.push({
-                title: name + "-Alist聚合搜索",
-                url: "hiker://empty",
-                col_type: "text_center_1",
-                extra: {
-                    id: "listloading",
-                    lineVisible: false
-                }
-            })
-            setResult(d);
-            require(config.聚影.replace(/[^/]*$/,'') + 'SrcJyAlist.js');
-            alistSearch2(name, 1);
-        }, sskeyword);
-    } else if (sstype == "百度网盘") {
-        putVar('keyword',sskeyword);
-        return "hiker://page/search?fypage&rule=百度网盘";
-    } else {
-        return "hiker://search?rule=聚影&s=" + sskeyword;
-    }
-}
 // 视频类扩展搜索管理
 function expandSearch(keyword) {
     let lists = Juconfig['expandSearch'] || [];

@@ -142,6 +142,12 @@ function jxItemPage(dd) {
                 title: '外部导入',
                 js: $.toString(() => {
                     return $(['聚影','断插'], 2).select(() => {
+                        // Unicode转中文
+                        function decodeUnicodeEscapes(str) {
+                            return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, p1) => {
+                                return String.fromCharCode(parseInt(p1, 16));
+                            });
+                        }
                         let addarr = [];
                         if(input=='聚影'){
                             let jxfile = 'hiker://files/rules/Src/Juying2/jiexi.json';
@@ -150,7 +156,7 @@ function jxItemPage(dd) {
                                 addarr = JSON.parse(jxstr).map(it=>{
                                     return {
                                         name: it.name,
-                                        url: it.url,
+                                        url: decodeUnicodeEscapes(it.url),
                                         type: it.url.includes('function')?'2':it.type+'',
                                         ext: it.ext
                                     }
@@ -165,7 +171,7 @@ function jxItemPage(dd) {
                                     let itstr = jxlist.codes[it].toString();
                                     return {
                                         name: it,
-                                        url: itstr,
+                                        url: decodeUnicodeEscapes(itstr),
                                         type: itstr.includes('function')?'2':/key=|json/.test(itstr)?'1':'0'
                                     }
                                 })

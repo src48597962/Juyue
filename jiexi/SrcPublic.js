@@ -48,7 +48,7 @@ function colorTitle(title, Color) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide, i) {
-    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name;
+    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?' fail:'+data.sort:'');
     if(data.desc2){
         dataTitle = dataTitle + '  ' + data.desc2;
     }

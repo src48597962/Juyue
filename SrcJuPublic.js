@@ -709,7 +709,7 @@ function expandSearch(keyword) {
                             if(getMyVar('isload', '0')=="0"){
                                 setPageTitle("扩展搜索-变更");
                                 putMyVar('apiname', data.name);
-                                putMyVar('apicode', data.url||"");
+                                putMyVar('apicode', data.code||"");
                                 putMyVar('isload', '1');
                             }
                         }
@@ -747,6 +747,9 @@ function expandSearch(keyword) {
                                 }
                                 let Juconfig = getJuconfig();
                                 let lists = Juconfig['expandSearch'] || [];
+                                if(lists.some(v=>v.name==name)){
+                                    return "toast://已存在";
+                                }
                                 lists.push({name: name, code: code})
                                 Juconfig['expandSearch'] = lists;
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
@@ -792,7 +795,7 @@ function expandSearch(keyword) {
             let item = lists.filter(v=>v.name==input);
             if(item.length==1){
                 try{
-                    eval(item['url']);
+                    return eval(item['code']);
                 }catch(e){
                     return 'toast://调用出错>' + e.message;
                 }

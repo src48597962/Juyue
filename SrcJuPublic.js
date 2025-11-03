@@ -766,7 +766,7 @@ function expandSearch(keyword) {
                 d.push({
                     title: "新增",
                     url: expandapi(),
-                    col_type: "text_2"
+                    col_type: "text_3"
                 })
                 let pastes = getPastes();
                 d.push({
@@ -787,7 +787,7 @@ function expandSearch(keyword) {
                             return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
                         }
                     }),
-                    col_type: "text_2"
+                    col_type: "text_3"
                 })
                 d.push({
                     title: "导入",
@@ -808,7 +808,10 @@ function expandSearch(keyword) {
                         refreshPage();
                         return 'toast://已导入';
                     }),
-                    col_type: "text_2"
+                    col_type: "text_3"
+                })
+                d.push({
+                    col_type: "line_blank"
                 })
                 let Juconfig = getJuconfig();
                 let lists = Juconfig['expandSearch'] || [];

@@ -350,7 +350,7 @@ function jxItemPage(dd) {
 }
 // 获取接口对应的显示标题
 function getDataTitle(data, ide, i) {
-    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?' fail:'+data.sort:'');
+    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?'‘‘’’<small><font color=grey>  [' + data.sort + ']</font></small>':'');
     if(data.desc2){
         dataTitle = dataTitle + '  ' + data.desc2;
     }

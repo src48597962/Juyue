@@ -14,7 +14,46 @@ function jxCallPage(dd) {
         title: '增加',
         url: callapi(),
         img: 'http://123.56.105.145/tubiao/more/25.png',
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
+    });
+    d.push({
+        title: '操作',
+        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
+            require(config.jxCodePath + 'SrcJiexi.js');
+            if(input=="批量选择" || input=="退出批量"){
+                let sm;
+                if(getMyVar('批量选择模式')){
+                    clearMyVar('批量选择模式');
+                    clearMyVar('duodatalist');
+                    sm = "退出批量选择模式";
+                }else{
+                    putMyVar('批量选择模式','1');
+                    sm = "进入批量选择模式";
+                }
+                refreshPage(false);
+                return "toast://"+sm;
+            }else if(input=="清空所有"){
+                return $("确定要删除本地所有的源接口吗？").confirm(()=>{
+                    require(config.jxCodePath + 'SrcJiexi.js');
+                    deleteData();
+                    refreshPage(false);
+                    return 'toast://已全部清空';
+                })
+            }else if(input=="查看禁用"||input=="退出禁用"){
+                let sm;
+                if(getMyVar('onlyStopJk')){
+                    clearMyVar('onlyStopJk');
+                    sm = "退出仅显示禁用列表";
+                }else{
+                    putMyVar('onlyStopJk','1');
+                    sm = "进入仅显示禁用列表";
+                }
+                refreshPage(false);
+                return "toast://"+sm;
+            }
+        }),
+        img: 'http://123.56.105.145/tubiao/more/290.png',
+        col_type: "icon_small_4"
     });
     d.push({
         title: '导入',
@@ -26,7 +65,7 @@ function jxCallPage(dd) {
             return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
         }),
         img: 'http://123.56.105.145/tubiao/more/43.png',
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
     });
     
     let dydatalist = getCalls();
@@ -42,7 +81,7 @@ function jxCallPage(dd) {
             return JYshare(input);
         }),
         img: 'http://123.56.105.145/tubiao/more/3.png',
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
     });
     d.push({
         col_type: "line"

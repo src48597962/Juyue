@@ -31,7 +31,7 @@ function home() {
             refreshPage();
             return "hiker://emtpy";
         }),
-        img: 'http://123.56.105.145/tubiao/system/42.png',
+        img: 'http://123.56.105.145/tubiao/system/41.png',
         col_type: "icon_small_3"
     });
     d.push({

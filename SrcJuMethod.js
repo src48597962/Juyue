@@ -1285,3 +1285,18 @@ function x5toerji(jkdata, extra, MY_RULE) {
         }));
     }, MY_RULE, jkdata, extra)
 }
+// 过验证请求返回html
+function fetchVerify(ssurl){
+    let home = getHome(ssurl);
+    let headers = { 'User-Agent': MOBILE_UA };
+    let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
+    let cook = fetchCookie(codeurl, { headers: headers });
+    headers.Cookie = JSON.parse(cook || '[]').join(';');
+    let vcode = ocr(codeurl, headers);
+    fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : '/index.php/ajax/verify_check?type=search&verify=') + vcode, {
+        headers: headers,
+        method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
+    })
+    let html = request(ssurl, { headers: headers, timeout: 8000 });
+    return html;
+}

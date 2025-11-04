@@ -7,6 +7,7 @@ function jxCallPage(dd) {
         clearMyVar('duodatalist2');
         clearMyVar('批量选择模式2');
         clearMyVar('onlyStopJk2');
+        clearMyVar('jxdatalist2');
     }));
 
     setPageTitle('本地解析管理-调用');
@@ -70,18 +71,19 @@ function jxCallPage(dd) {
         col_type: "icon_small_4"
     });
     
-    let dydatalist = getCalls();
+    let jxdatalist2 = getCalls();
     if(getMyVar('onlyStopJk2')){
-        dydatalist = dydatalist.filter(item => item.stop);
+        jxdatalist2 = jxdatalist2.filter(item => item.stop);
     }
-    let yxdatalist = dydatalist.filter(it=>{
+    let yxdatalist = jxdatalist2.filter(it=>{
         return !it.stop;
     });
+    storage0.putMyVar("jxdatalist2", jxdatalist2);
     
     let pastes = getPastes();
     d.push({
         title: '分享',
-        url: dydatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+        url: jxdatalist2.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
             require(config.jxCodePath + 'SrcCall.js');
             return JYshare(input);
         }),
@@ -91,9 +93,9 @@ function jxCallPage(dd) {
     d.push({
         col_type: "line"
     });
-    d = d.concat(dyItemList(dydatalist));
+    d = d.concat(dyItemList(jxdatalist2));
     d.push({
-        title: "‘‘’’<small><font color=#f20c00>当前调用数：" + dydatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
+        title: "‘‘’’<small><font color=#f20c00>当前调用数：" + jxdatalist2.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',
         col_type: 'text_center_1',
         extra: {
@@ -130,7 +132,7 @@ function duoselect(data, i){
     })
     storage0.putMyVar('duodatalist',selectlist);
 }
-// 获取解析列表
+// 获取调用列表
 function dyItemList(datalist) {
     let selectlist = storage0.getMyVar('duodatalist2') || [];
     let d = [];
@@ -335,7 +337,7 @@ function JYshare(input,data) {
         if(duoselect.length>0){
             sharelist = duoselect;
         }else{
-            sharelist = storage0.getMyVar("dydatalist") || [];
+            sharelist = storage0.getMyVar("jxdatalist2") || [];
         }
     }
 

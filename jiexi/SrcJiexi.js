@@ -1,52 +1,6 @@
 //本代码仅用于个人学习，请勿用于其他作用，下载后请24小时内删除，代码虽然是公开学习的，但请尊重作者，应留下说明
 require(config.jxCodePath + 'SrcPublic.js');
 
-// 主页
-function homePage() {
-    addListener("onClose", $.toString(() => {
-        clearMyVar('主页显示内容');
-    }));
-
-    let d = [];
-    d.push({
-        title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
-        url: $('#noLoading#').lazyRule(() => {
-            putMyVar('主页显示内容', '1');
-            refreshPage();
-            return "hiker://emtpy";
-        }),
-        img: 'http://123.56.105.145/tubiao/system/42.png',
-        col_type: "icon_3"
-    });
-    d.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">调用管理</span></b>`:'调用管理',
-        url: $('#noLoading#').lazyRule(() => {
-            putMyVar('主页显示内容', '2');
-            refreshPage();
-            return "hiker://emtpy";
-        }),
-        img: 'http://123.56.105.145/tubiao/system/42.png',
-        col_type: "icon_2"
-    });
-    d.push({
-        title: getMyVar('主页显示内容', '1')=="3"?`‘‘’’<b><span style="color: `+Color+`">解析设置</span></b>`:'解析设置',
-        url: $('#noLoading#').lazyRule(() => {
-            putMyVar('主页显示内容', '3');
-            refreshPage();
-            return "hiker://emtpy";
-        }),
-        img: 'http://123.56.105.145/tubiao/system/43.png',
-        col_type: "icon_3"
-    });
-    
-    if(getMyVar('主页显示内容', '1')=='1'){
-        jxItemPage(d);
-    }else if(getMyVar('主页显示内容', '1')=='2'){
-        jxCallPage(d);
-    }else{
-        jxSetPage(d);
-    }
-}
 // 解析列表页
 function jxItemPage(dd) {
     addListener("onClose", $.toString(() => {

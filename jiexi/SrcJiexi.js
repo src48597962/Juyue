@@ -19,7 +19,7 @@ function homePage() {
         col_type: "icon_3"
     });
     d.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">列表</span></b>`:'解析列表',
+        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">调用管理</span></b>`:'调用管理',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
             refreshPage();
@@ -41,11 +41,13 @@ function homePage() {
     
     if(getMyVar('主页显示内容', '1')=='1'){
         jxItemPage(d);
+    }else if(getMyVar('主页显示内容', '1')=='2'){
+        jxCallPage(d);
     }else{
         jxSetPage(d);
     }
 }
-// 接口管理页
+// 解析列表页
 function jxItemPage(dd) {
     addListener("onClose", $.toString(() => {
         clearMyVar('duodatalist');
@@ -59,7 +61,7 @@ function jxItemPage(dd) {
         clearMyVar('lookFailDatas');
     }));
 
-    setPageTitle('解析列表');
+    setPageTitle('本地解析管理-解析');
     let d = dd || [];
     d.push({
         title: '增加',
@@ -234,25 +236,7 @@ function jxItemPage(dd) {
             return JYshare(input);
         }),
         img: 'http://123.56.105.145/tubiao/more/3.png',
-        col_type: "icon_small_4",
-        extra: {
-            longClick: [{
-                title: '单接口分享剪贴板：' + getItem("sharePaste","自动选择"),
-                js: $.toString(() => {
-                    let pastes = getPastes();
-                    pastes.unshift('自动选择');
-                    return $(pastes,2,'指定单接口分享时用哪个剪贴板').select(() => {
-                        if(input=="自动选择"){
-                            clearItem("sharePaste");
-                        }else{
-                            setItem("sharePaste", input);
-                        }
-                        refreshPage(false);
-                        return 'toast://单接口分享剪贴板已设置为：' + input;
-                    })
-                })
-            }]
-        }
+        col_type: "icon_small_4"
     });
     d.push({
         col_type: "line"
@@ -410,6 +394,167 @@ function jxItemPage(dd) {
     setResult(d);
 }
 
+// 调用管理页
+function jxCallPage(dd) {
+    addListener("onClose", $.toString(() => {
+
+    }));
+
+    setPageTitle('本地解析管理-调用');
+
+    function callapi(data) {
+        return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
+            addListener("onClose", $.toString(() => {
+                clearMyVar('apiname');
+                clearMyVar('apiword');
+                clearMyVar('apicode');
+                clearMyVar('isload');
+            }));
+            
+            if(!data){
+                setPageTitle("解析调用管理-新增");
+            }else{
+                if(getMyVar('isload', '0')=="0"){
+                    setPageTitle("解析调用管理-变更");
+                    putMyVar('apiname', data.name);
+                    putMyVar('apiword', data.word||"");
+                    putMyVar('apicode', data.code||"");
+                    putMyVar('isload', '1');
+                }
+            }
+            let d = [];
+            d.push({
+                title:'apiname',
+                col_type: 'input',
+                desc: "名称",
+                extra: {
+                    titleVisible: false,
+                    defaultValue: getMyVar('apiname', ""),
+                    onChange: 'putMyVar("apiname",input)'
+                }
+            });
+            d.push({
+                title:'apiword',
+                col_type: 'input',
+                desc: "匹配关键词",
+                extra: {
+                    titleVisible: false,
+                    defaultValue: getMyVar('apiword', ""),
+                    onChange: 'putMyVar("apiword",input)'
+                }
+            });
+            d.push({
+                title:'apicode',
+                col_type: 'input',
+                    desc: "调用代码，不写return，地址输入变量：vipUrl",
+                extra: {
+                    highlight: true,
+                    type: "textarea",
+                    titleVisible: false,
+                    defaultValue: getMyVar('apicode', ""),
+                    onChange: 'putMyVar("apicode", input)'
+                }
+            });
+            d.push({
+                title:'保存',
+                col_type:'text_center_1',
+                url:$().lazyRule((data)=>{
+                    let name = getMyVar('apiname');
+                    let word = getMyVar('apiword');
+                    let code = getMyVar('apicode');
+                    if(!name || !word || !code){
+                        return "toast://信息不完整";
+                    }
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    
+                    let Juconfig = getJuconfig();
+                    let lists = Juconfig['expandSearch'] || [];
+                    if(data){
+                        lists = lists.filter(v=>v.name!=data.name);
+                    }else if(lists.some(v=>v.name==name)){
+                        return "toast://已存在";
+                    }
+                    lists.push({name: name, code: code})
+                    Juconfig['expandSearch'] = lists;
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    back(true);
+                    return "toast://已保存";
+                }, data)
+            });
+            setResult(d);
+        }, data);
+    }
+    let d = dd || [];
+    d.push({
+        title: '增加',
+        url: callapi(),
+        img: 'http://123.56.105.145/tubiao/more/25.png',
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '导入',
+        url: $("","聚解口令").input(()=>{
+            if(input==""){
+                return 'toast://不能为空';
+            }
+            writeFile("hiker://files/_cache/Jujiexi/cloudimport.txt", input);
+            return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
+        }),
+        img: 'http://123.56.105.145/tubiao/more/43.png',
+        col_type: "icon_small_3"
+    });
+    
+    let jxdatalist = getDatas();
+    if(getMyVar('similarTitles')){
+        let t1 = new Date().getTime();
+        jxdatalist = similarTitles(jxdatalist, getMyVar('similarTitles'));
+        let t2 = new Date().getTime();
+        xlog('查看相似耗时：' + (t2-t1) + 'ms');
+    }else if(getMyVar('onlyStopJk')){
+        jxdatalist = jxdatalist.filter(item => item.stop);
+    }else if(getMyVar('lookFailDatas')){
+        jxdatalist = jxdatalist.filter(item => (item.sort||0)>parseInt(getMyVar('lookFailDatas')));
+    }
+
+    if(getMyVar("selectGroup")){
+        jxdatalist = jxdatalist.filter(v=>v.type==parseTypes.indexOf(getMyVar("selectGroup")));
+    }
+    let yxdatalist = jxdatalist.filter(it=>{
+        return !it.stop;
+    });
+    storage0.putMyVar("jxdatalist", jxdatalist);
+
+    let pastes = getPastes();
+    d.push({
+        title: '分享',
+        url: jxdatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+            require(config.jxCodePath + 'SrcPublic.js');
+            return JYshare(input);
+        }),
+        img: 'http://123.56.105.145/tubiao/more/3.png',
+        col_type: "icon_small_3"
+    });
+    d.push({
+        col_type: "line"
+    });
+
+
+    if(getMyVar('seacrhJiexi')){
+        jxdatalist = outputSearchList(jxdatalist, getMyVar('seacrhJiexi'));
+    }
+    
+    d = d.concat(jxItemList(jxdatalist));
+    d.push({
+        title: "‘‘’’<small><font color=#f20c00>当前解析数：" + jxdatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
+        url: 'hiker://empty',
+        col_type: 'text_center_1',
+        extra: {
+            id: 'jxItemLoading',
+            lineVisible: false
+        }
+    });
+    setResult(d);
+}
 
 // 解析设置
 function jxSetPage(dd) {
@@ -417,7 +562,7 @@ function jxSetPage(dd) {
         clearMyVar('jxSetCfg');
     }));
 
-    setPageTitle("解析设置");
+    setPageTitle("本地解析管理-设置");
 
     let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
     if(!getMyVar('jxSetCfg')){

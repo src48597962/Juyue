@@ -37,8 +37,8 @@ function jxCallPage(dd) {
     let pastes = getPastes();
     d.push({
         title: '分享',
-        url: jxdatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
-            require(config.jxCodePath + 'SrcPublic.js');
+        url: dydatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+            require(config.jxCodePath + 'SrcCall.js');
             return JYshare(input);
         }),
         img: 'http://123.56.105.145/tubiao/more/3.png',

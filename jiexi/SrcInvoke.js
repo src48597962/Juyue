@@ -46,7 +46,7 @@ function home() {
         col_type: "icon_small_3"
     });
     d.push({
-        col_type: "line"
+        col_type: "line_blank"
     });
     if(getMyVar('主页显示内容', '1')=='1'){
         require(jxCodePath + 'SrcJiexi.js');

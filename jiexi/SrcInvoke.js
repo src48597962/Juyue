@@ -45,7 +45,9 @@ function home() {
         img: 'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_small_3"
     });
-    
+    d.push({
+        col_type: "line"
+    });
     if(getMyVar('主页显示内容', '1')=='1'){
         require(jxCodePath + 'SrcJiexi.js');
         jxItemPage(d);

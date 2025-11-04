@@ -99,7 +99,7 @@ function jxItemPage(dd) {
                 return 'toast://不能为空';
             }
             
-            return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
+            return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
                 require(config.jxCodePath + 'SrcJiexi.js');
                 importConfirm(input);
             }, input)
@@ -880,7 +880,7 @@ function importConfirm(importStr) {
         });
     }
     d.push({
-        title: "““””<big><b><font color="+Color+">📲 云口令导入  </font></b></big>",
+        title: "““””<big><b><font color="+Color+">📲 解析云口令导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
         url: $('', '支持多口令').input((extractimport)=>{
             if(!input){

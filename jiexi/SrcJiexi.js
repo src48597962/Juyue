@@ -355,34 +355,6 @@ function getDataTitle(data, ide, i) {
 
     return dataTitle;
 }
-// 获取所有解析
-function getDatas(isyx) {
-    let datalist = [];
-    let sourcedata = fetch(jxfile);
-    if(sourcedata != ""){
-        try{
-            eval("datalist=" + sourcedata+ ";");
-        }catch(e){ }
-    }
-    let withoutStop = datalist.filter(item => !item.stop);
-    if(isyx){
-        return withoutStop;
-    }
-    // 禁用的放到最后
-    let withStop = datalist.filter(item => item.stop);
-    // 合并数组
-    let result = withoutStop.concat(withStop);
-
-    return result;
-}
-// 获取有效解析名数组
-function getDataNames() {
-    let list = getDatas(true);
-    let result = list.map(it=>{
-        return it.name;
-    })
-    return result;
-}
 // 对应标识
 function getJxIde(data){
     return data.stop?'Ⓓ':data.type==0?"Ⓦ":data.type==1?"Ⓙ":data.type==2?"Ⓕ":"";

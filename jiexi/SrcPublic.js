@@ -183,3 +183,31 @@ function similarTitles(items, similarityThreshold) {
 
     return result;
 }
+// 判断字符是否包含
+function isMatch(str, namePattern) {
+  // 如果name已经是正则表达式对象
+  if (namePattern instanceof RegExp) {
+    return namePattern.test(str);
+  }
+  
+  // 如果name包含通配符*
+  if (namePattern.includes('*')) {
+    const regexPattern = '^' + namePattern.replace(/\*/g, '.*') + '$';
+    return new RegExp(regexPattern).test(str);
+  }
+  
+  // 普通字符串完全匹配
+  return str === namePattern;
+}
+// 调用解析
+function callParse(input){
+    let lazy = '';
+    let calls = getCalls(true);
+    for (let i = 0; i < calls.length; i++) {
+        if (isMatch(input, calls[i].word)) {
+            eval('lazy = ' + calls[i].code);
+            break;
+        }
+    }
+    return lazy || 'toast://调用解析失败';
+}

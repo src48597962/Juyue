@@ -191,9 +191,7 @@ function jxItemPage(dd) {
         img: 'http://123.56.105.145/tubiao/more/3.png',
         col_type: "icon_small_4"
     });
-    d.push({
-        col_type: "line"
-    });
+
     d.push({
         title: "🔍",
         url: $.toString(() => {

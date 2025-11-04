@@ -16,7 +16,7 @@ function home() {
 
     let d = [];
     d.push({
-        title: getMyVar('主页显示内容', '1')=="1"?`‘‘’’<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
+        title: getMyVar('主页显示内容', '1')=="1"?`<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '1');
             refreshPage();
@@ -26,7 +26,7 @@ function home() {
         col_type: "icon_small_3"
     });
     d.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`‘‘’’<b><span style="color: `+Color+`">调用管理</span></b>`:'调用管理',
+        title: getMyVar('主页显示内容', '1')=="2"?`<b><span style="color: `+Color+`">调用管理</span></b>`:'调用管理',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
             refreshPage();
@@ -36,7 +36,7 @@ function home() {
         col_type: "icon_small_3"
     });
     d.push({
-        title: getMyVar('主页显示内容', '1')=="3"?`‘‘’’<b><span style="color: `+Color+`">解析设置</span></b>`:'解析设置',
+        title: getMyVar('主页显示内容', '1')=="3"?`<b><span style="color: `+Color+`">解析设置</span></b>`:'解析设置',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '3');
             refreshPage();

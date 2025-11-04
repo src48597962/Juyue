@@ -98,8 +98,11 @@ function jxItemPage(dd) {
             if(input==""){
                 return 'toast://不能为空';
             }
-            writeFile("hiker://files/_cache/Jujiexi/cloudimport.txt", input);
-            return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
+            
+            return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
+                require(config.jxCodePath + 'SrcJiexi.js');
+                importConfirm(input);
+            }, input)
         }),
         img: 'http://123.56.105.145/tubiao/more/43.png',
         col_type: "icon_small_4",

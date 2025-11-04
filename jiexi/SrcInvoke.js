@@ -5,8 +5,7 @@ const jxCodePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/")
 initConfig({
     jxCodePath: jxCodePath
 })
-// 加载公共部分
-require(jxCodePath + 'SrcPublic.js');
+let Color = getItem('主题颜色','#3399cc');
 
 // 主界面
 function home() {

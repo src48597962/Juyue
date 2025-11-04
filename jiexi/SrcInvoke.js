@@ -53,6 +53,7 @@ function home() {
         require(jxCodePath + 'SrcCall.js');
         jxCallPage(d);
     }else{
+        require(jxCodePath + 'SrcSet.js');
         jxSetPage(d);
     }
 }

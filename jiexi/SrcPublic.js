@@ -209,5 +209,5 @@ function callParse(input){
             break;
         }
     }
-    return lazy || 'toast://调用解析失败';
+    return lazy;
 }

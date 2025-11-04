@@ -9,87 +9,6 @@ function jxCallPage(dd) {
 
     setPageTitle('本地解析管理-调用');
 
-    function callapi(data) {
-        return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
-            addListener("onClose", $.toString(() => {
-                clearMyVar('apiname');
-                clearMyVar('apiword');
-                clearMyVar('apicode');
-                clearMyVar('isload');
-            }));
-            
-            if(!data){
-                setPageTitle("解析调用管理-新增");
-            }else{
-                if(getMyVar('isload', '0')=="0"){
-                    setPageTitle("解析调用管理-变更");
-                    putMyVar('apiname', data.name);
-                    putMyVar('apiword', data.word||"");
-                    putMyVar('apicode', data.code||"");
-                    putMyVar('isload', '1');
-                }
-            }
-            let d = [];
-            d.push({
-                title:'apiname',
-                col_type: 'input',
-                desc: "名称",
-                extra: {
-                    titleVisible: false,
-                    defaultValue: getMyVar('apiname', ""),
-                    onChange: 'putMyVar("apiname",input)'
-                }
-            });
-            d.push({
-                title:'apiword',
-                col_type: 'input',
-                desc: "匹配关键词",
-                extra: {
-                    titleVisible: false,
-                    defaultValue: getMyVar('apiword', ""),
-                    onChange: 'putMyVar("apiword",input)'
-                }
-            });
-            d.push({
-                title:'apicode',
-                col_type: 'input',
-                    desc: "调用代码，不写return，地址输入变量：vipUrl",
-                extra: {
-                    highlight: true,
-                    type: "textarea",
-                    titleVisible: false,
-                    defaultValue: getMyVar('apicode', ""),
-                    onChange: 'putMyVar("apicode", input)'
-                }
-            });
-            d.push({
-                title:'保存',
-                col_type:'text_center_1',
-                url:$().lazyRule((data)=>{
-                    let name = getMyVar('apiname');
-                    let word = getMyVar('apiword');
-                    let code = getMyVar('apicode');
-                    if(!name || !word || !code){
-                        return "toast://信息不完整";
-                    }
-
-                    require(config.jxCodePath + 'SrcPublic.js');
-                    let lists = getCalls();
-
-                    if(data){
-                        lists = lists.filter(v=>v.name!=data.name);
-                    }else if(lists.some(v=>v.name==name)){
-                        return "toast://已存在";
-                    }
-                    lists.push({name: name, word: word, code: code})
-                    writeFile(jxcallfile, JSON.stringify(lists));
-                    back(true);
-                    return "toast://已保存";
-                }, data)
-            });
-            setResult(d);
-        }, data);
-    }
     let d = dd || [];
     d.push({
         title: '增加',
@@ -147,4 +66,86 @@ function jxCallPage(dd) {
         }
     });
     setResult(d);
+}
+// 新增、编辑入口
+function callapi(data) {
+    return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
+        addListener("onClose", $.toString(() => {
+            clearMyVar('apiname');
+            clearMyVar('apiword');
+            clearMyVar('apicode');
+            clearMyVar('isload');
+        }));
+        
+        if(!data){
+            setPageTitle("解析调用管理-新增");
+        }else{
+            if(getMyVar('isload', '0')=="0"){
+                setPageTitle("解析调用管理-变更");
+                putMyVar('apiname', data.name);
+                putMyVar('apiword', data.word||"");
+                putMyVar('apicode', data.code||"");
+                putMyVar('isload', '1');
+            }
+        }
+        let d = [];
+        d.push({
+            title:'apiname',
+            col_type: 'input',
+            desc: "名称",
+            extra: {
+                titleVisible: false,
+                defaultValue: getMyVar('apiname', ""),
+                onChange: 'putMyVar("apiname",input)'
+            }
+        });
+        d.push({
+            title:'apiword',
+            col_type: 'input',
+            desc: "匹配关键词",
+            extra: {
+                titleVisible: false,
+                defaultValue: getMyVar('apiword', ""),
+                onChange: 'putMyVar("apiword",input)'
+            }
+        });
+        d.push({
+            title:'apicode',
+            col_type: 'input',
+                desc: "调用代码，不写return，地址输入变量：vipUrl",
+            extra: {
+                highlight: true,
+                type: "textarea",
+                titleVisible: false,
+                defaultValue: getMyVar('apicode', ""),
+                onChange: 'putMyVar("apicode", input)'
+            }
+        });
+        d.push({
+            title:'保存',
+            col_type:'text_center_1',
+            url:$().lazyRule((data)=>{
+                let name = getMyVar('apiname');
+                let word = getMyVar('apiword');
+                let code = getMyVar('apicode');
+                if(!name || !word || !code){
+                    return "toast://信息不完整";
+                }
+
+                require(config.jxCodePath + 'SrcPublic.js');
+                let lists = getCalls();
+
+                if(data){
+                    lists = lists.filter(v=>v.name!=data.name);
+                }else if(lists.some(v=>v.name==name)){
+                    return "toast://已存在";
+                }
+                lists.push({name: name, word: word, code: code})
+                writeFile(jxcallfile, JSON.stringify(lists));
+                back(true);
+                return "toast://已保存";
+            }, data)
+        });
+        setResult(d);
+    }, data);
 }

@@ -2,6 +2,7 @@ let jxrulepath = "hiker://files/rules/Src/Jiexi/"; //规则文件路径
 let jxfile =  jxrulepath + 'jiexi.json';
 let jxcfgfile = jxrulepath + 'config.json';
 let jxrecordfile = jxrulepath + "record.json";//解析相关记录文件
+let jxcallfile = jxrulepath + "call.json";//解析相关记录文件
 let Color = getItem('主题颜色','#3399cc');
 let parseTypes = ["WEB解析", "JSON解析", "免嗅解析"];
 
@@ -9,6 +10,26 @@ let Juconfig = {};
 let Jucfg = fetch(jxcfgfile);
 if (Jucfg != "") {
     eval("Juconfig=" + Jucfg + ";");
+}
+// 获取所有调用() 
+function getCalls(isyx) {
+    let datalist = [];
+    let sourcedata = fetch(jxcallfile);
+    if(sourcedata != ""){
+        try{
+            eval("datalist=" + sourcedata+ ";");
+        }catch(e){ }
+    }
+    let withoutStop = datalist.filter(item => !item.stop);
+    if(isyx){
+        return withoutStop;
+    }
+    // 禁用的放到最后
+    let withStop = datalist.filter(item => item.stop);
+    // 合并数组
+    let result = withoutStop.concat(withStop);
+
+    return result;
 }
 // 获取所有解析
 function getDatas(isyx) {

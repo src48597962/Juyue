@@ -101,7 +101,8 @@ function SrcParse(vipUrl, dataObj) {
     dataObj = dataObj || {};
     let isVip = 0;
     log("请求地址："+vipUrl); 
-
+    require(config.jxCodePath + 'SrcPublic.js');
+    if(ism)
     if(vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')){
         if(!fileExist("hiker://files/cache/bidi.dex") || !fileExist("hiker://files/cache/libp2p.so")){
             return "toast://缺少荐片插件，播放失败";

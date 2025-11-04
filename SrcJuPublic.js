@@ -712,8 +712,8 @@ function expandSearch(keyword) {
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
                                 back(true);
                                 return "toast://已保存";
-                            })
-                        }, data);
+                            }, data)
+                        });
                         setResult(d);
                     }, data);
                 }

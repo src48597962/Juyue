@@ -94,7 +94,7 @@ function jxItemPage(dd) {
     });
     d.push({
         title: '导入',
-        url: $("","聚解口令").input(()=>{
+        url: $("").input(()=>{
             if(input==""){
                 return 'toast://不能为空';
             }

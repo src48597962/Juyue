@@ -23,9 +23,6 @@ function jxSetPage(dd) {
     let d = dd || [];
     let 箭头图标 = getJxIcon('箭头.svg');
     d.push({
-        col_type: "line_blank"
-    });
-    d.push({
         title: '功能开关',
         pic_url: getJxIcon('功能开关.svg'),
         col_type: "avatar",

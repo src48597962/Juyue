@@ -4,7 +4,9 @@ require(config.jxCodePath + 'SrcPublic.js');
 // 调用管理页
 function jxCallPage(dd) {
     addListener("onClose", $.toString(() => {
-
+        clearMyVar('duodatalist2');
+        clearMyVar('批量选择模式2');
+        clearMyVar('onlyStopJk2');
     }));
 
     setPageTitle('本地解析管理-调用');
@@ -18,17 +20,17 @@ function jxCallPage(dd) {
     });
     d.push({
         title: '操作',
-        url: $([getMyVar('批量选择模式')?"退出批量":"批量选择",getMyVar('onlyStopJk')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
+        url: $([getMyVar('批量选择模式2')?"退出批量":"批量选择",getMyVar('onlyStopJk2')?"退出禁用":"查看禁用","清空所有"], 2).select(() => {
             require(config.jxCodePath + 'SrcJiexi.js');
             if(input=="批量选择" || input=="退出批量"){
                 let sm;
-                if(getMyVar('批量选择模式')){
-                    clearMyVar('批量选择模式');
-                    clearMyVar('duodatalist');
-                    sm = "退出批量选择模式";
+                if(getMyVar('批量选择模式2')){
+                    clearMyVar('批量选择模式2');
+                    clearMyVar('duodatalist2');
+                    sm = "退出批量选择模式2";
                 }else{
-                    putMyVar('批量选择模式','1');
-                    sm = "进入批量选择模式";
+                    putMyVar('批量选择模式2','1');
+                    sm = "进入批量选择模式2";
                 }
                 refreshPage(false);
                 return "toast://"+sm;
@@ -41,11 +43,11 @@ function jxCallPage(dd) {
                 })
             }else if(input=="查看禁用"||input=="退出禁用"){
                 let sm;
-                if(getMyVar('onlyStopJk')){
-                    clearMyVar('onlyStopJk');
+                if(getMyVar('onlyStopJk2')){
+                    clearMyVar('onlyStopJk2');
                     sm = "退出仅显示禁用列表";
                 }else{
-                    putMyVar('onlyStopJk','1');
+                    putMyVar('onlyStopJk2','1');
                     sm = "进入仅显示禁用列表";
                 }
                 refreshPage(false);
@@ -69,6 +71,9 @@ function jxCallPage(dd) {
     });
     
     let dydatalist = getCalls();
+    if(getMyVar('onlyStopJk2')){
+        dydatalist = dydatalist.filter(item => item.stop);
+    }
     let yxdatalist = dydatalist.filter(it=>{
         return !it.stop;
     });
@@ -86,16 +91,7 @@ function jxCallPage(dd) {
     d.push({
         col_type: "line"
     });
-    dydatalist.forEach(it=>{
-        d.push({
-            title: it.name,
-            url: $(['编辑', it.stop?'启用':'禁用', '删除'], 2).select((data, callapi)=>{
-                
-            }, data, callapi),
-            desc: it.word,
-            col_type: "text_1"
-        });
-    })
+    d = d.concat(dyItemList(dydatalist));
     d.push({
         title: "‘‘’’<small><font color=#f20c00>当前调用数：" + dydatalist.length + "，总有效数：" + yxdatalist.length + "</font></small>",
         url: 'hiker://empty',
@@ -105,6 +101,146 @@ function jxCallPage(dd) {
         }
     });
     setResult(d);
+}
+// 获取接口对应的显示标题
+function getDataTitle(data, ide, i) {
+    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式2')?'○':'')) + (data.stop?'Ⓓ':"") + data.name;
+
+    return dataTitle;
+}
+// 接口多选处理方法
+function duoselect(data, i){
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+
+    let selectlist = storage0.getMyVar('duodatalist2') || [];
+    waitlist.forEach(data=>{
+        if(!selectlist.some(item => data.name==item.name)){
+            selectlist.push(data);
+            updateItem(data.name, {title: colorTitle(getDataTitle(data, '●', i),'#3CB371')});
+        }else{
+            let index = selectlist.indexOf(selectlist.filter(d => data.name==d.name)[0]);
+            selectlist.splice(index, 1);
+            updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i), 'red'):getDataTitle(data, '', i)});
+        }
+    })
+    storage0.putMyVar('duodatalist',selectlist);
+}
+// 获取解析列表
+function dyItemList(datalist) {
+    let selectlist = storage0.getMyVar('duodatalist2') || [];
+    let d = [];
+    datalist.forEach((it, i) => {
+        let selectmenu, datatitle;
+        selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶"];
+        if (selectlist.some(item => it.name == item.name)) {
+            datatitle = colorTitle(getDataTitle(it, '●', i+1), '#3CB371');
+        } else {
+            datatitle = getDataTitle(it, '', i+1);
+            if(it.stop){
+                datatitle = '‘‘’’<font color=red>' + datatitle + '</font>';
+            }
+        }
+
+        d.push({
+            title: datatitle,
+            url: getMyVar('批量选择模式2') ? $('#noLoading#').lazyRule((data, i) => {
+                data = JSON.parse(base64Decode(data));
+                require(config.jxCodePath + 'SrcCall.js');
+                duoselect(data, i);
+                return "hiker://empty";
+            }, base64Encode(JSON.stringify(it)), i+1) : $(selectmenu, 2).select((data) => {
+                data = JSON.parse(base64Decode(data));
+                if (input == "分享") {
+                    if (getItem("sharePaste", "") == "") {
+                        let pastes = getPastes();
+                        return $(pastes, 2).select((data) => {
+                            require(config.jxCodePath + 'SrcCall.js');
+                            return JYshare(input, data);
+                        }, data)
+                    } else {
+                        require(config.jxCodePath + 'SrcCall.js');
+                        return JYshare(getItem("sharePaste", ""), data);
+                    }
+                } else if (input == "编辑") {
+                    return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                        require(config.jxCodePath + 'SrcCall.js');
+                        callapi(data);
+                    }, data)
+                } else if (input == "删除") {
+                    return $("确定删除：" + data.name).confirm((data) => {
+                        require(config.jxCodePath + 'SrcCall.js');
+                        deleteData(data);
+                        deleteItem(data.name);
+                        return 'toast://已删除:' + data.name;
+                    }, data)
+                } else {//置顶、禁用、启用
+                    require(config.jxCodePath + 'SrcCall.js');
+                    let sm = dataHandle(data, input);
+                    refreshPage(false);
+                    return 'toast://' + sm;
+                }
+            }, base64Encode(JSON.stringify(it))),
+            desc: it.word,
+            col_type: "text_1",
+            extra: {
+                id: it.name
+            }
+        });
+    })
+    return d;
+}
+//删除解析入口
+function deleteData(data){
+    let sourcedata = fetch(jxcallfile);
+    eval("let datalist=" + sourcedata + ";");
+    let dellist = [];
+    if(!data){
+        dellist = Object.assign(dellist, datalist);
+    }else if($.type(data)=='object'){
+        dellist.push(data);
+    }else if($.type(data)=='array'){
+        dellist = data;
+    }
+
+    dellist.forEach(it => {
+        let index = datalist.indexOf(datalist.filter(d => it.name==d.name)[0]);
+        datalist.splice(index, 1);
+    })
+
+    writeFile(jxcallfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist2');
+}
+// 接口处理公共方法
+function dataHandle(data, input) {
+    let sourcedata = fetch(jxcallfile);
+    eval("let datalist=" + sourcedata + ";");
+
+    let waitlist= [];
+    if($.type(data)=='object'){
+        waitlist.push(data);
+    }else if($.type(data)=='array'){
+        waitlist = data;
+    }
+    
+    waitlist.forEach(it => {
+        let index = datalist.findIndex(item => item.name === it.name);
+        if(input == "禁用"){
+            datalist[index].stop = 1;
+        }else if(input == "启用"){
+            delete datalist[index].stop;
+        }else if(input == "置顶"){
+            const [target] = datalist.splice(index, 1);
+            datalist.unshift(target);
+        }
+    })
+    writeFile(jxfile, JSON.stringify(datalist));
+    clearMyVar('duodatalist2');
+    return input + '：已处理' + waitlist.length + '个';
 }
 // 新增、编辑入口
 function callapi(data) {
@@ -187,4 +323,42 @@ function callapi(data) {
         });
         setResult(d);
     }, data);
+}
+//资源分享
+function JYshare(input,data) {
+    let sharelist, sm, sm2;
+    if(data){
+        sharelist = [];
+        sharelist.push(data);
+    }else{
+        let duoselect = storage0.getMyVar('duodatalist2') || [];
+        if(duoselect.length>0){
+            sharelist = duoselect;
+        }else{
+            sharelist = storage0.getMyVar("dydatalist") || [];
+        }
+    }
+
+    if(sharelist.length==0){
+        return "toast://有效接口数为0，无法分享";
+    }
+    let gzip = $.require(config.jxCodePath + "plugins/gzip.js");
+    let sharetxt = gzip.zip(JSON.stringify(sharelist));
+    let sharetxtlength = sharetxt.length;
+    if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
+        return "toast://超出字符最大限制，建议用云6或文件分享";
+    }
+    sm = '解析调用';
+    showLoading('分享生成中，请稍后...');
+    sm2 = sharelist.length==1?sharelist[0].name:'共' + sharelist.length + '条';
+    let pasteurl = sharePaste(sharetxt, input);
+    hideLoading();
+    if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+        log('剪贴板地址>'+pasteurl);
+        copy(sm+'￥'+aesEncode('Jujiexi2', pasteurl)+'￥' + sm2 + '('+input+')');
+        return "toast://分享口令已生成";
+    }else{
+        log('分享失败>'+pasteurl);
+        return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+    }
 }

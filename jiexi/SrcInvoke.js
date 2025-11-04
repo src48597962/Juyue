@@ -4,6 +4,9 @@ const jxCodePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/")
 initConfig({
     jxCodePath: jxCodePath
 })
+
+require(jxCodePath + 'SrcPublic.js');
+
 // 主界面
 function home() {
     addListener("onClose", $.toString(() => {

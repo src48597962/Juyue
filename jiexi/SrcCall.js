@@ -291,7 +291,7 @@ function callapi(data) {
         d.push({
             title:'apicode',
             col_type: 'input',
-                desc: "调用代码，不写return，地址变量：vipUrl",
+                desc: "调用代码，不写return，地址变量：input",
             extra: {
                 highlight: true,
                 type: "textarea",

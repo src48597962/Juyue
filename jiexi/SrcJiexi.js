@@ -95,12 +95,13 @@ function jxItemPage(dd) {
     d.push({
         title: '导入',
         url: $("").input(()=>{
+            input = input.trim();
             if(input==""){
                 return 'toast://不能为空';
             }
             
             return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
-                require(config.jxCodePath + 'SrcJiexi.js');
+                require(config.jxCodePath + 'SrcPublic.js');
                 importConfirm(input);
             }, input)
         }),

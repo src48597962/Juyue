@@ -317,8 +317,8 @@ function callapi(data) {
                 }
                 urls.push(arr)
 
-                require(config.jxCodePath + 'SrcCall.js');
-                let num = callsave(urls);
+                require(config.jxCodePath + 'SrcPublic.js');
+                let num = jiexicallsave(urls);
                 if(num==1){
                     back(true);
                     return "toast://已保存";
@@ -331,53 +331,6 @@ function callapi(data) {
         });
         setResult(d);
     }, data);
-}
-//调用保存
-function callsave(urls, mode) {
-    if(urls.length==0){return 0;}
-    let num = 0;
-    try{
-        let datalist = [];
-        let sourcedata = fetch(jxcallfile);
-        if(sourcedata != ""){
-            try{
-                eval("datalist=" + sourcedata+ ";");
-            }catch(e){}
-        }
-        if(mode==2){
-            for(let i=0;i<datalist.length;i++){
-                datalist.splice(i,1);
-                i = i - 1;
-            }
-        }
-        
-        urls.reverse().forEach(it=>{
-            if(it.oldname || mode==1){
-                for(let i=0;i<datalist.length;i++){
-                    if(datalist[i].name==it.name||datalist[i].name==it.oldname){
-                        datalist.splice(i,1);
-                        break;
-                    }
-                }
-            }
-
-            function checkitem(item) {
-                return item.name==it.name;
-            }
-
-            if(!datalist.some(checkitem)&&it.word&&it.name&&it.code){
-                delete it['oldname'];
-                delete it['sort'];
-                datalist.unshift(it);
-                num = num + 1;
-            }
-        })
-        if(num>0){writeFile(jxcallfile, JSON.stringify(datalist));}
-    } catch (e) {
-        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
-        num = -1;
-    }
-    return num;
 }
 //资源分享
 function JYshare(input,data) {

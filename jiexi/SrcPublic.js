@@ -335,7 +335,7 @@ function importConfirm(importStr) {
         url: importdatas.length>0&&oldnum==0?"hiker://empty":$("跳过已存在，只导入新增，确认？").confirm(()=>{
             require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiexisave(importlist, 0);
+            let num = jiexicallsave(importlist, 0);
             back(false);
             return "toast://增量导入"+(num<0?"失败":num);
         }),
@@ -352,13 +352,13 @@ function importConfirm(importStr) {
         url: importdatas.length>0&&oldnum==0?$().lazyRule(()=>{
             require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiexisave(importlist, 1);
+            let num = jiexicallsave(importlist, 1);
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }):$("全部覆盖导入，确认？").confirm(()=>{
             require(config.jxCodePath + 'SrcPublic.js');
             let importlist = storage0.getMyVar('importConfirm', []);
-            let num = jiexisave(importlist, 1);
+            let num = jiexicallsave(importlist, 1);
             back(false);
             return "toast://全量导入"+(num<0?"失败":num);
         }),
@@ -400,7 +400,7 @@ function importConfirm(importStr) {
                 if (input == "确定导入") {
                     function iConfirm(data) {
                         require(config.jxCodePath + 'SrcPublic.js');
-                        let num = jiexisave([data], 1);
+                        let num = jiexicallsave([data], 1);
                         let importlist = storage0.getMyVar('importConfirm', []);
                         if(importlist.length==1){
                             back(false);

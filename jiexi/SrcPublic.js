@@ -206,7 +206,7 @@ function similarTitles(items, similarityThreshold) {
 //云口令提取
 function extractimport(str){
     showLoading('获取数据中，请稍后...');
-    let importType = getMyVar('当前导入类型', '1');
+    let importType = getMyVar('主页显示内容', '1');
     let strs = str.replace(/\\n|云口令：/g, '').split('@import=');
     if(importType=='1'){
         strs = strs.filter(v=>v&&v.includes('聚阅解析￥'));
@@ -248,7 +248,9 @@ function importConfirm(importStr) {
         deleteFile(importfile);
         clearMyVar('importConfirm');
         clearMyVar("选择列表项");
-        clearMyVar("当前导入类型");
+        if(getMyVar('清除显示内容')){
+            clearMyVar('主页显示内容');
+        }
     },importfile));
 
     let importType = '1';
@@ -262,7 +264,10 @@ function importConfirm(importStr) {
             if(input.includes('聚阅调用')){
                 importType = '2';
             }
-            putMyVar('当前导入类型', importType);
+            if(!getMyVar('主页显示内容')){
+                putMyVar('清除显示内容', '1');
+                putMyVar('主页显示内容', importType);
+            }
             importdatas = extractimport(input);
             if(importdatas.length==0){
                 toast('未获取到源接口，检查网络或口令');
@@ -449,4 +454,53 @@ function importConfirm(importStr) {
     })
 
     setResult(d);
+}
+//解析&调用保存
+function jiexicallsave(urls, mode) {
+    if(urls.length==0){return 0;}
+    let type = getMyVar('主页显示内容', '1')=='2'?'2':'1';
+    let savefile = type=='2'?jxcallfile:jxfile;
+    let num = 0;
+    try{
+        let datalist = [];
+        let sourcedata = fetch(savefile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist=" + sourcedata+ ";");
+            }catch(e){}
+        }
+        if(mode==2){
+            for(let i=0;i<datalist.length;i++){
+                datalist.splice(i,1);
+                i = i - 1;
+            }
+        }
+        
+        urls.reverse().forEach(it=>{
+            if(it.oldname || mode==1){
+                for(let i=0;i<datalist.length;i++){
+                    if(datalist[i].name==it.name||datalist[i].name==it.oldname){
+                        datalist.splice(i,1);
+                        break;
+                    }
+                }
+            }
+
+            function checkitem(item) {
+                return item.name==it.name || (type=='1'&&item.url==it.url);
+            }
+
+            if(!datalist.some(checkitem)&&it.name&&((type=='1'&&/^http|^functio/.test(it.url))||type=='2')){
+                delete it['oldname'];
+                delete it['sort'];
+                datalist.unshift(it);
+                num = num + 1;
+            }
+        })
+        if(num>0){writeFile(savefile, JSON.stringify(datalist));}
+    } catch (e) {
+        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
+        num = -1;
+    }
+    return num;
 }

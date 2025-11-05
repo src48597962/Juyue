@@ -359,7 +359,8 @@ function JYshare(input,data) {
     hideLoading();
     if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
         log('剪贴板地址>'+pasteurl);
-        copy(sm+'￥'+aesEncode('Jujiexi2', pasteurl)+'￥' + sm2 + '('+input+')');
+        let code = sm+'￥'+aesEncode('Jujiexi2', pasteurl)+'￥' + sm2 + '('+input+')';
+        copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
         return "toast://分享口令已生成";
     }else{
         log('分享失败>'+pasteurl);

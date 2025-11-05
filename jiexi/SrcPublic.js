@@ -68,7 +68,6 @@ function getDataTitle(data, ide, i) {
     let dataTitle;
     if(data.word){
         dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式2')?'○':'')) + (data.stop?'Ⓓ':"") + data.name;
-        dataTitle = dataTitle + '\n‘‘’’<small><font color=grey>' + data.word + '</font></small>';
     }else{
         dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?'‘‘’’<small><font color=grey>  [' + data.sort + ']</font></small>':'');
         if(data.desc2){
@@ -445,7 +444,7 @@ function importConfirm(importStr) {
                     }, data)
                 }
             }, base64Encode(JSON.stringify(it)), isnew),
-            desc: flag.join(','),
+            desc: importType=='2'?it.word:flag.join(','),
             col_type: "text_1",
             extra: {
                 id: it.name

@@ -348,7 +348,7 @@ function JYshare(input,data) {
     if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
         return "toast://超出字符最大限制，建议用云6或文件分享";
     }
-    sm = '解析调用';
+    sm = '聚阅调用';
     showLoading('分享生成中，请稍后...');
     sm2 = sharelist.length==1?sharelist[0].name:'共' + sharelist.length + '条';
     let pasteurl = sharePaste(sharetxt, input);

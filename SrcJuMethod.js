@@ -1285,18 +1285,35 @@ function x5toerji(jkdata, extra, MY_RULE) {
         }));
     }, MY_RULE, jkdata, extra)
 }
-// 过验证请求返回html
-function fetchVerify(ssurl){
-    let home = getHome(ssurl);
-    let headers = { 'User-Agent': MOBILE_UA };
-    let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
-    let cook = fetchCookie(codeurl, { headers: headers });
-    headers.Cookie = JSON.parse(cook || '[]').join(';');
-    let vcode = ocr(codeurl, headers);
-    fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : '/index.php/ajax/verify_check?type=search&verify=') + vcode, {
-        headers: headers,
-        method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
-    })
-    let html = request(ssurl, { headers: headers, timeout: 8000 });
+// 请求返回html源码
+function getHtmlCode(ssurl, headers) {
+    headers = headers || {'User-Agent': MOBILE_UA};
+    let timeout = 10000;
+    let html = request(ssurl, { headers: headers, timeout: timeout });
+    try {
+        if (html.indexOf('cf-wrapper') != -1) {
+            html = fetchCodeByWebView(ssurl, { headers: headers, 'blockRules': ['.png', '.jpg'],checkJs: $.toString(()=>{
+                if(document.body.innerHTML.includes('搜索')) {
+                    return 1;
+                }
+            }) });
+        }else if (html.indexOf('检测中') != -1) {
+            html = request(ssurl + '&btwaf' + html.match(/btwaf(.*?)\"/)[1], { headers: headers, timeout: timeout });
+        } else if (/页面已拦截/.test(html)) {
+            html = fetchCodeByWebView(ssurl, { headers: headers, 'blockRules': ['.png', '.jpg', '.gif', '.mp3', '.mp4'], timeout: timeout });
+            html = pdfh(html, 'body&&pre&&Text');
+        } else if (/系统安全验证/.test(html)) {
+            let home = getHome(ssurl);
+            let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
+            let cook = fetchCookie(codeurl, { headers: headers });
+            headers.Cookie = JSON.parse(cook || '[]').join(';');
+            let vcode = ocr(codeurl, headers);
+            fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : html.match(/\/index.php.*?verify=/)[0]) + vcode, {
+                headers: headers,
+                method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
+            })
+            html = request(ssurl, { headers: headers, timeout: timeout });
+        }
+    } catch (e) { }
     return html;
 }

@@ -61,11 +61,15 @@ function jxCallPage(dd) {
     d.push({
         title: '导入',
         url: $("","聚解口令").input(()=>{
+            input = input.trim();
             if(input==""){
                 return 'toast://不能为空';
             }
-            writeFile("hiker://files/_cache/Jujiexi/cloudimport.txt", input);
-            return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
+            
+            return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
+                require(config.jxCodePath + 'SrcPublic.js');
+                importConfirm(input);
+            }, input)
         }),
         img: 'http://123.56.105.145/tubiao/more/43.png',
         col_type: "icon_small_4"

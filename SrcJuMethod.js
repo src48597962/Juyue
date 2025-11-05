@@ -1308,7 +1308,8 @@ function getHtmlCode(ssurl, headers) {
             let cook = fetchCookie(codeurl, { headers: headers });
             headers.Cookie = JSON.parse(cook || '[]').join(';');
             let vcode = ocr(codeurl, headers);
-            fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : html.match(/\/index.php.*?verify=/)[0]) + vcode, {
+            const matchResult = html.match(/\/index.php.*?verify=/);
+            fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : (matchResult ? matchResult[0] : '/index.php/ajax/verify_check?type=search&verify=')) + vcode, {
                 headers: headers,
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })

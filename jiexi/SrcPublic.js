@@ -392,7 +392,10 @@ function importConfirm(importStr) {
 
     importdatas.forEach((it, i)=>{
         let isnew = newdatas.some(v=>v.name==it.name);
-        let datamenu = ["确定导入", "修改名称", "接口测试"];
+        let datamenu = ["确定导入", "修改名称"];
+        if(importType=="1"){
+            datamenu.push("解析测试");
+        }
         let ext = it.ext || {};
         let flag = ext.flag || [];
         let tmpdata = extra = Object.assign({desc2: "‘‘’’<small><font color=grey>{" + (isnew?"新增加":"已存在") + "}</font></small>"}, it);
@@ -436,9 +439,9 @@ function importConfirm(importStr) {
                         refreshPage(false);
                         return "toast://已修改名称";
                     }, data);
-                }else if (input == "接口测试") {
+                }else if (input == "解析测试") {
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
-                        setPageTitle(data.name+"-接口测试");
+                        setPageTitle(data.name+"-解析测试");
                         require(config.jxCodePath + 'SrcPublic.js');
                         jiexiTest(data);
                     }, data)

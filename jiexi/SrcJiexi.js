@@ -597,7 +597,7 @@ function jiexiapi(data) {
                 }
                 urls.push(arr);
 
-                require(config.jxCodePath + 'SrcJiexi.js');
+                require(config.jxCodePath + 'SrcPublic.js');
                 let num = jiexisave(urls);
                 if(num==1){
                     back(true);
@@ -614,53 +614,6 @@ function jiexiapi(data) {
         },data)
     });
     setResult(d);
-}
-//解析保存
-function jiexisave(urls, mode) {
-    if(urls.length==0){return 0;}
-    let num = 0;
-    try{
-        let datalist = [];
-        let sourcedata = fetch(jxfile);
-        if(sourcedata != ""){
-            try{
-                eval("datalist=" + sourcedata+ ";");
-            }catch(e){}
-        }
-        if(mode==2){
-            for(let i=0;i<datalist.length;i++){
-                datalist.splice(i,1);
-                i = i - 1;
-            }
-        }
-        
-        urls.reverse().forEach(it=>{
-            if(it.oldname || mode==1){
-                for(let i=0;i<datalist.length;i++){
-                    if(datalist[i].name==it.name||datalist[i].name==it.oldname){
-                        datalist.splice(i,1);
-                        break;
-                    }
-                }
-            }
-
-            function checkitem(item) {
-                return item.name==it.name || item.url==it.url;
-            }
-
-            if(!datalist.some(checkitem)&&it.url&&it.name&&/^http|^functio/.test(it.url)){
-                delete it['oldname'];
-                delete it['sort'];
-                datalist.unshift(it);
-                num = num + 1;
-            }
-        })
-        if(num>0){writeFile(jxfile, JSON.stringify(datalist));}
-    } catch (e) {
-        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
-        num = -1;
-    }
-    return num;
 }
 //删除解析入口
 function deleteData(data){

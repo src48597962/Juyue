@@ -93,7 +93,47 @@ function isVipVideo(url){
     }
     return false;
 }
+// 判断字符是否包含
+function isMatch(str, namePattern) {
+  // 如果name已经是正则表达式对象
+  if (namePattern instanceof RegExp) {
+    return namePattern.test(str);
+  }
+  
+  // 如果name包含通配符*
+  if (namePattern.includes('*')) {
+    const regexPattern = '^' + namePattern.replace(/\*/g, '.*') + '$';
+    return new RegExp(regexPattern).test(str);
+  }
+  
+  // 普通字符串完全匹配
+  return str === namePattern;
+}
+// 调用解析
+function callParse(input){
+    let calllist = [];
+    let callstr = fetch("hiker://files/rules/Src/Jiexi/call.json");
+    if(callstr != ""){
+        try{
+            eval("calllist= " + callstr+ ";");
+        }catch(e){}
+    }
 
+    let lazy;
+    for (let i = 0; i < calllist.length; i++) {
+        let call = calllist[i];
+        if (isMatch(input, call.word)) {
+            try{
+                log(`匹配调用成功: ${call.name}>${call.word}`);
+                eval('lazy = ' + call.code);
+            }catch(e){
+                log(`匹配调用执行异常: ${call.name}>` + e.message);
+            }
+            break;
+        }
+    }
+    return lazy || 'toast://调用解析失败';
+}
 //解析入口
 function SrcParse(vipUrl, dataObj) {
     vipUrl = decodeURI(vipUrl);
@@ -101,11 +141,10 @@ function SrcParse(vipUrl, dataObj) {
     dataObj = dataObj || {};
     let isVip = 0;
     log("请求地址："+vipUrl); 
-    require(config.jxCodePath + 'SrcPublic.js');
-    let callUrl = callParse(vipUrl);
-    log('xxx>' + callUrl);
-    if(callUrl){
-        return callUrl;
+
+    let callParseUrl = callParse(vipUrl);
+    if(callParseUrl){
+        return callParseUrl;
     }else if(vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')){
         if(!fileExist("hiker://files/cache/bidi.dex") || !fileExist("hiker://files/cache/libp2p.so")){
             return "toast://缺少荐片插件，播放失败";

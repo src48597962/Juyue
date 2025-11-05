@@ -235,14 +235,12 @@ function importConfirm(importStr) {
     let importType = '1';
     let importdatas = storage0.getMyVar('importConfirm', []);
     if(!getMyVar('importConfirm')){
-        log('a');
         //云口令导入
         let input = importStr || fetch(importfile);
         if(!input){
             toast('未获取到云口令');
         }else{
-            if(input.split('￥')[0]=='聚阅调用'){
-                log('b');
+            if(input.includes('聚阅调用')){
                 importType = '2';
             }
             putMyVar('当前导入类型', importType);
@@ -293,7 +291,7 @@ function importConfirm(importStr) {
             url: 'hiker://empty',
         });
     }
-    log(importType);
+
     d.push({
         title: "““””<big><b><font color="+Color+">📲 "+(importType=="2"?"调用":"解析")+"云口令导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,

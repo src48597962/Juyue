@@ -169,10 +169,8 @@ function dyItemList(datalist) {
                         return JYshare(getItem("sharePaste", ""), data);
                     }
                 } else if (input == "编辑") {
-                    return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
-                        require(config.jxCodePath + 'SrcCall.js');
-                        callapi(data);
-                    }, data)
+                    require(config.jxCodePath + 'SrcCall.js');
+                    return callapi(data);
                 } else if (input == "删除") {
                     return $("确定删除：" + data.name).confirm((data) => {
                         require(config.jxCodePath + 'SrcCall.js');

@@ -1241,7 +1241,7 @@ function erji() {
                         longClick: [{
                             title: "解析设置",
                             js: $.toString(() => {
-                                return $.require("parseUrl").设置();
+                                return $.require("parseUrl").设置;
                             })
                         }]
                     }

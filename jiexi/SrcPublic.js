@@ -63,7 +63,25 @@ function getDataNames() {
 function colorTitle(title, Color) {
     return '‘‘’’<font color="' + Color + '">' + title + '</font>';
 }
+// 获取接口对应的显示标题
+function getDataTitle(data, ide, i) {
+    let dataTitle;
+    if(data.word){
+        dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式2')?'○':'')) + (data.stop?'Ⓓ':"") + data.name;
+    }else{
+        dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?'‘‘’’<small><font color=grey>  [' + data.sort + ']</font></small>':'');
+        if(data.desc2){
+            dataTitle = dataTitle + '  ' + data.desc2;
+        }
+        dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
+    }
 
+    return dataTitle;
+}
+// 对应标识
+function getJxIde(data){
+    return data.stop?'Ⓓ':data.type==0?"Ⓦ":data.type==1?"Ⓙ":data.type==2?"Ⓕ":"";
+}
 // 手机是否暗黑模式
 function isDarkMode() {
   const Configuration = android.content.res.Configuration;

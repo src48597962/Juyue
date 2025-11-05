@@ -1237,7 +1237,13 @@ function erji() {
                     }),
                     col_type: line_col_type,
                     extra: {
-                        cls: "Juloadlist"
+                        cls: "Juloadlist",
+                        longClick: [{
+                            title: "解析设置",
+                            js: $.toString(() => {
+                                return $.require("parseUrl").设置();
+                            })
+                        }]
                     }
                 })
             }

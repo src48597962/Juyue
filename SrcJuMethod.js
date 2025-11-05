@@ -1314,7 +1314,9 @@ function getHtmlCode(ssurl, headers) {
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
         }
-    } catch (e) { }
+    } catch (e) {
+        xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);
+    }
     return html;
 }
 	// 判断字符是否包含

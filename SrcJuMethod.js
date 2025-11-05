@@ -1302,7 +1302,7 @@ function getHtmlCode(ssurl, headers) {
         } else if (/页面已拦截/.test(html)) {
             html = fetchCodeByWebView(ssurl, { headers: headers, 'blockRules': ['.png', '.jpg', '.gif', '.mp3', '.mp4'], timeout: timeout });
             html = pdfh(html, 'body&&pre&&Text');
-        } else if (/系统安全验证/.test(html)) {
+        } else if (/系统安全验证|请输入验证码/.test(html)) {
             let home = getHome(ssurl);
             let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
             let cook = fetchCookie(codeurl, { headers: headers });

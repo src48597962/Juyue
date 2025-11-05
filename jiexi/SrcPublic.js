@@ -188,7 +188,12 @@ function similarTitles(items, similarityThreshold) {
 function extractimport(str){
     showLoading('获取数据中，请稍后...');
     let strs = str.replace(/\\n|云口令：/g, '').split('@import=');
-    strs = strs.filter(v=>v&&v.includes('聚阅解析￥'));
+    if(getMyVar('当前导入类型')=='1'){
+        strs = strs.filter(v=>v&&v.includes('聚阅解析￥'));
+    }else if(getMyVar('当前导入类型')=='2'){
+        strs = strs.filter(v=>v&&v.includes('聚阅调用￥'));
+    }
+    
     let datas = [];
     strs.forEach(it=>{
         try{
@@ -223,8 +228,10 @@ function importConfirm(importStr) {
         deleteFile(importfile);
         clearMyVar('importConfirm');
         clearMyVar("选择列表项");
+        clearMyVar("当前导入类型");
     },importfile));
 
+    let importType = '1';
     let importdatas = storage0.getMyVar('importConfirm', []);
     if(!getMyVar('importConfirm')){
         //云口令导入
@@ -232,6 +239,10 @@ function importConfirm(importStr) {
         if(!input){
             toast('未获取到云口令');
         }else{
+            if(input.split('￥')[0]=='聚阅调用'){
+                importType = '2';
+            }
+            putMyVar('当前导入类型', importType);
             importdatas = extractimport(input);
             if(importdatas.length==0){
                 toast('未获取到源接口，检查网络或口令');
@@ -280,7 +291,7 @@ function importConfirm(importStr) {
         });
     }
     d.push({
-        title: "““””<big><b><font color="+Color+">📲 解析云口令导入  </font></b></big>",
+        title: "““””<big><b><font color="+Color+">📲 "+(importType=="2"?"调用":"解析")+"云口令导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
         url: $('', '支持多口令').input((extractimport)=>{
             if(!input){

@@ -106,8 +106,8 @@ function isMatch(str, namePattern) {
     return new RegExp(regexPattern).test(str);
   }
   
-  // 普通字符串完全匹配
-  return str === namePattern;
+  // 普通字符串匹配
+  return str.includes(namePattern);
 }
 // 调用解析
 function callParse(input){

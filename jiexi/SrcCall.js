@@ -37,7 +37,7 @@ function jxCallPage(dd) {
                 return "toast://"+sm;
             }else if(input=="清空所有"){
                 return $("确定要删除本地所有的源接口吗？").confirm(()=>{
-                    require(config.jxCodePath + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcCall.js');
                     deleteData();
                     refreshPage(false);
                     return 'toast://已全部清空';
@@ -242,7 +242,7 @@ function dataHandle(data, input) {
             datalist.unshift(target);
         }
     })
-    writeFile(jxfile, JSON.stringify(datalist));
+    writeFile(jxcallfile, JSON.stringify(datalist));
     clearMyVar('duodatalist2');
     return input + '：已处理' + waitlist.length + '个';
 }

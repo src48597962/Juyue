@@ -1350,7 +1350,7 @@ function isMatch(str, namePattern) {
     return str.includes(namePattern);
 }
 // 调用解析
-function callLazy(input){
+function callParse(input){
     let calllist = [];
     let callstr = fetch("hiker://files/rules/Src/Jiexi/call.json");
     if(callstr != ""){

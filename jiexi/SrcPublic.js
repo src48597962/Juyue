@@ -187,17 +187,18 @@ function similarTitles(items, similarityThreshold) {
 //云口令提取
 function extractimport(str){
     showLoading('获取数据中，请稍后...');
+    let importType = getMyVar('当前导入类型', '1');
     let strs = str.replace(/\\n|云口令：/g, '').split('@import=');
-    if(getMyVar('当前导入类型')=='1'){
+    if(importType=='1'){
         strs = strs.filter(v=>v&&v.includes('聚阅解析￥'));
-    }else if(getMyVar('当前导入类型')=='2'){
+    }else if(importType=='2'){
         strs = strs.filter(v=>v&&v.includes('聚阅调用￥'));
     }
     
     let datas = [];
     strs.forEach(it=>{
         try{
-            let code = aesDecode('Jujiexi', it.split('￥')[1]);
+            let code = aesDecode(importType=='1'?'Jujiexi':'Jujiexi2', it.split('￥')[1]);
             let text;
             if(/^http|^云/.test(code)){//云分享
                 text = parsePaste(code);

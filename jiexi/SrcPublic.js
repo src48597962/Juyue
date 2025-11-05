@@ -276,7 +276,7 @@ function importConfirm(importStr) {
     }
     //获取现有接口
     let datalist = [];
-    let sourcedata = fetch(jxfile);
+    let sourcedata = fetch(importType=='1'?jxfile:jxcallfile);
     if(sourcedata != ""){
         try{
             eval("datalist = " + sourcedata+ ";");

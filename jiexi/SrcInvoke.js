@@ -68,7 +68,7 @@ function jxSet() {
     require(jxCodePath + 'SrcJiexi.js');
     jxSetPage();
 }
-// 调用解析
+// 解析入口
 function lazy(input, dataObj) {
     require(jxCodePath + 'SrcParse.js');
     return SrcParse(input, dataObj);

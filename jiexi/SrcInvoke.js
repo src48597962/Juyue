@@ -65,7 +65,7 @@ function jxItem() {
 }
 // 解析列表
 function jxSet() {
-    require(jxCodePath + 'SrcJiexi.js');
+    require(jxCodePath + 'SrcSet.js');
     jxSetPage();
 }
 // 解析入口

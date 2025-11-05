@@ -349,20 +349,7 @@ function jxItemPage(dd) {
     });
     setResult(d);
 }
-// 获取接口对应的显示标题
-function getDataTitle(data, ide, i) {
-    let dataTitle = (i?i+'-':'') + (ide||(getMyVar('批量选择模式')?'○':'')) + getJxIde(data) + data.name + (data.sort?'‘‘’’<small><font color=grey>  [' + data.sort + ']</font></small>':'');
-    if(data.desc2){
-        dataTitle = dataTitle + '  ' + data.desc2;
-    }
-    dataTitle = dataTitle + (data.type!=2?'\n‘‘’’<small><font color=grey>' + data.url + '</font></small>':'');
 
-    return dataTitle;
-}
-// 对应标识
-function getJxIde(data){
-    return data.stop?'Ⓓ':data.type==0?"Ⓦ":data.type==1?"Ⓙ":data.type==2?"Ⓕ":"";
-}
 // 接口多选处理方法
 function duoselect(data, i){
     let waitlist= [];

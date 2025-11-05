@@ -103,6 +103,7 @@ function SrcParse(vipUrl, dataObj) {
     log("请求地址："+vipUrl); 
     require(config.jxCodePath + 'SrcPublic.js');
     let callUrl = callParse(vipUrl);
+    log('xxx>' + callUrl);
     if(callUrl){
         return callUrl;
     }else if(vipUrl.startsWith('ftp://') && vipUrl.includes('114s.com')){

@@ -310,23 +310,74 @@ function callapi(data) {
                 if(!name || !word || !code){
                     return "toast://信息不完整";
                 }
-
-                require(config.jxCodePath + 'SrcPublic.js');
-                let lists = getCalls();
-
+                let urls= [];
+                let arr  = {"name": name, "word": word, "code": code};
                 if(data){
-                    lists = lists.filter(v=>v.name!=data.name);
-                }else if(lists.some(v=>v.name==name)){
-                    return "toast://已存在";
+                    arr['oldname'] = data.name;
                 }
-                lists.push({name: name, word: word, code: code})
-                writeFile(jxcallfile, JSON.stringify(lists));
-                back(true);
-                return "toast://已保存";
+                urls.push(arr)
+
+                require(config.jxCodePath + 'SrcCall.js');
+                let num = callsave(urls);
+                if(num==1){
+                    back(true);
+                    return "toast://已保存";
+                }else if(num==0){
+                    return "toast://已存在";
+                }else{
+                    return "toast://保存出错";
+                }
             }, data)
         });
         setResult(d);
     }, data);
+}
+//调用保存
+function callsave(urls, mode) {
+    if(urls.length==0){return 0;}
+    let num = 0;
+    try{
+        let datalist = [];
+        let sourcedata = fetch(jxcallfile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist=" + sourcedata+ ";");
+            }catch(e){}
+        }
+        if(mode==2){
+            for(let i=0;i<datalist.length;i++){
+                datalist.splice(i,1);
+                i = i - 1;
+            }
+        }
+        
+        urls.reverse().forEach(it=>{
+            if(it.oldname || mode==1){
+                for(let i=0;i<datalist.length;i++){
+                    if(datalist[i].name==it.name||datalist[i].name==it.oldname){
+                        datalist.splice(i,1);
+                        break;
+                    }
+                }
+            }
+
+            function checkitem(item) {
+                return item.name==it.name;
+            }
+
+            if(!datalist.some(checkitem)&&it.word&&it.name&&it.code){
+                delete it['oldname'];
+                delete it['sort'];
+                datalist.unshift(it);
+                num = num + 1;
+            }
+        })
+        if(num>0){writeFile(jxcallfile, JSON.stringify(datalist));}
+    } catch (e) {
+        log("导入失败：" + e.message + " 错误行#" + e.lineNumber); 
+        num = -1;
+    }
+    return num;
 }
 //资源分享
 function JYshare(input,data) {

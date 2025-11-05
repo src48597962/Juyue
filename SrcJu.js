@@ -12,7 +12,7 @@ function yiji(testSource) {
         try{
             programversion = $.require("config").version || MY_RULE.version || 0;
         }catch(e){}
-        if(programversion<6){
+        if(programversion<7){
             confirm({
                 title: "温馨提示",
                 content: "发现小程序新版本",
@@ -2152,13 +2152,18 @@ function Version() {
                 confirm({
                     title: '发现新版本，是否更新？',
                     content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.hint,
-                    confirm: $.toString((nowtime,newVersion) => {
+                    confirm: $.toString((nowtime,newVersion,updateRecords) => {
                         downloadPlugins(true);//插件本地化文件更新
                         setItem('Version', newVersion);
                         setItem('VersionChecktime', nowtime + 'time');
                         deleteCache();
                         refreshPage();
-                    }, nowtime, newVersion.SrcJu),
+
+                        const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
+                        hikerPop.updateRecordsBottom(updateRecords);
+                        
+                        return "hiker://empty";
+                    }, nowtime, newVersion.SrcJu, (newVersion.JYUpdateRecords || []).slice(0, 3)),
                     cancel: ''
                 })
                 xlog('检测到新版本！\nV' + newVersion.SrcJu + '版本》' + newVersion.hint);

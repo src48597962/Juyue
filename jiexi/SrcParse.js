@@ -95,19 +95,32 @@ function isVipVideo(url){
 }
 // 判断字符是否包含
 function isMatch(str, namePattern) {
-  // 如果name已经是正则表达式对象
-  if (namePattern instanceof RegExp) {
-    return namePattern.test(str);
-  }
-  
-  // 如果name包含通配符*
-  if (namePattern.includes('*')) {
-    const regexPattern = '^' + namePattern.replace(/\*/g, '.*') + '$';
-    return new RegExp(regexPattern).test(str);
-  }
-  
-  // 普通字符串匹配
-  return str.includes(namePattern);
+    // 如果name已经是正则表达式对象
+    if (namePattern.startsWith('/')) {
+        try {
+            const secondSlashIndex = namePattern.indexOf('/', 1);
+            if (secondSlashIndex === -1) {
+                // 没有第二个 /，整个作为模式
+                return new RegExp(namePattern.slice(1)).test(str);
+            }
+            // 提取模式和标志位
+            const pattern = namePattern.slice(1, secondSlashIndex);
+            const flags = namePattern.slice(secondSlashIndex + 1);
+            return new RegExp(pattern, flags).test(str);
+        } catch (e) {
+            log('无效的正则表达式:', namePattern);
+            return false;
+        }
+    }
+
+    // 如果name包含通配符*
+    if (namePattern.includes('*')) {
+        const regexPattern = '^' + namePattern.replace(/\*/g, '.*') + '$';
+        return new RegExp(regexPattern).test(str);
+    }
+
+    // 普通字符串匹配
+    return str.includes(namePattern);
 }
 // 调用解析
 function callParse(input){

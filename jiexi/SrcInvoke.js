@@ -63,7 +63,12 @@ function jxItem() {
     require(jxCodePath + 'SrcJiexi.js');
     jxItemPage();
 }
-// 解析列表
+// 调用列表
+function dyItem() {
+    require(jxCodePath + 'SrcCall.js');
+    jxCallPage();
+}
+// 解析设置
 function jxSet() {
     require(jxCodePath + 'SrcSet.js');
     jxSetPage();
@@ -77,6 +82,7 @@ function lazy(input, dataObj) {
 $.exports = {
     home: home,
     jxItem: jxItem,
+    dyItem: dyItem,
     jxSet: jxSet,
     lazy: lazy
 }

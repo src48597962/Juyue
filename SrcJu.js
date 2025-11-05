@@ -1239,6 +1239,24 @@ function erji() {
                     extra: {
                         cls: "Juloadlist",
                         longClick: [{
+                            title: "解析列表",
+                            js: $.toString(() => {
+                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                    setPageTitle('解析列表');
+                                    let {jxItem} = $.require(codePath + 'jiexi/SrcInvoke.js');
+                                    jxItem();
+                                })
+                            })
+                        },{
+                            title: "调用管理",
+                            js: $.toString(() => {
+                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                    setPageTitle('调用管理');
+                                    let {dyItem} = $.require(codePath + 'jiexi/SrcInvoke.js');
+                                    dyItem();
+                                })
+                            })
+                        },{
                             title: "解析设置",
                             js: $.toString(() => {
                                 return $.require("parseUrl").设置;

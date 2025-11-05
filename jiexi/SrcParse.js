@@ -124,15 +124,15 @@ function callParse(input){
         let call = calllist[i];
         if (isMatch(input, call.word)) {
             try{
-                log(`匹配调用成功: ${call.name}>${call.word}`);
+                log(`调用解析匹配成功: ${call.name}>${call.word}`);
                 eval('lazy = ' + call.code);
             }catch(e){
-                log(`匹配调用执行异常: ${call.name}>` + e.message);
+                log(`调用解析执行异常: ${call.name}>` + e.message);
             }
             break;
         }
     }
-    return lazy || 'toast://调用解析失败';
+    return lazy;
 }
 //解析入口
 function SrcParse(vipUrl, dataObj) {

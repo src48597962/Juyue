@@ -345,6 +345,7 @@ function jxSetPage(dd) {
     });
     setResult(d);
     Juconfig['playSet'] = playSet;
+    Juconfig['jxCodePath'] = config.jxCodePath;
     writeFile(jxcfgfile, JSON.stringify(Juconfig));
     writeFile(jxrecordfile, JSON.stringify(jxSetCfg['parseRecord']))
 }

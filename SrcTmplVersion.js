@@ -2,7 +2,7 @@ var newVersion = {
     "SrcJu": "2.0",
     "hint": "",
     "JYUpdateRecords": [{
-        title: "2025-11-05 V2.0",
+        title: "2025-11-06 V2.0",
         records: [
             "新增：增加juFile全局源私有文件存储",
             "新增：增加本地解析管理，持续优化中",

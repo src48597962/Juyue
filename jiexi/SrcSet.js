@@ -32,6 +32,38 @@ function jxSetPage(dd) {
         url: "hiker://empty"
     });
     d.push({
+        title: '接管断插解析',
+        url: $('#noLoading#').lazyRule(() => {
+            try{
+                let dnCj = 'hiker://files/cache/Parse_Dn.js';
+                let dnSetOld = 'hiker://files/cache/MyParseSet.json';
+                let dnSetNew = 'hiker://files/rules/DuanNian/MyParse.json';
+                let srcCj = 'hiker://files/rules/Src/Jiexi/dnParse.js';
+                requireDownload(config.jxCodePath + 'dnParse.js', srcCj);
+                eval('let oldDnSet = ' + fetch(dnSetOld));
+                eval('let newDnSet = ' + fetch(dnSetNew));
+                let sm;
+                if(oldDnSet.cj == srcCj){
+                    oldDnSet.cj = dnCj;
+                    newDnSet.settings.cj = dnCj;
+                    sm = "恢复默认插件"
+                }else{
+                    oldDnSet.cj = srcCj;
+                    newDnSet.settings.cj = srcCj;
+                    sm = "自动、智能、便捷的解析"
+                }
+                writeFile(dnSetOld, $.stringify(oldDnSet));
+                writeFile(dnSetNew, $.stringify(newDnSet));
+                refreshPage(false);
+                return 'toast://'+sm;
+            }catch(e){
+                return 'toast://异常>'+e.message;
+            }
+        }),
+        pic_url: playSet['printlog']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        col_type: "text_icon"
+    });
+    d.push({
         title: '解析日志打印',
         url: $('#noLoading#').lazyRule(() => {
             let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};

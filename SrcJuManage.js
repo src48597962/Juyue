@@ -295,6 +295,18 @@ function manageSet(){
                         },nowtime, newVersion.SrcJu),
                         cancel:''
                     })
+                }else if (parseFloat(newVersion.JYUpdateRecords[0].title.split('V')[1]) > parseFloat(nowVersion)) {
+                    confirm({
+                        title: '测试beta版本，是否更新？', 
+                        content: '本地V'+nowVersion+' => 云端'+newVersion.JYUpdateRecords[0].title, 
+                        confirm: $.toString((nowtime) => {
+                            setItem('VersionChecktime', nowtime+'time');
+                            deleteCache();
+                            toast('已更新，版本号还是会显示正式版的');
+                            refreshPage();
+                        },nowtime),
+                        cancel:''
+                    })
                 }else{
                     toast('已经为最新版本');
                 }

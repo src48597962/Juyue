@@ -54,13 +54,19 @@ function jxSetPage(dd) {
                 }
                 writeFile(dnSetOld, $.stringify(oldDnSet));
                 writeFile(dnSetNew, $.stringify(newDnSet));
+                
+                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                let playSet = jxSetCfg['playSet'] || {};
+                playSet['takeDnParse'] = playSet['takeDnParse']!=1?1:0;
+                jxSetCfg['playSet'] = playSet;
+                storage0.putMyVar('jxSetCfg', jxSetCfg);
                 refreshPage(false);
                 return 'toast://'+sm;
             }catch(e){
                 return 'toast://异常>'+e.message;
             }
         }),
-        pic_url: playSet['printlog']?getJxIcon("开.svg"):getJxIcon("关.svg"),
+        pic_url: playSet['takeDnParse']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
     d.push({

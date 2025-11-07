@@ -13,9 +13,13 @@ function jxItemPage(dd) {
         clearMyVar('onlyStopJk');
         clearMyVar('similarTitles');
         clearMyVar('lookFailDatas');
+        clearMyVar('主页显示内容');
     }));
 
     setPageTitle('本地解析管理-解析');
+    if(!getMyVar('主页显示内容')){
+        putMyVar('主页显示内容', '1');
+    }
     let d = dd || [];
     d.push({
         title: '增加',

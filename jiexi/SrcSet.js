@@ -5,10 +5,13 @@ require(config.jxCodePath + 'SrcPublic.js');
 function jxSetPage(dd) {
     addListener("onClose", $.toString(() => {
         clearMyVar('jxSetCfg');
+        clearMyVar('主页显示内容');
     }));
 
     setPageTitle("本地解析管理-设置");
-
+    if(!getMyVar('主页显示内容')){
+        putMyVar('主页显示内容', '3');
+    }
     let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
     if(!getMyVar('jxSetCfg')){
         let parseRecord = {};

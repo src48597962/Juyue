@@ -8,10 +8,13 @@ function jxCallPage(dd) {
         clearMyVar('批量选择模式2');
         clearMyVar('onlyStopJk2');
         clearMyVar('jxdatalist2');
+        clearMyVar('主页显示内容');
     }));
 
     setPageTitle('本地解析管理-调用');
-
+    if(!getMyVar('主页显示内容')){
+        putMyVar('主页显示内容', '2');
+    }
     let d = dd || [];
     d.push({
         title: '增加',

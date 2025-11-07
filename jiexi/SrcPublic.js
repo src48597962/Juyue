@@ -249,6 +249,8 @@ function importConfirm(importStr) {
         clearMyVar("选择列表项");
         if(getMyVar('清除显示内容')){
             clearMyVar('主页显示内容');
+        }else{
+            refreshPage();
         }
     },importfile));
 

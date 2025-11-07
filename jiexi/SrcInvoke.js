@@ -9,10 +9,6 @@ let Color = getItem('主题颜色','#3399cc');
 
 // 主界面
 function home() {
-    addListener("onClose", $.toString(() => {
-        clearMyVar('主页显示内容');
-    }));
-
     let d = [];
     d.push({
         title: getMyVar('主页显示内容', '1')=="1"?`<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',

@@ -1963,7 +1963,7 @@ function setMark(data) {
         marklist.splice(index, 1)
     }
     marklist.push(data);
-    if (marklist.length > 100) {
+    if (marklist.length > 200) {
         marklist.splice(0, 1);
     }
     writeFile(markfile, $.stringify(marklist));

@@ -827,7 +827,7 @@ function 弹幕(vipUrl) {
                     // 构建XML头
                     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
                     xml += `<i>\n`;
-                    danmakuArray.forEach((danmaku) => {
+                    danmakuArray.slice(1).forEach((danmaku) => {
                         let [time, type, color, size, text] = danmaku;
                         let decimalColor = convertColorToDecimal(color);
                         let pAttribute = `${time},1,20,${decimalColor}`;
@@ -839,7 +839,7 @@ function 弹幕(vipUrl) {
                     return dmfile;
                 }
                 let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
-                dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku, dmfile);
+                dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
             }
         }
     }catch(e){

@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V2.1",
         records: [
-            "新增：本地解析设置中增加接管断插"
+            "新增：本地解析设置中增加接管断插",
+            "新增：本地解析设置中增加弹幕来源",
         ]
     },{
         title: "2025-11-06 V2.0",

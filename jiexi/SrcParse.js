@@ -806,14 +806,33 @@ function 弹幕(vipUrl) {
             dm = $.require('hiker://page/dmFun?rule=dm盒子').dmRoute(vipUrl);
         }else{
             function convertDanmakuToSimpleXML(danmakuArray) {
-                let dmarr = [];
+                function convertColorToDecimal(color) {
+                    const lowerColor = color.toLowerCase();
+                    // 处理十六进制颜色 (#fff, #ffffff)
+                    if (lowerColor.startsWith('#')) {
+                        let hex = lowerColor.substr(1);
+                        // 简写格式转完整格式 (#fff -> #ffffff)
+                        if (hex.length === 3) {
+                            hex = hex.split('').map(char => char + char).join('');
+                        }
+                        // 转换为十进制
+                        return parseInt(hex, 16) || '16777215';
+                    }
+                    return '16777215'; // 默认白色
+                }
+                // 构建XML头
+                let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xml += `<i>\n`;
                 danmakuArray.forEach((danmaku) => {
                     let [time, type, color, size, text] = danmaku;
-                    dmarr.push({"time": time, "type": 1, "color": '4528161', "fontsize": 2, "text": text})
-
+                    let decimalColor = convertColorToDecimal(color);
+                    let pAttribute = `${time},1,25,${decimalColor},0`;
+                    // 添加弹幕到XML
+                    xml += `<d p="${pAttribute}">${text}</d>\n`;
                 });
-                let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.json`;
-                writeFile(dmfile, JSON.stringify(dmarr));
+                xml += `</i>`;
+                let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.xml`;
+                writeFile(dmfile, xml);
                 return dmfile;
             }
             let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});

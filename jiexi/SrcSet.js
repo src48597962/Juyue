@@ -116,17 +116,17 @@ function jxSetPage(dd) {
         col_type: "text_icon"
     });
     d.push({
-        title: '调用dm盒子弹幕',
+        title: '开启获取播放弹幕',
         url: $('#noLoading#').lazyRule(() => {
             let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
             let playSet = jxSetCfg['playSet'] || {};
             let sm;
             if (playSet['danmu']) {
                 playSet['danmu'] = 0;
-                sm = '关闭dm盒子弹幕';
+                sm = '关闭播放弹幕';
             } else {
                 playSet['danmu'] = 1;
-                sm = '仅针对官网地址有效，需要dm盒子小程序';
+                sm = '仅针对官网地址有效，当前弹幕获取源:' + (playSet['danmuSource']||'hls弹幕');
             }
             jxSetCfg['playSet'] = playSet;
             storage0.putMyVar('jxSetCfg', jxSetCfg);
@@ -136,6 +136,25 @@ function jxSetPage(dd) {
         pic_url: playSet['danmu']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
+    if(playSet['danmu']){
+        d.push({
+            col_type: "line"
+        });
+        d.push({
+            title: '弹幕获取源:' + (playSet['danmuSource']||'hls弹幕'),
+            url: $(['hls弹幕', 'dm盒子'], 2).select(() => {
+                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                let playSet = jxSetCfg['playSet'] || {};
+                playSet['danmuSource'] = input;
+                jxSetCfg['playSet'] = playSet;
+                storage0.putMyVar('jxSetCfg', jxSetCfg);
+                refreshPage(false);
+                return 'toast://当前弹幕获取源:' + input;
+            }),
+            pic_url: 箭头图标,
+            col_type: "text_icon"
+        });
+    } 
     d.push({
         col_type: "line_blank"
     });

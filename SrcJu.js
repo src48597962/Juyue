@@ -110,6 +110,8 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[0].img, false, homeIcons[0].color),
             col_type: icon5_col,
             extra: {
+                newWindow: true, 
+                windowId: MY_RULE.title,
                 longClick: longClick
             }
         })

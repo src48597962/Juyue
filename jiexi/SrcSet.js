@@ -116,7 +116,7 @@ function jxSetPage(dd) {
         col_type: "text_icon"
     });
     d.push({
-        title: '开启获取播放弹幕',
+        title: '解析播放获取弹幕',
         url: $('#noLoading#').lazyRule(() => {
             let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
             let playSet = jxSetCfg['playSet'] || {};
@@ -141,7 +141,7 @@ function jxSetPage(dd) {
             col_type: "line"
         });
         d.push({
-            title: '弹幕获取源:' + (playSet['danmuSource']||'hls弹幕'),
+            title: '弹幕获取源：' + (playSet['danmuSource']||'hls弹幕'),
             url: $(['hls弹幕', 'dm盒子'], 2).select(() => {
                 let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
                 let playSet = jxSetCfg['playSet'] || {};
@@ -149,7 +149,7 @@ function jxSetPage(dd) {
                 jxSetCfg['playSet'] = playSet;
                 storage0.putMyVar('jxSetCfg', jxSetCfg);
                 refreshPage(false);
-                return 'toast://当前弹幕获取源:' + input;
+                return 'toast://当前弹幕获取源：' + input;
             }),
             pic_url: 箭头图标,
             col_type: "text_icon"

@@ -353,7 +353,7 @@ function SrcParse(vipUrl, dataObj) {
     let names = [];//多线路名称
     let headers = [];//多线路头信息
     let audioUrls = [];//多线路音频分离地址
-    let danmu = "";//多线路弹幕
+    let danmu = "";//免嗅解析返回多线路的弹幕
     let faillist = [];//解析失败待处理列表
     let myJXchange = 0;//私有解析是否有变化需要保存
 
@@ -413,11 +413,16 @@ function SrcParse(vipUrl, dataObj) {
             names.push(item.name);
             headers.push(item.ext.header || mulheader(vipUrl));
         })
-        return {
+        let dm;
+        if(isVip && playSet.danmu==1){
+            dm = 弹幕(vipUrl);
+        }
+        return JSON.stringify({
             urls: urls,
             names: names,
-            headers: headers
-        };
+            headers: headers,
+            danmu: dm
+        });
     }else if(parsemode==2){//模式2，强制嗅探，手工选择，走video没法指定header
         let dm;
         if(isVip && playSet.danmu==1){
@@ -618,7 +623,7 @@ function SrcParse(vipUrl, dataObj) {
     if(playurl){
         let dm;
         if(isVip && playSet.danmu==1){
-            dm = 弹幕(vipUrl);
+            dm = danmu || 弹幕(vipUrl);
         }
         if(urls.length>1){
             log('进入多线路播放');
@@ -626,7 +631,7 @@ function SrcParse(vipUrl, dataObj) {
                 urls: urls,
                 names: names,
                 headers: headers,
-                danmu: danmu || dm,
+                danmu: dm,
                 audioUrls: audioUrls
             }); 
         }else{

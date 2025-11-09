@@ -1021,6 +1021,8 @@ function jkItemList(jkdatalist){
             extra: {
                 id: it.id,
                 cls: 'jkItemLoadList',
+                newWindow: true, 
+                windowId: MY_RULE.title,
                 longClick: [{
                     title: "打开代码",
                     js: $.toString((url) => {

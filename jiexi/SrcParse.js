@@ -805,41 +805,45 @@ function 弹幕(vipUrl) {
             //dm盒子弹幕
             dm = $.require('hiker://page/dmFun?rule=dm盒子').dmRoute(vipUrl);
         }else{
-            function convertDanmakuToSimpleXML(danmakuArray) {
-                function convertColorToDecimal(color) {
-                    const lowerColor = color.toLowerCase();
-                    // 处理十六进制颜色 (#fff, #ffffff)
-                    if (lowerColor.startsWith('#')) {
-                        let hex = lowerColor.substr(1);
-                        // 简写格式转完整格式 (#fff -> #ffffff)
-                        if (hex.length === 3) {
-                            hex = hex.split('').map(char => char + char).join('');
+            let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.xml`;
+            if(fileExist(dmfile)){
+                dm = dmfile;
+            }else{
+                function convertDanmakuToSimpleXML(danmakuArray, dmfile) {
+                    function convertColorToDecimal(color) {
+                        const lowerColor = color.toLowerCase();
+                        // 处理十六进制颜色 (#fff, #ffffff)
+                        if (lowerColor.startsWith('#')) {
+                            let hex = lowerColor.substr(1);
+                            // 简写格式转完整格式 (#fff -> #ffffff)
+                            if (hex.length === 3) {
+                                hex = hex.split('').map(char => char + char).join('');
+                            }
+                            // 转换为十进制
+                            return parseInt(hex, 16) || '16777215';
                         }
-                        // 转换为十进制
-                        return parseInt(hex, 16) || '16777215';
+                        return '16777215'; // 默认白色
                     }
-                    return '16777215'; // 默认白色
+                    // 构建XML头
+                    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                    xml += `<i>\n`;
+                    danmakuArray.forEach((danmaku) => {
+                        let [time, type, color, size, text] = danmaku;
+                        let decimalColor = convertColorToDecimal(color);
+                        let pAttribute = `${time},1,20,${decimalColor}`;
+                        // 添加弹幕到XML
+                        xml += `<d p="${pAttribute}">${text}</d>\n`;
+                    });
+                    xml += `</i>`;
+                    writeFile(dmfile, xml);
+                    return dmfile;
                 }
-                // 构建XML头
-                let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-                xml += `<i>\n`;
-                danmakuArray.forEach((danmaku) => {
-                    let [time, type, color, size, text] = danmaku;
-                    let decimalColor = convertColorToDecimal(color);
-                    let pAttribute = `${time},1,20,${decimalColor}`;
-                    // 添加弹幕到XML
-                    xml += `<d p="${pAttribute}">${text}</d>\n`;
-                });
-                xml += `</i>`;
-                let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.xml`;
-                writeFile(dmfile, xml);
-                return dmfile;
+                let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
+                dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku, dmfile);
             }
-            let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
-            dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku);
         }
     }catch(e){
-        log(e.message);
+        log('获取弹幕异常>' + e.message);
     }
     if(dm){
         log("获取弹幕成功");

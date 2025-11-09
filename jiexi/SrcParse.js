@@ -826,7 +826,7 @@ function 弹幕(vipUrl) {
                 danmakuArray.forEach((danmaku) => {
                     let [time, type, color, size, text] = danmaku;
                     let decimalColor = convertColorToDecimal(color);
-                    let pAttribute = `${time},1,25,${decimalColor},0`;
+                    let pAttribute = `${time},1,20,${decimalColor}`;
                     // 添加弹幕到XML
                     xml += `<d p="${pAttribute}">${text}</d>\n`;
                 });

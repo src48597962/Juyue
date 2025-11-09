@@ -809,7 +809,7 @@ function 弹幕(vipUrl) {
                 let dmarr = [];
                 danmakuArray.forEach((danmaku) => {
                     let [time, type, color, size, text] = danmaku;
-                    dmarr.push({"time": time, "type": 1, "color": 4528161, "size": 2, "text": text})
+                    dmarr.push({"time": time, "type": 1, "color": '4528161', "fontsize": 2, "text": text})
 
                 });
                 let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.json`;

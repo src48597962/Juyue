@@ -811,8 +811,7 @@ function jiekouapi(data, look) {
                 }else{
                     clearMyVar('SrcJu_searchMark');
                     clearMyVar('一级源接口信息');
-                    back(false);
-                    refreshPage(false);
+                    back(true);
                     return "toast://保存成功";
                 }
             }, data),

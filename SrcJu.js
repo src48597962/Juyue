@@ -110,6 +110,8 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[0].img, false, homeIcons[0].color),
             col_type: icon5_col,
             extra: {
+                newWindow: true, 
+                windowId: MY_RULE.title,
                 longClick: longClick
             }
         })
@@ -136,18 +138,7 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[1].img, false, homeIcons[1].color),
             col_type: icon5_col,
             extra: {
-                id: "sourcemenu",
-                newWindow: true, 
-                windowId: MY_RULE.title,
-                longClick: [{
-                    title: "新窗口编辑",
-                    js: $.toString((data) => {
-                        return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
-                            return jiekouapi(data);
-                        }, data)
-                    },jkdata)
-                }]
+                id: "sourcemenu"
             }
         })
         let Color = getItem('主题颜色','#3399cc');

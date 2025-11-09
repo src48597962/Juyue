@@ -111,7 +111,7 @@ function yiji(testSource) {
             col_type: icon5_col,
             extra: {
                 newWindow: true, 
-                windowId: MY_RULE.title,
+                windowId: '聚阅源编辑',
                 longClick: longClick
             }
         })

@@ -58,19 +58,6 @@ function removeByValue(arr, val) {
         }
     }
 }
-// 头信息字符串转对象
-function headerStrToObj(str) {
-    if (!str.startsWith('{') || !str.endsWith('}')) {
-        log('组多线路传入的头信息字符串不正确');
-    }
-    const pairs = str.slice(1, -1).split('&&');
-    const obj = {};
-    pairs.forEach(pair => {
-        const [key, value] = pair.split('@');
-        obj[key] = value.replace(/；；/g,'; ');
-    });
-    return obj;
-}
 // 头信息对象转字符串
 function headerObjToStr(obj) {
     if (!obj || typeof obj !== 'object') {
@@ -784,6 +771,19 @@ function formatMulUrl(url,i) {
 }
 //获取多线路中需要的头信息
 function mulheader (url) {
+    // 头信息字符串转对象
+    function headerStrToObj(str) {
+        if (!str.startsWith('{') || !str.endsWith('}')) {
+            log('组多线路传入的头信息字符串不正确');
+        }
+        const pairs = str.slice(1, -1).split('&&');
+        const obj = {};
+        pairs.forEach(pair => {
+            const [key, value] = pair.split('@');
+            obj[key] = value.replace(/；；/g,'; ');
+        });
+        return obj;
+    }
     let header = {};
     if(url.includes(';{')){
         header = headerStrToObj('{'+url.split(';{')[1].replace('#isVideo=true#',''))
@@ -797,11 +797,28 @@ function mulheader (url) {
     return header;
 }
 function 弹幕(vipUrl) {
-    //dm盒子弹幕
-    log("开始获取弹幕");
     let dm = "";
+    log("开始获取弹幕>" + (playSet['danmuSource']||'hls弹幕'));
+    
     try{
-        dm = $.require('hiker://page/dmFun?rule=dm盒子').dmRoute(vipUrl);
+        if(playSet['danmuSource']=='dm盒子'){
+            //dm盒子弹幕
+            dm = $.require('hiker://page/dmFun?rule=dm盒子').dmRoute(vipUrl);
+        }else{
+            function convertDanmakuToSimpleXML(danmakuArray) {
+                let dmarr = [];
+                danmakuArray.forEach((danmaku) => {
+                    let [time, type, color, size, text] = danmaku;
+                    dmarr.push({"time": time, "type": 1, "color": color, "fontsize": 25, "text": text})
+
+                });
+                let dmfile = `hiker://files/_cache/Juyue/danmu/${md5(vipUrl)}.json`;
+                writeFile(dmfile, JSON.stringify(dmarr));
+                return dmfile;
+            }
+            let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
+            dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku);
+        }
     }catch(e){}
     if(dm){
         log("获取弹幕成功");

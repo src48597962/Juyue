@@ -838,7 +838,9 @@ function 弹幕(vipUrl) {
             let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
             dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku);
         }
-    }catch(e){}
+    }catch(e){
+        log(e.message);
+    }
     if(dm){
         log("获取弹幕成功");
     }else{

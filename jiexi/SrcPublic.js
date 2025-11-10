@@ -108,7 +108,7 @@ function getJxIcon(icon, nochange, color2) {
         with(javaImport) {
             let bytes = FileUtil.toBytes(input);
             let str = new java.lang.String(bytes, "UTF-8") + "";
-            str = str.replace(/#feb833|#6dc9ff/gi, color);
+            str = str.replace(/#feb833|#6dc9ff|#ccc/gi, color);
             if(color2){
                 const regex = new RegExp(color2, 'gi');
                 str = str.replace(regex, color);

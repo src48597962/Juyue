@@ -19,7 +19,7 @@ function jxCallPage(dd) {
     d.push({
         title: '增加',
         url: callapi(),
-        img: 'http://123.56.105.145/tubiao/more/25.png',
+        img: getJxIcon('增加.svg'),//'http://123.56.105.145/tubiao/more/25.png',
         col_type: "icon_small_4"
     });
     d.push({
@@ -58,7 +58,7 @@ function jxCallPage(dd) {
                 return "toast://"+sm;
             }
         }),
-        img: 'http://123.56.105.145/tubiao/more/290.png',
+        img: getJxIcon('操作.svg'),//'http://123.56.105.145/tubiao/more/290.png',
         col_type: "icon_small_4"
     });
     d.push({
@@ -74,7 +74,7 @@ function jxCallPage(dd) {
                 importConfirm(input);
             }, input)
         }),
-        img: 'http://123.56.105.145/tubiao/more/43.png',
+        img: getJxIcon('导入.svg'),//'http://123.56.105.145/tubiao/more/43.png',
         col_type: "icon_small_4"
     });
     
@@ -94,7 +94,7 @@ function jxCallPage(dd) {
             require(config.jxCodePath + 'SrcCall.js');
             return JYshare(input);
         }),
-        img: 'http://123.56.105.145/tubiao/more/3.png',
+        img: getJxIcon('分享.svg'),//'http://123.56.105.145/tubiao/more/3.png',
         col_type: "icon_small_4"
     });
     d.push({

@@ -865,10 +865,61 @@ function getThemeList(isEnable) {
     if(isEnable){
         let currentTheme = storage0.getItem('currentTheme', {
             名称: '原生主题',
-            主页图标: ["http://123.56.105.145/tubiao/more/157.png","http://123.56.105.145/tubiao/more/287.png","http://123.56.105.145/tubiao/more/101.png","http://123.56.105.145/tubiao/more/286.png","http://123.56.105.145/tubiao/more/129.png"],
-            二级图标: ['http://123.56.105.145/tubiao/messy/32.svg','http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/20.svg',"http://123.56.105.145/tubiao/ke/91.png",'http://123.56.105.145/tubiao/messy/25.svg'],
-            接口图标: ["http://123.56.105.145/tubiao/more/25.png","http://123.56.105.145/tubiao/more/290.png","http://123.56.105.145/tubiao/more/43.png","http://123.56.105.145/tubiao/more/3.png"],
-            书架图标: ['http://123.56.105.145/tubiao/messy/70.svg','http://123.56.105.145/tubiao/messy/85.svg','http://123.56.105.145/tubiao/messy/151.svg']
+            主页图标: [{
+                "img": "http://123.56.105.145/juyue/themes/078/1_切源.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/1_频道.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/1_搜索.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/1_收藏.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/1_管理.svg",
+                "color": "#ccc"
+            }],
+            "二级图标": [{
+                "img": "http://123.56.105.145/juyue/themes/078/2_简介.svg",
+                "color": "#CCCCCC"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/2_书架.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/2_换源.svg",
+                "color": "#CCCCCC"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/2_详情.svg",
+                "color": "#CCCCCC"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/2_搜索.svg",
+                "color": "#ccc"
+            }],
+            "书架图标": [{
+                "img": "http://123.56.105.145/juyue/themes/078/s_本地.svg",
+                "color": "#CCCCCC"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/s_样式.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/s_收藏.svg",
+                "color": "#ccc"
+            }],
+            "接口图标": [{
+                "img": "http://123.56.105.145/juyue/themes/078/j_增加.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/j_操作.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/j_导入.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/j_分享.svg",
+                "color": "#ccc"
+            }]
         });
         function padArray(arr, length, fill) {
             fill = fill || '';

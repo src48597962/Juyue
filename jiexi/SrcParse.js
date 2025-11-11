@@ -926,7 +926,7 @@ function 解析方法(obj) {
         }else if(obj.videoplay){
             return 'video://' + obj.vipUrl;
         }else{
-            return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://exeWebRule获取失败，可试试video";
+            return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://webRule解析失败";
         }
     }else if(/^function/.test(obj.ulist.url.trim())){
         //js解析

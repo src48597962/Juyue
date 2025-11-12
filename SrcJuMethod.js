@@ -1275,7 +1275,7 @@ function x5toerji(jkdata, extra, MY_RULE) {
     return $.toString((MY_RULE, jkdata, extra) => {
         fba.open(JSON.stringify({
             rule: "聚阅",
-            title: extra.name || extra.pageTitle || '详情',
+            title: extra.title || extra.name || extra.pageTitle || '详情',
             url: "hiker://empty?type="+jkdata.type+"&page=fypage" + (jkdata.erjisign||"#immersiveTheme#"),
             group: MY_RULE.group,
             findRule: "js:(\n() => {\n    require(config.聚阅);\n    erji();\n}\n)()",

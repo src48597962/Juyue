@@ -173,7 +173,7 @@ function bookCase() {
         require('http://123.56.105.145/weisyr/Top_H5.js');
         let topimg;
         if(datalist.length>0){
-            topimg = datalist[0].pic_url.split('@Referer=')[0];
+            topimg = (datalist[0].pic_url||'').split('@Referer=')[0];
         }else{
             deleteFile('hiker://files/cache/Top_H5.jpg');
         }

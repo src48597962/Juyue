@@ -1377,46 +1377,50 @@ function callParse(input){
 }
 // 外部存入解析
 function importParse(obj){
-    let jxfile = 'hiker://files/rules/Src/Jiexi/jiexi.json'
-    if($.type(obj) != 'object') return;
-    let datalist = [];
-    let sourcedata = fetch(jxfile);
-    if(sourcedata != ""){
-        try{
-            eval("datalist=" + sourcedata+ ";");
-        }catch(e){}
-    }
-    let newflag = (obj.ext||{}).flag||[];
-    if($.type(newflag)=='string'){
-        if(newflag.includes(',')){
-            newflag = newflag.split(',');
-        }else{
-            newflag = [newflag];
+    try{
+        let jxfile = 'hiker://files/rules/Src/Jiexi/jiexi.json'
+        if($.type(obj) != 'object') return;
+        let datalist = [];
+        let sourcedata = fetch(jxfile);
+        if(sourcedata != ""){
+            try{
+                eval("datalist=" + sourcedata+ ";");
+            }catch(e){}
         }
-    }
+        let newflag = (obj.ext||{}).flag||[];
+        if($.type(newflag)=='string'){
+            if(newflag.includes(',')){
+                newflag = newflag.split(',');
+            }else{
+                newflag = [newflag];
+            }
+        }
 
-    let index = datalist.findIndex(item => item.url == obj.url);
-    if(index > -1){
-        let ext = datalist[index].ext||{};
-        let flag = ext.flag||[];
-        let waitflag = newflag.filter(item => !flag.includes(item));
-        if(waitflag.length>0){
-            ext['flag'] = flag.concat(waitflag);
-            datalist[index].ext = ext;
-            const [target] = datalist.splice(index, 1);
-            datalist.push(target);
+        let index = datalist.findIndex(item => item.url == obj.url);
+        if(index > -1){
+            let ext = datalist[index].ext||{};
+            let flag = ext.flag||[];
+            let waitflag = newflag.filter(item => !flag.includes(item));
+            if(waitflag.length>0){
+                ext['flag'] = flag.concat(waitflag);
+                datalist[index].ext = ext;
+                const [target] = datalist.splice(index, 1);
+                datalist.push(target);
+                writeFile(jxfile, JSON.stringify(datalist));
+                log('已更新解析flag：'+obj.name);
+            }
+        }else if(obj.name&&obj.url){
+            obj.type = obj.type || (obj.url.includes('key=')?'1':'0');
+            if(newflag.length>0){
+                obj['ext'].flag = newflag;
+            }
+            datalist.push(obj);
             writeFile(jxfile, JSON.stringify(datalist));
-            log('已更新解析flag：'+obj.name);
+            log('已存入新解析：'+obj.name);
+        }else{
+            log('传入解析对象无效');
         }
-    }else if(obj.name&&obj.url){
-        obj.type = obj.type || (obj.url.includes('key=')?'1':'0');
-        if(newflag.length>0){
-            obj['ext'].flag = newflag;
-        }
-        datalist.push(obj);
-        writeFile(jxfile, JSON.stringify(datalist));
-        log('已存入新解析：'+obj.name);
-    }else{
-        log('传入解析对象无效');
+    }catch(e){
+        log('存入解析异常>' + e.message + ' 错误行#' + e.lineNumber);
     }
 }

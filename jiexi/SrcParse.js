@@ -913,6 +913,7 @@ function 解析方法(obj) {
     // getapp解析post模型
     function getAppPost(ulist, vipUrl, from){
         let ext = ulist.ext || {};
+        ext.parse_api['iqiyi'] = ext.parse_api['qiyi'];
         let body = {
             parse_api: ext.parse_api[from],
             url: appEncrypt(vipUrl, {key:ext.key, iv:ext.iv}),

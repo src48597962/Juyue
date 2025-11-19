@@ -1409,7 +1409,7 @@ function importParse(obj){
                 log('已更新解析flag：'+obj.name);
             }
         }else if(obj.name&&obj.url){
-            obj.type = obj.type || (obj.url.includes('key=')?'1':obj.url.includes('.index/vodParse')?'3':'0');
+            obj.type = obj.type || (obj.url.includes('key=')?'1':obj.url.includes('appapi.index/vodParse')?'3':'0');
             if(newflag.length>0){
                 obj['ext'].flag = newflag;
             }

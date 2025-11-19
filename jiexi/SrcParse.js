@@ -877,29 +877,31 @@ function 解析方法(obj) {
             timeout: 12000
         })
     }
-    // 加密解析
+    // app解密
     function appDecrypt(ciphertext, decrypt) {
-        eval(getCryptoJS());
-        let key = CryptoJS.enc.Utf8.parse(decrypt.key);
-        let iv = CryptoJS.enc.Utf8.parse(decrypt.iv);
-        let mode = decrypt.mode || CryptoJS.mode.CBC;
-        let padding = decrypt.padding || CryptoJS.pad.Pkcs7;
-
-        function decrypt(ciphertext) {
-            let decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-                mode: mode,
-                padding: padding,
-                iv: iv
-            });
-            return decrypted.toString(CryptoJS.enc.Utf8);
+      eval(getCryptoJS());
+      const key = CryptoJS.enc.Utf8.parse(decrypt.key);
+      const iv = CryptoJS.enc.Utf8.parse(decrypt.iv);
+      let encryptedHexStr = CryptoJS.enc.Base64.parse(ciphertext);
+      let decrypt = CryptoJS.AES.decrypt(
+        {
+          ciphertext: encryptedHexStr
+        },
+        key,
+        {
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
         }
-        return decrypt(ciphertext);
+      );
+      let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+      return decryptedStr;
     }
-    
-    function appEncrypt(plaintext, key) {
+    // app加密
+    function appEncrypt(plaintext, encrypt) {
         eval(getCryptoJS());
-        const id = CryptoJS.enc.Utf8.parse(key);
-        const iv = CryptoJS.enc.Utf8.parse(key);
+        const id = CryptoJS.enc.Utf8.parse(encrypt.key);
+        const iv = CryptoJS.enc.Utf8.parse(encrypt.iv);
         var encrypted = CryptoJS.AES.encrypt(plaintext, id, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
@@ -913,7 +915,7 @@ function 解析方法(obj) {
         let ext = ulist.ext || {};
         let body = {
             parse_api: ext.parse_api[from],
-            url: appEncrypt(vipUrl, ext.key),
+            url: appEncrypt(vipUrl, {key:ext.key, iv:ext.iv}),
             token: ext.token
         };
         let html = fetch(ulist.url, {

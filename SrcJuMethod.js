@@ -1387,13 +1387,10 @@ function importParse(obj){
                 eval("datalist=" + sourcedata+ ";");
             }catch(e){}
         }
-        let newflag = obj.from||(obj.ext||{}).flag||[];
+        let objext = obj.ext||{};
+        let newflag = objext.flag||[];
         if($.type(newflag)=='string'){
-            if(newflag.includes(',')){
-                newflag = newflag.split(',');
-            }else{
-                newflag = [newflag];
-            }
+            newflag = [newflag];
         }
 
         let index = datalist.findIndex(item => item.url == obj.url);
@@ -1401,8 +1398,10 @@ function importParse(obj){
             let ext = datalist[index].ext||{};
             let flag = ext.flag||[];
             let waitflag = newflag.filter(item => !flag.includes(item));
-            if(waitflag.length>0){
+            if(waitflag.length==1){
                 ext['flag'] = flag.concat(waitflag);
+                ext['parse_api'] = ext['parse_api'] || {};
+                ext['parse_api'][waitflag[0]] = $.type(objext.parse_api)=='object'?objext.parse_api[waitflag[0]]:undefined;
                 datalist[index].ext = ext;
                 const [target] = datalist.splice(index, 1);
                 datalist.push(target);
@@ -1410,7 +1409,7 @@ function importParse(obj){
                 log('已更新解析flag：'+obj.name);
             }
         }else if(obj.name&&obj.url){
-            obj.type = obj.type || (obj.url.includes('key=')?'1':'0');
+            obj.type = obj.type || (obj.url.includes('key=')?'1':obj.url.includes('.index/vodParse')?'3':'0');
             if(newflag.length>0){
                 obj['ext'].flag = newflag;
             }

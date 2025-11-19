@@ -1404,7 +1404,7 @@ function importParse(obj){
                 ext['parse_api'][waitflag[0]] = $.type(objext.parse_api)=='object'?objext.parse_api[waitflag[0]]:undefined;
                 datalist[index].ext = ext;
                 const [target] = datalist.splice(index, 1);
-                datalist.push(target);
+                datalist.unshift(target);
                 writeFile(jxfile, JSON.stringify(datalist));
                 log('已更新解析flag：'+obj.name);
             }
@@ -1413,7 +1413,7 @@ function importParse(obj){
             if(newflag.length>0){
                 obj['ext'].flag = newflag;
             }
-            datalist.push(obj);
+            datalist.unshift(obj);
             writeFile(jxfile, JSON.stringify(datalist));
             log('已存入新解析：'+obj.name);
         }else{

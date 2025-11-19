@@ -1386,10 +1386,17 @@ function importParse(obj){
             eval("datalist=" + sourcedata+ ";");
         }catch(e){}
     }
-    
+    let newflag = (obj.ext||{}).flag||[];
+    if($.type(newflag)=='string'){
+        if(newflag.includes(',')){
+            newflag = newflag.split(',');
+        }else{
+            newflag = [newflag];
+        }
+    }
+
     let index = datalist.findIndex(item => item.url == obj.url);
     if(index > -1){
-        let newflag = (obj.ext||{}).flag||[];
         let ext = datalist[index].ext||{};
         let flag = ext.flag||[];
         let waitflag = newflag.filter(item => !flag.includes(item));
@@ -1403,6 +1410,9 @@ function importParse(obj){
         }
     }else if(obj.name&&obj.url){
         obj.type = obj.type || (obj.url.includes('key=')?'1':'0');
+        if(newflag.length>0){
+            obj['ext'].flag = newflag;
+        }
         datalist.push(obj);
         writeFile(jxfile, JSON.stringify(datalist));
         log('已存入新解析：'+obj.name);

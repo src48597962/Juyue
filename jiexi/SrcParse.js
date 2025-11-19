@@ -957,7 +957,7 @@ function 解析方法(obj) {
         }
         return {url: rurl || "", ulist: obj.ulist}; 
     }else if(obj.ulist.url.includes('appapi.index/vodParse')){
-        //加密解析
+        //app解析
         obj.ulist['type'] = '3';
         let rurl = getAppPost(obj.ulist, obj.vipUrl, obj.from);
         if(rurl){

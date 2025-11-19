@@ -1389,11 +1389,12 @@ function importParse(obj){
     
     let index = datalist.findIndex(item => item.url == obj.url);
     if(index > -1){
-        let newflag = (obj.ext||{}).flag;
+        let newflag = (obj.ext||{}).flag||[];
         let ext = datalist[index].ext||{};
         let flag = ext.flag||[];
-        if(newflag && !flag.includes(newflag)){
-            ext['flag'] = flag.concat(newflag);
+        let waitflag = newflag.filter(item => !flag.includes(item));
+        if(waitflag.length>0){
+            ext['flag'] = flag.concat(waitflag);
             datalist[index].ext = ext;
             const [target] = datalist.splice(index, 1);
             datalist.push(target);

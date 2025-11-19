@@ -1402,7 +1402,7 @@ function importParse(obj){
             log('已更新解析flag：'+obj.name);
         }
     }else if(obj.name&&obj.url){
-        obj.type = obj.type || '0';
+        obj.type = obj.type || (obj.url.includes('key=')?'1':'0');
         datalist.push(obj);
         writeFile(jxfile, JSON.stringify(datalist));
         log('已存入新解析：'+obj.name);

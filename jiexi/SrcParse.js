@@ -920,8 +920,10 @@ function 解析方法(obj) {
             body: body,
             method: 'POST'
         });
+        log(html);
 
         let decrypted = JSON.parse(appDecrypt(JSON.parse(html).data, {key:ext.key, iv:ext.iv}));
+        log(decrypted);
         return JSON.parse(decrypted.json).url;
     }
 

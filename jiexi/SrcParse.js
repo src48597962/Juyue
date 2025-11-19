@@ -882,16 +882,20 @@ function 解析方法(obj) {
       eval(getCryptoJS());
       const key = CryptoJS.enc.Utf8.parse(decrypt.key);
       const iv = CryptoJS.enc.Utf8.parse(decrypt.iv);
-      ciphertext = CryptoJS.enc.Base64.parse(ciphertext);
-      function decrypt(ciphertext) {
-            let decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7,
-                iv: iv
-            });
-            return decrypted.toString(CryptoJS.enc.Utf8);
+      let encryptedHexStr = CryptoJS.enc.Base64.parse(ciphertext);
+      let decrypt = CryptoJS.AES.decrypt(
+        {
+          ciphertext: encryptedHexStr
+        },
+        key,
+        {
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
         }
-        return decrypt(ciphertext);
+      );
+      let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+      return decryptedStr;
     }
     // app加密
     function appEncrypt(plaintext, encrypt) {
@@ -918,11 +922,8 @@ function 解析方法(obj) {
             body: body,
             method: 'POST'
         });
-        log(html);
         let datadec = appDecrypt(JSON.parse(html).data, {key:ext.key, iv:ext.iv});
-        log(datadec);
         let decrypted = JSON.parse(datadec);
-        log(decrypted);
         return JSON.parse(decrypted.json).url;
     }
 
@@ -956,7 +957,7 @@ function 解析方法(obj) {
         }
         return {url: rurl || "", ulist: obj.ulist}; 
     }else if(obj.ulist.url.includes('appapi.index/vodParse')){
-        //app解析
+        //加密解析
         obj.ulist['type'] = '3';
         let rurl = getAppPost(obj.ulist, obj.vipUrl, obj.from);
         if(rurl){

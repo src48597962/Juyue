@@ -80,7 +80,7 @@ function getDataTitle(data, ide, i) {
 }
 // 对应标识
 function getJxIde(data){
-    return data.stop?'Ⓓ':data.type==0?"Ⓦ":data.type==1?"Ⓙ":data.type==2?"Ⓕ":"";
+    return data.stop?'Ⓓ':data.type=='0'?"Ⓦ":data.type=='1'?"Ⓙ":data.type=='2'?"Ⓕ":data.type=='3'?"Ⓐ":"";
 }
 // 手机是否暗黑模式
 function isDarkMode() {

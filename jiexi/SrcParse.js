@@ -598,7 +598,7 @@ function SrcParse(vipUrl, dataObj) {
             }
         }
     }else{
-        if(isTest && dataObj.testParse["url"].startsWith('http') && !dataObj.testParse["url"].includes('key=')){
+        if(isTest && dataObj.testParse["url"].startsWith('http') && dataObj.testParse["type"]=='0'){
             toast('解析失败，转网页验证一下');
             return "web://"+dataObj.testParse["url"]+vipUrl;
         }else{

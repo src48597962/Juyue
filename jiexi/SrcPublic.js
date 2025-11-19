@@ -508,37 +508,3 @@ function jiexicallsave(urls, mode) {
     }
     return num;
 }
-
-// 外部解析导入
-function importjiexi(obj){
-    if($.type(obj) != 'object') return;
-    let datalist = [];
-    let sourcedata = fetch(jxfile);
-    if(sourcedata != ""){
-        try{
-            eval("datalist=" + sourcedata+ ";");
-        }catch(e){}
-    }
-    
-    let index = datalist.findIndex(item => item.url == obj.url);
-    if(index > -1){
-        let newflag = (obj.ext||{}).flag;
-        let ext = datalist[index].ext||{};
-        let flag = ext.flag||[];
-        if(newflag && !flag.includes(newflag)){
-            ext['flag'] = flag.concat(newflag);
-            datalist[index].ext = ext;
-            const [target] = datalist.splice(index, 1);
-            datalist.push(target);
-            writeFile(jxfile, JSON.stringify(datalist));
-            log('已更新解析flag：'+obj.name);
-        }
-    }else if(obj.name&&obj.url){
-        obj.type = obj.type || '0';
-        datalist.push(obj);
-        writeFile(jxfile, JSON.stringify(datalist));
-        log('已存入新解析：'+obj.name);
-    }else{
-        log('传入解析对象无效');
-    }
-}

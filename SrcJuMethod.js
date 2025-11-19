@@ -1387,7 +1387,7 @@ function importParse(obj){
                 eval("datalist=" + sourcedata+ ";");
             }catch(e){}
         }
-        let newflag = (obj.ext||{}).flag||[];
+        let newflag = obj.from||(obj.ext||{}).flag||[];
         if($.type(newflag)=='string'){
             if(newflag.includes(',')){
                 newflag = newflag.split(',');

@@ -243,41 +243,6 @@ function SrcParse(vipUrl, dataObj) {
         dataObj.testParse["stype"] = "test";
         parselist.push(dataObj.testParse);
     }else{
-        if(dataObj.parse_api){
-            try{
-                //读取选集自带的解析，将未屏蔽的入备选
-                let appParses = dataObj.parse_api;
-                appParses = uniq(appParses);//去重
-                if(appParses.length>0){
-                    for (let i in appParses) {
-                        if(excludeparse.indexOf(appParses[i])==-1){
-                            parselist.push({stype:'app', type:'3', name:'app'+i, url:appParses[i], sort:0, ext:{}});
-                        }
-                    }
-                    log("选集自带解析数："+appParses.length); 
-                }
-            }catch(e){
-                log("处理选集自带解析失败>"+e.message); 
-            }
-        }else if(dataObj.parses){
-            try{
-                //读取选集传入的解析
-                let appParses = dataObj.parses;
-                if(appParses.length>0){
-                    for (let i in appParses) {
-                        if(excludeparse.indexOf(appParses[i].url)==-1){
-                            let appParse = appParses[i];
-                            let appext = appParse.ext||{};
-                            parselist.push({stype:'app', type:appParse.type||'3', name:appParse.name||('app'+i), url:appParse.url, sort:0, ext:appext});
-                        }
-                    }
-                    log("选集传入解析数："+appParses.length); 
-                }
-            }catch(e){
-                log("处理选集传入解析失败>"+e.message); 
-            }
-        }
-        
         //读取解析，将可用加入备选
         if(fetch(jxfile)){
             try{
@@ -455,7 +420,8 @@ function SrcParse(vipUrl, dataObj) {
                     vipUrl: vipUrl,
                     videoplay: playSet.videoplay,
                     checkVideo: playSet.testvideo?checkVideo:undefined,
-                    parsemode: 1
+                    parsemode: 1,
+                    from: from
                 },
                 id: list.url
             }
@@ -584,13 +550,6 @@ function SrcParse(vipUrl, dataObj) {
                     myJXchange = 1;
                     break;
                 }
-            }
-        }
-        if(faillist[p].stype=="app"){
-            //app自带的解析在解析失败时，直接加入黑名单
-            parseRecord['excludeparse'] = parseRecord['excludeparse'] || [];
-            if(parseRecord['excludeparse'].indexOf(faillist[p].url)==-1){
-                parseRecord['excludeparse'].push(faillist[p].url);
             }
         }
     }
@@ -918,6 +877,53 @@ function 解析方法(obj) {
             timeout: 12000
         })
     }
+    // 加密解析
+    function appDecrypt(ciphertext, decrypt) {
+        eval(getCryptoJS());
+        let key = CryptoJS.enc.Utf8.parse(decrypt.key);
+        let iv = CryptoJS.enc.Utf8.parse(decrypt.iv);
+        let mode = decrypt.mode || CryptoJS.mode.CBC;
+        let padding = decrypt.padding || CryptoJS.pad.Pkcs7;
+
+        function decrypt(ciphertext) {
+            let decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
+                mode: mode,
+                padding: padding,
+                iv: iv
+            });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+        return decrypt(ciphertext);
+    }
+    
+    function appEncrypt(plaintext, key) {
+        eval(getCryptoJS());
+        const id = CryptoJS.enc.Utf8.parse(key);
+        const iv = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(plaintext, id, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        var ciphertext = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+        return ciphertext;
+    }
+    // getapp解析post模型
+    function getAppPost(ulist, vipUrl, from){
+        let ext = ulist.ext || {};
+        let body = {
+            parse_api: ext.parse_api[from],
+            url: appEncrypt(vipUrl, ext.key),
+            token: ext.token
+        };
+        let html = fetch(ulist.url, {
+            body: body,
+            method: 'POST'
+        });
+
+        let decrypted = JSON.parse(appDecrypt(JSON.parse(html).data, {key:ext.key, iv:ext.iv}));
+        return JSON.parse(decrypted.json).url;
+    }
 
     if(obj.isWeb){
         //网页播放页，非官源解析
@@ -948,6 +954,19 @@ function 解析方法(obj) {
             }
         }
         return {url: rurl || "", ulist: obj.ulist}; 
+    }else if(/getappapi/.test(obj.ulist.url.trim())){
+        //app解析
+        obj.ulist['type'] = '3';
+        let rurl = getAppPost(obj.ulist, obj.vipUrl, obj.from);
+        if(rurl){
+            if(/^toast/.test(rurl)){
+                log(obj.ulist.name + '>提示：' + rurl.replace('toast://',''));
+                rurl = "";
+            }else if(obj.checkVideo && /^http/.test(rurl) && obj.checkVideo(rurl,obj.ulist.name)==0){
+                rurl = "";
+            }
+        }
+        return {url: rurl || "", ulist: obj.ulist}; 
     }else{
         //url解析
         let taskheader = {withStatusCode:true, timeout:8000};
@@ -967,25 +986,6 @@ function 解析方法(obj) {
             let isjson = 0;
             try {
                 if(ext.decrypt){
-                    // 加密解析
-                    function appDecrypt(ciphertext, decrypt) {
-                        eval(getCryptoJS());
-                        let key = decrypt.key;
-                        let iv = decrypt.iv;
-                        let mode = decrypt.mode || CryptoJS.mode.ECB;
-                        let padding = decrypt.padding || CryptoJS.pad.Pkcs7;
-                        key = CryptoJS.enc.Utf8.parse(key);
-
-                        function decrypt(ciphertext) {
-                            let decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-                                mode: mode,
-                                padding: padding,
-                                iv: iv
-                            });
-                            return decrypted.toString(CryptoJS.enc.Utf8);
-                        }
-                        return decrypt(ciphertext);
-                    }
                     gethtml = appDecrypt(gethtml, ext.decrypt);
                 }
                 let json = JSON.parse(gethtml);

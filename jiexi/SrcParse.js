@@ -844,7 +844,7 @@ function 解析方法(obj) {
                     eval(fba.getInternalJs());
                 };
                 var urls = _getUrls();
-                fba.log(fy_bridge_app.getUrls());
+                //fba.log(fy_bridge_app.getUrls());
                 var exclude = /\/404\.m3u8|\/xiajia\.mp4|\/余额不足\.m3u8|\.avif|\.css|\.ico|\.js|\.gif|\.png|\.jpg|\.jpeg|html,http|m3u88.com\/admin|\.php\?v=h|url=http|vid=http|%253Furl%253Dh|#amp=1|\.t-ui\.cn|ac=dm/;//设置排除地址
                 var contain = /\.mp4|\.m3u8|\.avi|\.mov|\.dat|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
                 for (var i in urls) {

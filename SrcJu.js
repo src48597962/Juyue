@@ -633,6 +633,8 @@ function erji() {
             erTempData.desc = erLoadData.desc || erTempData.desc;
             erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;
             erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
+            erTempData.url =  detailObj.url || erLoadData.url;
+            erTempData.col_type =  detailObj.col_type || erTempData.col_type;
             let detailextra = detailObj.extra || erLoadData.detailextra || {};
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
@@ -648,8 +650,8 @@ function erji() {
                     title: erTempData.detail1 || "",
                     desc: erTempData.detail2 || "",
                     pic_url: erTempData.img,
-                    url: detailObj.url || erLoadData.detailurl || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
-                    col_type: detailObj.col_type || 'movie_1_vertical_pic_blur',
+                    url: erTempData.url || (/^http/.test(MY_URL)?MY_URL+'#noRecordHistory##noHistory#':erTempData.img),
+                    col_type: erTempData.col_type || 'movie_1_vertical_pic_blur',
                     extra: detailextra
                 })
             }

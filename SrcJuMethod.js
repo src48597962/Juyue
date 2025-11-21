@@ -1283,7 +1283,7 @@ function x5toerji(MY_RULE, jkdata, extra) {
             extra.url = window.item.url;
         }
         extra.data = jkdata;
-        fba.log(JSON.stringify(extra));
+        //fba.log(JSON.stringify(extra));
         let findRule = "js:" + $$$.toString((extra) => {
             storage0.putMyVar('二级附加临时对象', extra);
             require(config.聚阅);

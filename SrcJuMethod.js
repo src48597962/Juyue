@@ -1273,17 +1273,18 @@ function x5toerji(MY_RULE, jkdata, extra) {
     MY_RULE = MY_RULE || JSON.parse(fetch("hiker://home@聚阅"));
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     extra = extra || getVar('轮播数据') ||{};
-    extra.data = jkdata;
     extra.name = extra.title || extra.name || extra.pageTitle;
     clearVar('轮播数据');
     return $.toString((MY_RULE, jkdata, extra) => {
-        fba.log(typeof window.item);
-        if(!extra.url && typeof window.item != 'undefined'){
+        fba.log(JSON.stringify(extra));
+        if(typeof window.item == 'object'){
             extra.name = window.item.title;
             extra.pageTitle = window.item.title;
             extra.img = window.item.img;
             extra.url = window.item.url;
         }
+        extra.data = jkdata;
+        
         fba.open(JSON.stringify({
             rule: "聚阅",
             title: extra.name || '详情',

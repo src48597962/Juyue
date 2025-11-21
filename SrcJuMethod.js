@@ -1284,6 +1284,7 @@ function x5toerji(MY_RULE, jkdata, extra) {
             extra.url = window.item.url;
         }
         extra.data = jkdata;
+        fba.log(JSON.stringify(extra));
         
         fba.open(JSON.stringify({
             rule: "聚阅",

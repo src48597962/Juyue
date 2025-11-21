@@ -243,12 +243,11 @@ function jxSetPage(dd) {
                     "migu": "https://www.miguvideo.com/favicon.ico",
                     "souhu": "https://tv.sohu.com/favicon.ico"
                 }
-                let names = getDataNames();
-                names.unshift('清除');
-
                 let d = [];
 
                 Object.keys(flags).forEach(key=>{
+                    let names = getDataNames(key);
+                    names.unshift('清除');
                     d.push({
                         title: key,
                         desc: flagParse[key] || '未指定',

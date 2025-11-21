@@ -533,7 +533,7 @@ function erji() {
     addListener('onRefresh', $.toString((erCacheFile) => {
         deleteFile(erCacheFile);
     }, erCacheFile));
-
+    xlog(MY_PARAMS);
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
     let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据

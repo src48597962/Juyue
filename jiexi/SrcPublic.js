@@ -52,12 +52,20 @@ function getDatas(isyx) {
     return result;
 }
 // 获取有效解析名数组
-function getDataNames() {
+function getDataNames(key) {
     let list = getDatas(true);
-    let result = list.map(it=>{
-        return it.name;
+    let names = [];
+    list.forEach(it=>{
+        let ext = it.ext||{};
+        let flag = ext.flag || [];
+        if(flag.indexOf("qiyi")>-1 && flag.indexOf("iqiyi")==-1){
+            flag.push("iqiyi");
+        }
+        if(flag.length==0 || flag.indexOf(key)>-1){
+            names.push(it.name);
+        }
     })
-    return result;
+    return names;
 }
 // 文字上色
 function colorTitle(title, Color) {

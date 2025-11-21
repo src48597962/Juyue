@@ -505,7 +505,7 @@ function jiexiapi(data) {
             }
 
             refreshPage(false);
-            return "toast://WEB解析，可用于进入video播放";
+            return "toast://选择了"+parseTypes[MY_INDEX]+"\n备注：只有WEB解析，才能进入video播放";
         }),
         extra: {
             lineVisible: false

@@ -537,7 +537,7 @@ function erji() {
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
     let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据
-    let name = (erjiextra.name||erjiextra.pageTitle||"").replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源关键字
+    let name = (erjiextra.name||erjiextra.title||erjiextra.pageTitle||"").replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源关键字
     let jkdata = erjiextra.data;//接口数据
     let sname = jkdata.name;//二级源名称
     let stype = jkdata.type;

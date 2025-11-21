@@ -1284,13 +1284,17 @@ function x5toerji(MY_RULE, jkdata, extra) {
         }
         extra.data = jkdata;
         fba.log(JSON.stringify(extra));
-        
+        let findRule = "js:" + $$$.toString((extra) => {
+            storage0.putMyVar('二级附加临时对象', extra);
+            require(config.聚阅);
+            erji();
+        }, extra);
         fba.open(JSON.stringify({
             rule: "聚阅",
             title: extra.name || '详情',
             url: "hiker://empty?type="+jkdata.type+"&page=fypage" + (jkdata.erjisign||"#immersiveTheme#"),
             group: MY_RULE.group,
-            findRule: "js:(\n() => {\n    require(config.聚阅);\n    erji();\n}\n)()",
+            findRule: findRule, //"js:(\n() => {\n    require(config.聚阅);\n    erji();\n}\n)()",
             params: JSON.stringify(extra),
             preRule: MY_RULE.preRule,
             pages: MY_RULE.pages

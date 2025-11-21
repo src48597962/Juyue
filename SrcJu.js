@@ -635,7 +635,8 @@ function erji() {
             erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
             erTempData.url =  detailObj.url || erLoadData.url;
             erTempData.col_type =  detailObj.col_type || erTempData.col_type;
-            let detailextra = detailObj.extra || erLoadData.detailextra || {};
+            erTempData.extra =  detailObj.extra || erTempData.detailextra;
+            let detailextra = erTempData.extra || {};
             detailextra.id = "detailid";
             detailextra.gradient = detailextra.gradient || true;
             detailextra.longClick = detailextra.longClick || [];

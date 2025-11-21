@@ -8,7 +8,7 @@ let parse = function(jkdata) {
     return getObjCode(jkdata, 'page');
 }
 
-function 图片解密(key, iv, kiType, mode, isBase64Dec) {
+function 图片解密(input, key, iv, kiType, mode, isBase64Dec) {
     try {
         if (input == null) throw new Error("");
         const CryptoUtil = $.require("hiker://assets/crypto-java.js");
@@ -29,13 +29,27 @@ function 图片解密(key, iv, kiType, mode, isBase64Dec) {
             textData = textData.base64Decode();
         }
         let encrypted = CryptoUtil.AES.decrypt(textData, keyData, {
-            mode: mode, //"AES/CBC/PKCS7Padding",
+            mode: mode || "AES/CBC/PKCS7Padding",
             iv: ivData
         });
         return encrypted.toInputStream();
     } catch (e) {
+        xlog('图片解密失败>' + e.message);
         return;
     }
+
+    /*
+            const CryptoUtil = $.require("hiker://assets/crypto-java.js");
+            let key = CryptoUtil.Data.parseUTF8("f5d965df75336270");
+            let iv = CryptoUtil.Data.parseUTF8("97b60394abc2fbe1");
+            let textData = CryptoUtil.Data.parseInputStream(input);
+            let encrypted = CryptoUtil.AES.decrypt(textData, key, {
+                mode: "AES/CBC/PKCS7Padding",
+                iv: iv
+            });
+            return encrypted.toInputStream();
+
+    */
 }
 //压缩和灰度代码
 let Bitmap = android.graphics.Bitmap;

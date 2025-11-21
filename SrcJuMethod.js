@@ -1277,6 +1277,7 @@ function x5toerji(MY_RULE, jkdata, extra) {
     extra.name = extra.title || extra.name || extra.pageTitle;
     clearVar('轮播数据');
     return $.toString((MY_RULE, jkdata, extra) => {
+        fba.log(typeof window.item);
         if(!extra.url && typeof window.item != 'undefined'){
             extra.name = window.item.title;
             extra.pageTitle = window.item.title;

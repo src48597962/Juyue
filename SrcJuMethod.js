@@ -1428,6 +1428,10 @@ function importParse(obj){
             if(newflag.length>0){
                 obj['ext'].flag = newflag;
             }
+            let namenum = datalist.filter(item=>item.name==obj.name);
+            if(namenum.length>0){
+                obj.name = obj.name + (namenum.length+1);
+            }
             datalist.unshift(obj);
             writeFile(jxfile, JSON.stringify(datalist));
             log('已存入新解析：'+obj.name);

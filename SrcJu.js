@@ -633,7 +633,7 @@ function erji() {
             erTempData.desc = erLoadData.desc || erTempData.desc;
             erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;
             erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
-            erTempData.url =  detailObj.url || erLoadData.url;
+            erTempData.url =  detailObj.url || erLoadData.detailurl || erTempData.url;
             erTempData.col_type =  detailObj.col_type || erTempData.col_type;
             erTempData.extra =  detailObj.extra || erTempData.detailextra;
             let detailextra = erTempData.extra || {};

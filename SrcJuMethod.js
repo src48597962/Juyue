@@ -1269,7 +1269,7 @@ function banner(start, arr, data, cfg){
     }, obj))
 }
 // x5中转聚阅二级
-function x5toerji(jkdata, extra, MY_RULE) {
+function x5toerji(MY_RULE, jkdata, extra) {
     MY_RULE = MY_RULE || JSON.parse(fetch("hiker://home@聚阅"));
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     extra = extra || getVar('轮播数据') ||{};

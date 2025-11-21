@@ -1277,8 +1277,9 @@ function x5toerji(jkdata, extra, MY_RULE) {
     extra.name = extra.title || extra.name || extra.pageTitle;
     clearVar('轮播数据');
     return $.toString((MY_RULE, jkdata, extra) => {
-        if(typeof window.item != 'undefined'){
+        if(!extra.url && typeof window.item != 'undefined'){
             extra.name = window.item.title;
+            extra.pageTitle = window.item.title;
             extra.img = window.item.img;
             extra.url = window.item.url;
         }

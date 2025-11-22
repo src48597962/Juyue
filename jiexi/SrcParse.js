@@ -798,7 +798,11 @@ function 弹幕(vipUrl) {
                     return dmfile;
                 }
                 let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
-                dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
+                if(hlshtml){
+                    dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
+                }else{
+                    log('未获取到弹幕');
+                }
             }
         }
     }catch(e){

@@ -1425,7 +1425,9 @@ function importParse(obj){
             }
         }else if(obj.name&&obj.url){
             obj.type = obj.type || (obj.url.includes('key=')?'1':obj.url.includes('appapi.index/vodParse')?'3':'0');
+            obj.type = obj.type + '';
             if(newflag.length>0){
+                obj['ext'] = obj['ext'] || {};
                 obj['ext'].flag = newflag;
             }
             let namenum = datalist.filter(item=>item.name==obj.name);

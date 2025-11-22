@@ -4,7 +4,7 @@ let jxcfgfile = jxrulepath + 'config.json';
 let jxrecordfile = jxrulepath + "record.json";//解析相关记录文件
 let jxcallfile = jxrulepath + "call.json";//解析相关记录文件
 let Color = getItem('主题颜色','#3399cc');
-let parseTypes = ["WEB解析", "JSON解析", "免嗅解析", "app解析"];
+let parseTypes = ["WEB解析", "JSON解析", "免嗅解析", "APP解析"];
 
 let Juconfig = {};
 let Jucfg = fetch(jxcfgfile);

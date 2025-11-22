@@ -234,7 +234,7 @@ function jxItemPage(dd) {
 
     ['全部'].concat(parseTypes).forEach(it=>{
         let obj = {
-            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it+`</span></b>`:it,
+            title: getMyVar("selectGroup","全部")==it?`““””<b><span style="color: `+Color+`">`+it.replace('解析','')+`</span></b>`:it.replace('解析',''),
             url: $('#noLoading#').lazyRule((it) => {
                 if(getMyVar("selectGroup")!=it){
                     if(it=='全部'){

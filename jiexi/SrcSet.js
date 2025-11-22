@@ -41,10 +41,13 @@ function jxSetPage(dd) {
                 let dnCj = 'hiker://files/cache/Parse_Dn.js';
                 let dnSetOld = 'hiker://files/cache/MyParseSet.json';
                 let dnSetNew = 'hiker://files/rules/DuanNian/MyParse.json';
+                if(!fileExist(dnSetOld) && !fileExist(dnSetNew)){
+                    return 'toast://没有使用过断插无法接管';
+                }
                 let srcCj = 'hiker://files/rules/Src/Jiexi/dnParse.js';
                 requireDownload(config.jxCodePath + 'dnParse.js', srcCj);
-                eval('let oldDnSet = ' + fetch(dnSetOld));
-                eval('let newDnSet = ' + fetch(dnSetNew));
+                eval('let oldDnSet = ' + (fetch(dnSetOld)||'{}'));
+                eval('let newDnSet = ' + (fetch(dnSetNew)||'{}'));
                 let sm;
                 if(oldDnSet.cj == srcCj){
                     oldDnSet.cj = dnCj;

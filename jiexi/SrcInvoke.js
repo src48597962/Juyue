@@ -74,11 +74,67 @@ function lazy(input, dataObj) {
     require(jxCodePath + 'SrcParse.js');
     return SrcParse(input, dataObj);
 }
+// 调用入口
+function call(input) {
+    // 判断字符是否包含
+    function isMatch(str, namePattern) {
+        // 如果name已经是正则表达式对象
+        if (namePattern.startsWith('/')) {
+            try {
+                const secondSlashIndex = namePattern.indexOf('/', 1);
+                if (secondSlashIndex === -1) {
+                    // 没有第二个 /，整个作为模式
+                    return new RegExp(namePattern.slice(1)).test(str);
+                }
+                // 提取模式和标志位
+                const pattern = namePattern.slice(1, secondSlashIndex);
+                const flags = namePattern.slice(secondSlashIndex + 1);
+                return new RegExp(pattern, flags).test(str);
+            } catch (e) {
+                log('无效的正则表达式:', namePattern);
+                return false;
+            }
+        }
+
+        // 如果name包含通配符*
+        if (namePattern.includes('*')) {
+            const regexPattern = '^' + namePattern.replace(/\*/g, '.*') + '$';
+            return new RegExp(regexPattern).test(str);
+        }
+
+        // 普通字符串匹配
+        return str.includes(namePattern);
+    }
+
+    let calllist = [];
+    let callstr = fetch("hiker://files/rules/Src/Jiexi/call.json");
+    if(callstr != ""){
+        try{
+            eval("calllist= " + callstr+ ";");
+        }catch(e){}
+    }
+
+    let callcode;
+    for (let i = 0; i < calllist.length; i++) {
+        let call = calllist[i];
+        if (isMatch(input, call.word)) {
+            try{
+                log(`调用解析匹配成功: ${call.name}>${call.word}`);
+                eval('callcode = ' + call.code);
+            }catch(e){
+                log(`调用解析执行异常: ${call.name}>` + e.message + ' 错误行#' + e.lineNumber);
+            }
+            break;
+        }
+    }
+    return callcode;
+}
 
 $.exports = {
     home: home,
     jxItem: jxItem,
     dyItem: dyItem,
     jxSet: jxSet,
-    lazy: lazy
+    lazy: lazy,
+    call: call
 }

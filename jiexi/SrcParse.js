@@ -877,6 +877,29 @@ function 解析方法(obj) {
             timeout: 12000
         })
     }
+    //加密函数java
+    function Encrypt(plaintext, params) {
+        const CryptoUtil = $.require("hiker://assets/crypto-java.js");
+        let key = CryptoUtil.Data.parseUTF8(params.key);
+        let iv = CryptoUtil.Data.parseUTF8(params.iv||params.key);
+        let encrypted = CryptoUtil.AES.encrypt(plaintext, key, {
+            mode: params.mode||"AES/CBC/PKCS7Padding",
+            iv: iv
+        });
+        return encrypted.toBase64(_base64.NO_WRAP);
+    }
+
+    //解密函数java
+    function Decrypt(ciphertext, params) {
+        const CryptoUtil = $.require("hiker://assets/crypto-java.js");
+        let key = CryptoUtil.Data.parseUTF8(params.key);
+        let iv = CryptoUtil.Data.parseUTF8(params.iv||params.key);
+        let decrypted = CryptoUtil.AES.decrypt(ciphertext, key, {
+            mode: params.mode||"AES/CBC/PKCS7Padding",
+            iv: iv
+        });
+        return decrypted.toString();
+    }
     // app解密
     function appDecrypt(ciphertext, decrypt) {
       eval(getCryptoJS());
@@ -916,14 +939,14 @@ function 解析方法(obj) {
         ext.parse_api['iqiyi'] = ext.parse_api['qiyi'];
         let body = {
             parse_api: ext.parse_api[from],
-            url: appEncrypt(vipUrl, {key:ext.key, iv:ext.iv}),
+            url: Encrypt(vipUrl, {key:ext.key, iv:ext.iv}),
             token: ext.token
         };
         let html = fetch(ulist.url, {
             body: body,
             method: 'POST'
         });
-        let datadec = appDecrypt(JSON.parse(html).data, {key:ext.key, iv:ext.iv});
+        let datadec = Decrypt(JSON.parse(html).data, {key:ext.key, iv:ext.iv});
         let decrypted = JSON.parse(datadec);
         return JSON.parse(decrypted.json).url;
     }
@@ -988,9 +1011,11 @@ function 解析方法(obj) {
             let rurl = "";
             let isjson = 0;
             try {
+                /*普通解析但返回是加密的，这个等遇到再适配
                 if(ext.decrypt){
                     gethtml = appDecrypt(gethtml, ext.decrypt);
                 }
+                */
                 let json = JSON.parse(gethtml);
                 //log(json);
                 isjson = 1;

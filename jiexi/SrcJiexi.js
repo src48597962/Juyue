@@ -774,7 +774,7 @@ function jiexiTest(data) {
                 longClick: [{
                     title: "删除",
                     js: $.toString((data) => {
-                        require(config.jxCodePath + 'SrcPublic.js');
+                        require(config.jxCodePath + 'SrcJiexi.js');
                         deleteData(data);
                         let testDatas = storage0.getMyVar('待测试解析列表');
                         testDatas = testDatas.filter(v=>v.name!=data.name);

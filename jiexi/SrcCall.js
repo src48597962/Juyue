@@ -316,7 +316,7 @@ function callapi(data) {
                         return "toast://信息不完整";
                     }
                     let arr  = {"name": name, "word": word, "code": code};
-                    require(config.jxCodePath + 'SrcInvoke.js');
+                    let {call} = $.require(config.jxCodePath + 'SrcInvoke.js');
                     return call(input, [arr]);
                 }
                 return 'hiker://empty';

@@ -75,7 +75,7 @@ function lazy(input, dataObj) {
     return SrcParse(input, dataObj);
 }
 // 调用入口
-function call(input) {
+function call(input, testarr) {
     // 判断字符是否包含
     function isMatch(str, namePattern) {
         // 如果name已经是正则表达式对象
@@ -106,12 +106,14 @@ function call(input) {
         return str.includes(namePattern);
     }
 
-    let calllist = [];
-    let callstr = fetch("hiker://files/rules/Src/Jiexi/call.json");
-    if(callstr != ""){
-        try{
-            eval("calllist= " + callstr+ ";");
-        }catch(e){}
+    let calllist = testarr || [];
+    if(calllist.length==0){
+        let callstr = fetch("hiker://files/rules/Src/Jiexi/call.json");
+        if(callstr != ""){
+            try{
+                eval("calllist= " + callstr+ ";");
+            }catch(e){}
+        }
     }
 
     let callcode;
@@ -127,7 +129,8 @@ function call(input) {
             break;
         }
     }
-    return callcode;
+
+    return callcode || (testarr?'toast://调用匹配失败':'');
 }
 
 $.exports = {

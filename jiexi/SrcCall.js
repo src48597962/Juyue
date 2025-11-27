@@ -256,6 +256,7 @@ function callapi(data) {
             clearMyVar('apiname');
             clearMyVar('apiword');
             clearMyVar('apicode');
+            clearMyVar('apidemo');
             clearMyVar('isload');
         }));
         
@@ -267,6 +268,7 @@ function callapi(data) {
                 putMyVar('apiname', data.name);
                 putMyVar('apiword', data.word||"");
                 putMyVar('apicode', data.code||"");
+                putMyVar('apidemo', data.demo||"")
                 putMyVar('isload', '1');
             }
         }
@@ -294,13 +296,22 @@ function callapi(data) {
         d.push({
             title:'apicode',
             col_type: 'input',
-                desc: "调用代码，不写return，地址变量：input",
+            desc: "调用代码，不写return，地址变量：input",
             extra: {
                 highlight: true,
                 type: "textarea",
                 titleVisible: false,
                 defaultValue: getMyVar('apicode', ""),
                 onChange: 'putMyVar("apicode", input)'
+            }
+        });
+        d.push({
+            title:'测试',
+            col_type: 'input',
+            desc: "演示测试链接地址",
+            extra: {
+                defaultValue: getMyVar('apidemo', ""),
+                onChange: 'putMyVar("apidemo", input)'
             }
         });
         d.push({
@@ -314,7 +325,7 @@ function callapi(data) {
                     return "toast://信息不完整";
                 }
                 let urls= [];
-                let arr  = {"name": name, "word": word, "code": code};
+                let arr  = {"name": name, "word": word, "code": code, "dome": getMyVar('apidemo')};
                 if(data){
                     arr['oldname'] = data.name;
                 }

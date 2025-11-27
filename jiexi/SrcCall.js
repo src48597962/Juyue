@@ -307,9 +307,24 @@ function callapi(data) {
         });
         d.push({
             title:'测试',
+            url: $.toString(() => {
+                if(input != ''){
+                    let name = getMyVar('apiname');
+                    let word = getMyVar('apiword');
+                    let code = getMyVar('apicode');
+                    if(!name || !word || !code){
+                        return "toast://信息不完整";
+                    }
+                    let arr  = {"name": name, "word": word, "code": code};
+                    require(config.jxCodePath + 'SrcInvoke.js');
+                    return call(input, [arr]);
+                }
+                return 'hiker://empty';
+            }),
             col_type: 'input',
             desc: "演示测试链接地址",
             extra: {
+                titleVisible: true,
                 defaultValue: getMyVar('apidemo', ""),
                 onChange: 'putMyVar("apidemo", input)'
             }

@@ -340,7 +340,7 @@ function callapi(data) {
                     return "toast://信息不完整";
                 }
                 let urls= [];
-                let arr  = {"name": name, "word": word, "code": code, "dome": getMyVar('apidemo')};
+                let arr  = {"name": name, "word": word, "code": code, "demo": getMyVar('apidemo')};
                 if(data){
                     arr['oldname'] = data.name;
                 }

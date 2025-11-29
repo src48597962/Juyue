@@ -2,6 +2,12 @@ var newVersion = {
     "SrcJu": "2.1",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V2.2",
+        records: [
+            "修复：解析测试页长按解析删除报错问题",
+            "优化：解析调用接口编辑页增加测试地址"
+        ]
+    },{
         title: "2025/11/22 V2.1",
         records: [
             "新增：本地解析设置中增加接管断插",

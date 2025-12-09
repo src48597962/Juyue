@@ -532,7 +532,8 @@ function selectSource(selectGroup) {
             onChange(s, manage) {
                 //xlog("onChange:"+s);
                 putMyVar("SrcJu_sourceListFilter", s);
-                items = index_items.items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()));
+                let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
+                items = index_items.items.filter(x => x.title.toLowerCase().includes(s.toLowerCase()) || (/^[a-zA-Z]+$/.test(s) && PinyinMatch.match(x.title, s)));
                 manage.change(items);
             },
             defaultValue: getMyVar("SrcJu_sourceListFilter", ""),

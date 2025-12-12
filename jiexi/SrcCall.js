@@ -145,7 +145,7 @@ function dyItemList(datalist) {
     let d = [];
     datalist.forEach((it, i) => {
         let selectmenu, datatitle;
-        selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶"];
+        selectmenu = ["分享", "编辑", "删除", it.stop ? "启用" : "禁用", "置顶", "测试"];
         if (selectlist.some(item => it.name == item.name)) {
             datatitle = colorTitle(getDataTitle(it, '●', i+1), '#3CB371');
         } else {
@@ -184,6 +184,14 @@ function dyItemList(datalist) {
                         deleteData(data);
                         deleteItem(data.name);
                         return 'toast://已删除:' + data.name;
+                    }, data)
+                } else if (input == "测试") {
+                    return $("","输入"+data.name+"地址").input((data) => {
+                        if(input != ''){
+                            let {call} = $.require(config.jxCodePath + 'SrcInvoke.js');
+                            return call(input, [data]);
+                        }
+                        return 'hiker://empty';
                     }, data)
                 } else {//置顶、禁用、启用
                     require(config.jxCodePath + 'SrcCall.js');

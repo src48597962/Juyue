@@ -663,7 +663,7 @@ function themeIconSet() {
                         
                         //修正当前选中按钮图标
                         let font;
-                        if (type_name == '二级' || type_name == '书架') {
+                        if (type_name=='二级' || type_name=='书架' || type_name=='解析') {
                             font = '';
                         } else {
                             font = '““””';

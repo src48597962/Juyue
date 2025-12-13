@@ -920,6 +920,16 @@ function getThemeList(isEnable) {
             }, {
                 "img": "http://123.56.105.145/juyue/themes/078/j_分享.svg",
                 "color": "#ccc"
+            }],
+            "解析图标": [{
+                "img": "http://123.56.105.145/juyue/themes/078/jx_列表.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/jx_调用.svg",
+                "color": "#ccc"
+            }, {
+                "img": "http://123.56.105.145/juyue/themes/078/jx_设置.svg",
+                "color": "#ccc"
             }]
         });
         function padArray(arr, length, fill) {

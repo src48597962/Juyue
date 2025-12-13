@@ -98,6 +98,7 @@ function isDarkMode() {
   let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
   return theme == Configuration.UI_MODE_NIGHT_YES;
 }
+
 let currentTheme = storage0.getItem('currentTheme', {
     "接口图标": [{
         "img": "http://123.56.105.145/juyue/themes/078/j_增加.svg",
@@ -123,6 +124,9 @@ let currentTheme = storage0.getItem('currentTheme', {
         "color": "#ccc"
     }]
 })
+if(currentTheme.名称=='原生主题'){
+    clearItem('currentTheme');
+}
 // 获取图标地址
 function getJxIcon(icon, nochange, color2) {
     if(!icon){

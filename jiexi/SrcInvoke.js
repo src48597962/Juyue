@@ -9,6 +9,8 @@ let Color = getItem('主题颜色','#3399cc');
 
 // 主界面
 function home() {
+    require(jxCodePath + 'SrcPublic.js');
+    let jxIcons = currentTheme['解析图标'];
     let d = [];
     d.push({
         title: getMyVar('主页显示内容', '1')=="1"?`<b><span style="color: `+Color+`">解析列表</span></b>`:'解析列表',
@@ -17,7 +19,7 @@ function home() {
             refreshPage();
             return "hiker://emtpy";
         }),
-        img: 'http://123.56.105.145/tubiao/system/42.png',
+        img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),//'http://123.56.105.145/tubiao/system/42.png',
         col_type: "icon_small_3"
     });
     d.push({
@@ -27,7 +29,7 @@ function home() {
             refreshPage();
             return "hiker://emtpy";
         }),
-        img: 'http://123.56.105.145/tubiao/system/41.png',
+        img: getJxIcon(jxIcons[1].img, false, jxIcons[1].color),//'http://123.56.105.145/tubiao/system/41.png',
         col_type: "icon_small_3"
     });
     d.push({
@@ -37,7 +39,7 @@ function home() {
             refreshPage();
             return "hiker://emtpy";
         }),
-        img: 'http://123.56.105.145/tubiao/system/43.png',
+        img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),//'http://123.56.105.145/tubiao/system/43.png',
         col_type: "icon_small_3"
     });
     d.push({

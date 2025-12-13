@@ -21,6 +21,7 @@ function jxItemPage(dd) {
         putMyVar('主页显示内容', '1');
     }
     let d = dd || [];
+    let jxIcons = currentTheme['接口图标'];
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
@@ -28,7 +29,7 @@ function jxItemPage(dd) {
             require(config.jxCodePath + 'SrcJiexi.js');
             jiexiapi();
         }),
-        img: getJxIcon('增加.svg'),//'http://123.56.105.145/tubiao/more/25.png',
+        img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),//'http://123.56.105.145/tubiao/more/25.png',
         col_type: "icon_small_4"
     });
     d.push({
@@ -93,7 +94,7 @@ function jxItemPage(dd) {
                 }
             }
         }),
-        img: getJxIcon('操作.svg'),//'http://123.56.105.145/tubiao/more/290.png',
+        img: getJxIcon(jxIcons[1].img, false, jxIcons[1].color),//'http://123.56.105.145/tubiao/more/290.png',
         col_type: "icon_small_4"
     });
     d.push({
@@ -109,7 +110,7 @@ function jxItemPage(dd) {
                 importConfirm(input);
             }, input)
         }),
-        img: getJxIcon('导入.svg'),//'http://123.56.105.145/tubiao/more/43.png',
+        img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),//'http://123.56.105.145/tubiao/more/43.png',
         col_type: "icon_small_4",
         extra: {
             longClick: [{
@@ -197,7 +198,7 @@ function jxItemPage(dd) {
             require(config.jxCodePath + 'SrcJiexi.js');
             return JYshare(input);
         }),
-        img: getJxIcon('分享.svg'),//'http://123.56.105.145/tubiao/more/3.png',
+        img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),//'http://123.56.105.145/tubiao/more/3.png',
         col_type: "icon_small_4"
     });
 

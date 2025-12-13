@@ -98,7 +98,31 @@ function isDarkMode() {
   let theme = cx.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
   return theme == Configuration.UI_MODE_NIGHT_YES;
 }
-
+let currentTheme = storage0.getItem('currentTheme', {
+    "接口图标": [{
+        "img": "http://123.56.105.145/juyue/themes/078/j_增加.svg",
+        "color": "#ccc"
+    }, {
+        "img": "http://123.56.105.145/juyue/themes/078/j_操作.svg",
+        "color": "#ccc"
+    }, {
+        "img": "http://123.56.105.145/juyue/themes/078/j_导入.svg",
+        "color": "#ccc"
+    }, {
+        "img": "http://123.56.105.145/juyue/themes/078/j_分享.svg",
+        "color": "#ccc"
+    }],
+    "解析图标": [{
+        "img": "http://123.56.105.145/juyue/themes/078/jx_列表.svg",
+        "color": "#ccc"
+    }, {
+        "img": "http://123.56.105.145/juyue/themes/078/jx_调用.svg",
+        "color": "#ccc"
+    }, {
+        "img": "http://123.56.105.145/juyue/themes/078/jx_设置.svg",
+        "color": "#ccc"
+    }]
+})
 // 获取图标地址
 function getJxIcon(icon, nochange, color2) {
     if(!icon){

@@ -751,7 +751,10 @@ function themeIconSet() {
     })
     d.push({
         title: '““””<font color=#94B5B0>保存|应用</font>',
-        url: !themename ? 'toast://没有主题' : $().lazyRule((rulepath, themename) => {
+        url: !themename ? 'toast://没有主题' : themename=='原生主题' ? $().lazyRule(() => {
+            clearItem('currentTheme');
+            return 'hiker://empty';
+        }): $().lazyRule((rulepath, themename) => {
             let currentTheme = storage0.getMyVar('currentTheme', {});
             if (!themename) {
                 return 'toast://没有主题'

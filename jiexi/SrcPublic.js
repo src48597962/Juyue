@@ -99,7 +99,7 @@ function isDarkMode() {
   return theme == Configuration.UI_MODE_NIGHT_YES;
 }
 
-let currentTheme = storage0.getItem('currentTheme', {
+let currentTheme = Object.assign(storage0.getItem('currentTheme', {}), {
     "接口图标": [{
         "img": "http://123.56.105.145/juyue/themes/078/j_增加.svg",
         "color": "#ccc"

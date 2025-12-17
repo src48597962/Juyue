@@ -331,7 +331,6 @@ function SrcParse(vipUrl, dataObj) {
                 log(parsename+">解析错误>" + e.message + " 错误行#" + e.lineNumber);
             }
             if(playUrl){
-                log(playUrl);
                 let urltype;
                 let urljson;
                 try{
@@ -342,19 +341,20 @@ function SrcParse(vipUrl, dataObj) {
                 }
                 let headers;
                 if(urltype=="object"){
-                    headers = urljson.headers && urljson.headers.length>0?urljson.headers[0]:ulist.ext.header;
+                    headers = urljson.headers && urljson.headers.length>0?urljson.headers[0]:(ulist.ext||{}).header;
                     playUrl = urljson.urls[0];
                 }
                 log(parsename+">代理播放地址>"+playUrl)
+                headers = headers || getheader(playUrl);
+
                 if(playUrl.includes(".m3u8")){
-                    let f = cacheM3u8(playUrl, {headers: headers || getheader(playUrl), timeout: 2000});
+                    let f = cacheM3u8(playUrl, {headers: headers, timeout: 2000});
                     return f?readFile(f.split("##")[0]):playUrl; //'#isVideo=true#';
                 }else{
+                    headers["Location"] = playUrl;
                     return JSON.stringify({
                         statusCode: 302,
-                        headers: {
-                            "Location": playUrl
-                        }
+                        headers: headers
                     });
                 }
             }else{

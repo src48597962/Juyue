@@ -351,10 +351,11 @@ function SrcParse(vipUrl, dataObj) {
                     let f = cacheM3u8(playUrl, {headers: headers, timeout: 2000});
                     return f?readFile(f.split("##")[0]):playUrl; //'#isVideo=true#';
                 }else{
-                    headers["Location"] = playUrl;
                     return JSON.stringify({
                         statusCode: 302,
-                        headers: headers
+                        headers: {
+                            "Location": playUrl
+                        }
                     });
                 }
             }else{
@@ -750,7 +751,7 @@ function mulheader (url) {
     }else if (/mgtv/.test(url)) {
         header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'www.mgtv.com' };
     } else if (/bilibili|bilivideo/.test(url)) {
-        header = { 'User-Agent': 'bili2021', 'Referer': 'www.bilibili.com' };
+        header = { 'User-Agent': 'bili2021', 'Referer': 'https://www.bilibili.com' };
     } else if (/wkfile/.test(url)) {
         header = { 'User-Agent': 'Mozilla/5.0', 'Referer': 'fantuan.tv' };
     }

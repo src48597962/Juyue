@@ -363,7 +363,7 @@ function SrcParse(vipUrl, dataObj) {
             }
         }, parselist, vipUrl, 解析方法, mulheader, log));
         parselist.forEach((item) => {
-            urls.push(u + "?name=" + item.name + (/bilibili|bilivideo/.test(vipUrl)?"#.m4s":"#.m3u8") +"#pre#");
+            urls.push(u + "?name=" + item.name + (/bilibili|bilivideo/.test(vipUrl)?"#.m4s":"#.m3u8") +"#pre##isVideo=true#");
             names.push(item.name);
             headers.push((item.ext||{}).header || mulheader(vipUrl));
         })
@@ -371,12 +371,12 @@ function SrcParse(vipUrl, dataObj) {
         if(isVip && playSet.danmu==1){
             dm = 弹幕(vipUrl);
         }
-        return {
+        return JSON.stringify({
             urls: urls,
             names: names,
             headers: headers,
             danmu: dm
-        };
+        });
     }else if(parsemode==2){//模式2，强制嗅探，手工选择，走video没法指定header
         let dm;
         if(isVip && playSet.danmu==1){

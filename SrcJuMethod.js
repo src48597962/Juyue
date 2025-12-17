@@ -569,7 +569,7 @@ function getYiData(datatype, jkdata, dd) {
     }
     setResult(d);
     if(datatype=="主页"){
-        if(!parse['搜索']){// || (parse['主页']||'').toString().includes('getVar("keyword", "")')
+        if(!parse['搜索'] || parse['不显示搜索']){
             deleteItem('homesousuoid');
         }
         if(parse['聚合搜索'] && page==1){

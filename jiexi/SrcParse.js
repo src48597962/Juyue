@@ -343,6 +343,9 @@ function SrcParse(vipUrl, dataObj) {
                 if(urltype=="object"){
                     headers = urljson.headers && urljson.headers.length>0?urljson.headers[0]:(ulist.ext||{}).header;
                     playUrl = urljson.urls[0];
+                    if(urljson.audioUrls){
+                        toast('当前解析输出为音视频分离，代理不支持');
+                    }
                 }
                 log(parsename+">代理播放地址>"+playUrl)
                 headers = headers || getheader(playUrl);
@@ -363,7 +366,7 @@ function SrcParse(vipUrl, dataObj) {
             }
         }, parselist, vipUrl, 解析方法, mulheader, log));
         parselist.forEach((item) => {
-            urls.push(u + "?name=" + item.name + (/bilibili|bilivideo/.test(vipUrl)?"#.m4s":"#.m3u8") +"#pre##isVideo=true#");
+            urls.push(u + "?name=" + item.name + (/bilibili|bilivideo/.test(vipUrl)?"#.m4s#isVideo=true#":"#.m3u8") +"#pre#");
             names.push(item.name);
             headers.push((item.ext||{}).header || mulheader(vipUrl));
         })

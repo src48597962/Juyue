@@ -363,7 +363,7 @@ function SrcParse(vipUrl, dataObj) {
             }
         }, parselist, vipUrl, 解析方法, mulheader, log));
         parselist.forEach((item) => {
-            urls.push(u + "?name=" + item.name + (/bilibili|bilivideo/.test(vipUrl)?"#.m4s":"#.m3u8") +"#pre#");
+            urls.push(u + "?name=" + item.name + "#.m3u8" +"#pre#");
             names.push(item.name);
             headers.push((item.ext||{}).header || mulheader(vipUrl));
         })

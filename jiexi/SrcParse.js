@@ -364,7 +364,7 @@ function SrcParse(vipUrl, dataObj) {
         parselist.forEach((item) => {
             urls.push(u + "?name=" + item.name + "#.m3u8#pre#");
             names.push(item.name);
-            headers.push(item.ext.header || mulheader(vipUrl));
+            headers.push((item.ext||{}).header || mulheader(vipUrl));
         })
         let dm;
         if(isVip && playSet.danmu==1){

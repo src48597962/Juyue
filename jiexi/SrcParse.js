@@ -331,6 +331,7 @@ function SrcParse(vipUrl, dataObj) {
                 log(parsename+">解析错误>" + e.message + " 错误行#" + e.lineNumber);
             }
             if(playUrl){
+                log(playUrl);
                 let urltype;
                 let urljson;
                 try{

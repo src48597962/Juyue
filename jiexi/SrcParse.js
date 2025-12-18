@@ -325,8 +325,7 @@ function SrcParse(vipUrl, dataObj) {
                     vipUrl: vipUrl,
                     parsemode: 3
                 }
-                let getUrl = 解析方法(obj);
-                playUrl = getUrl.url;
+                playUrl = 解析方法(obj).url;
             }catch(e){
                 log(parsename+">解析错误>" + e.message + " 错误行#" + e.lineNumber);
             }
@@ -345,13 +344,13 @@ function SrcParse(vipUrl, dataObj) {
                     playUrl = urljson.urls[0];
                     if(urljson.audioUrls){
                         toast('当前解析输出为音视频分离，代理不支持');
+                        return '';
                     }
                 }
                 log(parsename+">代理播放地址>"+playUrl)
-                headers = headers || getheader(playUrl);
 
                 if(playUrl.includes(".m3u8")){
-                    let f = cacheM3u8(playUrl, {headers: headers, timeout: 2000});
+                    let f = cacheM3u8(playUrl, {headers: headers || getheader(playUrl), timeout: 2000});
                     return f?readFile(f.split("##")[0]):playUrl; //'#isVideo=true#';
                 }else{
                     return JSON.stringify({

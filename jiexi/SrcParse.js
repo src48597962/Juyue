@@ -325,7 +325,15 @@ function SrcParse(vipUrl, dataObj) {
                     vipUrl: vipUrl,
                     parsemode: 3
                 }
-                playUrl = 解析方法(obj).url;
+
+                let nowtime = Date.now();
+                let oldtime = parseInt(getVar(parsename+vipUrl+'time', '0').replace('time', ''));
+                
+                if (getVar(parsename+vipUrl) && nowtime < (oldtime + 5 * 60 * 1000)) {
+                    playUrl = getVar(parsename+vipUrl);
+                }else{
+                    playUrl = 解析方法(obj).url;
+                }
             }catch(e){
                 log(parsename+">解析错误>" + e.message + " 错误行#" + e.lineNumber);
             }
@@ -343,8 +351,7 @@ function SrcParse(vipUrl, dataObj) {
                     headers = urljson.headers && urljson.headers.length>0?urljson.headers[0]:(ulist.ext||{}).header;
                     playUrl = urljson.urls[0];
                     if(urljson.audioUrls){
-                        toast('当前解析输出为音视频分离，代理不支持');
-                        return '';
+                        toast(parsename+'输出为音视频分离，代理不支持');
                     }
                 }
                 log(parsename+">代理播放地址>"+playUrl)
@@ -353,6 +360,9 @@ function SrcParse(vipUrl, dataObj) {
                     let f = cacheM3u8(playUrl, {headers: headers || getheader(playUrl), timeout: 2000});
                     return f?readFile(f.split("##")[0]):playUrl; //'#isVideo=true#';
                 }else{
+                    let nowtime = Date.now();
+                    putVar(parsename+vipUrl+'time', nowtime + 'time');
+                    putVar(parsename+vipUrl, playUrl);
                     return JSON.stringify({
                         statusCode: 302,
                         headers: {

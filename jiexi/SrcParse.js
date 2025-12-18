@@ -352,6 +352,7 @@ function SrcParse(vipUrl, dataObj) {
                     playUrl = urljson.urls[0];
                     if(urljson.audioUrls){
                         toast(parsename+'输出为音视频分离，代理不支持');
+                        return '';
                     }
                 }
                 log(parsename+">代理播放地址>"+playUrl)

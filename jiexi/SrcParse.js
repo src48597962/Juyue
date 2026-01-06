@@ -503,8 +503,10 @@ function SrcParse(vipUrl, dataObj) {
                     eval('urljson = '+ beurls[k]);
                     urltype = $.type(urljson);
                 }catch(e){
+                    log(e.message);
                     urltype = "string";
                 }
+                log(urltype);
                 if(urltype == "object"){
                     try {
                         let murls = urljson.urls;

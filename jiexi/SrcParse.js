@@ -503,10 +503,8 @@ function SrcParse(vipUrl, dataObj) {
                     eval('urljson = '+ beurls[k]);
                     urltype = $.type(urljson);
                 }catch(e){
-                    log(e.message);
                     urltype = "string";
                 }
-                log(urltype);
                 if(urltype == "object"){
                     try {
                         let murls = urljson.urls;
@@ -588,8 +586,8 @@ function SrcParse(vipUrl, dataObj) {
         if(isVip && playSet.danmu==1){
             dm = danmu || 弹幕(vipUrl);
         }
-        if(urls.length>1){
-            log('进入多线路播放');
+        if(urls.length>1 || dm){
+            log('组多线路进入播放');
             return JSON.stringify({
                 urls: urls,
                 names: names,
@@ -598,21 +596,8 @@ function SrcParse(vipUrl, dataObj) {
                 audioUrls: audioUrls
             }); 
         }else{
-            log('进入单线路播放');
-            if(dm){
-                let MulUrl = formatMulUrl(playurl, 0);
-                urls = [];
-                headers= [];
-                urls.push(MulUrl.url);
-                headers.push(MulUrl.header);
-                return JSON.stringify({
-                    urls: urls,
-                    headers: headers,
-                    danmu: dm 
-                }); 
-            }else{
-                return formatUrl(playurl);
-            }
+            log('直接进入播放');
+            return formatUrl(playurl);
         }
     }else{
         if(isTest && dataObj.testParse["url"].startsWith('http') && dataObj.testParse["type"]=='0'){

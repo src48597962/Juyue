@@ -1705,10 +1705,16 @@ function sousuo() {
                     }else if(getMyVar('搜索指定id列表源')){//搜索指定id列表源
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let lists = getSearchLists();
-                        let idslist = storage0.getMyVar('搜索指定id列表源');
-                        ssdatalist = lists.filter(it=>{
-                            return idslist.indexOf(it.id)>-1;
-                        });
+                        let idslist = storage0.getMyVar('搜索指定id列表源') || [];
+                        if(idslist.length>0){
+                            if($.type(idslist[0])=='string'){
+                                ssdatalist = lists.filter(it=>{
+                                    return idslist.indexOf(it.id)>-1;
+                                });
+                            }else if($.type(idslist[0])=='object'){
+                                ssdatalist = idslist;
+                            }
+                        }
                         clearMyVar('搜索指定id列表源');
                     }else{//主界面上或软件搜索当前源所在分组
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');

@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "2.2",
     "hint": "主题管理中原生主题需要恢复一下",
     "JYUpdateRecords": [{
+        title: "beta V2.3",
+        records: [
+            "新增：海阔搜索支持指定源列表搜索"
+        ]
+    },{
         title: "2025/12/13 V2.2",
         records: [
             "修复：解析测试页长按解析删除报错问题",

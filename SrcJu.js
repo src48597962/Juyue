@@ -1702,20 +1702,20 @@ function sousuo() {
                                 });
                             }
                         }
-                    }else if(getMyVar('搜索指定id列表源')){//搜索指定id列表源
+                    }else if(getMyVar('搜索指定源列表')){//搜索指定源列表
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let lists = getSearchLists();
-                        let idslist = storage0.getMyVar('搜索指定id列表源') || [];
+                        let idslist = storage0.getMyVar('搜索指定源列表') || [];
                         if(idslist.length>0){
                             if($.type(idslist[0])=='string'){
                                 ssdatalist = lists.filter(it=>{
-                                    return idslist.indexOf(it.id)>-1;
+                                    return idslist.indexOf(it.id)>-1 || idslist.indexOf(it.name)>-1;
                                 });
                             }else if($.type(idslist[0])=='object'){
                                 ssdatalist = idslist;
                             }
                         }
-                        clearMyVar('搜索指定id列表源');
+                        clearMyVar('搜索指定源列表');
                     }else{//主界面上或软件搜索当前源所在分组
                         require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                         let group = getMyVar('搜索临时搜索分组','') || homeGroup;

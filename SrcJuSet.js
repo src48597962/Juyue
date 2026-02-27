@@ -569,12 +569,14 @@ function jiekouapi(data, look) {
                     groupNames.push(it);
                 }
             })
+            /*
             groupNames = groupNames.filter(item => runTypes.indexOf(item)==-1).map(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
                 }
                 return it;
             })
+            */
 
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;

@@ -575,12 +575,13 @@ function jiekouapi(data, look) {
                 }
                 return it;
             })
-            
+            xlog('1');
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+            xlog('2');
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
+            /*
             let pop = hikerPop.FlexMenuBottom({
-                /*
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
                     title: "确定",
@@ -591,7 +592,7 @@ function jiekouapi(data, look) {
                         refreshPage();
                         pop.dismiss();
                     }
-                })), */
+                })),
                 sections: [new FlexSection("", groupNames)], 
                 title: "选择分组标签", 
                 click(button, sectionIndex, i) {
@@ -603,9 +604,10 @@ function jiekouapi(data, look) {
                         selectTag.push(button.title);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
-                    //inputBox.setDefaultValue(selectTag.join(','));
+                    inputBox.setDefaultValue(selectTag.join(','));
                 }
             });
+            */
             return "hiker://empty";
         }),
         extra: {

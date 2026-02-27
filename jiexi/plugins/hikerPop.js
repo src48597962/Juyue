@@ -46,6 +46,7 @@ const HeavyTaskUtil = com.example.hikerview.utils.HeavyTaskUtil;
 
 const GridLayoutManager = Packages.androidx.recyclerview.widget.GridLayoutManager;
 const LinearLayout = android.widget.LinearLayout;
+const ItemTouchHelper = Packages.androidx.recyclerview.widget.ItemTouchHelper;
 
 
 const BiometricManager = Packages.androidx.biometric.BiometricManager;
@@ -58,6 +59,8 @@ const RecyclerView = Packages.androidx.recyclerview.widget.RecyclerView;
 const LayoutInflater = android.view.LayoutInflater;
 const TextViewUtils = com.example.hikerview.ui.view.util.TextViewUtils;
 const View = android.view.View;
+const EventBus = org.greenrobot.eventbus.EventBus;
+
 
 if (typeof MY_RULE === "undefined") {
     MY_RULE = null;
@@ -82,7 +85,7 @@ const startActivity = getContext();
 let useStartActivity = true;
 
 function getArticleListFragment(activity) {
-    //let activity = getCurrentActivity();
+    //let activity = getCurrentActivity();    
     try {
         if (activity instanceof com.example.hikerview.ui.home.MainActivity) {
             let MainActivity = activity.getClass();
@@ -112,6 +115,13 @@ function clickItem(af, position, url) {
     click.invoke(af, null, java.lang.Integer.valueOf(position), url, true, "");
 }
 
+function canTouchUI(name, time) {
+    let canTouch = javaContext.getClass().getDeclaredMethod("canTouchUI", java.lang.String, java.lang.String, java.lang.Long.TYPE);
+    canTouch.setAccessible(true);
+    time = Number(time);
+    let res = canTouch.invoke(javaContext, MY_RULE ? MY_RULE.title : "hikerPop", name, java.lang.Long.valueOf(Number.isNaN(time) ? 200 : time));
+    return res == true;
+}
 
 function getActivityContext() {
     return useStartActivity ? startActivity : getContext();
@@ -119,6 +129,16 @@ function getActivityContext() {
 
 function setUseStartActivity(bool) {
     useStartActivity = !!bool;
+    return this;
+}
+let throttleTime = 0;
+
+function setNextThrottle(time) {
+    if (time == void 0) {
+        throttleTime = 200;
+    } else if (typeof time === "number" && time > 0) {
+        throttleTime = time;
+    }
     return this;
 }
 
@@ -424,8 +444,8 @@ function FlexMenuBottom({
     height,
     extraInputBox
 }) {
-    function newClickListener(value, index, index2) {
 
+    function newClickListener(value, index, index2) {
         return {
             onLongClick() {
                 tryCallBack(getDefaultValue(longClick, "function", null), [value, index, index2]);
@@ -436,9 +456,10 @@ function FlexMenuBottom({
         };
     }
     height = getNumberValue(height, v => v <= 1 && v > 0, 0.75);
+    let sectionsq = Array.isArray(sections) ? sections.filter(v => v instanceof FlexSection) : [];
+    let mainTitle = getDefaultValue(title, "string", null);
     let complexMenuPopup = new JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
-        sections: Array.isArray(sections) ? sections.filter(v => v instanceof FlexSection) : [],
-        mainTitle: getDefaultValue(title, "string", null),
+
         getImplLayoutId() {
             return isDarkMode() ? R.layout.pop_custom_center_recycler_view_dark :
                 R.layout.pop_custom_center_recycler_view;
@@ -454,23 +475,28 @@ function FlexMenuBottom({
         onCreate() {
             this.super$onCreate();
             let titleView = this.findViewById(R.id.title);
-            if (this.mainTitle != null) {
-                titleView.setText(this.mainTitle);
-            }
+            titleView.setText(String(mainTitle));
+
             this.titleView = titleView;
             // 配置RecyclerView
             this.recyclerView = this.findViewById(R.id.recyclerView);
             //Packages.androidx.core.view.ViewCompat.setBackground(this.recyclerView, Packages.androidx.core.content.ContextCompat.getDrawable(getActivityContext(), R.drawable.bg_round_all_rice));
             this.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-            this.adapter = newSectionAdapter(getActivityContext(), this.sections, newClickListener);
-            this.recyclerView.setAdapter(this.adapter);
-            let linearLayout = this.recyclerView.getParent();
-            if (linearLayout && extraInputBox instanceof ResExtraInputBox) {
-                let inputItem = extraInputBox.create(linearLayout, [this]);
-                let params = inputItem.getLayoutParams();
-                params.setMargins(35, 0, 35, 0);
-                inputItem.setLayoutParams(params);
-                linearLayout.addView(inputItem, 1);
+
+            try {
+                this.adapter = newSectionAdapter(getActivityContext(), sectionsq, newClickListener);
+                this.recyclerView.setAdapter(this.adapter);
+
+                let linearLayout = this.recyclerView.getParent();
+                if (linearLayout && extraInputBox instanceof ResExtraInputBox) {
+                    let inputItem = extraInputBox.create(linearLayout, [this]);
+                    let params = inputItem.getLayoutParams();
+                    params.setMargins(35, 0, 35, 0);
+                    inputItem.setLayoutParams(params);
+                    linearLayout.addView(inputItem, 1);
+                }
+            } catch (e) {
+
             }
         },
         setTitle(title) {
@@ -479,8 +505,8 @@ function FlexMenuBottom({
             }
         },
         removeSection(index) {
-            if (index >= 0 && index < this.sections.length) {
-                this.sections.splice(index, 1);
+            if (index >= 0 && index < sectionsq.length) {
+                sectionsq.splice(index, 1);
                 if (this.adapter != null) {
                     // 计算RecyclerView位置 (每个section占2个位置)
                     let startPosition = index * 2;
@@ -490,8 +516,8 @@ function FlexMenuBottom({
             }
         },
         updateSectionTitle(index, newTitle) {
-            if (index >= 0 && index < this.sections.length) {
-                this.sections.at(index).setSectionTitle(newTitle);
+            if (index >= 0 && index < sectionsq.length) {
+                sectionsq.at(index).setSectionTitle(newTitle);
                 if (this.adapter != null) {
                     // 标题位置 = index * 2
                     this.adapter.notifyItemChanged(index * 2);
@@ -499,8 +525,8 @@ function FlexMenuBottom({
             }
         },
         updateButtonTitle(sectionIndex, buttonIndex, newTitle) {
-            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
-                this.sections.at(sectionIndex).updateButtonTitle(buttonIndex, newTitle);
+            if (sectionIndex >= 0 && sectionIndex < sectionsq.length) {
+                sectionsq.at(sectionIndex).updateButtonTitle(buttonIndex, newTitle);
                 if (this.adapter != null) {
                     // 按钮组位置 = sectionIndex * 2 + 1
                     this.adapter.notifyItemChanged(sectionIndex * 2 + 1);
@@ -508,8 +534,8 @@ function FlexMenuBottom({
             }
         },
         removeButton(sectionIndex, buttonIndex) {
-            if (sectionIndex >= 0 && sectionIndex < sections.length) {
-                this.sections.at(sectionIndex).removeButton(buttonIndex);
+            if (sectionIndex >= 0 && sectionIndex < sectionsq.length) {
+                sectionsq.at(sectionIndex).removeButton(buttonIndex);
                 if (this.adapter != null) {
                     // 按钮组位置 = sectionIndex * 2 + 1
                     this.adapter.notifyItemChanged(sectionIndex * 2 + 1);
@@ -517,9 +543,9 @@ function FlexMenuBottom({
             }
         },
         addSection(index, section) {
-            index = index === null ? this.sections.length : index;
-            if (index >= 0 && index <= this.sections.length && section instanceof FlexSection) {
-                this.sections.splice(index, 0, section);
+            index = index === null ? sectionsq.length : index;
+            if (index >= 0 && index <= sectionsq.length && section instanceof FlexSection) {
+                sectionsq.splice(index, 0, section);
                 if (this.adapter != null) {
                     let startPosition = index * 2;
                     this.adapter.notifyItemRangeInserted(startPosition, 2);
@@ -528,12 +554,11 @@ function FlexMenuBottom({
             }
 
         },
-
         addButton(sectionIndex, buttonIndex, button) {
-            sectionIndex = sectionIndex === null ? this.sections.length - 1 : sectionIndex;
+            sectionIndex = sectionIndex === null ? sectionsq.length - 1 : sectionIndex;
 
-            if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
-                let section = this.sections.at(sectionIndex);
+            if (sectionIndex >= 0 && sectionIndex < sectionsq.length) {
+                let section = sectionsq.at(sectionIndex);
                 buttonIndex = buttonIndex === null ? section.getButtons().length : buttonIndex;
 
                 section.getButtons().splice(buttonIndex, 0, new FlexSectionButton(button));
@@ -544,7 +569,6 @@ function FlexMenuBottom({
             }
         }
     }, getActivityContext());
-
     let pop = new builderXPopup().moveUpToKeyboard(false).asCustom(complexMenuPopup);
     showOnUI(pop);
     return pop;
@@ -552,40 +576,44 @@ function FlexMenuBottom({
 FlexMenuBottom.FlexSection = FlexSection;
 
 function newSectionAdapter(context, sections, newClickListener) {
+
     function newSectionViewHolder(itemView, type) {
+        try {
+            if (type == 0) {
 
-        if (type == 0) {
+                let title = itemView.findViewById(R.id.movie_one_title);
+                let desc = itemView.findViewById(R.id.movie_one_desc);
+                let resultBg = itemView.findViewById(R.id.result_bg);
+                return new JavaAdapter(RecyclerView.ViewHolder, {
+                    getType() {
+                        return type;
+                    },
+                    getTitleView() {
+                        return title;
+                    },
+                    getDescView() {
+                        return desc;
+                    },
+                    getResultBg() {
+                        return resultBg;
+                    }
+                }, itemView);
 
-            let title = itemView.findViewById(R.id.movie_one_title);
-            let desc = itemView.findViewById(R.id.movie_one_desc);
-            let resultBg = itemView.findViewById(R.id.result_bg);
-            return new JavaAdapter(RecyclerView.ViewHolder, {
-                getType() {
-                    return type;
-                },
-                getTitleView() {
-                    return title;
-                },
-                getDescView() {
-                    return desc;
-                },
-                getResultBg() {
-                    return resultBg;
-                }
-            }, itemView);
+            } else if (type == 1) {
 
-        } else if (type == 1) {
+                let flexboxLayout = itemView.findViewById(R.id.flexboxLayout);
+                return new JavaAdapter(RecyclerView.ViewHolder, {
 
-            let flexboxLayout = itemView.findViewById(R.id.flexboxLayout);
-            return new JavaAdapter(RecyclerView.ViewHolder, {
-
-                getType() {
-                    return type;
-                },
-                getFlexboxLayout() {
-                    return flexboxLayout;
-                }
-            }, itemView);
+                    getType() {
+                        return type;
+                    },
+                    getFlexboxLayout() {
+                        return flexboxLayout;
+                    }
+                }, itemView);
+            }
+        } catch (e) {
+            return null;
         }
     }
     let sectionAdapter = new JavaAdapter(RecyclerView.Adapter, {
@@ -684,8 +712,223 @@ function newSectionAdapter(context, sections, newClickListener) {
     return sectionAdapter;
 }
 
-function test() {
+function collectBottom({
+    list,
+    title,
+    click,
+    longClick,
+    tagClick,
+    height,
+    extraInputBox
+}) {
+    const XGridLayoutManager = com.example.hikerview.ui.view.XGridLayoutManager;
 
+    function newClickListener() {
+        return {
+            onLongClick(i) {
+                tryCallBack(getDefaultValue(longClick, "function", null), [list.at(i), i]);
+            },
+            click(i) {
+                tryCallBack(getDefaultValue(click, "function", null), [list.at(i), i]);
+            },
+            tagClick(i) {
+                tryCallBack(getDefaultValue(click, "function", null), [list.at(i), i]);
+            }
+        };
+    }
+    list = Array.isArray(list) ? list.filter(v => typeof v === "object") : [],
+        height = getNumberValue(height, v => v <= 1 && v > 0, 0.75);
+    let mainTitle = getDefaultValue(title, "string", null);
+    let complexMenuPopup = new JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
+        getImplLayoutId() {
+            return isDarkMode() ? R.layout.pop_custom_center_recycler_view_dark :
+                R.layout.pop_custom_center_recycler_view;
+        },
+        getPopupHeight() {
+            try {
+                return XPopupUtils.getScreenHeight(getActivityContext()) * height;
+            } catch (e) {
+                log(e.toString())
+                return this.super$getPopupHeight();
+            }
+        },
+        onCreate() {
+            this.super$onCreate();
+            let titleView = this.findViewById(R.id.title);
+
+            titleView.setText(String(mainTitle));
+
+            this.titleView = titleView;
+            // 配置RecyclerView
+            this.recyclerView = this.findViewById(R.id.recyclerView);
+            //Packages.androidx.core.view.ViewCompat.setBackground(this.recyclerView, Packages.androidx.core.content.ContextCompat.getDrawable(getActivityContext(), R.drawable.bg_round_all_rice));
+            this.recyclerView.setBackgroundResource(R.drawable.bg_round_all_rice);
+            let glm = new XGridLayoutManager(getContext(), 1);
+            //glm.setSpanSizeLookup()
+            this.recyclerView.setLayoutManager(glm);
+            // Java
+            let paddingStartEnd = DisplayUtil.dpToPx(getActivityContext(), 4);
+            let paddingTopBottom = DisplayUtil.dpToPx(getActivityContext(), 6);
+            this.recyclerView.setPadding(paddingStartEnd, paddingTopBottom, paddingStartEnd, paddingTopBottom);
+            try {
+                this.adapter = newCollecListAdapter(getActivityContext(), list, newClickListener());
+                this.recyclerView.setAdapter(this.adapter);
+                this.recyclerView.addItemDecoration(this.adapter.getDividerItem());
+                let linearLayout = this.recyclerView.getParent();
+                if (linearLayout && extraInputBox instanceof ResExtraInputBox) {
+                    let inputItem = extraInputBox.create(linearLayout, [this]);
+                    let params = inputItem.getLayoutParams();
+                    params.setMargins(35, 0, 35, 0);
+                    inputItem.setLayoutParams(params);
+                    linearLayout.addView(inputItem, 1);
+                }
+            } catch (e) {
+
+            }
+        }
+    }, getActivityContext());
+    let pop = new builderXPopup().moveUpToKeyboard(false).asCustom(complexMenuPopup);
+    showOnUI(pop);
+    return pop;
+}
+
+function newCollecListAdapter(context, list, clickListener, _useGrid) {
+    const CollectionListAdapter = com.example.hikerview.ui.setting.CollectionListAdapter;
+    const picType = 1,
+        noPicType = 2,
+        gridType = 3;
+    let useGrid = _useGrid || false;
+    const Glide = com.bumptech.glide.Glide;
+    const GlideUtil = com.example.hikerview.utils.GlideUtil;
+    const options = new com.bumptech.glide.request.RequestOptions();
+    //let RuleHolderClass=CollectionListAdapter.RuleHolder.__javaObject__;
+    function invokeGet(obj, key) {
+        return obj.getClass().getMethod(key).invoke(obj);
+    }
+    return new JavaAdapter(RecyclerView.Adapter, {
+        getItemCount() {
+            return list.length;
+        },
+
+        onCreateViewHolder(viewGroup, viewType) {
+            let inflate;
+            switch (viewType) {
+                case picType:
+                    inflate = LayoutInflater.from(context).inflate(2131558583, viewGroup, false);
+                    return new CollectionListAdapter.RuleHolder(inflate);
+                case gridType:
+                    inflate = LayoutInflater.from(context).inflate(2131558584, viewGroup, false);
+                    return new CollectionListAdapter.GridHolder(inflate);
+                default:
+
+                    inflate = LayoutInflater.from(context).inflate(2131558584, viewGroup, false);
+                    return new CollectionListAdapter.RuleHolder(inflate);
+            }
+        },
+        setUseGrid(_useGrid) {
+            useGrid = _useGrid;
+        },
+        getUseGrid() {
+            return useGrid;
+        },
+        getItemViewType(position) {
+            let item = list.at(position);
+            if (useGrid) {
+                return gridType
+            }
+            if (item.pic_url && item.pic_url.startsWith("http")) {
+                return picType;
+            }
+            return noPicType;
+        },
+        onBindViewHolder(viewHolder, position) {
+            let viewCollection = list.at(position);
+            if (typeof viewCollection !== "object") viewCollection = {};
+
+            if (viewHolder instanceof CollectionListAdapter.RuleHolder) {
+                try {
+                    let ruleHolder = viewHolder;
+                    invokeGet(ruleHolder, "getTitle").setText(viewCollection.title || null);
+
+                    let picUrl = String(viewCollection.pic_url);
+
+                    if (picUrl && picUrl.startsWith("http")) {
+                        invokeGet(ruleHolder, "getItem_result_img_bg").setVisibility(0);
+                        Glide.with(context).load(GlideUtil.getGlideUrl(viewCollection.url || picUrl || null, picUrl)).apply(options).into(invokeGet(ruleHolder, "getItem_reult_img"));
+                        invokeGet(ruleHolder, "getItem_url").setText(viewCollection.desc || null);
+
+                    } else {
+                        invokeGet(ruleHolder, "getItem_result_img_bg").setVisibility(8);
+
+                    }
+
+                    if (viewCollection.tag) {
+                        let itemVideo = invokeGet(ruleHolder, "getItem_video");
+                        itemVideo.setText(String(viewCollection.tag));
+                        itemVideo.setBackgroundColor(context.getResources().getColor(2131100420));
+                        itemVideo.setTextColor(context.getResources().getColor(2131100488));
+                        invokeGet(ruleHolder, "getItem_video_card").setVisibility(0);
+                    } else {
+                        invokeGet(ruleHolder, "getItem_video_card").setVisibility(8);
+                    }
+
+                    if (viewCollection.info) {
+                        let his = invokeGet(ruleHolder, "getItem_history");
+                        his.setVisibility(0);
+                        his.setText(String(viewCollection.info));
+                    } else {
+                        invokeGet(ruleHolder, "getItem_history").setVisibility(8);
+                    }
+
+                    invokeGet(ruleHolder, "getItem_video_card").setOnClickListener((v) => {
+                        clickListener.tagClick(position);
+                    });
+                    invokeGet(ruleHolder, "getItem_ad_bg").setOnClickListener((v) => {
+                        clickListener.click(position);
+                    });
+                    invokeGet(ruleHolder, "getItem_ad_bg").setOnLongClickListener(new View.OnLongClickListener({
+                        onLongClick(v) {
+                            clickListener.onLongClick(position);
+                            return true;
+                        },
+                        onLongClickUseDefaultHapticFeedback(v) {
+                            return false;
+                        }
+                    }));
+                } catch (e) {
+                    log(e.toString() + e.stack)
+                }
+            } else {
+                log("错误" + (viewHolder instanceof CollectionListAdapter.RuleHolder));
+            }
+        },
+        getDividerItem() {
+            return new CollectionListAdapter.MyDividerItem();
+        },
+        getItemId(position) {
+            return position;
+        }
+    });
+
+}
+
+function test() {
+    collectBottom({
+        height: 0.9,
+        list: [{
+            title: "test",
+            pic_url: "https://vd3.bdstatic.com/mda-raqi81i35fcwqknr/1737809543/mda-raqi81i35fcwqknr.jpg?for=bg",
+            tag: "okk",
+            //desc: "hiker",
+            info: "a-b"
+        }, {
+            title: "test",
+            pic_url: "https://vd3.bdstatic.com/mda-raqi81i35fcwqknr/1737809543/mda-raqi81i35fcwqknr.jpg?for=bg",
+            tag: "okk",
+            desc: "hiker",
+            info: "a-b"
+        }]
+    })
 }
 
 function updateRecordsBottom(records) {
@@ -694,8 +937,9 @@ function updateRecordsBottom(records) {
     const UpdateRecordsAdapter = com.example.hikerview.ui.setting.updaterecords.UpdateRecordsAdapter;
     const RecordDetail = com.example.hikerview.ui.setting.updaterecords.RecordDetail;
 
+    let rules = [];
     let myRecordDetail = new JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
-        rules: [],
+
         getImplLayoutId() {
             return R.layout.activit_ad_list;
         },
@@ -717,7 +961,7 @@ function updateRecordsBottom(records) {
             layoutParams.topMargin = statusBarHeight;
             findView2.setLayoutParams(layoutParams);
 
-            this.adapter = new UpdateRecordsAdapter(getActivityContext(), this.rules);
+            this.adapter = new UpdateRecordsAdapter(getActivityContext(), rules);
             this.recyclerView.setLayoutManager(new GridLayoutManager(getActivityContext(), 1));
             this.recyclerView.setAdapter(this.adapter);
             try {
@@ -725,12 +969,12 @@ function updateRecordsBottom(records) {
                     let recordDetail = new RecordDetail();
                     recordDetail.setType(1);
                     recordDetail.setDetail(String(it.title || ""));
-                    this.rules.push(recordDetail);
+                    rules.push(recordDetail);
                     for (let item of (it.records || [])) {
                         let recordDetail2 = new RecordDetail();
                         recordDetail2.setType(2);
                         recordDetail2.setDetail(String(item || ""));
-                        this.rules.push(recordDetail2);
+                        rules.push(recordDetail2);
                     }
                 }
             } catch (e) {
@@ -744,6 +988,16 @@ function updateRecordsBottom(records) {
     let pop = new builderXPopup().asCustom(myRecordDetail);
     showOnUI(pop);
     return pop;
+}
+
+function getRulesRecyclerView() {
+    if (currentArticleListFragment == null) return null;
+    //return getActivityContext().findViewById(R.id.frag_article_list_recycler_view);
+    let ArticleListFragmentS = currentArticleListFragment.getClass().getSuperclass();
+    let field = ArticleListFragmentS.getDeclaredField("convertView");
+    field.setAccessible(true);
+    let convertView = field.get(currentArticleListFragment);
+    return convertView.findViewById(R.id.frag_article_list_recycler_view);
 }
 
 function findRecyclerView(viewGroup) {
@@ -762,17 +1016,9 @@ function findRecyclerView(viewGroup) {
         }
     }
 }
-
-
-function selectAttachList(id, {
-    click,
-    options,
-}) {
+function findItemById(id){
     if (typeof id !== "string" || !id) return null;
-    options = getStringArray(options, []);
-    let context = getActivityContext();
-    let recyclerView = findRecyclerView(context.findViewById(android.R.id.content));
-    //log(recyclerView===null);
+    let recyclerView = getRulesRecyclerView();
     if (recyclerView == null) return null;
     let list = recyclerView.getAdapter().getList();
     let i = 0;
@@ -786,16 +1032,130 @@ function selectAttachList(id, {
     }
     if (ii < 0) return null;
     let mg = recyclerView.getLayoutManager();
+    return mg.getChildAt(ii);
+}
+
+function selectAttachList(id, {
+    click,
+    options,
+}) {
+    let view=findItemById(id);
+    options = getStringArray(options, []);
+     if(view==null) return null;
 
     let pop = builderXPopup(getContext())
-        .atView(mg.getChildAt(ii))
+        .atView()
         .asAttachList(options, null, (position, text) => {
             tryCallBack(getDefaultValue(click, "function", null), [text, position]);
         });
     showOnUI(pop);
     return pop;
 }
+/**
+ * 显示 Tooltip
+ * @param {String|Number} anchorViewId - 目标 View 的 ID
+ * @param {String} text - 提示文字
+ * @param {Object} options - 可选配置项
+ * @param {Boolean} options.isLongDuration - 是否长时间显示 (true=15s, false=10s)
+ * @param {Number} options.styleId - 样式资源ID
+ * @param {String} options.gravity - 位置: "top", "bottom", "left", "right", "center"
+ * @param {String} options.animation - 动画: "default", "slow"
+ * @param {String} options.closePolicy - 关闭策略
+ * @param {Number} options.offsetX - X轴偏移量
+ * @param {Number} options.offsetY - Y轴偏移量
+ */
+function showTooltip(anchorViewId, text, options) {
+    // 处理 options 参数，确保不为空
+    var opts = options || {};
+    
+    // 设置默认值
+    var isLongDuration = opts.isLongDuration !== undefined ? opts.isLongDuration : false;
+    var styleId = opts.styleId !== undefined ? opts.styleId : null;
+    var gravity = opts.gravity !== undefined ? opts.gravity : "bottom";
+    var animation = opts.animation !== undefined ? opts.animation : "default";
+    var closePolicy = opts.closePolicy !== undefined ? opts.closePolicy : "anywhere_consume";
+    var offsetX = opts.offsetX !== undefined ? opts.offsetX : 0;
+    var offsetY = opts.offsetY !== undefined ? opts.offsetY : 0;
 
+    runOnUI(function() {
+        try {
+            // 1. 获取 View
+            let anchorView = findItemById(anchorViewId);
+            if (anchorView == null) {
+                console.warn("未找到ID为 " + anchorViewId + " 的视图");
+                return;
+            }
+
+            // 2. 导入类
+            var Tooltip = Packages.it.sephiroth.android.library.xtooltip.Tooltip;
+            var ClosePolicyPkg = Packages.it.sephiroth.android.library.xtooltip.ClosePolicy;
+            var Animation = Tooltip.Animation;
+            var Gravity = Tooltip.Gravity;
+
+            // ---------------------------------------------------------
+            // 3. 处理参数逻辑
+            // ---------------------------------------------------------
+
+            // 3.1 动画处理 (Animation)
+            var animInstance;
+            if (animation && animation.toLowerCase() === "slow") {
+                animInstance = Animation.Companion.getSLOW();
+            } else {
+                animInstance = Animation.Companion.getDEFAULT();
+            }
+
+            // 3.2 关闭策略处理 (ClosePolicy)
+           
+            var policyInstance;
+            var cp = closePolicy.toLowerCase();
+           
+            if (cp.includes("inside") && cp.includes("no_consume")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_INSIDE_NO_CONSUME();
+            } else if (cp.includes("inside")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_INSIDE_CONSUME(); // 默认 consume
+            } else if (cp.includes("outside") && cp.includes("no_consume")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_OUTSIDE_NO_CONSUME();
+            } else if (cp.includes("outside")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_OUTSIDE_CONSUME();
+            } else if (cp.includes("none")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_NONE();
+            } else if (cp.includes("anywhere") && cp.includes("no_consume")) {
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_ANYWHERE_NO_CONSUME();
+            } else {
+                // 默认策略: TOUCH_ANYWHERE_CONSUME
+                policyInstance = ClosePolicyPkg.Companion.getTOUCH_ANYWHERE_CONSUME();
+            }
+
+            // 3.3 位置 (Gravity)
+            var gravityEnum;
+            switch (gravity.toLowerCase()) {
+                case "top":    gravityEnum = Gravity.TOP; break;
+                case "left":   gravityEnum = Gravity.LEFT; break;
+                case "right":  gravityEnum = Gravity.RIGHT; break;
+                case "center": gravityEnum = Gravity.CENTER; break;
+                case "bottom": 
+                default:       gravityEnum = Gravity.BOTTOM; break;
+            }
+
+            var duration = isLongDuration ? 15000 : 10000;
+            var finalStyleId = styleId || R.style.MyTooltip;
+
+            // 4. 构建并显示
+            new Tooltip.Builder(getActivityContext())
+                .styleId(finalStyleId)
+                .floatingAnimation(animInstance) // 应用动画参数
+                .closePolicy(policyInstance)     // 应用关闭策略参数
+                .anchor(anchorView, offsetX, offsetY, false)
+                .text(text)
+                .showDuration(duration)
+                .create()
+                .show(anchorView, gravityEnum, true);
+
+        } catch (e) {
+            console.error("Tooltip显示失败: " + e);
+        }
+    });
+}
 function loading(title) {
     let pop = builderXPopup()
         .asLoading(getDefaultValue(title, "string", null), 0);
@@ -901,7 +1261,7 @@ function selectBottom({
 }
 
 function IconExtraMenu(click) {
-    this.create = function (parentView, args) {
+    this.create = function(parentView, args) {
         const Gravity = android.view.Gravity;
         const ImageView = android.widget.ImageView;
 
@@ -935,7 +1295,7 @@ function selectCenterIcon({
     extraMenu
 }) {
     let clickListener = new BookmarkFolderPopup.ClickListener({
-        onLongClick(value, index) { },
+        onLongClick(value, index) {},
         click(value, index) {
             tryCallBack(getDefaultValue(click, "function", null), [value, index]);
         }
@@ -1173,6 +1533,33 @@ function selectBottomSettingMenu({
 
 selectBottomSettingMenu.SettingItem = SettingItem;
 
+function newSimpleItemTouchHelperCallback(adapter, options) {
+    return new JavaAdapter(ItemTouchHelper.Callback, {
+        isLongPressDragEnabled() {
+            return options.allowDrag; // 允许长按拖动
+        },
+        isItemViewSwipeEnabled() {
+            return false; // 禁用滑动删除
+        },
+        getMovementFlags(recyclerView, viewHolder) {
+            // 允许上下拖动
+            let dragFlags = options.dragFlags;
+            return this.makeMovementFlags(dragFlags, 0);
+        },
+        onMove(recyclerView, source, target) {
+            adapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+            return true;
+        },
+        onSwiped(viewHolder, direction) {
+
+        }
+    });
+}
+
+function setItemTouchHelper(recyclerView, adapter, options) {
+    let itemTouchHelper = new ItemTouchHelper(newSimpleItemTouchHelperCallback(adapter, options));
+    itemTouchHelper.attachToRecyclerView(recyclerView);
+}
 
 function ResExtraInputBox({
     hint,
@@ -1184,7 +1571,7 @@ function ResExtraInputBox({
 }) {
     let search;
     let edit;
-    this.create = function (parentView, args) {
+    this.create = function(parentView, args) {
         args = Array.isArray(args) ? args : [];
         let inputItem = android.view.LayoutInflater.from(getActivityContext()).inflate(R.layout.item_input, parentView, false);
         search = inputItem.findViewById(R.id.search);
@@ -1218,8 +1605,8 @@ function ResExtraInputBox({
 
         if (typeof onChange === "function") {
             edit.addTextChangedListener(new android.text.TextWatcher({
-                onTextChanged() { },
-                beforeTextChanged() { },
+                onTextChanged() {},
+                beforeTextChanged() {},
                 afterTextChanged(s) {
                     let text;
                     if (s) {
@@ -1267,11 +1654,14 @@ function selectBottomResIcon({
     extraInputBox,
     position,
     toPosition,
-    beforeShow
+    beforeShow,
+    dragFlags,
+    allowDrag,
+    drag
 }) {
     let clickListener = new CustomCenterRecyclerViewPopup.ClickListener({
-        onLongClick(value, index) { },
-        click(value, index) { }
+        onLongClick(value, index) {},
+        click(value, index) {}
     });
     iconList = getDefaultValue(iconList, "array", []);
     let booksList = getBookList(iconList);
@@ -1289,6 +1679,10 @@ function selectBottomResIcon({
     };
     let setTitle = title => {
         if (tv) tv.setText(String(title));
+    };
+    let dragOptions = {
+        dragFlags: typeof dragFlags == "undefined" ? (ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) : dragFlags,
+        allowDrag: !!allowDrag,
     }
     let custom = new CustomBottomRecyclerViewPopup(getActivityContext())
         .withTitle(getDefaultValue(title, "string", "请选择"))
@@ -1303,6 +1697,7 @@ function selectBottomResIcon({
                 if (recyclerView) {
                     rv = recyclerView;
                     recyclerView.setAdapter(iconAdapter);
+                    setItemTouchHelper(recyclerView, iconAdapter, dragOptions);
                     Packages.androidx.core.view.ViewCompat.setBackground(recyclerView, Packages.androidx.core.content.ContextCompat.getDrawable(getActivityContext(), R.drawable.bg_round_all_rice));
                 }
                 if (recyclerView && (linearLayout = recyclerView.getParent()) && extraInputBox instanceof ResExtraInputBox) {
@@ -1345,6 +1740,13 @@ function selectBottomResIcon({
                 let item_bg = viewHolder.itemView.findViewById(R.id.item_bg);
                 item_bg && item_bg.setOnLongClickListener((view) => clickOrLongClick(longClick)(view, viewHolder.getAdapterPosition()) || true);
             }
+        },
+        onItemMove(fromPosition, toPosition) {
+            if (fromPosition == toPosition) return; // 位置相同无需操作
+            let item = booksList.remove(Number(fromPosition));
+            booksList.add(toPosition, item);
+            this.notifyItemMoved(fromPosition, toPosition);
+            tryCallBack(getDefaultValue(drag, "function", null), [Number(fromPosition), Number(toPosition), resOptionsManage]);
         }
     }, getActivityContext(), booksList, clickOrLongClick(click), false);
     iconAdapter.setSelectedIndex(getNumberValue(position, v => v < iconList.length && v >= -1, -1));
@@ -1370,7 +1772,10 @@ function selectBottomResIcon({
             }
             iconAdapter.notifyItemRemoved(pos);
         },
-        changeColumns: custom.changeSpanCount.bind(custom)
+        changeColumns: custom.changeSpanCount.bind(custom),
+        setAllowDrag(allowDrag) {
+            dragOptions.allowDrag = !!allowDrag;
+        },
     }
     if (typeof menuClick === "function") {
         custom.withMenu(new android.view.View.OnClickListener({
@@ -1502,10 +1907,10 @@ function infoBottom({
     });
 
     let custom = new FileDetailPopup(
-        getActivityContext(),
-        getDefaultValue(title, "string", null),
-        getStringArray(options, [])
-    )
+            getActivityContext(),
+            getDefaultValue(title, "string", null),
+            getStringArray(options, [])
+        )
         .withClickListener(clickListener);
     let pop = builderXPopup()
         .moveUpToKeyboard(false)
@@ -1571,10 +1976,10 @@ function chefSnackbarMake({
     ChefSnackbar.Companion.make(decorView)
         .setText(getDefaultValue(content, "string", ""))
         .setDuration(getDefaultValue(okTitle, "number", 0))
-        .setAction(getDefaultValue(okTitle, "string", "确认"), function () {
+        .setAction(getDefaultValue(okTitle, "string", "确认"), function() {
             tryCallBack(getDefaultValue(confirm, "function", null));
         })
-        .setCancelButton(getDefaultValue(cancelTitle, "string", "取消"), function () {
+        .setCancelButton(getDefaultValue(cancelTitle, "string", "取消"), function() {
             tryCallBack(getDefaultValue(cancel, "function", null));
         })
         .show();
@@ -1634,18 +2039,18 @@ function confirmSync({
     let result = false;
     showOnUI(
         builderXPopup()
-            .dismissOnTouchOutside(!noDismissOnBlank)
-            .dismissOnBackPressed(!noDismissOnBack)
-            .setPopupCallback(newSimpleCallback({
-                onDismiss(basePopupView) {
-                    countDownLatch.countDown();
-                }
-            }))
-            .asConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", ""), getDefaultValue(cancelTitle, "string", "取消"), getDefaultValue(okTitle, "string", "确认"), () => {
-                result = true;
-            }, () => {
-                result = false;
-            }, !!hideCancel)
+        .dismissOnTouchOutside(!noDismissOnBlank)
+        .dismissOnBackPressed(!noDismissOnBack)
+        .setPopupCallback(newSimpleCallback({
+            onDismiss(basePopupView) {
+                countDownLatch.countDown();
+            }
+        }))
+        .asConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", ""), getDefaultValue(cancelTitle, "string", "取消"), getDefaultValue(okTitle, "string", "确认"), () => {
+            result = true;
+        }, () => {
+            result = false;
+        }, !!hideCancel)
     );
     countDownLatch.await();
     return result;
@@ -1667,30 +2072,30 @@ function inputConfirmSync({
     let result = "";
     showOnUI(
         builderXPopup()
-            .autoOpenSoftInput(!noAutoSoft)
-            .autoFocusEditText(!noAutoSoft)
-            .dismissOnTouchOutside(!noDismissOnBlank)
-            .dismissOnBackPressed(!noDismissOnBack)
-            .setPopupCallback(newSimpleCallback({
-                onCreated(basePopupView) {
-                    if (hideCancel) {
-                        let cancelTextView = basePopupView.findViewById(R.id.tv_cancel);
-                        if (cancelTextView) {
-                            cancelTextView.setVisibility(8);
-                        }
-                        let dividerView = basePopupView.findViewById(R.id.xpopup_divider2);
-                        if (dividerView) {
-                            dividerView.setVisibility(8);
-                        }
+        .autoOpenSoftInput(!noAutoSoft)
+        .autoFocusEditText(!noAutoSoft)
+        .dismissOnTouchOutside(!noDismissOnBlank)
+        .dismissOnBackPressed(!noDismissOnBack)
+        .setPopupCallback(newSimpleCallback({
+            onCreated(basePopupView) {
+                if (hideCancel) {
+                    let cancelTextView = basePopupView.findViewById(R.id.tv_cancel);
+                    if (cancelTextView) {
+                        cancelTextView.setVisibility(8);
                     }
-                },
-                onDismiss(basePopupView) {
-                    countDownLatch.countDown();
+                    let dividerView = basePopupView.findViewById(R.id.xpopup_divider2);
+                    if (dividerView) {
+                        dividerView.setVisibility(8);
+                    }
                 }
-            }))
-            .asInputConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", null), getDefaultValue(defaultValue, "string", null), getDefaultValue(hint, "string", null), (text) => {
-                result = text;
-            }, null, maxTextarea ? R.layout.xpopup_confirm_input_max : (textarea ? R.layout.xpopup_confirm_input : 0))
+            },
+            onDismiss(basePopupView) {
+                countDownLatch.countDown();
+            }
+        }))
+        .asInputConfirm(getDefaultValue(title, "string", null), getDefaultValue(content, "string", null), getDefaultValue(defaultValue, "string", null), getDefaultValue(hint, "string", null), (text) => {
+            result = text;
+        }, null, maxTextarea ? R.layout.xpopup_confirm_input_max : (textarea ? R.layout.xpopup_confirm_input : 0))
     );
     countDownLatch.await();
     return result;
@@ -1915,8 +2320,8 @@ function getSeekAndLayout(max, pos, onChange) {
                 titleStart.setText(res);
             }
         },
-        onStartTrackingTouch(seekBar) { },
-        onStopTrackingTouch(seekBar) { }
+        onStartTrackingTouch(seekBar) {},
+        onStopTrackingTouch(seekBar) {}
     }));
     return [seekBar, linearLayout];
 }
@@ -1970,12 +2375,250 @@ function decodeQRCode(path) {
         let binaryBitmap = new com.google.zxing.BinaryBitmap(new com.google.zxing.common.HybridBinarizer(source));
         let decodedResult = new com.google.zxing.MultiFormatReader().decode(binaryBitmap, hints);
         result = String(decodedResult.getText());
-    } catch (e) { }
+    } catch (e) {}
     return result;
 }
 
+function getDanmakuContext() {
+    let activityContext = getContext();
+    if (activityContext instanceof com.example.hikerview.ui.video.VideoPlayerActivity) {
+        let videoPlayerActivityClass = activityContext.getClass();
+        let videoPlayerViewField = videoPlayerActivityClass.getDeclaredField("videoPlayerView");
+        videoPlayerViewField.setAccessible(true);
+        let videoPlayerView = videoPlayerViewField.get(activityContext);
+        let baseViewClass = videoPlayerView.getClass().getSuperclass();
+        let danmakuContextField = baseViewClass.getDeclaredField("danmakuContext");
+        danmakuContextField.setAccessible(true);
+        let danmakuContext = danmakuContextField.get(videoPlayerView);
 
-$.exports = {
+        let danmakuViewField = baseViewClass.getDeclaredField("danmakuView");
+        danmakuViewField.setAccessible(true);
+        let danmakuView = danmakuViewField.get(videoPlayerView);
+
+        let playField = videoPlayerActivityClass.getDeclaredField("player");
+        playField.setAccessible(true);
+        let play = playField.get(activityContext);
+        return [danmakuContext, danmakuView, play];
+    }
+    return [null, null, null];
+
+}
+
+function sendDanmaku(danmu) {
+    let [danmakuContext, danmakuView, play] = getDanmakuContext();
+
+    if (danmakuView != null && danmakuContext != null) {
+        let newDanmu = danmakuContext.mDanmakuFactory.createDanmaku(danmu.type || 1, danmakuContext);
+        newDanmu.text = danmu.text;
+        newDanmu.textSize = danmu.size || 50;
+        newDanmu.textColor = danmu.color || 16777215;
+        //newDanmu.borderColor = 16777215; //边框貌似不生效
+        runOnUI(() => {
+            newDanmu.setTime(danmu.time || (play.getCurrentPosition() + 100));
+            danmakuView.addDanmaku(newDanmu);
+
+        });
+        return true;
+    } else {
+        return false
+    }
+}
+
+function scrollToPageTop() {
+    EventBus.getDefault().post(new com.example.hikerview.event.OnTopEvent());
+    return true;
+}
+
+function smoothScrollWithSpeed(context, recyclerView, position, speedMsPerPx) {
+    let manager = recyclerView.getLayoutManager();
+    if (manager == null) return;
+    speedMsPerPx = Number(speedMsPerPx);
+    speedMsPerPx = Number.isNaN(speedMsPerPx) ? 25 : speedMsPerPx;
+    let scroller = new JavaAdapter(Packages.androidx.recyclerview.widget.LinearSmoothScroller, {
+        calculateSpeedPerPixel(displayMetrics) {
+            return speedMsPerPx / displayMetrics.densityDpi;
+        }
+    }, context);
+    scroller.setTargetPosition(position);
+    manager.startSmoothScroll(scroller);
+}
+
+function scrollSmooth(idOrPos, isScroll, speedMsPerPx) {
+
+    if (!(typeof idOrPos == "string" || typeof idOrPos == "number")) return false;
+
+    let context = getActivityContext();
+    let recyclerView = getRulesRecyclerView();
+    if (recyclerView == null) return false;
+    if (typeof idOrPos === "string") {
+        let list = recyclerView.getAdapter().getList();
+        let i = 0;
+        let ii = -1
+        for (let it of list) {
+            if (idOrPos == it.getBaseExtra().getId()) {
+                ii = i;
+                break;
+            }
+            i++;
+        }
+        if (ii < 0) return false;
+        let gridManager = recyclerView.getLayoutManager();
+
+        if (gridManager instanceof GridLayoutManager) {
+            //let fvPos = gridManager.findFirstVisibleItemPosition();
+            let lvPos = gridManager.findLastVisibleItemPosition();
+
+            idOrPos = ii > lvPos ? ii + 1 : ii;
+
+        }
+    }
+    if (idOrPos < 0) {
+        idOrPos = Math.max(recyclerView.getAdapter().getItemCount() + idOrPos, 0);
+    }
+    idOrPos = Math.min(recyclerView.getAdapter().getItemCount() - 1, idOrPos);
+    if (isScroll) {
+        if (typeof speedMsPerPx === "number") {
+            smoothScrollWithSpeed(context, recyclerView, idOrPos, speedMsPerPx);
+        } else {
+            recyclerView.smoothScrollToPosition(idOrPos);
+        }
+    } else {
+        recyclerView.scrollToPosition(idOrPos);
+    }
+    return true;
+}
+
+
+
+function getCurrentPlayPosition() {
+    let [danmakuContext, danmakuView, play] = getDanmakuContext();
+    if (play != null) {
+        return Number(play.getCurrentPosition());
+    }
+    return null;
+}
+/**
+ * 显示 RhinoUI 生成的布局弹窗
+ * @param {Object} uiObj RhinoUI.render() 返回的对象 或 View 对象
+ * @param {Object} options 配置项
+ * {
+ * type: "center" | "bottom", // 弹窗类型，默认 center
+ * width: 300, // 宽度 (dp)，可选
+ * height: 400, // 高度 (dp)，可选
+ * maxHeight: 500, // 最大高度 (dp)，仅 bottom 类型常用
+ * borderRadius: 16, // 圆角 (dp)
+ * dismissOnTouchOutside: true, // 点击外部关闭
+ * anim: XPopup.anim.ScaleAlphaFromCenter, // 动画枚举
+ * onShow: function(){}, // 显示回调
+ * onDismiss: function(){} // 关闭回调
+ * }
+ */
+
+function showRhinoUI(uiObj, options) {
+    options = options || {};
+    let type = options.type || "center";
+    
+    // 1. 获取 View (兼容 RhinoUI Wrapper 或 原生 View)
+    let targetView = null;
+    if (uiObj && uiObj.view && typeof uiObj.view.raw === "function") {
+        targetView = uiObj.view.raw();
+    } else if (uiObj instanceof android.view.View) {
+        targetView = uiObj;
+    } else {
+        throw new Error("showRhinoUI: 参数必须是 RhinoUI 对象或 Android View");
+    }
+
+    // 2. 构建 Builder
+    let builder = builderXPopup();
+    if (options.dismissOnTouchOutside === false) builder.dismissOnTouchOutside(false);
+    if (options.dismissOnBackPressed === false) builder.dismissOnBackPressed(false);
+    if (options.enableDrag === false) builder.enableDrag(false);
+    if (options.borderRadius !== void 0) builder.borderRadius(dpToPx(options.borderRadius));
+    if (options.anim) builder.popupAnimation(options.anim);
+    
+    builder.setPopupCallback(newSimpleCallback({
+        onShow: options.onShow,
+        onDismiss: options.onDismiss,
+        beforeShow: options.beforeShow
+    }));
+
+    // 3. 定义 Adapter 实现
+    let CustomPopup;
+
+    if (type === "bottom") {
+        // =============================================
+        // BottomPopupView 专用策略：重写 addInnerContent
+        // =============================================
+        CustomPopup = JavaAdapter(com.lxj.xpopup.core.BottomPopupView, {
+            // 返回 0，因为我们覆盖了使用它的 addInnerContent 方法
+            getImplLayoutId: function() {
+                return 0;
+            },
+
+            // 【核心】覆盖此方法，直接将 View 加入容器，跳过 XML 解析
+            addInnerContent: function() {
+                // 1. 获取容器 SmartDragLayout
+                // 源码中它是在 initPopupContent 时赋值的，这里我们直接找子控件
+                // BottomPopupView 的根布局就是 SmartDragLayout
+                let container = this.getChildAt(0); 
+                
+                // 2. 准备 View
+                if (targetView.getParent() != null) {
+                    targetView.getParent().removeView(targetView);
+                }
+                
+                // 3. 设置 LayoutParams (底部弹窗宽度撑满)
+                let w = options.width ? dpToPx(options.width) : -1; // -1 = MATCH_PARENT
+                let h = options.height ? dpToPx(options.height) : -2; // -2 = WRAP_CONTENT
+                let lp = new android.widget.FrameLayout.LayoutParams(w, h);
+                // bottomContainer 内部默认就是底部对齐，其实不需要 Gravity，但加上保险
+                lp.gravity = 81; // Gravity.BOTTOM | CENTER_HORIZONTAL
+
+                // 4. 添加到 SmartDragLayout 容器中
+                container.addView(targetView, lp);
+            },
+
+            getMaxHeight: function() {
+                if (options.maxHeight) return dpToPx(options.maxHeight);
+                return this.super$getMaxHeight();
+            }
+        }, getActivityContext());
+
+    } else {
+        // =============================================
+        // CenterPopupView 策略：onCreate + removeAllViews
+        // =============================================
+        CustomPopup = JavaAdapter(com.lxj.xpopup.core.CenterPopupView, {
+            // 必须返回有效 ID 骗过检查
+            getImplLayoutId: function() {
+                return android.R.layout.simple_list_item_1; 
+            },
+            
+            onCreate: function() {
+                this.super$onCreate();
+                // 清空占位 View
+                this.removeAllViews();
+                
+                if (targetView.getParent() != null) {
+                    targetView.getParent().removeView(targetView);
+                }
+                
+                let w = options.width ? dpToPx(options.width) : -2;
+                let h = options.height ? dpToPx(options.height) : -2;
+                let lp = new android.widget.FrameLayout.LayoutParams(w, h);
+                lp.gravity = 17; // Center
+                
+                this.addView(targetView, lp);
+            }
+        }, getActivityContext());
+    }
+
+    // 4. 显示
+    let popup = builder.asCustom(CustomPopup);
+    showOnUI(popup);
+    return popup;
+}
+let popf = {
     confirm,
     inputAutoRow,
     inputConfirm,
@@ -1983,34 +2626,63 @@ $.exports = {
     selectCenterMark,
     selectBottom,
     selectBottomMark,
-    IconExtraMenu,
     selectCenterIcon,
     inputTwoRow,
     selectBottomSettingMenu,
     selectBottomRes,
-    ResExtraInputBox,
     infoBottom,
     copyBottom,
     selectCenterColor,
     confirmSync,
     inputConfirmSync,
-    icon: R.drawable,
     chefSnackbarMake,
     toastMeg,
-    playVideos,
-    getClipTopData,
     multiChoice,
     seekCenter,
+    checkByBiometric,
+    selectAttachList,
+    selectBottomResIcon,
+    updateRecordsBottom,
+    FlexMenuBottom
+};
+let forcetHrottle = ["hikerPop_FlexMenuBottom"];
+
+function throttle(func, key) {
+    let funcc = function(...args) {
+        let time = throttleTime;
+        if (time == 0 && forcetHrottle.includes(key)) {
+            time = 200;
+        }
+        if (time > 0 && !canTouchUI(key, time)) return (throttleTime = 0);
+        return func.apply(null, args);
+    }
+    return Object.assign(funcc, func);
+}
+for (let funcName in popf) {
+    popf[funcName] = throttle(popf[funcName], "hikerPop_" + funcName);
+}
+
+$.exports = {
+    IconExtraMenu,
+    isDarkMode,
+    ResExtraInputBox,
+    icon: R.drawable,
+    playVideos,
+    getClipTopData,
     setUseStartActivity,
     runOnNewThread,
     runOnUIThread: runOnUI,
     canBiometric,
-    checkByBiometric,
     decodeQRCode,
-    selectAttachList,
-    selectBottomResIcon,
-    updateRecordsBottom,
     simpleRoute,
     test,
-    FlexMenuBottom
+    setNextThrottle,
+    sendDanmaku,
+    getCurrentPlayPosition,
+    scrollToPageTop,
+    scrollSmooth,
+    DragFlags: ItemTouchHelper,
+    showTooltip,
+    showRhinoUI
 };
+Object.assign($.exports, popf);

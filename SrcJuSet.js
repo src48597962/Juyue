@@ -577,7 +577,7 @@ function jiekouapi(data, look) {
             })
 
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-            //let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
+            let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             //let inputBox;
             let pop = hikerPop.FlexMenuBottom({
                 /*extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
@@ -591,7 +591,7 @@ function jiekouapi(data, look) {
                         pop.dismiss();
                     }
                 })),*/
-                //sections: [new FlexSection("", groupNames)], 
+                sections: [new FlexSection("", groupNames)], 
                 title: "选择分组标签", 
                 click(button, sectionIndex, i) {
                     if(button.title.includes('‘‘’’')){

@@ -1,10 +1,11 @@
 var newVersion = {
-    "SrcJu": "2.2",
-    "hint": "主题管理中原生主题需要恢复一下",
+    "SrcJu": "2.3",
+    "hint": "",
     "JYUpdateRecords": [{
-        title: "beta V2.3",
+        title: "2026/02/27 V2.3",
         records: [
-            "新增：海阔搜索支持指定源列表搜索"
+            "新增：海阔搜索支持指定源列表搜索",
+            "升级：配合海阔新版本升级pop插件代码"
         ]
     },{
         title: "2025/12/13 V2.2",

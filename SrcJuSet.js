@@ -608,7 +608,7 @@ function jiekouapi(data, look) {
             });
             */
 
-            
+            xlog(libspath + "plugins/hikerPop.js");
             const hikerPop = $.require("hikerPop.js?rule=hikerPop");
         let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
         let inputBox;

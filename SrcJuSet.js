@@ -576,10 +576,40 @@ function jiekouapi(data, look) {
                 }
                 return it;
             })
+
+            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+            let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
+            //let inputBox;
+            let pop = hikerPop.FlexMenuBottom({
+                extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                    hint: "已选择的分组标签",
+                    title: "确定",
+                    defaultValue: getMyVar('apigroup',''),
+                    click(s, pop) {
+                        s = s.replace(/，/g, ',');
+                        putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
+                        refreshPage();
+                        pop.dismiss();
+                    }
+                })),
+                sections: [new FlexSection("", groupNames)], 
+                title: "选择分组标签", 
+                click(button, sectionIndex, i) {
+                    if(button.title.includes('‘‘’’')){
+                        let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
+                        selectTag = selectTag.filter(x=>x!=newtitle);
+                        pop.updateButtonTitle(sectionIndex, i, newtitle);
+                    }else{
+                        selectTag.push(button.title);
+                        pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                    }
+                    //inputBox.setDefaultValue(selectTag.join(','));
+                }
+            });
             */
 
             
-            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+            const hikerPop = $.require("hikerPop.js?rule=hikerPop");
         let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
         let inputBox;
         let selectedIndex = -1;

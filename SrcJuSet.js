@@ -569,7 +569,7 @@ function jiekouapi(data, look) {
                     groupNames.push(it);
                 }
             })
-            /*
+            
             groupNames = groupNames.filter(item => runTypes.indexOf(item)==-1).map(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
@@ -579,7 +579,7 @@ function jiekouapi(data, look) {
 
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
-            //let inputBox;
+            let inputBox;
             let pop = hikerPop.FlexMenuBottom({
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
@@ -603,55 +603,10 @@ function jiekouapi(data, look) {
                         selectTag.push(button.title);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
                     }
-                    //inputBox.setDefaultValue(selectTag.join(','));
+                    inputBox.setDefaultValue(selectTag.join(','));
                 }
             });
-            */
-
-            xlog(libspath + "plugins/hikerPop.js");
-            const hikerPop = $.require("hikerPop.js?rule=hikerPop");
-        let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
-        let inputBox;
-        let selectedIndex = -1;
-        let pop = hikerPop.FlexMenuBottom({
-            extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                hint: "你好",
-                title: "ok",
-                onChange(s, pop) {
-                    log("onChange:" + s)
-
-
-                },
-                defaultValue: "test",
-                click(s, pop) {
-
-                    pop.setTitle(s);
-                },
-                //titleVisible:false
-            })),
-            sections: [
-                new FlexSection("测试0", [1, 2, 4, 6, 78888, 293838, 6665, 98877, 555, 99]),
-                new FlexSection("测试1", []),
-                new FlexSection("测试2", [8, 29, 4, 6, 7], "ok", (i, b) => selectedIndex == i ? "#FFA500" : "")
-            ],
-            title: "FlexMenuBottom",
-            click(button, sectionIndex, i) {
-                //pop.removeSection(1)
-                //pop.updateSectionTitle(sectionIndex, button.title);
-                //pop.updateButtonTitle(sectionIndex, i, "ok");
-                //pop.addSection(null, new FlexSection("测试3", ["a","b","c"]));
-                //pop.addButton(null, null, "d");
-                //inputBox.setDefaultValue("好好好");
-                selectedIndex = i,
-                    pop.updateButtonTitle(sectionIndex, i, button.title);
-                return ("toast://你点击了:" + button.title + ",属于:" + sectionIndex + "," + i)
-            },
-            longClick(button, sectionIndex, i) {
-                pop.removeButton(sectionIndex, i);
-                return ("toast://你长按了:" + button.title + ",属于:" + sectionIndex + "," + i)
-            }
-        });
-
+            
             return "hiker://empty";
         }),
         extra: {

@@ -577,8 +577,8 @@ function jiekouapi(data, look) {
             })
 
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-            let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
-            let inputBox;
+            //let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
+            //let inputBox;
             let pop = hikerPop.FlexMenuBottom({
                 /*extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",

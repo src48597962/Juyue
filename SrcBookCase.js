@@ -73,7 +73,7 @@ function bookCase() {
                         },
                         lastChapter: extraData.lastChapterStatus || "",
                         lastClick: it.lastClick?it.lastClick.split('@@')[0]:"",
-                        groups: it.group
+                        group: it.group
                     }
                     obj.id = getCaseID(obj);
                     Julist.push(obj);
@@ -118,7 +118,7 @@ function bookCase() {
                     if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
-                    it.groups = it.group || "";
+                    it.group = it.group || "";
                     Julist.push(it);
                 } catch (e) {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);

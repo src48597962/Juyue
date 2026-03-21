@@ -128,16 +128,22 @@ function bookCase() {
     }
 
     let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+    let groupset = juItem2.get("bookCase_groupset", "按源接口的分组");
     let datalist = [];
     let typebtn = [];
     Julist.forEach(item=>{
+        let extra = item.params.params;
+        let data = extra['data'] || {};
+        let types = groupset=="按源接口的分组"?(data.group || data.type || '').split(','):item.group.split(',');
+        types.forEach(type=>{
+            if(type && typebtn.indexOf(type)==-1){
+                typebtn.push(type);
+            }
+        })
+
+        item.types = types;
         let obj = convertItem(item, listcol, sjType);
         if(obj){
-            obj.types.forEach(type=>{
-                if(type && typebtn.indexOf(type)==-1){
-                    typebtn.push(type);
-                }
-            })
             datalist.push(obj);
         }
     })
@@ -615,16 +621,14 @@ function convertItem(item, listcol, sjType){
             itemdesc = "足迹："+item.lastClick;
         }
 
-        let types = juItem2.get("bookCase_groupset", "按源接口的分组")=="按源接口的分组"?(extra['data'].group || extra['data'].type || '').split(','):item.group.split(',');
-
         return {
-            title: (types.filter(Boolean).length==0?"*":"") + itemtitle,
+            title: (item.types.filter(Boolean).length==0?"*":"") + itemtitle,
             pic_url: item.picUrl,
             desc: itemdesc,
             url: url,
             col_type: listcol,
             extra: extra,
-            types: types
+            types: item.types
         }
     }catch(e){
         xlog("书架列表生成异常>"+e.message + ' 错误行#' + e.lineNumber);

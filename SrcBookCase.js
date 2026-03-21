@@ -618,7 +618,7 @@ function convertItem(item, listcol, sjType){
         let types = juItem2.get("bookCase_groupset", "按源接口的分组")=="按源接口的分组"?(extra['data'].group || extra['data'].type || '').split(','):item.group.split(',');
 
         return {
-            title: itemtitle,
+            title: itemtitle + (types.filter(Boolean).length==0?"*":""),
             pic_url: item.picUrl,
             desc: itemdesc,
             url: url,

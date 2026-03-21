@@ -223,6 +223,7 @@ function bookCase() {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_groupset", a);
                         change();
+                        clearMyVar("SrcJu_bookCaseType");
                         return "toast://选择了:" + a;
                     }});
                 }else if (s=="列表/书架样式") {

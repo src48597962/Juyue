@@ -54,6 +54,7 @@ function bookCase() {
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
         collection.forEach(it => {
+            xlog(it);
             try{
                 if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
                     let extraData = JSON.parse(it.extraData || '{}');

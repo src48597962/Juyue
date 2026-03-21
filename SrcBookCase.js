@@ -150,7 +150,7 @@ function bookCase() {
 
     datalist = datalist.filter(it=>{
         let data = it.extra['data'] || {};
-        let types = groupset=="按源接口的分组"?(data.group || data.type || '').split(','):item.group.split(',');
+        let types = groupset=="按源接口的分组"?(data.group || data.type || '').split(','):it.group.split(',');
         return getMyVar("SrcJu_bookCaseType","全部")=="全部" || types.indexOf(getMyVar("SrcJu_bookCaseType"))>-1;
     })
 

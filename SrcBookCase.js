@@ -73,7 +73,7 @@ function bookCase() {
                         },
                         lastChapter: extraData.lastChapterStatus || "",
                         lastClick: it.lastClick?it.lastClick.split('@@')[0]:"",
-                        group: it.group
+                        groups: it.group
                     }
                     obj.id = getCaseID(obj);
                     Julist.push(obj);
@@ -118,7 +118,7 @@ function bookCase() {
                     if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
-                    it.group = it.group || "";
+                    it.groups = it.group || "";
                     Julist.push(it);
                 } catch (e) {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
@@ -128,12 +128,13 @@ function bookCase() {
     }
 
     let listcol = juItem2.get("bookCase_col_type", "movie_1_vertical_pic");
+    let groupset = juItem2.get("bookCase_groupset", "按源接口的分组");
     let datalist = [];
     let typebtn = [];
     Julist.forEach(item=>{
         let extra = item.params.params;
         let data = extra['data'] || {};
-        let types = (data.group || data.type || '').split(',');
+        let types = groupset=="按源接口的分组"?(data.group || data.type || '').split(','):item.group.split(',');
         types.forEach(type=>{
             if(type && typebtn.indexOf(type)==-1){
                 typebtn.push(type);
@@ -149,7 +150,7 @@ function bookCase() {
 
     datalist = datalist.filter(it=>{
         let data = it.extra['data'] || {};
-        let types = (data.group || data.type || '').split(',');
+        let types = groupset=="按源接口的分组"?(data.group || data.type || '').split(','):item.group.split(',');
         return getMyVar("SrcJu_bookCaseType","全部")=="全部" || types.indexOf(getMyVar("SrcJu_bookCaseType"))>-1;
     })
 
@@ -201,8 +202,9 @@ function bookCase() {
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let SettingItem = hikerPop.selectBottomSettingMenu.SettingItem;
             let setItems = [
+                SettingItem("分组列表设置", juItem2.get("bookCase_groupset", "按源接口的分组")), 
                 SettingItem("列表/书架样式", juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), 
-                SettingItem("自动获取更新时机", updatetiming[juItem2.get("bookCase_UpdateTiming", 1)]), 
+                SettingItem("获取最新时机", updatetiming[juItem2.get("bookCase_UpdateTiming", 1)]), 
                 SettingItem("自动切换二级源接口", getItem("自动切换二级源接口")=="0"?false:true), 
                 SettingItem(), 
                 SettingItem("聚阅收藏需要生物锁", getItem("聚阅收藏加锁")=="1"?true:false)
@@ -216,14 +218,22 @@ function bookCase() {
             }
             
             hikerPop.selectBottomSettingMenu({options: setItems, click(s, officeItem, change) {
-                if (s=="列表/书架样式") {
+                if (s=="分组列表设置") {
+                    let groupsetlist = ['按源接口的分组', '按收藏的分组'];
+                    hikerPop.selectBottomMark({options: groupsetlist, position: groupsetlist.indexOf(juItem2.get("bookCase_groupset", "按源接口的分组")), click(a) {
+                        officeItem.setDesc(a);
+                        juItem2.set("bookCase_groupset", a);
+                        change();
+                        return "toast://选择了:" + a;
+                    }});
+                }else if (s=="列表/书架样式") {
                     hikerPop.selectBottomMark({options: case_cols, position: case_cols.indexOf(juItem2.get("bookCase_col_type", "movie_1_vertical_pic")), click(a) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_col_type", a);
                         change();
                         return "toast://选择了:" + a;
                     }});
-                }else if (s=="自动获取更新时机") {
+                }else if (s=="获取最新时机") {
                     hikerPop.selectBottomMark({options: updatetiming, position: juItem2.get("bookCase_UpdateTiming", 1), click(a,i) {
                         officeItem.setDesc(a);
                         juItem2.set("bookCase_UpdateTiming", i);

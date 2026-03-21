@@ -144,7 +144,6 @@ function bookCase() {
     storage0.putMyVar('收藏书架列表', datalist);
 
     datalist = datalist.filter(it=>{
-        log(it.types);
         return getMyVar("SrcJu_bookCaseType","全部")=="全部" || it.types.indexOf(getMyVar("SrcJu_bookCaseType"))>-1;
     })
 

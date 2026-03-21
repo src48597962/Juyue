@@ -144,6 +144,7 @@ function bookCase() {
     storage0.putMyVar('收藏书架列表', datalist);
 
     datalist = datalist.filter(it=>{
+        log(it.types);
         return getMyVar("SrcJu_bookCaseType","全部")=="全部" || it.types.indexOf(getMyVar("SrcJu_bookCaseType"))>-1;
     })
 
@@ -311,9 +312,7 @@ function bookCase() {
             url: $('#noLoading#').lazyRule((typebtn,it,Color) => {
                 deleteItemByCls("caselist");
                 let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-                    let data = v.extra['data'] || {};
-                    let types = (data.group || data.type || '').split(',');
-                    return it=='全部' || types.indexOf(it)>-1;
+                    return it=='全部' || v.types.indexOf(it)>-1;
                 });
                 deleteItem('casesearchinput');
                 if(casedatalist.length>=20){
@@ -536,11 +535,9 @@ function Async(item) {
 function casesousuo(input) {
     deleteItemByCls("caselist");
     let casedatalist = storage0.getMyVar('收藏书架列表', []).filter(v=>{
-        let data = v.extra['data'] || {};
-        let types = (data.group || data.type || '').split(',');
         let it = getMyVar("SrcJu_bookCaseType", "全部");
         if(input){
-            return (it=='全部' || types.indexOf(it)>-1) && v.title.includes(input);
+            return (it=='全部' || v.types.indexOf(it)>-1) && v.title.includes(input);
         }
         return it=='全部' || types.indexOf(it)>-1;
     });

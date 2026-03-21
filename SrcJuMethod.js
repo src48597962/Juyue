@@ -1074,6 +1074,18 @@ function removeBookCase(caseid, refresh){
         refreshPage(false);
     }
 }
+// 修改聚阅收藏
+function modifyBookCase(caseid, obj){
+    eval('let caselist = ' + (fetch(casefile)||'[]'));
+    caselist.forEach(item=>{
+        if((item.id||getCaseID(item)) == caseid){
+            for (let key in obj) {
+                item[key] = obj[key];
+            }
+        }
+    })
+    writeFile(casefile, JSON.stringify(caselist));
+}
 // 是否存在聚阅收藏
 function isBookCase(caseid, caselist){
     if(!caselist){

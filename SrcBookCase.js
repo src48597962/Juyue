@@ -54,7 +54,6 @@ function bookCase() {
     if(sjType=="软件收藏"){
         let collection = JSON.parse(fetch("hiker://collection?rule="+MY_RULE.title));
         collection.forEach(it => {
-            xlog(it.group);
             try{
                 if(it.params&& (JSON.parse(it.params).title==MY_RULE.title)){
                     let extraData = JSON.parse(it.extraData || '{}');
@@ -73,7 +72,8 @@ function bookCase() {
                             params: extra
                         },
                         lastChapter: extraData.lastChapterStatus || "",
-                        lastClick: it.lastClick?it.lastClick.split('@@')[0]:""
+                        lastClick: it.lastClick?it.lastClick.split('@@')[0]:"",
+                        group: it.group
                     }
                     obj.id = getCaseID(obj);
                     Julist.push(obj);
@@ -118,6 +118,7 @@ function bookCase() {
                     if (his.length > 0) {
                         it.lastClick = his[0].lastClick ? his[0].lastClick.split('@@')[0] : "";
                     }
+                    it.group = it.group || "";
                     Julist.push(it);
                 } catch (e) {
                     xlog("聚阅收藏列表加载异常>" + e.message + ' 错误行#' + e.lineNumber);
@@ -571,6 +572,15 @@ function convertItem(item, listcol, sjType){
                 js: $.toString((caseid) => {
                     removeBookCase(caseid, true);
                 }, item.id)
+            },{
+                title: "修改分组",
+                js: $.toString((caseid, group) => {
+                    return $(group, '输入新收藏分组').input((id) => {
+                        modifyBookCase(id, {group: input});
+                        refreshPage();
+                        return 'hiker://emtpy';
+                    }, caseid)
+                }, item.id, item.group)
             }]
         }
 

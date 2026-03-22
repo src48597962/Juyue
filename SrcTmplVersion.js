@@ -2,6 +2,12 @@ var newVersion = {
     "SrcJu": "2.3",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V2.4",
+        records: [
+            "新增：聚阅收藏增加允许自定义分组",
+            "修复：解析批量操作中禁用报错问题"
+        ]
+    },{
         title: "2026/02/27 V2.3",
         records: [
             "新增：海阔搜索支持指定源列表搜索",

@@ -294,7 +294,7 @@ function jxItemPage(dd) {
                     return "toast://未选择";
                 }
                 return $("确定要禁用选择的"+selectlist.length+"个解析？").confirm((selectlist)=>{
-                    require(config.聚阅.jxCodePath + 'SrcJiexi.js');
+                    require(config.jxCodePath + 'SrcJiexi.js');
                     let sm = dataHandle(selectlist, '禁用');
                     refreshPage(false);
                     return 'toast://' + sm;

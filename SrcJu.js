@@ -1730,7 +1730,7 @@ function sousuo() {
                 ssdatalist.forEach(it=>{
                     judata.push({
                         "title": it.name,
-                        //"search_url": "hiker://empty##fypage",
+                        "search_url": "hiker://empty##fypage",
                         "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
                     });
                 })

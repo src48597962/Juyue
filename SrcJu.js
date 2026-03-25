@@ -1672,9 +1672,7 @@ function sousuo() {
         extra: {
             delegateOnlySearch: true,
             rules: $.toString((name) => {
-                xlog(name);
-                xlog(input);
-
+                xlog(MY_URL);
                 let info = storage0.getMyVar('一级源接口信息') || {};
                 let keyword = name.split('  ')[0].trim();
                 let keyword2;

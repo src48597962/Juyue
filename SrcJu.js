@@ -1671,8 +1671,7 @@ function sousuo() {
         url: "hiker://search?s=" + name.split('  ')[0].trim(),
         extra: {
             delegateOnlySearch: true,
-            rules: $.toString((MY_URL) => {
-                let name = MY_URL.split('##')[1];
+            rules: $.toString((name) => {
                 let info = storage0.getMyVar('一级源接口信息') || {};
                 let keyword = name.split('  ')[0].trim();
                 let keyword2;
@@ -1736,12 +1735,15 @@ function sousuo() {
                     });
                 })
                 return JSON.stringify(judata);
-            },MY_URL)
+            },name)
         }
     }])
 }
 //搜索逻辑代码
 function search(name, sstype, jkdata, blurMatch) {
+    if(sstype=="hkjusou"){
+        name = MY_URL.split('##')[1].split('  ')[0].trim();
+    }
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
 

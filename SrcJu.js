@@ -1665,13 +1665,14 @@ function erji() {
 //搜索页面
 function sousuo() {
     let name = MY_URL.split('##')[1];
-    xlog(name);
+    
     setResult([{
         title: "点我一下，视界聚搜",
         url: "hiker://search?s=" + name.split('  ')[0].trim(),
         extra: {
             delegateOnlySearch: true,
             rules: $.toString((name) => {
+                xlog(name);
                 let info = storage0.getMyVar('一级源接口信息') || {};
                 let keyword = name.split('  ')[0].trim();
                 let keyword2;

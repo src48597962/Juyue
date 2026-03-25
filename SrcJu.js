@@ -1742,7 +1742,7 @@ function sousuo() {
 }
 //搜索逻辑代码
 function search(name, sstype, jkdata, blurMatch) {
-    log(input);
+    log(MY_URL);
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
 

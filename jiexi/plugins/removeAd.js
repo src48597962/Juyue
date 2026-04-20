@@ -26,7 +26,7 @@ function cleanM3u8RemoveAds(m3u8Content, urlPath) {
     let result = [];
 
     // === 安全保护：切片总数不足10个 → 直接返回原内容（绝不处理）===
-    let totalSegments = lines.filter(l => l.endsWith('.ts')).length;
+    let totalSegments = lines.filter(l => l.includes('.ts')).length;
     if (totalSegments < 10) {
         log('✅ 切片过少，不执行广告清理');
         return m3u8Content;

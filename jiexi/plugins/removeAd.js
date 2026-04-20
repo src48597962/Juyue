@@ -6,11 +6,14 @@
 function cleanM3u8(url, ref) {
     log('进来了>'+ url);
     let json = JSON.parse(fetch(url, {headers:{referer: ref||url}, withStatusCode:true}));
+    log(json);
+    log(json.statusCode);
     if(json.statusCode!=200 || json.statusCode!=302){
         return url;
     }else if(urlcode.statusCode==302){
-        log(json);
+        log('302');
     }
+    log('xxx');
     return url;
 }
 

@@ -829,7 +829,7 @@ function erji() {
                 }else{
                     //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcParseS.js');
                     //return SrcParseS.聚阅(url, dataObj);
-                    require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/removeAd.js');
+                    require(config.聚阅.replace(/[^/]*$/,'') + 'jiexi/plugins/removeAd.js');
                     return cleanM3u8($.require("parseUrl").解析(url), input);
                 }
             }, dataObj);

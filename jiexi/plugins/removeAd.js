@@ -10,12 +10,15 @@ function cleanM3u8(url, ref) {
     if(json.statusCode!=200){
         return url;
     }
-    let m3u8content = cleanM3u8RemoveAds(json.body, json.url.replace(/[^/]*$/, ''));
-    log(m3u8content);
+    let m3u8Content = json.body;
+    let urlPath = json.url.replace(/[^/]*$/, '');
+    log(urlPath);
+    let cleanContent = cleanM3u8RemoveAds(m3u8Content, urlPath);
+    log(cleanContent);
     return url;
 }
 
-function cleanM3u8RemoveAds(m3u8Content, urlpath) {
+function cleanM3u8RemoveAds(m3u8Content, urlPath) {
     if (!m3u8Content || typeof m3u8Content !== 'string') return m3u8Content;
 
     // 1. 按行解析
@@ -70,7 +73,7 @@ function cleanM3u8RemoveAds(m3u8Content, urlpath) {
         if (lines[i] === '#EXT-X-DISCONTINUITY' && adLines.has(i + 1)) continue;
 
         if(lines[i].includes('.ts') && !lines[i].startsWith('http')){
-            lines[i] = urlpath + lines[i];
+            lines[i] = urlPath + lines[i];
         }
         result.push(lines[i]);
     }

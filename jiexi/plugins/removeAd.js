@@ -4,6 +4,7 @@
  * 规则：只删连续异常切片集群，绝不删正片
 */
 function cleanM3u8(url, ref) {
+    log('进来了>'+ url);
     let json = JSON.parse(fetch(url, {headers:{referer: ref||url}, withStatusCode:true}));
     if(json.statusCode!=200 || json.statusCode!=302){
         return url;

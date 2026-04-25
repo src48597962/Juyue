@@ -10,8 +10,9 @@ function cleanM3u8(url, ref) {
     if(json.statusCode!=200){
         return url;
     }
-    let m3u8Content = json.body;
-    let fixcontent = cleanM3u8RemoveAds(fixM3u8(url, m3u8Content));
+    let m3u8Content = fixM3u8(url, json.body);
+    log(m3u8Content);
+    let fixcontent = cleanM3u8RemoveAds(m3u8Content);
     log(fixcontent);
     // 修复：返回清理后的 M3U8 内容（调用方应将其用于播放）
     let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";

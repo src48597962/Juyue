@@ -11,14 +11,15 @@ function cleanM3u8(url, ref) {
         return url;
     }
     let m3u8Content = json.body;
-    let urlPath = json.url.replace(/[^/]*$/, '');
-    let cleanContent = cleanM3u8RemoveAds(m3u8Content, urlPath);
-    log(cleanContent);
+    let fixcontent = cleanM3u8RemoveAds(fixM3u8(url, m3u8Content));
+    log(fixcontent);
     // 修复：返回清理后的 M3U8 内容（调用方应将其用于播放）
-    return url;
+    let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";
+    writeFile(playurl, fixcontent);
+    return getPath(playurl)+"##"+input;
 }
 
-function cleanM3u8RemoveAds(m3u8Content, urlPath) {
+function cleanM3u8RemoveAds(m3u8Content) {
     if (!m3u8Content || typeof m3u8Content !== 'string') return m3u8Content;
 
     // 1. 按行解析
@@ -43,15 +44,14 @@ function cleanM3u8RemoveAds(m3u8Content, urlPath) {
             let tsLine = lines[i + 1] || '';
             if (!tsLine || tsLine.startsWith('#')) continue;
 
-            let fullPath = tsLine.startsWith('http') ? tsLine : urlPath + tsLine;
             segments.push({
                 infLine: i,
                 tsLine: i + 1,
                 duration: parseFloat(line.replace('#EXTINF:', '').replace(',', '')),
                 filename: tsLine.split('?')[0].split('/').pop(),
-                fullPath: fullPath,
-                dirPath: getDirPath(fullPath),
-                domain: getDomain(fullPath),
+                fullPath: tsLine,
+                dirPath: getDirPath(tsLine),
+                domain: getDomain(tsLine),
                 isAd: false
             });
         }
@@ -80,10 +80,6 @@ function cleanM3u8RemoveAds(m3u8Content, urlPath) {
         if (adLines.has(i)) continue;
         // 如果当前行是 DISCONTINUITY 且下一行是广告，则跳过 DISCONTINUITY
         if (lines[i] === '#EXT-X-DISCONTINUITY' && adLines.has(i + 1)) continue;
-
-        if (lines[i].includes('.ts') && !lines[i].startsWith('http')) {
-            lines[i] = urlPath + lines[i];
-        }
         result.push(lines[i]);
     }
 

@@ -1,6 +1,6 @@
 /*
- * m3u8 全自动去广告【终极融合版 v5】
- * 修复：禁用时长白名单，依赖分组检测和连续集群
+ * m3u8 全自动去广告【终极融合版 v6】
+ * 兜底逻辑：如果正片时长高度一致，则不删除任何切片
 */
 function cleanM3u8(url, ref) {
     log('执行去广告');
@@ -10,12 +10,12 @@ function cleanM3u8(url, ref) {
         return url;
     }
     let m3u8Content = fixM3u8(url, json.body);
-    //log(m3u8Content);
+    log(m3u8Content);
     let fixcontent = cleanM3u8RemoveAds(m3u8Content);
-    //log(fixcontent);
+    log(fixcontent);
     let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";
     writeFile(playurl, fixcontent);
-    return getPath(playurl)+"##"+input;
+    return getPath(playurl)+"#isVideo=true###"+input;
 }
 
 function cleanM3u8RemoveAds(m3u8Content) {
@@ -53,7 +53,38 @@ function cleanM3u8RemoveAds(m3u8Content) {
         }
     }
 
-    // 步骤1：基础广告识别（不使用时长白名单）
+    // ========== 兜底逻辑：检查时长一致性 ==========
+    let durCount = {};
+    for (let seg of segments) {
+        let key = seg.duration.toFixed(3);
+        durCount[key] = (durCount[key] || 0) + 1;
+    }
+    let sortedDurs = Object.entries(durCount).sort((a, b) => b[1] - a[1]);
+    let mainDuration = sortedDurs.length > 0 ? parseFloat(sortedDurs[0][0]) : 0;
+    let mainDurationPercent = sortedDurs.length > 0 ? (sortedDurs[0][1] / segments.length) * 100 : 0;
+    
+    log(`主时长: ${mainDuration}s, 占比: ${mainDurationPercent.toFixed(1)}%`);
+    
+    // 如果超过 70% 的切片是同一个时长，说明正片时长高度一致，不执行任何广告删除
+    if (mainDurationPercent > 70) {
+        log('✅ 正片时长高度一致（超过70%切片相同时长），跳过广告检测，保留全部内容');
+        return m3u8Content;
+    }
+    
+    // 如果超过 80% 的切片时长都在 [主时长-0.1, 主时长+0.1] 范围内，也跳过
+    let similarCount = 0;
+    for (let seg of segments) {
+        if (Math.abs(seg.duration - mainDuration) <= 0.1) similarCount++;
+    }
+    if (similarCount / segments.length > 0.8) {
+        log('✅ 正片时长高度相似（80%切片时长接近主时长），跳过广告检测，保留全部内容');
+        return m3u8Content;
+    }
+
+    // 只有时长多样化时才执行广告检测
+    log('⚠️ 检测到多种时长，执行广告检测');
+
+    // 步骤1：基础广告识别
     markAdsUltraSafe(segments);
 
     // 步骤2：分组检测
@@ -80,13 +111,13 @@ function cleanM3u8RemoveAds(m3u8Content) {
 }
 
 /**
- * 安全版广告识别：不使用时长白名单，仅依赖文件名、目录、跨域、极短时长
+ * 广告识别
  */
 function markAdsUltraSafe(segments) {
     let segCount = segments.length;
     if (segCount < 10) return;
 
-    // 统计正片样本（前20%切片作为参考）
+    // 统计正片样本
     let sampleSize = Math.max(8, Math.floor(segCount * 0.2));
     let sample = segments.slice(0, sampleSize);
     let avgNameLength = sample.map(s => s.filename.length).reduce((a, b) => a + b, 0) / sampleSize;
@@ -107,27 +138,21 @@ function markAdsUltraSafe(segments) {
         let name = seg.filename;
         let d = seg.duration;
 
-        // 文件名异常
-        let lenDelta = Math.abs(name.length - avgNameLength);
-        if (lenDelta > 8) score += 35;
-        if (!isHexNormal(name)) score += 40;
+        // 文件名异常（严格十六进制判断）
+        let isValidHex = /^[0-9a-f]{32}$/.test(name);
+        if (!isValidHex) score += 50;
 
-        // 时长波动（与前后对比）
+        // 时长波动（需要大于一定阈值）
         let prev = segments[idx > 0 ? idx - 1 : 0];
         let next = segments[idx < segCount - 1 ? idx + 1 : idx];
         let durDeltaPrev = Math.abs(d - prev.duration);
         let durDeltaNext = Math.abs(d - next.duration);
-        // 如果与前后时长差异都很大，则有广告嫌疑
-        if (durDeltaPrev > 2.0 && durDeltaNext > 2.0) score += 30;
+        // 如果与前后时长差异都大于 1 秒
+        if (durDeltaPrev > 1.0 && durDeltaNext > 1.0) score += 30;
 
-        // 广告典型时长（5s 或 极短）
-        if (d.toFixed(0) === '5') score += 40;
-        
-        // 极短时长强惩罚（<1秒）
+        // 极短时长（<1秒）强惩罚
         if (d < 1.0) {
             score += 80;
-        } else if (d >= 1.0 && d <= 3.0) {
-            score += 30;
         }
 
         // 目录不是主目录
@@ -136,8 +161,8 @@ function markAdsUltraSafe(segments) {
         // 跨域
         if (seg.domain !== mainDomain) score += 60;
 
-        // 降低阈值到60，更容易标记
-        seg.isAd = score >= 60;
+        // 阈值提高到 80，更难触发
+        seg.isAd = score >= 80;
     });
 }
 
@@ -146,17 +171,6 @@ function markAdsUltraSafe(segments) {
  */
 function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lines) {
     if (segments.length === 0) return;
-
-    // 获取正片主时长（仅用于日志和组保护）
-    let durCount = {};
-    for (let seg of segments) {
-        let key = seg.duration.toFixed(3);
-        durCount[key] = (durCount[key] || 0) + 1;
-    }
-    let sortedDurs = Object.entries(durCount).sort((a, b) => b[1] - a[1]);
-    let mainDuration = sortedDurs.length > 0 ? parseFloat(sortedDurs[0][0]) : 0;
-    let mainRatio = sortedDurs.length > 0 ? sortedDurs[0][1] / segments.length : 0;
-    log(`主时长: ${mainDuration}s, 占比: ${(mainRatio*100).toFixed(1)}%`);
 
     // 构建组索引
     let groupIds = new Array(segments.length).fill(0);
@@ -178,8 +192,6 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
     let groupTotalDur = new Array(totalGroups).fill(0);
     let groupSegCount = new Array(totalGroups).fill(0);
     let groupHasVeryShort = new Array(totalGroups).fill(false);
-    let groupHasLong = new Array(totalGroups).fill(false);
-    let groupMainDurCount = new Array(totalGroups).fill(0);
 
     for (let i = 0; i < segments.length; i++) {
         let g = groupIds[i];
@@ -187,14 +199,6 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
         groupTotalDur[g] += d;
         groupSegCount[g]++;
         if (d < 0.5) groupHasVeryShort[g] = true;
-        if (d > 15.0) groupHasLong[g] = true;
-        if (Math.abs(d - mainDuration) <= 0.05) groupMainDurCount[g]++;
-    }
-
-    // 输出分组信息
-    for (let g = 0; g < totalGroups; g++) {
-        let mainRatioGroup = groupMainDurCount[g] / groupSegCount[g];
-        log(`组 ${g}: 时长=${groupTotalDur[g].toFixed(2)}s, 切片=${groupSegCount[g]}, 主时长比=${(mainRatioGroup*100).toFixed(0)}%, 极短=${groupHasVeryShort[g]}`);
     }
 
     // 标记广告组
@@ -202,27 +206,10 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
         let g = groupIds[i];
         let isAdGroup = false;
         
-        // 正片保护：大组（切片>50）且主时长占比>30% → 保护
-        if (groupSegCount[g] > 50 && groupMainDurCount[g] / groupSegCount[g] > 0.3) {
-            continue;
-        }
-
-        // 规则1：极短切片 + 总时长 < 10s
-        if (groupHasVeryShort[g] && groupTotalDur[g] < 10.0) {
+        // 规则：极短切片 + 总时长 < 10s，且组切片数 >= 3
+        if (groupHasVeryShort[g] && groupTotalDur[g] < 10.0 && groupSegCount[g] >= 3) {
             isAdGroup = true;
-            log(`组 ${g}: 触发规则1`);
-        }
-        // 规则2：总时长 12~45秒，切片数 3~15
-        else if (groupTotalDur[g] >= 12 && groupTotalDur[g] <= 45 && groupSegCount[g] >= 3 && groupSegCount[g] <= 15) {
-            let veryShortCount = 0;
-            for (let j = 0; j < segments.length; j++) {
-                if (groupIds[j] === g && segments[j].duration < 1.0) veryShortCount++;
-            }
-            let veryShortRatio = veryShortCount / groupSegCount[g];
-            if (veryShortRatio > 0.3) {
-                isAdGroup = true;
-                log(`组 ${g}: 触发规则2 (极短比=${veryShortRatio.toFixed(2)})`);
-            }
+            log(`组 ${g}: 触发分组删除 (时长=${groupTotalDur[g].toFixed(2)}s, 切片=${groupSegCount[g]})`);
         }
 
         if (isAdGroup) {
@@ -244,6 +231,7 @@ function applyContinuitySafetyLock(segments) {
                 chain++;
                 i++;
             }
+            // 连续广告必须达到 3 个才删除
             if (chain < 3) {
                 for (let j = start; j < i; j++) {
                     segments[j].isAd = false;

@@ -137,7 +137,8 @@ function callParse(input){
 //解析入口
 function SrcParse(vipUrl, dataObj) {
     vipUrl = decodeURI(vipUrl);
-    vipUrl = vipUrl.startsWith('tvbox-xg:')?vipUrl.replace('tvbox-xg:',''):vipUrl.startsWith('push://')?vipUrl.replace('push://',''):vipUrl
+    vipUrl = vipUrl.startsWith('tvbox-xg:')?vipUrl.replace('tvbox-xg:',''):vipUrl.startsWith('push://')?vipUrl.replace('push://',''):vipUrl;
+    vipUrl = vipUrl.replace('#isVideo=true#', '');
     dataObj = dataObj || {};
     let isVip = 0;
     log("请求地址："+vipUrl); 
@@ -862,7 +863,7 @@ function 解析方法(obj) {
                     }
                     if(music){
                         if(/\.mp3|\.m4a/.test(urls[i])){
-                            return fy_bridge_app.getHeaderUrl(urls[i]) + '#isMusic=true##checkMetadata=false#';
+                            return fy_bridge_app.getHeaderUrl(urls[i] + '#isMusic=true##checkMetadata=false#');
                         }
                     }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
                         fba.clearVar('getParse');

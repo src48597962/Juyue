@@ -867,7 +867,7 @@ function 解析方法(obj) {
                     }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
                         fba.clearVar('getParse');
                         fba.log("exeWebRule捕获视频>"+urls[i]);
-                        return fy_bridge_app.getHeaderUrl(urls[i]) + '#isVideo=true#';
+                        return fy_bridge_app.getHeaderUrl(urls[i] + '#isVideo=true#');
                     }
                 }
             }catch(e){

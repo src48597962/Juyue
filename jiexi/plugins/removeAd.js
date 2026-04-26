@@ -16,7 +16,7 @@ function cleanM3u8(url, ref) {
     log(fixcontent);
     let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";
     writeFile(playurl, fixcontent);
-    return getPath(playurl)+"##"+input;
+    return getPath(playurl)+"#isVideo=true###"+input;
 }
 
 function cleanM3u8RemoveAds(m3u8Content) {

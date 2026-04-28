@@ -1343,7 +1343,6 @@ function getHtmlCode(ssurl, headers) {
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
-            xlog(html);
         }
         storage0.putMyVar(home+'-headers', headers);
     } catch (e) {

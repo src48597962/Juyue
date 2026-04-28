@@ -1333,7 +1333,7 @@ function getHtmlCode(ssurl, headers, timeout) {
             html = pdfh(html, 'body&&pre&&Text');
         } else if (/系统安全验证|请输入验证码/.test(html)) {
             let home = getHome(ssurl);
-            let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
+            let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : ('/index.php/verify/index.html?t='+Date.now()));
             let cook = fetchCookie(codeurl, { headers: headers });
             headers.Cookie = JSON.parse(cook || '[]').join(';');
             let vcode = ocr(codeurl, headers);

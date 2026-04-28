@@ -1315,10 +1315,11 @@ function x5toerji(MY_RULE, jkdata, extra) {
 }
 // 请求返回html源码
 function getHtmlCode(ssurl, headers) {
+    let home = getHome(ssurl);
     headers = headers || storage0.getMyVar(home+'-headers', {'User-Agent': MOBILE_UA});
     let timeout = 10000;
     let html = request(ssurl, { headers: headers, timeout: timeout });
-    let home = getHome(ssurl);
+
     try {
         if (html.indexOf('cf-wrapper') != -1) {
             html = fetchCodeByWebView(ssurl, { headers: headers, 'blockRules': ['.png', '.jpg'],checkJs: $.toString(()=>{
@@ -1342,6 +1343,7 @@ function getHtmlCode(ssurl, headers) {
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
+            xlog(html);
         }
         storage0.putMyVar(home+'-headers', headers);
     } catch (e) {

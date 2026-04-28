@@ -1314,10 +1314,9 @@ function x5toerji(MY_RULE, jkdata, extra) {
     }, MY_RULE, jkdata, extra)
 }
 // 请求返回html源码
-function getHtmlCode(ssurl, headers) {
-    let home = getHome(ssurl);
-    headers = headers || storage0.getMyVar(home+'-headers', {'User-Agent': MOBILE_UA});
-    let timeout = 10000;
+function getHtmlCode(ssurl, headers, timeout) {
+    headers = headers || {'User-Agent': MOBILE_UA};
+    timeout = timeout || 10000;
     let html = request(ssurl, { headers: headers, timeout: timeout });
 
     try {
@@ -1333,6 +1332,7 @@ function getHtmlCode(ssurl, headers) {
             html = fetchCodeByWebView(ssurl, { headers: headers, 'blockRules': ['.png', '.jpg', '.gif', '.mp3', '.mp4'], timeout: timeout });
             html = pdfh(html, 'body&&pre&&Text');
         } else if (/系统安全验证|请输入验证码/.test(html)) {
+            let home = getHome(ssurl);
             let codeurl = home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/common/code.php?a=search' : '/index.php/verify/index.html?');
             let cook = fetchCookie(codeurl, { headers: headers });
             headers.Cookie = JSON.parse(cook || '[]').join(';');
@@ -1343,9 +1343,7 @@ function getHtmlCode(ssurl, headers) {
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
-            xlog("进来了"+html);
         }
-        //storage0.putMyVar(home+'-headers', headers);
     } catch (e) {
         xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);
     }

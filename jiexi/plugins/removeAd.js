@@ -1,6 +1,8 @@
 /*
  * m3u8 全自动去广告【终极融合版 v6】
  * 兜底逻辑：如果正片时长高度一致，则不删除任何切片
+                    //require(config.聚阅.replace(/[^/]*$/,'') + 'jiexi/plugins/removeAd.js');
+                    //return cleanM3u8($.require("parseUrl").解析(url), input);
 */
 function cleanM3u8(url, ref) {
     log('执行去广告');

@@ -1344,7 +1344,7 @@ function getHtmlCode(ssurl, headers) {
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
         }
-        storage0.putMyVar(home+'-headers', headers);
+        //storage0.putMyVar(home+'-headers', headers);
     } catch (e) {
         xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);
     }

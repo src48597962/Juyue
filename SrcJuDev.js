@@ -18,4 +18,4 @@ d.push({
 
 
 
-setReust(d);
+setResult(d);

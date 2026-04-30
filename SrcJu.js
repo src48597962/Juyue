@@ -638,7 +638,7 @@ function erji() {
             let detailObj = (isJuDetail(jkdata.id)&&erLoadData.detail1?{}:erLoadData.detailObj) || {}; //二级是否有传封面对象，有传就优先使用
             pic = erLoadData.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
-            erjiextra.img = pic;
+            erjiextra.img = pic || erjiextra.img;
             erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;
             erTempData.desc = erLoadData.desc || erTempData.desc;
             erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;

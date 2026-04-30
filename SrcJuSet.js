@@ -24,10 +24,7 @@ function SRCSet() {
             jiekouapi();
         }),
         img: getIcon(jkIcons[0].img, false, jkIcons[0].color),
-        col_type: "icon_small_4",
-        extra: {
-            longClick: []
-        }
+        col_type: "icon_small_4"
     });
     d.push({
         title: '操作',

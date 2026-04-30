@@ -257,8 +257,10 @@ function yiji(testSource) {
             extra: {
                 longClick: [{
                     title: "测试",
-                    js: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuDev.js');
+                    js: $.toString(() => {
+                        return $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                            eval(fetch(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuDev.js'));
+                        })
                     })
                 }]
             }

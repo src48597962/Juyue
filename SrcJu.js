@@ -253,7 +253,15 @@ function yiji(testSource) {
                 }
             }),
             pic_url: getIcon(homeIcons[4].img, false, homeIcons[4].color),
-            col_type: icon5_col
+            col_type: icon5_col,
+            extra: {
+                longClick: [{
+                    title: "测试",
+                    js: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuDev.js');
+                    })
+                }]
+            }
         })
         
         if(juItem2.get('显示快速分组')=="1" && !testSource){

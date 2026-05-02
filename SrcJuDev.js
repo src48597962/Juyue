@@ -64,7 +64,6 @@ if (step === 'analyze' && siteUrl) {
             d.push({ title: '❌ 请求失败，请检查网站是否可以访问', col_type: 'text_center_1' });
             putMyVar('step', '');
             setResult(d);
-            return;
         }
         
         // ============ 一、分类导航 ============

@@ -3,8 +3,14 @@ var tools = {
     request: function(url, options) {
         options = options || {};
         options.headers = options.headers || {};
+        // 【修改点1】默认使用 PC 端 UA，对大部分影视站更友好
         if (!options.headers['User-Agent']) {
-            options.headers['User-Agent'] = 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
+            options.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+        }
+        // 【修改点2】如果没有明确设置 Referer，自动从 url 提取 host 作为 Referer
+        if (!options.headers['Referer']) {
+            var m = url.match(/^(https?:\/\/[^\/]+)/);
+            if (m) options.headers['Referer'] = m[1] + '/';
         }
         return fetch(url, options);
     },
@@ -54,7 +60,17 @@ if (step === 'analyze' && siteUrl) {
     d.push({ title: '⏳ 正在分析: ' + siteUrl, col_type: 'text_center_1' });
 
     var host = tools.getHost(siteUrl);
-    var html = tools.request(siteUrl);
+    // 【修改点3】带上 Referer 请求首页
+    var html = tools.request(siteUrl, { headers: { 'Referer': host + '/' } });
+
+    // 【修改点4】如果请求失败，尝试不带 Referer 再试一次
+    if (!html || html.length < 100) {
+        html = fetch(siteUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+            }
+        });
+    }
 
     if (!html || html.length < 100) {
         d.push({ title: '❌ 请求失败，请检查网站是否可以访问', col_type: 'text_center_1' });
@@ -201,7 +217,8 @@ if (step === 'analyze' && siteUrl) {
         d.push({ col_type: 'line' });
 
         try {
-            var detailHtml = tools.request(firstDetailUrl);
+            // 【修改点5】二级页面同样带 Referer 请求
+            var detailHtml = tools.request(firstDetailUrl, { headers: { 'Referer': siteUrl } });
 
             // 3.1 封面
             d.push({ title: '🖼️ 封面定位', col_type: 'text_icon', url: 'hiker://empty', extra: { isBold: true } });

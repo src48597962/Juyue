@@ -171,7 +171,7 @@ function autoGenerateLocationList(html) {
             for (m = 0; m < allDiv.length; m++) {
                 let divText = allDiv[m] || '';
                 let hasNew = divText.indexOf('最新') > -1 || divText.indexOf('热门') > -1 || divText.indexOf('评分') > -1;
-                let hasSortLinks = parseDomForArray(allDiv[m], 'a[href*="time"], a[href*="hits"], a[href*="score"]').length > 0;
+                let hasSortLinks = parseDomForArray(allDiv[m], 'a[href*="time"]||a[href*="hits"]||a[href*="score"]').length > 0;
                 if (hasNew || hasSortLinks) {
                     result[2] = {
                         一级分类: 'body&&div:eq(' + m + ')',

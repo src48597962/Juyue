@@ -12,14 +12,53 @@ d.push({
             return 'toast://请输入完整网址(http开头)';
         }
         
-        putMyVar('site_url', input);
-        putMyVar('step', 'analyze');
+        putMyVar('header.url', input);
         refreshPage(false);
         return 'hiker://empty';
     }),
     col_type: 'input',
-    extra: { defaultValue: getMyVar('site_url', ''), hint: 'https://www.example.com' }
+    extra: { defaultValue: getMyVar('header.url', ''), hint: 'https://www.example.com' }
 });
+
+var page = MY_PAGE;
+var true_url = getMyVar('header.url', MY_URL);
+let 链接处理工具 = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/UrlProcessor.js')
+true_url = 链接处理工具
+    .链接(true_url)
+    .页码(page)
+    .获取处理结果();
+MY_URL = true_url;
+var html = fetch(MY_URL, {
+    headers: {}
+})
+
+var 定位列表 = ([{
+    一级分类: 'body&&.stui-header__menu',
+    子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频))',//:gt(0)
+},{
+    一级分类: 'body&&.myui-screen__list:not(:matches(字母))',
+    子分类: 'body&&li:lt(12):gt(0)',//:gt(0)
+}])
+
+
+// '0' 为默认不折叠，'1' 为默认折叠
+const 当前折叠状态 = getMyVar('header.fold', '1')
+
+// 引入动态分类依赖
+// 框架已经稳定，使用 require 更佳
+let htmlCategories = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/categories-header.js')
+htmlCategories.界面(d)
+    .分类链接(true_url)
+    .源码(html)
+    .页码(page)
+    .添加分类定位(定位列表)
+    .开启内置折叠功能() // 必须
+    .折叠按钮样式({
+        title: 当前折叠状态 == "1" ? "‘‘️▼’’" : "‘‘▲’’"
+    }) // 可选
+    .折叠(当前折叠状态) // 必须
+    .选中的分类颜色(分类颜色)
+    .开始打造分类();
 
 
 setResult(d);

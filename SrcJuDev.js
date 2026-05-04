@@ -33,10 +33,10 @@ log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
 
 function autoGenerateLocationList(html) {
-    const result = [];
+    let result = [];
     
     // 1. 分析大分类（导航菜单）
-    const navPatterns = [
+    let navPatterns = [
         '.stui-header__menu',
         '.nav',
         '.hl-nav',
@@ -46,8 +46,8 @@ function autoGenerateLocationList(html) {
     let i = 0;
     let found = false;
     for (i = 0; i < navPatterns.length; i++) {
-        const selector = navPatterns[i];
-        const hasNav = parseDomForArray(html, `body&&${selector} li a[href*="type"]`).length > 0;
+        let selector = navPatterns[i];
+        let hasNav = parseDomForArray(html, `body&&${selector} li a[href*="type"]`).length > 0;
         if (hasNav) {
             result[0] = {
                 一级分类: `body&&${selector}`,
@@ -60,10 +60,10 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到，尝试自动识别
     if (!found) {
-        const allUl = parseDomForArray(html, 'body&&ul');
+        let allUl = parseDomForArray(html, 'body&&ul');
         let j = 0;
         for (j = 0; j < allUl.length; j++) {
-            const links = parseDomForArray(allUl[j], 'a[href*="type"]');
+            let links = parseDomForArray(allUl[j], 'a[href*="type"]');
             if (links.length >= 3) {
                 result[0] = {
                     一级分类: `body&&ul:eq(${j})`,
@@ -76,7 +76,7 @@ function autoGenerateLocationList(html) {
     }
     
     // 2. 分析小分类（筛选栏）
-    const filterPatterns = [
+    let filterPatterns = [
         '.stui-screen__list',
         '.screen-list',
         '.hl-filter-wrap',
@@ -85,12 +85,12 @@ function autoGenerateLocationList(html) {
     
     let foundFilter = false;
     for (i = 0; i < filterPatterns.length; i++) {
-        const selector = filterPatterns[i];
-        const hasFilter = parseDomForArray(html, `body&&${selector} li a[href*="show"]`).length > 0;
+        let selector = filterPatterns[i];
+        let hasFilter = parseDomForArray(html, `body&&${selector} li a[href*="show"]`).length > 0;
         if (hasFilter) {
             // 检查第一个li是不是"全部"
-            const firstLiText = parseDomForArray(html, `body&&${selector} li:first`)[0] || '';
-            const isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
+            let firstLiText = parseDomForArray(html, `body&&${selector} li:first`)[0] || '';
+            let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
             
             if (isFirstAll) {
                 // 第一个是"全部"，保留它，从第0个开始
@@ -112,15 +112,15 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到，尝试自动识别年份或地区筛选
     if (!foundFilter) {
-        const allUl = parseDomForArray(html, 'body&&ul');
+        let allUl = parseDomForArray(html, 'body&&ul');
         let k = 0;
         for (k = 0; k < allUl.length; k++) {
-            const yearLinks = parseDomForArray(allUl[k], 'a[href*="20"]').length;
-            const areaLinks = parseDomForArray(allUl[k], 'a[href*="area"]').length;
+            let yearLinks = parseDomForArray(allUl[k], 'a[href*="20"]').length;
+            let areaLinks = parseDomForArray(allUl[k], 'a[href*="area"]').length;
             if (yearLinks >= 5 || areaLinks >= 3) {
                 // 检查第一个li是不是"全部"
-                const firstLiText = parseDomForArray(allUl[k], 'li:first')[0] || '';
-                const isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
+                let firstLiText = parseDomForArray(allUl[k], 'li:first')[0] || '';
+                let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
                 
                 if (isFirstAll) {
                     result[1] = {
@@ -140,7 +140,7 @@ function autoGenerateLocationList(html) {
     }
     
     // 3. 分析排序选项
-    const sortPatterns = [
+    let sortPatterns = [
         '.hl-rb-title',
         '.sort',
         '.order',
@@ -149,8 +149,8 @@ function autoGenerateLocationList(html) {
     
     let foundSort = false;
     for (i = 0; i < sortPatterns.length; i++) {
-        const selector = sortPatterns[i];
-        const hasSort = parseDomForArray(html, `body&&${selector} a[href*="time"], body&&${selector} a[href*="hits"], body&&${selector} a[href*="score"]`).length > 0;
+        let selector = sortPatterns[i];
+        let hasSort = parseDomForArray(html, `body&&${selector} a[href*="time"], body&&${selector} a[href*="hits"], body&&${selector} a[href*="score"]`).length > 0;
         if (hasSort) {
             result[2] = {
                 一级分类: `body&&${selector}`,
@@ -163,7 +163,7 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到排序，尝试自动识别
     if (!foundSort) {
-        const allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
+        let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
         if (allDiv.length > 0) {
             result[2] = {
                 一级分类: `body&&div:eq(0)`,

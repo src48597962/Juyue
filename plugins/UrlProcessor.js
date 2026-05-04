@@ -5,6 +5,13 @@ function UrlProcessor() {
     this.params = {}
     this.regexMap = [
         {
+            reg: 'type\\/(\\d+)\\.html',
+            exec: () => {
+                return this.params.url
+                    .replace(/type(\/\d+)\.html/, 'show$1-----------.html')
+                    .replace(/\d*(--------\d*---\.html)/, this.params.page + '$1')
+            }
+        },{
             reg: 'vodtype\\/(\\d+)',
             exec: () => {
                 return this.params.url

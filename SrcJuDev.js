@@ -29,7 +29,8 @@ true_url = 链接处理工具
     .页码(page)
     .获取处理结果();
 MY_URL = true_url;
-var html = fetchPC(MY_URL);
+log('请求地址>'+MY_URL);
+var html = fetch(MY_URL);
 // 临时调试代码
 let lists = parseDomForArray(html, 'body&&.stui-screen__list');
 lists.forEach((ul, idx) => {

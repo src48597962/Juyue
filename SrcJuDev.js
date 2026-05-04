@@ -36,7 +36,7 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 栈式解析（正确处理嵌套标签）==========
+    // ========== 栈式解析 ==========
     function parseElementsDeep(html, tag) {
         let matches = [];
         let openRe = new RegExp('<' + tag + '(\\s[^>]*)?>', 'gi');
@@ -153,7 +153,7 @@ function autoGenerateLocationList(html) {
         '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐', '排行', '最新'
     ];
 
-    // ========== 收集候选容器（栈式解析）==========
+    // ========== 收集候选容器 ==========
     let candidates = [];
     let tags = ['ul', 'dl', 'div', 'nav', 'section'];
 
@@ -173,12 +173,11 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // ========== 收集筛选容器 ==========
+    // ========== 筛选候选（从candidates中找filter-wrap/screen-item）==========
     let filterCandidates = [];
     for (let i = 0; i < candidates.length; i++) {
         let c = candidates[i];
-        let cls = c.cls;
-        if (cls.indexOf('filter-wrap') > -1 || cls.indexOf('screen-item') > -1 || cls.indexOf('filter-box') > -1) {
+        if (c.cls.indexOf('filter-wrap') > -1 || c.cls.indexOf('screen-item') > -1 || c.cls.indexOf('filter-box') > -1) {
             let labelMatch = c.html.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
             let labelText = labelMatch ? stripTags(labelMatch[1]) : '';
             if (!labelText) {
@@ -189,7 +188,7 @@ function autoGenerateLocationList(html) {
                 html: c.html,
                 label: labelText,
                 links: c.links,
-                cls: cls
+                cls: c.cls
             });
         }
     }
@@ -197,16 +196,25 @@ function autoGenerateLocationList(html) {
     // ========== 评分函数 ==========
 
     function scoreNav(c) {
-        let s = 0, links = c.links, cls = c.cls;
-        s += countKW(links, navKWs) * 20;
-        if (links.length >= 3 && links.length <= 15) s += 10;
+        let s = 0, links = c.links, cls = c.cls, tag = c.tag;
+        let navMatch = countKW(links, navKWs);
+        // ★ 限制nav关键词匹配上限，防止大容器虚高
+        s += Math.min(navMatch, 12) * 20;
+        // ★ nav标签大加分
+        if (tag === 'nav') s += 25;
+        // 链接数量 3-15 最佳
+        if (links.length >= 3 && links.length <= 15) s += 15;
+        else if (links.length > 20) s -= 10; // 大容器扣分
+        // class含nav/menu
+        if (hasKW(cls, ['nav', 'menu', 'header', 'head', 'top', 'category', 'type-nav'])) s += 15;
+        // ★ 导航项文本短（2-6字）
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
-        if (avg >= 1 && avg <= 8) s += 10;
-        if (avg <= 4) s += 5;
-        if (hasKW(cls, ['nav', 'menu', 'header', 'head', 'top', 'category', 'type-nav'])) s += 15;
+        if (avg >= 1 && avg <= 6) s += 10;
+        // 排除词扣分
         s -= countKW(links, excludeNavKWs) * 5;
+        // href模式
         let listCount = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
@@ -219,7 +227,10 @@ function autoGenerateLocationList(html) {
     function scoreFilter(c) {
         let s = 0, links = c.links, cls = c.cls, tag = c.tag;
         if (tag === 'dl') s += 15;
-        if (hasKW(cls, ['filter', 'screen', 'tag', 'category', 'select', 'condition', '筛', 'type-list'])) s += 15;
+        // ★ filter-wrap优先级高于filter-list
+        if (cls.indexOf('filter-wrap') > -1 || cls.indexOf('screen-item') > -1) s += 20;
+        else if (cls.indexOf('filter') > -1 || cls.indexOf('screen') > -1) s += 10;
+        // dt标签
         let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
         let labelText = dtMatch ? stripTags(dtMatch[1]) : '';
         if (!labelText) {
@@ -256,22 +267,29 @@ function autoGenerateLocationList(html) {
         }
         if (yearCount >= 3) s += 25;
         if (fc.links.length > 0 && hasKW(fc.links[0].text, ['全部', '不限', '所有'])) s += 15;
-        if (hasKW(fc.cls, ['filter', 'screen'])) s += 10;
+        if (hasKW(fc.cls, ['filter-wrap', 'screen-item'])) s += 15;
         return s;
     }
 
     function scoreSort(c) {
         let s = 0, links = c.links, cls = c.cls;
-        s += countKW(links, sortKWs) * 20;
+        let sortMatch = countKW(links, sortKWs);
+        // ★ 排序项少且精准的加分
+        if (sortMatch >= 2 && sortMatch <= 4 && links.length <= 6) s += 20;
+        s += sortMatch * 15;
+        // ★ 大容器扣分（排序区域通常只有2-5个链接）
+        if (links.length > 8) s -= 15;
         if (links.length >= 2 && links.length <= 6) s += 15;
-        else if (links.length >= 2 && links.length <= 8) s += 8;
+        // class含排序词
         if (hasKW(cls, ['sort', 'order', 'rank', '排序', '排行', 'rb-title'])) s += 15;
+        // href含排序参数
         let sortHref = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
             if (/[?&](order|sort|by)=/i.test(h) || /[-_]time|[-_]hot|[-_]score|[-_]new/i.test(h)) sortHref++;
         }
         s += sortHref * 5;
+        // 文本短
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
@@ -366,6 +384,7 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
+
 
 
 

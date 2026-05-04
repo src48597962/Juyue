@@ -8,8 +8,7 @@ function UrlProcessor() {
             reg: 'type\\/(\\d+)\\.html',
             exec: () => {
                 return this.params.url
-                    .replace(/type(\/\d+)\.html/, 'show$1--------'+this.params.page+'---.html')
-                    .replace(/\d*(--------\d*---\.html)/, this.params.page + '$1')
+                    .replace(/type(\/\d+)\.html/, 'show$1--------' + this.params.page + '---.html')
             }
         },{
             reg: 'vodtype\\/(\\d+)',

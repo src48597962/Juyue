@@ -36,7 +36,7 @@ var html = fetch(MY_URL);
 // 在 build() 方法中添加
 let uls = parseDomForArray(html, 'body&&.stui-screen__list');
 log("找到的ul数量: " + uls.length);
-
+log(uls);
 for(let i = 0; i < uls.length; i++) {
     log(`第${i+1}个ul的HTML前200字符:`, uls[i].substring(0, 200));
     let lis = parseDomForArray(uls[i], 'li');

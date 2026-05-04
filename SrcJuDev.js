@@ -33,107 +33,143 @@ log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
 
 function autoGenerateLocationList(html) {
-    let result = [];
+    const result = [];
     
     // 1. 分析大分类（导航菜单）
-    let navPatterns = [
-        '.stui-header__menu li a[href*="vodtype"]',
-        '.nav li a[href*="/type/"]',
-        '.hl-nav li a[href*="type"]',
-        '.menu li a[href*="vodtype"]'
+    const navPatterns = [
+        '.stui-header__menu',
+        '.nav',
+        '.hl-nav',
+        '.menu'
     ];
     
-    for (let pattern of navPatterns) {
-        let hasNav = parseDomForArray(html, `body&&${pattern}`).length > 0;
+    let i = 0;
+    let found = false;
+    for (i = 0; i < navPatterns.length; i++) {
+        const selector = navPatterns[i];
+        const hasNav = parseDomForArray(html, `body&&${selector} li a[href*="type"]`).length > 0;
         if (hasNav) {
-            let selector = pattern.split(' li')[0];
             result[0] = {
                 一级分类: `body&&${selector}`,
-                子分类: `body&&li:has(a[href*="vodtype"]) || body&&li:has(a[href*="/type/"])`
+                子分类: `body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))`
             };
+            found = true;
             break;
         }
     }
     
     // 如果没找到，尝试自动识别
-    if (!result[0]) {
-        let allUl = parseDomForArray(html, 'body&&ul');
-        for (let i = 0; i < allUl.length; i++) {
-            let links = parseDomForArray(allUl[i], 'a[href*="type"]');
+    if (!found) {
+        const allUl = parseDomForArray(html, 'body&&ul');
+        let j = 0;
+        for (j = 0; j < allUl.length; j++) {
+            const links = parseDomForArray(allUl[j], 'a[href*="type"]');
             if (links.length >= 3) {
                 result[0] = {
-                    一级分类: `body&&ul:eq(${i})`,
-                    子分类: `body&&li:has(a[href*="type"])`
+                    一级分类: `body&&ul:eq(${j})`,
+                    子分类: `body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))`
                 };
+                found = true;
                 break;
             }
         }
     }
     
     // 2. 分析小分类（筛选栏）
-    let filterPatterns = [
-        '.stui-screen__list li a[href*="vodshow"]',
-        '.screen-list li a[href*="/show/"]',
-        '.hl-filter-wrap li a[href*="show"]',
-        '.filter-list li a[href*="vodshow"]'
+    const filterPatterns = [
+        '.stui-screen__list',
+        '.screen-list',
+        '.hl-filter-wrap',
+        '.filter-list'
     ];
     
-    for (let pattern of filterPatterns) {
-        let hasFilter = parseDomForArray(html, `body&&${pattern}`).length > 0;
+    let foundFilter = false;
+    for (i = 0; i < filterPatterns.length; i++) {
+        const selector = filterPatterns[i];
+        const hasFilter = parseDomForArray(html, `body&&${selector} li a[href*="show"]`).length > 0;
         if (hasFilter) {
-            let selector = pattern.split(' li')[0];
-            result[1] = {
-                一级分类: `body&&${selector}`,
-                子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
-            };
+            // 检查第一个li是不是"全部"
+            const firstLiText = parseDomForArray(html, `body&&${selector} li:first`)[0] || '';
+            const isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
+            
+            if (isFirstAll) {
+                // 第一个是"全部"，保留它，从第0个开始
+                result[1] = {
+                    一级分类: `body&&${selector}`,
+                    子分类: `body&&li:has(a:not(:empty)):lt(20)`
+                };
+            } else {
+                // 第一个不是"全部"，跳过第1个
+                result[1] = {
+                    一级分类: `body&&${selector}`,
+                    子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
+                };
+            }
+            foundFilter = true;
             break;
         }
     }
     
     // 如果没找到，尝试自动识别年份或地区筛选
-    if (!result[1]) {
-        let allUl = parseDomForArray(html, 'body&&ul');
-        for (let i = 0; i < allUl.length; i++) {
-            let yearLinks = parseDomForArray(allUl[i], 'a[href*="20"]').length;
-            let areaLinks = parseDomForArray(allUl[i], 'a[href*="area"]').length;
+    if (!foundFilter) {
+        const allUl = parseDomForArray(html, 'body&&ul');
+        let k = 0;
+        for (k = 0; k < allUl.length; k++) {
+            const yearLinks = parseDomForArray(allUl[k], 'a[href*="20"]').length;
+            const areaLinks = parseDomForArray(allUl[k], 'a[href*="area"]').length;
             if (yearLinks >= 5 || areaLinks >= 3) {
-                result[1] = {
-                    一级分类: `body&&ul:eq(${i})`,
-                    子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
-                };
+                // 检查第一个li是不是"全部"
+                const firstLiText = parseDomForArray(allUl[k], 'li:first')[0] || '';
+                const isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
+                
+                if (isFirstAll) {
+                    result[1] = {
+                        一级分类: `body&&ul:eq(${k})`,
+                        子分类: `body&&li:has(a:not(:empty)):lt(20)`
+                    };
+                } else {
+                    result[1] = {
+                        一级分类: `body&&ul:eq(${k})`,
+                        子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
+                    };
+                }
+                foundFilter = true;
                 break;
             }
         }
     }
     
     // 3. 分析排序选项
-    let sortPatterns = [
-        '.hl-rb-title a[href*="time"]',
-        '.sort a[href*="hits"]',
-        '.order a[href*="score"]',
-        '.tabs a[href*="time"]'
+    const sortPatterns = [
+        '.hl-rb-title',
+        '.sort',
+        '.order',
+        '.tabs'
     ];
     
-    for (let pattern of sortPatterns) {
-        let hasSort = parseDomForArray(html, `body&&${pattern}`).length > 0;
+    let foundSort = false;
+    for (i = 0; i < sortPatterns.length; i++) {
+        const selector = sortPatterns[i];
+        const hasSort = parseDomForArray(html, `body&&${selector} a[href*="time"], body&&${selector} a[href*="hits"], body&&${selector} a[href*="score"]`).length > 0;
         if (hasSort) {
-            let selector = pattern.split(' a')[0];
             result[2] = {
                 一级分类: `body&&${selector}`,
                 子分类: `body&&a`
             };
+            foundSort = true;
             break;
         }
     }
     
     // 如果没找到排序，尝试自动识别
-    if (!result[2]) {
-        let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
+    if (!foundSort) {
+        const allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
         if (allDiv.length > 0) {
             result[2] = {
                 一级分类: `body&&div:eq(0)`,
                 子分类: `body&&a`
             };
+            foundSort = true;
         }
     }
     
@@ -159,6 +195,7 @@ function autoGenerateLocationList(html) {
     
     return result;
 }
+
 
 // 使用
 let 定位列表 = autoGenerateLocationList(html);

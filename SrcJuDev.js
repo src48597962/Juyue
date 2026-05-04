@@ -35,25 +35,21 @@ var html = fetch(MY_URL);
 //log('html源码>'+html);
 
 var 定位列表 = ([
-    // 1. 导航菜单 - 一级分类链接是 vodtype 或 type
     {
-        一级分类: 'body&&.stui-header__menu, body&&.nav, body&&.header-menu',
-        子分类: 'body&&li:has(a[href*="vodtype"]), body&&li:has(a[href*="/type/"])',
+        一级分类: 'body&&.stui-header__menu',
+        子分类: 'body&&li:has(a[href*="vodtype"]),body&&li:has(a[href*="/type/"])',
     },
-    // 2. 筛选栏 - 子分类链接是 vodshow 或 show
     {
-        一级分类: 'body&&.stui-screen__list, body&&.screen-list',
-        子分类: 'body&&li:has(a[href*="vodshow"]), body&&li:has(a[href*="/show/"]):gt(0):lt(20)',
+        一级分类: 'body&&.stui-screen__list',
+        子分类: 'body&&li:has(a[href*="vodshow"]),body&&li:has(a[href*="/show/"]):gt(0):lt(20)',
     },
-    // 3. 侧边栏
     {
-        一级分类: 'body&&.stui-pannel-side, body&&.sidebar',
-        子分类: 'body&&li:has(a[href*="vodtype"]), body&&li:has(a[href*="/type/"])',
+        一级分类: 'body&&.stui-pannel-side',
+        子分类: 'body&&li:has(a[href*="vodtype"]),body&&li:has(a[href*="/type/"])',
     },
-    // 4. 兜底
     {
         一级分类: 'body&&body',
-        子分类: 'body&&a[href*="vodtype"], body&&a[href*="/type/"]',
+        子分类: 'body&&a[href*="vodtype"],body&&a[href*="/type/"]',
     }
 ])
 

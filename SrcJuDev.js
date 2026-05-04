@@ -31,16 +31,20 @@ true_url = 链接处理工具
 MY_URL = true_url;
 log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
-log('html源码>'+html);
+//log('html源码>'+html);
 // 临时调试代码
-let lists = parseDomForArray(html, 'body&&.stui-screen__list');
-lists.forEach((ul, idx) => {
-    log(`第${idx+1}个ul的HTML:`, ul);
-    let items = parseDomForArray(ul, 'li');
-    items.forEach((li, i) => {
-        log(`  第${i+1}个li:`, li);
-    });
-});
+// 在 build() 方法中添加
+let uls = parseDomForArray(html, 'body&&.stui-screen__list');
+log("找到的ul数量: " + uls.length);
+
+for(let i = 0; i < uls.length; i++) {
+    log(`第${i+1}个ul的HTML前200字符:`, uls[i].substring(0, 200));
+    let lis = parseDomForArray(uls[i], 'li');
+    log(`  包含${lis.length}个li`);
+    for(let j = 0; j < Math.min(lis.length, 3); j++) {
+        log(`    第${j+1}个li:`, lis[j].substring(0, 100));
+    }
+}
 
 var 定位列表 = ([{
     一级分类: 'body&&.stui-header__menu',

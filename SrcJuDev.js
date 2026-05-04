@@ -76,7 +76,6 @@ function autoGenerateLocationList(html) {
         return parts.length > 0 ? parts[0] : '';
     }
 
-    // 在html中查找class含指定关键词的元素，返回第一个匹配
     function findElByClass(html, classKeyword) {
         let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
         let m = re.exec(html);
@@ -127,14 +126,14 @@ function autoGenerateLocationList(html) {
 
     // ========== 第一步：直接找已知 class 模式 ==========
 
-    // 导航：找含 nav/menu 的元素
+    // 导航
     let navEl = findElByClass(html, 'hl-nav') ||
                 findElByClass(html, 'stui-header__menu') ||
                 findElByClass(html, 'nav-list') ||
                 findElByClass(html, 'hl-menus') ||
                 findElByClass(html, 'type-nav');
 
-    // 筛选：找含 filter-wrap/screen-item 的div，优先选第一个链接含"全部"的
+    // 筛选：优先找第一个链接含"全部"的filter-wrap
     let filterEl = null;
     let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box'];
     for (let k = 0; k < filterClassKeywords.length; k++) {
@@ -150,7 +149,6 @@ function autoGenerateLocationList(html) {
             if (closeIdx === -1) continue;
             let elHtml = html.substring(start, closeIdx + closeTag.length);
             let elCls = m[0];
-            // 检查第一个链接是否含"全部"
             let firstLinkMatch = elHtml.match(/<a[^>]*>([\s\S]*?)<\/a>/i);
             let firstLinkText = firstLinkMatch ? stripTags(firstLinkMatch[1]) : '';
             if (hasKW(firstLinkText, ['全部', '不限', '所有'])) {
@@ -160,7 +158,7 @@ function autoGenerateLocationList(html) {
         }
         if (filterEl) break;
     }
-    // 兜底：第一个链接没有"全部"的也接受
+    // 兜底
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let keyword = filterClassKeywords[k];
@@ -180,7 +178,7 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 排序：找含 rb-title/sort 的 div
+    // 排序
     let sortEl = findElByClass(html, 'rb-title') ||
                  findElByClass(html, 'hl-rb-title') ||
                  findElByClass(html, 'sort') ||
@@ -256,7 +254,7 @@ function autoGenerateLocationList(html) {
 
     // ========== 构建结果 ==========
 
-    // 一级分类（导航）
+    // 导航
     if (navEl) {
         let selector = '.' + firstClass(navEl.cls);
         let links = extractLinks(navEl.html);
@@ -274,7 +272,7 @@ function autoGenerateLocationList(html) {
         });
     }
 
-    // 小分类（筛选）
+    // 筛选
     if (filterEl) {
         let selector = '.' + firstClass(filterEl.cls) + ':not(:matches(字母))';
         let links = extractLinks(filterEl.html);
@@ -291,7 +289,7 @@ function autoGenerateLocationList(html) {
         });
     }
 
-    // 排序选项
+    // 排序
     if (sortEl) {
         let selector = '.' + firstClass(sortEl.cls);
         result.push({
@@ -302,7 +300,6 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
-
 
 
 

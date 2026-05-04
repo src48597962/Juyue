@@ -20,8 +20,8 @@ d.push({
     extra: { defaultValue: getMyVar('header.url', ''), hint: 'https://www.example.com' }
 });
 
-var 分类颜色 = '#3399cc';
-var page = MY_PAGE;
+var 分类颜色 = getItem('主题颜色','#3399cc');
+var page = MY_PAGE || 1;
 var true_url = getMyVar('header.url', MY_URL);
 let 链接处理工具 = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/UrlProcessor.js')
 true_url = 链接处理工具

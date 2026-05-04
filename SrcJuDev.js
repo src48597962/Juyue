@@ -97,12 +97,12 @@ function autoGenerateLocationList(html) {
                 
                 if (isFirstAll) {
                     result[1] = {
-                        一级分类: 'body&&' + selector,
+                        一级分类: 'body&&' + selector + ':not(:matches(字母))',
                         子分类: 'body&&li:has(a:not(:empty)):lt(20)'
                     };
                 } else {
                     result[1] = {
-                        一级分类: 'body&&' + selector,
+                        一级分类: 'body&&' + selector + ':not(:matches(字母))',
                         子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
                     };
                 }
@@ -125,12 +125,12 @@ function autoGenerateLocationList(html) {
                     
                     if (isFirstAll) {
                         result[1] = {
-                            一级分类: 'body&&ul:eq(' + k + ')',
+                            一级分类: 'body&&ul:eq(' + k + '):not(:matches(字母))',
                             子分类: 'body&&li:has(a:not(:empty)):lt(20)'
                         };
                     } else {
                         result[1] = {
-                            一级分类: 'body&&ul:eq(' + k + ')',
+                            一级分类: 'body&&ul:eq(' + k + '):not(:matches(字母))',
                             子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
                         };
                     }

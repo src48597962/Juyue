@@ -30,7 +30,7 @@ true_url = 链接处理工具
     .获取处理结果();
 MY_URL = true_url;
 log('请求地址>'+MY_URL);
-var html = fetch(MY_URL);
+var html = fetchPC(MY_URL);
 //log('html源码>'+html);
 // 临时调试代码
 // 在 build() 方法中添加

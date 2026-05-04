@@ -40,6 +40,9 @@ var 定位列表 = [{
 },{
     一级分类: 'body&&.stui-screen__list||.hl-filter-wrap:not(:matches(字母))',
     子分类: 'body&&li:has(a:not(:empty)):lt(12)',//:gt(0)
+},{
+    一级分类: 'body&&.hl-rb-title',
+    子分类: 'a&&Text',
 }]
 
 

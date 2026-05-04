@@ -29,7 +29,7 @@ true_url = 链接处理工具
     .页码(page)
     .获取处理结果();
 MY_URL = true_url;
-var html = fetch(MY_URL, {
+var html = fetchPC(MY_URL, {
     headers: {}
 })
 

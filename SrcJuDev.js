@@ -43,7 +43,7 @@ function autoGenerateLocationList(html) {
         '.menu li a[href*="vodtype"]'
     ];
     
-    for (const pattern of navPatterns) {
+    for (let pattern of navPatterns) {
         const hasNav = parseDomForArray(html, `body&&${pattern}`).length > 0;
         if (hasNav) {
             const selector = pattern.split(' li')[0];

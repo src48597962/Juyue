@@ -35,7 +35,7 @@ var html = fetch(MY_URL);
 //log('html源码>'+html);
 
 var 定位列表 = ([{
-    一级分类: 'body&&.stui-header__menu||.hl-nav-item',
+    一级分类: 'body&&.stui-header__menu||.hl-nav',
     子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐))',//:gt(0)
 },{
     一级分类: 'body&&.stui-screen__list||.hl-filter-wrap:not(:matches(字母))',

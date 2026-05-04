@@ -32,18 +32,10 @@ MY_URL = true_url;
 log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
 
-/**
- * 影视网站通用智能定位器 v2
- * 输出格式：[{一级分类, 子分类}, ...] 最多3个对象
- * 适配：苹果CMS、海螺CMS、飞飞CMS、OKCMS等主流影视CMS模板
- */
 function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 工具函数 ==========
-
-    // 简易HTML解析（兼容无DOMParser环境，如TVBox JS引擎）
     function parseElements(html, tag) {
         let regex = new RegExp('<' + tag + '[\\s>]([\\s\\S]*?)<\\/' + tag + '>', 'gi');
         let matches = [], m;
@@ -53,7 +45,6 @@ function autoGenerateLocationList(html) {
         return matches;
     }
 
-    // 提取所有 <a> 的文本和href
     function extractLinks(block) {
         let links = [], re = /<a[^>]*href=["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi, m;
         while ((m = re.exec(block)) !== null) {
@@ -63,19 +54,16 @@ function autoGenerateLocationList(html) {
         return links;
     }
 
-    // 提取class
     function getClass(block) {
         let m = block.match(/class=["']([^"']*)["']/i);
         return m ? m[1].toLowerCase() : '';
     }
 
-    // 提取标签名
     function getTag(block) {
         let m = block.match(/^<(\w+)/i);
         return m ? m[1].toLowerCase() : '';
     }
 
-    // 关键词匹配计数
     function countKW(links, kws) {
         let c = 0;
         for (let i = 0; i < links.length; i++) {
@@ -86,7 +74,6 @@ function autoGenerateLocationList(html) {
         return c;
     }
 
-    // 文本中是否含关键词
     function hasKW(text, kws) {
         for (let i = 0; i < kws.length; i++) {
             if (text.indexOf(kws[i]) > -1) return true;
@@ -94,21 +81,17 @@ function autoGenerateLocationList(html) {
         return false;
     }
 
-    // 生成选择器路径（适配 TVBox 的 body&&xxx 语法）
-    // 优先用 class，没有则用 tag:eq(index)
+    // ★ 修正：class前面加.前缀
     function buildSelector(el, allEls, idx) {
         let cls = getClass(el);
         if (cls) {
-            // 取第一个有效class
             let parts = cls.split(/\s+/).filter(function(c) {
                 return c.length > 0 && !/^\d/.test(c) && c.length < 30;
             });
-            if (parts.length > 0) return parts[0];
+            if (parts.length > 0) return '.' + parts[0];
         }
         return getTag(el) + ':eq(' + idx + ')';
     }
-
-    // ========== 关键词库 ==========
 
     let navKWs = [
         '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
@@ -139,8 +122,6 @@ function autoGenerateLocationList(html) {
         '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐'
     ];
 
-    // ========== 收集候选容器 ==========
-
     let candidates = [];
     let tags = ['ul', 'dl', 'div', 'nav', 'section'];
 
@@ -161,122 +142,67 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // ========== 评分函数 ==========
-
     function scoreNav(c) {
         let s = 0, links = c.links, cls = c.cls;
-
-        // 链接匹配一级分类关键词
         s += countKW(links, navKWs) * 20;
-
-        // 链接数量 3-15
         if (links.length >= 3 && links.length <= 15) s += 10;
-
-        // 文本短（导航项通常2-6字）
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
         if (avg >= 1 && avg <= 8) s += 10;
         if (avg <= 4) s += 5;
-
-        // class 含导航关键词
         if (hasKW(cls, ['nav', 'menu', 'header', 'head', 'top', 'category', 'type-nav'])) s += 15;
-
-        // 排除词扣分
         s -= countKW(links, excludeNavKWs) * 5;
-
-        // href 模式加分
         let listCount = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
             if (/\/(type|list|show|vod|category|class)\//.test(h) || /\/\d+[-._]/.test(h)) listCount++;
         }
         s += listCount * 3;
-
         return s;
     }
 
     function scoreFilter(c) {
         let s = 0, links = c.links, cls = c.cls, tag = c.tag;
-
-        // dl 结构是筛选的经典模式
         if (tag === 'dl') s += 15;
-
-        // class 含筛选词
         if (hasKW(cls, ['filter', 'screen', 'tag', 'category', 'select', 'condition', '筛', 'type-list'])) s += 15;
-
-        // 检查 dt 标签（dl结构中的标签）
         let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
         let labelText = dtMatch ? dtMatch[1].replace(/<[^>]+>/g, '').trim() : '';
         s += countKW([{ text: labelText }], filterLabelKWs) * 15;
-
-        // 检查前置文本（ul结构中，标签可能在前一个元素）
-        let prevText = '';
-        let prevMatch = html.match(new RegExp('([\\s\\S]{0,200})' + c.html.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-        if (prevMatch) {
-            let prevBlock = prevMatch[1];
-            let lastTag = prevBlock.match(/<[^>]+>([^<]*)<\/[^>]+>\s*$/);
-            if (lastTag) prevText = lastTag[1].trim();
-        }
-        s += countKW([{ text: prevText }], filterLabelKWs) * 10;
-
-        // 链接含筛选值关键词
         s += countKW(links, filterValueKWs) * 5;
-
-        // 年份匹配
         let yearCount = 0;
         for (let i = 0; i < links.length; i++) {
             if (/^(20[12]\d|19[89]\d)$/.test(links[i].text.trim())) yearCount++;
         }
         if (yearCount >= 3) s += 20;
         else if (yearCount >= 1) s += 8;
-
-        // 链接数量 5-30
         if (links.length >= 5 && links.length <= 30) s += 10;
-
-        // 第一个是"全部"
         if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) s += 15;
-
-        // 文本较短
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
         if (avg >= 1 && avg <= 6) s += 8;
-
         return s;
     }
 
     function scoreSort(c) {
         let s = 0, links = c.links, cls = c.cls;
-
-        // 链接含排序关键词
         s += countKW(links, sortKWs) * 20;
-
-        // 链接数量 2-8
         if (links.length >= 2 && links.length <= 6) s += 15;
         else if (links.length >= 2 && links.length <= 8) s += 8;
-
-        // class 含排序词
         if (hasKW(cls, ['sort', 'order', 'rank', '排序', '排行', 'rb-title'])) s += 15;
-
-        // href 含排序参数
         let sortHref = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
             if (/[?&](order|sort|by)=/i.test(h) || /[-_]time|[-_]hot|[-_]score|[-_]new/i.test(h)) sortHref++;
         }
         s += sortHref * 5;
-
-        // 文本短
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
         if (avg >= 1 && avg <= 6) s += 10;
-
         return s;
     }
-
-    // ========== 执行评分竞赛 ==========
 
     let bestNav = null, bestNavS = 0, bestNavIdx = -1;
     let bestFilter = null, bestFilterS = 0, bestFilterIdx = -1;
@@ -292,13 +218,10 @@ function autoGenerateLocationList(html) {
         if (ss > bestSortS) { bestSortS = ss; bestSort = c; bestSortIdx = i; }
     }
 
-    // ========== 构建结果（TVBox格式） ==========
-
     // 一级分类（导航）
     if (bestNav && bestNavS >= 20) {
         let selector = buildSelector(bestNav.html, candidates, bestNavIdx);
         let subLinks = bestNav.links;
-        // 收集导航项文本用于排除
         let navTexts = [];
         for (let i = 0; i < subLinks.length; i++) {
             if (hasKW(subLinks[i].text, excludeNavKWs)) navTexts.push(subLinks[i].text);
@@ -313,7 +236,7 @@ function autoGenerateLocationList(html) {
         });
     }
 
-    // 小分类（筛选）— 可能有多个筛选行，但取评分最高的
+    // 小分类（筛选）
     if (bestFilter && bestFilterS >= 15) {
         let selector = buildSelector(bestFilter.html, candidates, bestFilterIdx);
         let firstText = bestFilter.links.length > 0 ? bestFilter.links[0].text : '';
@@ -325,9 +248,7 @@ function autoGenerateLocationList(html) {
         } else {
             subSelector = 'body&&' + selector + ' li:has(a:not(:empty))';
         }
-        // 限制数量避免误匹配太多
         subSelector += ':lt(30)';
-        // 如果第一个不是"全部"，跳过第一个
         if (!hasAll) {
             subSelector += ':gt(0)';
         }
@@ -349,6 +270,7 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
+
 
 
 if(html){

@@ -33,10 +33,10 @@ log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
 
 function autoGenerateLocationList(html) {
-    const result = [];
+    let result = [];
     
     // 1. 分析大分类（导航菜单）
-    const navPatterns = [
+    let navPatterns = [
         '.stui-header__menu li a[href*="vodtype"]',
         '.nav li a[href*="/type/"]',
         '.hl-nav li a[href*="type"]',
@@ -44,9 +44,9 @@ function autoGenerateLocationList(html) {
     ];
     
     for (let pattern of navPatterns) {
-        const hasNav = parseDomForArray(html, `body&&${pattern}`).length > 0;
+        let hasNav = parseDomForArray(html, `body&&${pattern}`).length > 0;
         if (hasNav) {
-            const selector = pattern.split(' li')[0];
+            let selector = pattern.split(' li')[0];
             result[0] = {
                 一级分类: `body&&${selector}`,
                 子分类: `body&&li:has(a[href*="vodtype"]) || body&&li:has(a[href*="/type/"])`
@@ -57,9 +57,9 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到，尝试自动识别
     if (!result[0]) {
-        const allUl = parseDomForArray(html, 'body&&ul');
+        let allUl = parseDomForArray(html, 'body&&ul');
         for (let i = 0; i < allUl.length; i++) {
-            const links = parseDomForArray(allUl[i], 'a[href*="type"]');
+            let links = parseDomForArray(allUl[i], 'a[href*="type"]');
             if (links.length >= 3) {
                 result[0] = {
                     一级分类: `body&&ul:eq(${i})`,
@@ -71,17 +71,17 @@ function autoGenerateLocationList(html) {
     }
     
     // 2. 分析小分类（筛选栏）
-    const filterPatterns = [
+    let filterPatterns = [
         '.stui-screen__list li a[href*="vodshow"]',
         '.screen-list li a[href*="/show/"]',
         '.hl-filter-wrap li a[href*="show"]',
         '.filter-list li a[href*="vodshow"]'
     ];
     
-    for (const pattern of filterPatterns) {
-        const hasFilter = parseDomForArray(html, `body&&${pattern}`).length > 0;
+    for (let pattern of filterPatterns) {
+        let hasFilter = parseDomForArray(html, `body&&${pattern}`).length > 0;
         if (hasFilter) {
-            const selector = pattern.split(' li')[0];
+            let selector = pattern.split(' li')[0];
             result[1] = {
                 一级分类: `body&&${selector}`,
                 子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
@@ -92,10 +92,10 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到，尝试自动识别年份或地区筛选
     if (!result[1]) {
-        const allUl = parseDomForArray(html, 'body&&ul');
+        let allUl = parseDomForArray(html, 'body&&ul');
         for (let i = 0; i < allUl.length; i++) {
-            const yearLinks = parseDomForArray(allUl[i], 'a[href*="20"]').length;
-            const areaLinks = parseDomForArray(allUl[i], 'a[href*="area"]').length;
+            let yearLinks = parseDomForArray(allUl[i], 'a[href*="20"]').length;
+            let areaLinks = parseDomForArray(allUl[i], 'a[href*="area"]').length;
             if (yearLinks >= 5 || areaLinks >= 3) {
                 result[1] = {
                     一级分类: `body&&ul:eq(${i})`,
@@ -107,17 +107,17 @@ function autoGenerateLocationList(html) {
     }
     
     // 3. 分析排序选项
-    const sortPatterns = [
+    let sortPatterns = [
         '.hl-rb-title a[href*="time"]',
         '.sort a[href*="hits"]',
         '.order a[href*="score"]',
         '.tabs a[href*="time"]'
     ];
     
-    for (const pattern of sortPatterns) {
-        const hasSort = parseDomForArray(html, `body&&${pattern}`).length > 0;
+    for (let pattern of sortPatterns) {
+        let hasSort = parseDomForArray(html, `body&&${pattern}`).length > 0;
         if (hasSort) {
-            const selector = pattern.split(' a')[0];
+            let selector = pattern.split(' a')[0];
             result[2] = {
                 一级分类: `body&&${selector}`,
                 子分类: `body&&a`
@@ -128,7 +128,7 @@ function autoGenerateLocationList(html) {
     
     // 如果没找到排序，尝试自动识别
     if (!result[2]) {
-        const allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
+        let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
         if (allDiv.length > 0) {
             result[2] = {
                 一级分类: `body&&div:eq(0)`,
@@ -179,7 +179,7 @@ var 定位列表 = [{
 */
 
 // '0' 为默认不折叠，'1' 为默认折叠
-const 当前折叠状态 = getMyVar('header.fold', '1')
+let 当前折叠状态 = getMyVar('header.fold', '1')
 
 // 引入动态分类依赖
 // 框架已经稳定，使用 require 更佳

@@ -196,7 +196,6 @@ function autoGenerateLocationList(html) {
     return result;
 }
 
-
 // 使用
 let 定位列表 = autoGenerateLocationList(html);
 log(JSON.stringify(定位列表, null, 2));

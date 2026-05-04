@@ -76,6 +76,7 @@ function autoGenerateLocationList(html) {
         return parts.length > 0 ? parts[0] : '';
     }
 
+    // ★ 栈式深度追踪，正确处理嵌套同名标签
     function findElByClass(html, classKeyword) {
         let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
         let m = re.exec(html);
@@ -84,12 +85,64 @@ function autoGenerateLocationList(html) {
         let start = m.index;
         let innerStart = start + m[0].length;
         let closeTag = '</' + tag + '>';
-        let closeIdx = html.indexOf(closeTag, innerStart);
-        if (closeIdx === -1) return null;
-        return {
-            html: html.substring(start, closeIdx + closeTag.length),
-            cls: m[0]
-        };
+        let depth = 1;
+        let pos = innerStart;
+        while (depth > 0 && pos < html.length) {
+            let nextOpen = html.indexOf('<' + tag + ' ', pos);
+            if (nextOpen === -1) nextOpen = html.indexOf('<' + tag + '>', pos);
+            let nextClose = html.indexOf(closeTag, pos);
+            if (nextClose === -1) break;
+            if (nextOpen !== -1 && nextOpen < nextClose) {
+                depth++;
+                pos = nextOpen + 1;
+            } else {
+                depth--;
+                if (depth === 0) {
+                    return {
+                        html: html.substring(start, nextClose + closeTag.length),
+                        cls: m[0]
+                    };
+                }
+                pos = nextClose + 1;
+            }
+        }
+        return null;
+    }
+
+    // 查找所有匹配的元素（用于筛选区域）
+    function findAllByClass(html, classKeyword) {
+        let results = [];
+        let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
+        let m;
+        while ((m = re.exec(html)) !== null) {
+            let tag = m[1].toLowerCase();
+            let start = m.index;
+            let innerStart = start + m[0].length;
+            let closeTag = '</' + tag + '>';
+            let depth = 1;
+            let pos = innerStart;
+            while (depth > 0 && pos < html.length) {
+                let nextOpen = html.indexOf('<' + tag + ' ', pos);
+                if (nextOpen === -1) nextOpen = html.indexOf('<' + tag + '>', pos);
+                let nextClose = html.indexOf(closeTag, pos);
+                if (nextClose === -1) break;
+                if (nextOpen !== -1 && nextOpen < nextClose) {
+                    depth++;
+                    pos = nextOpen + 1;
+                } else {
+                    depth--;
+                    if (depth === 0) {
+                        results.push({
+                            html: html.substring(start, nextClose + closeTag.length),
+                            cls: m[0]
+                        });
+                        re.lastIndex = nextClose + closeTag.length;
+                    }
+                    pos = nextClose + 1;
+                }
+            }
+        }
+        return results;
     }
 
     // ========== 关键词库 ==========
@@ -133,47 +186,27 @@ function autoGenerateLocationList(html) {
                 findElByClass(html, 'hl-menus') ||
                 findElByClass(html, 'type-nav');
 
-    // 筛选：优先找第一个链接含"全部"的filter-wrap
+    // 筛选：找所有filter-wrap，选第一个链接含"全部"的
     let filterEl = null;
     let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box'];
     for (let k = 0; k < filterClassKeywords.length; k++) {
-        let keyword = filterClassKeywords[k];
-        let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + keyword + '[^"\']*["\'][^>]*>', 'gi');
-        let m;
-        while ((m = re.exec(html)) !== null) {
-            let tag = m[1].toLowerCase();
-            let start = m.index;
-            let innerStart = start + m[0].length;
-            let closeTag = '</' + tag + '>';
-            let closeIdx = html.indexOf(closeTag, innerStart);
-            if (closeIdx === -1) continue;
-            let elHtml = html.substring(start, closeIdx + closeTag.length);
-            let elCls = m[0];
-            let firstLinkMatch = elHtml.match(/<a[^>]*>([\s\S]*?)<\/a>/i);
-            let firstLinkText = firstLinkMatch ? stripTags(firstLinkMatch[1]) : '';
-            if (hasKW(firstLinkText, ['全部', '不限', '所有'])) {
-                filterEl = { html: elHtml, cls: elCls };
+        let allFilters = findAllByClass(html, filterClassKeywords[k]);
+        for (let i = 0; i < allFilters.length; i++) {
+            let links = extractLinks(allFilters[i].html);
+            if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) {
+                filterEl = allFilters[i];
                 break;
             }
         }
         if (filterEl) break;
     }
-    // 兜底
+    // 兜底：没有"全部"的也接受第一个
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
-            let keyword = filterClassKeywords[k];
-            let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + keyword + '[^"\']*["\'][^>]*>', 'gi');
-            let m = re.exec(html);
-            if (m) {
-                let tag = m[1].toLowerCase();
-                let start = m.index;
-                let innerStart = start + m[0].length;
-                let closeTag = '</' + tag + '>';
-                let closeIdx = html.indexOf(closeTag, innerStart);
-                if (closeIdx !== -1) {
-                    filterEl = { html: html.substring(start, closeIdx + closeTag.length), cls: m[0] };
-                    break;
-                }
+            let allFilters = findAllByClass(html, filterClassKeywords[k]);
+            if (allFilters.length > 0) {
+                filterEl = allFilters[0];
+                break;
             }
         }
     }
@@ -300,6 +333,7 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
+
 
 
 

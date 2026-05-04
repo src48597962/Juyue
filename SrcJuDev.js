@@ -36,11 +36,11 @@ var html = fetch(MY_URL);
 
 var 定位列表 = ([
     {
-        一级分类: 'body&&.hl-nav || body&&.stui-header__menu || body&&.stui-pannel-side',
+        一级分类: 'body&&.hl-nav',
         子分类: 'body&&li:has(a[href*="type"])',
     },
     {
-        一级分类: 'body&&.hl-filter-lis || body&&.stui-screen__list',
+        一级分类: 'body&&.hl-filter-lis',
         子分类: 'body&&li:has(a[href*="show"]):gt(0):lt(20)',
     }
 ])

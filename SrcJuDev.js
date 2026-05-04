@@ -163,15 +163,23 @@ function autoGenerateLocationList(html) {
             }
         }
         
-        // 如果没找到排序，尝试自动识别
+        // 如果没找到，查找包含"最新"、"热门"文字的div
         if (!foundSort) {
-            let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]) || div:has(a[href*="hits"])');
-            if (allDiv.length > 0) {
-                result[2] = {
-                    一级分类: 'body&&div:eq(0)',
-                    子分类: 'body&&a'
-                };
-                foundSort = true;
+            // 查找包含最新、热门、评分等文字的div
+            let allDiv = parseDomForArray(html, 'body&&div:has(a)');
+            let m = 0;
+            for (m = 0; m < allDiv.length; m++) {
+                let divText = allDiv[m] || '';
+                let hasNew = divText.indexOf('最新') > -1 || divText.indexOf('热门') > -1 || divText.indexOf('评分') > -1;
+                let hasSortLinks = parseDomForArray(allDiv[m], 'a[href*="time"], a[href*="hits"], a[href*="score"]').length > 0;
+                if (hasNew || hasSortLinks) {
+                    result[2] = {
+                        一级分类: 'body&&div:eq(' + m + ')',
+                        子分类: 'body&&a'
+                    };
+                    foundSort = true;
+                    break;
+                }
             }
         }
     }

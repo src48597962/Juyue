@@ -36,43 +36,7 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 栈式解析（修正版：回溯检查漏掉的开标签）==========
-    function parseElementsDeep(html, tag) {
-        let matches = [];
-        let openRe = new RegExp('<' + tag + '(\\s[^>]*)?>', 'gi');
-        let closeTag = '</' + tag + '>';
-        let m;
-        while ((m = openRe.exec(html)) !== null) {
-            let start = m.index;
-            let innerStart = m.index + m[0].length;
-            let depth = 1;
-            let pos = innerStart;
-            while (depth > 0 && pos < html.length) {
-                let nextClose = html.indexOf(closeTag, pos);
-                if (nextClose === -1) break;
-                // ★ 向前回溯：pos和nextClose之间是否有漏掉的开标签
-                let backSearch = '<' + tag + ' ';
-                let backIdx = html.indexOf(backSearch, pos);
-                if (backIdx === -1) backIdx = html.indexOf('<' + tag + '>', pos);
-                if (backIdx !== -1 && backIdx < nextClose) {
-                    depth++;
-                    pos = backIdx + 1;
-                } else {
-                    depth--;
-                    if (depth === 0) {
-                        matches.push({
-                            html: html.substring(start, nextClose + closeTag.length),
-                            inner: html.substring(innerStart, nextClose)
-                        });
-                        openRe.lastIndex = nextClose + closeTag.length;
-                    }
-                    pos = nextClose + 1;
-                }
-            }
-        }
-        return matches;
-    }
-
+    // ========== 工具函数 ==========
     function extractLinks(block) {
         let links = [], re = /<a[^>]*href=["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi, m;
         while ((m = re.exec(block)) !== null) {
@@ -80,16 +44,6 @@ function autoGenerateLocationList(html) {
             if (text) links.push({ text: text, href: m[1] });
         }
         return links;
-    }
-
-    function getClass(block) {
-        let m = block.match(/class=["']([^"']*)["']/i);
-        return m ? m[1].toLowerCase() : '';
-    }
-
-    function getTag(block) {
-        let m = block.match(/^<(\w+)/i);
-        return m ? m[1].toLowerCase() : '';
     }
 
     function countKW(links, kws) {
@@ -113,14 +67,32 @@ function autoGenerateLocationList(html) {
         return s.replace(/<[^>]+>/g, '').trim();
     }
 
-    function buildSelector(cls, tag, idx) {
-        if (cls) {
-            let parts = cls.split(/\s+/).filter(function(c) {
-                return c.length > 0 && !/^\d/.test(c) && c.length < 30;
-            });
-            if (parts.length > 0) return '.' + parts[0];
-        }
-        return tag + ':eq(' + idx + ')';
+    // 在html中查找class含指定关键词的元素
+    function findElByClass(html, classKeyword) {
+        // 匹配带class的开标签，然后找到对应的闭标签
+        let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
+        let m = re.exec(html);
+        if (!m) return null;
+        let tag = m[1].toLowerCase();
+        let start = m.index;
+        let innerStart = start + m[0].length;
+        let closeTag = '</' + tag + '>';
+        let closeIdx = html.indexOf(closeTag, innerStart);
+        if (closeIdx === -1) return null;
+        return {
+            html: html.substring(start, closeIdx + closeTag.length),
+            cls: m[0]
+        };
+    }
+
+    // 从class字符串中取第一个有效class名
+    function firstClass(clsStr) {
+        let m = clsStr.match(/class=["']([^"']*)["']/i);
+        if (!m) return '';
+        let parts = m[1].trim().split(/\s+/).filter(function(c) {
+            return c.length > 0 && !/^\d/.test(c) && c.length < 30;
+        });
+        return parts.length > 0 ? parts[0] : '';
     }
 
     // ========== 关键词库 ==========
@@ -155,167 +127,104 @@ function autoGenerateLocationList(html) {
         '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐', '排行', '最新'
     ];
 
-    // ========== 收集候选容器 ==========
-    let candidates = [];
-    let tags = ['ul', 'dl', 'div', 'nav', 'section'];
+    // ========== 第一步：直接找已知 class 模式 ==========
 
-    for (let t = 0; t < tags.length; t++) {
-        let els = parseElementsDeep(html, tags[t]);
-        for (let i = 0; i < els.length; i++) {
-            let links = extractLinks(els[i].html);
+    // 导航：找含 nav/menu 的 ul
+    let navEl = findElByClass(html, 'hl-nav') ||
+                findElByClass(html, 'stui-header__menu') ||
+                findElByClass(html, 'nav-list') ||
+                findElByClass(html, 'hl-menus') ||
+                findElByClass(html, 'type-nav');
+
+    // 筛选：找含 filter-wrap/screen-item 的 div
+    let filterEl = findElByClass(html, 'filter-wrap') ||
+                   findElByClass(html, 'screen-item') ||
+                   findElByClass(html, 'filter-box');
+
+    // 排序：找含 rb-title/sort 的 div
+    let sortEl = findElByClass(html, 'rb-title') ||
+                 findElByClass(html, 'hl-rb-title') ||
+                 findElByClass(html, 'sort') ||
+                 findElByClass(html, 'order');
+
+    // ========== 第二步：找不到的用评分兜底 ==========
+
+    if (!navEl || !filterEl || !sortEl) {
+        // 用正则收集所有 ul/div 候选
+        let candidates = [];
+        let tagRe = /<(ul|div|nav|section|dl)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi;
+        let cm;
+        while ((cm = tagRe.exec(html)) !== null) {
+            let links = extractLinks(cm[0]);
             if (links.length >= 2 && links.length <= 60) {
+                let cls = cm[2] || '';
                 candidates.push({
-                    html: els[i].html,
-                    links: links,
-                    tag: tags[t],
-                    cls: getClass(els[i].html),
-                    idx: i
+                    html: cm[0],
+                    tag: cm[1].toLowerCase(),
+                    cls: cls.toLowerCase(),
+                    links: links
                 });
             }
         }
-    }
 
-    // ========== 筛选候选 ==========
-    let filterCandidates = [];
-    for (let i = 0; i < candidates.length; i++) {
-        let c = candidates[i];
-        if (c.cls.indexOf('filter-wrap') > -1 || c.cls.indexOf('screen-item') > -1 || c.cls.indexOf('filter-box') > -1) {
-            let labelMatch = c.html.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
-            let labelText = labelMatch ? stripTags(labelMatch[1]) : '';
-            if (!labelText) {
-                let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
-                labelText = dtMatch ? stripTags(dtMatch[1]) : '';
+        if (!navEl) {
+            let best = null, bestS = 0;
+            for (let i = 0; i < candidates.length; i++) {
+                let c = candidates[i], s = 0, links = c.links;
+                s += Math.min(countKW(links, navKWs), 12) * 20;
+                if (c.tag === 'nav') s += 25;
+                if (links.length >= 3 && links.length <= 15) s += 15;
+                else if (links.length > 20) s -= 10;
+                if (hasKW(c.cls, ['nav', 'menu', 'header', 'head', 'top', 'category'])) s += 15;
+                s -= countKW(links, excludeNavKWs) * 5;
+                if (s > bestS) { bestS = s; best = c; }
             }
-            filterCandidates.push({
-                html: c.html,
-                label: labelText,
-                links: c.links,
-                cls: c.cls
-            });
+            if (best && bestS >= 20) navEl = { html: best.html, cls: best.cls };
         }
-    }
 
-    // ========== 评分函数 ==========
-
-    function scoreNav(c) {
-        let s = 0, links = c.links, cls = c.cls, tag = c.tag;
-        let navMatch = countKW(links, navKWs);
-        s += Math.min(navMatch, 12) * 20;
-        if (tag === 'nav') s += 25;
-        if (links.length >= 3 && links.length <= 15) s += 15;
-        else if (links.length > 20) s -= 10;
-        if (hasKW(cls, ['nav', 'menu', 'header', 'head', 'top', 'category', 'type-nav'])) s += 15;
-        let avg = 0;
-        for (let i = 0; i < links.length; i++) avg += links[i].text.length;
-        avg /= links.length;
-        if (avg >= 1 && avg <= 6) s += 10;
-        s -= countKW(links, excludeNavKWs) * 5;
-        let listCount = 0;
-        for (let i = 0; i < links.length; i++) {
-            let h = links[i].href;
-            if (/\/(type|list|show|vod|category|class)\//.test(h) || /\/\d+[-._]/.test(h)) listCount++;
-        }
-        s += listCount * 3;
-        return s;
-    }
-
-    function scoreFilter(c) {
-        let s = 0, links = c.links, cls = c.cls, tag = c.tag;
-        if (tag === 'dl') s += 15;
-        // ★ filter-wrap优先级高于filter-list
-        if (cls.indexOf('filter-wrap') > -1 || cls.indexOf('screen-item') > -1) s += 20;
-        else if (cls.indexOf('filter-list') > -1 || cls.indexOf('screen-list') > -1) s -= 5;
-        else if (cls.indexOf('filter') > -1 || cls.indexOf('screen') > -1) s += 10;
-        let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
-        let labelText = dtMatch ? stripTags(dtMatch[1]) : '';
-        if (!labelText) {
-            let prevMatch = html.substring(0, html.indexOf(c.html));
-            if (prevMatch) {
-                let lastSpan = prevMatch.match(/<span[^>]*>([^<]*)<\/span>\s*$/i);
-                if (lastSpan) labelText = lastSpan[1].trim();
+        if (!filterEl) {
+            let best = null, bestS = 0;
+            for (let i = 0; i < candidates.length; i++) {
+                let c = candidates[i], s = 0, links = c.links;
+                if (hasKW(c.cls, ['filter-wrap', 'screen-item'])) s += 25;
+                else if (hasKW(c.cls, ['filter-list', 'screen-list'])) s -= 5;
+                else if (hasKW(c.cls, ['filter', 'screen'])) s += 10;
+                if (c.tag === 'dl') s += 15;
+                s += countKW(links, filterValueKWs) * 5;
+                let yearCount = 0;
+                for (let j = 0; j < links.length; j++) {
+                    if (/^(20[12]\d|19[89]\d)$/.test(links[j].text.trim())) yearCount++;
+                }
+                if (yearCount >= 3) s += 20;
+                if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) s += 15;
+                if (s > bestS) { bestS = s; best = c; }
             }
+            if (best && bestS >= 15) filterEl = { html: best.html, cls: best.cls };
         }
-        s += countKW([{ text: labelText }], filterLabelKWs) * 15;
-        s += countKW(links, filterValueKWs) * 5;
-        let yearCount = 0;
-        for (let i = 0; i < links.length; i++) {
-            if (/^(20[12]\d|19[89]\d)$/.test(links[i].text.trim())) yearCount++;
+
+        if (!sortEl) {
+            let best = null, bestS = 0;
+            for (let i = 0; i < candidates.length; i++) {
+                let c = candidates[i], s = 0, links = c.links;
+                s += countKW(links, sortKWs) * 15;
+                if (links.length > 8) s -= 15;
+                if (links.length >= 2 && links.length <= 6) s += 15;
+                if (hasKW(c.cls, ['sort', 'order', 'rank', 'rb-title'])) s += 15;
+                if (s > bestS) { bestS = s; best = c; }
+            }
+            if (best && bestS >= 15) sortEl = { html: best.html, cls: best.cls };
         }
-        if (yearCount >= 3) s += 20;
-        else if (yearCount >= 1) s += 8;
-        if (links.length >= 5 && links.length <= 30) s += 10;
-        if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) s += 15;
-        let avg = 0;
-        for (let i = 0; i < links.length; i++) avg += links[i].text.length;
-        avg /= links.length;
-        if (avg >= 1 && avg <= 6) s += 8;
-        return s;
-    }
-
-    function scoreFilterWrap(fc) {
-        let s = 0;
-        s += countKW([{ text: fc.label }], filterLabelKWs) * 20;
-        s += countKW(fc.links, filterValueKWs) * 5;
-        let yearCount = 0;
-        for (let i = 0; i < fc.links.length; i++) {
-            if (/^(20[12]\d|19[89]\d)$/.test(fc.links[i].text.trim())) yearCount++;
-        }
-        if (yearCount >= 3) s += 25;
-        if (fc.links.length > 0 && hasKW(fc.links[0].text, ['全部', '不限', '所有'])) s += 15;
-        if (hasKW(fc.cls, ['filter-wrap', 'screen-item'])) s += 15;
-        return s;
-    }
-
-    function scoreSort(c) {
-        let s = 0, links = c.links, cls = c.cls;
-        let sortMatch = countKW(links, sortKWs);
-        if (sortMatch >= 2 && sortMatch <= 4 && links.length <= 6) s += 20;
-        s += sortMatch * 15;
-        if (links.length > 8) s -= 15;
-        if (links.length >= 2 && links.length <= 6) s += 15;
-        if (hasKW(cls, ['sort', 'order', 'rank', '排序', '排行', 'rb-title'])) s += 15;
-        let sortHref = 0;
-        for (let i = 0; i < links.length; i++) {
-            let h = links[i].href;
-            if (/[?&](order|sort|by)=/i.test(h) || /[-_]time|[-_]hot|[-_]score|[-_]new/i.test(h)) sortHref++;
-        }
-        s += sortHref * 5;
-        let avg = 0;
-        for (let i = 0; i < links.length; i++) avg += links[i].text.length;
-        avg /= links.length;
-        if (avg >= 1 && avg <= 6) s += 10;
-        return s;
-    }
-
-    // ========== 执行评分竞赛 ==========
-    let bestNav = null, bestNavS = 0;
-    let bestFilter = null, bestFilterS = 0;
-    let bestSort = null, bestSortS = 0;
-
-    for (let i = 0; i < candidates.length; i++) {
-        let c = candidates[i];
-        let ns = scoreNav(c);
-        if (ns > bestNavS) { bestNavS = ns; bestNav = c; }
-        let fs = scoreFilter(c);
-        if (fs > bestFilterS) { bestFilterS = fs; bestFilter = c; }
-        let ss = scoreSort(c);
-        if (ss > bestSortS) { bestSortS = ss; bestSort = c; }
-    }
-
-    let bestFilterWrap = null, bestFilterWrapS = 0;
-    for (let i = 0; i < filterCandidates.length; i++) {
-        let fs = scoreFilterWrap(filterCandidates[i]);
-        if (fs > bestFilterWrapS) { bestFilterWrapS = fs; bestFilterWrap = filterCandidates[i]; }
     }
 
     // ========== 构建结果 ==========
 
     // 一级分类（导航）
-    if (bestNav && bestNavS >= 20) {
-        let selector = buildSelector(bestNav.cls, bestNav.tag, bestNav.idx);
+    if (navEl) {
+        let selector = '.' + firstClass(navEl.cls);
+        let links = extractLinks(navEl.html);
         let navTexts = [];
-        for (let i = 0; i < bestNav.links.length; i++) {
-            if (hasKW(bestNav.links[i].text, excludeNavKWs)) navTexts.push(bestNav.links[i].text);
+        for (let i = 0; i < links.length; i++) {
+            if (hasKW(links[i].text, excludeNavKWs)) navTexts.push(links[i].text);
         }
         let subSelector = 'body&&li';
         if (navTexts.length > 0) {
@@ -328,9 +237,10 @@ function autoGenerateLocationList(html) {
     }
 
     // 小分类（筛选）
-    if (bestFilterWrap && bestFilterWrapS >= 15 && bestFilterWrapS >= bestFilterS) {
-        let selector = buildSelector(bestFilterWrap.cls, 'div', -1);
-        let firstText = bestFilterWrap.links.length > 0 ? bestFilterWrap.links[0].text : '';
+    if (filterEl) {
+        let selector = '.' + firstClass(filterEl.cls);
+        let links = extractLinks(filterEl.html);
+        let firstText = links.length > 0 ? links[0].text : '';
         let hasAll = hasKW(firstText, ['全部', '不限', '所有']);
 
         let subSelector = hasAll
@@ -341,31 +251,11 @@ function autoGenerateLocationList(html) {
             一级分类: 'body&&' + selector,
             子分类: subSelector
         });
-    } else if (bestFilter && bestFilterS >= 15) {
-        let selector = buildSelector(bestFilter.cls, bestFilter.tag, bestFilter.idx);
-        let firstText = bestFilter.links.length > 0 ? bestFilter.links[0].text : '';
-        let hasAll = hasKW(firstText, ['全部', '不限', '所有']);
-
-        let subSelector;
-        if (bestFilter.tag === 'dl') {
-            subSelector = hasAll
-                ? 'body&&dd:has(a:not(:empty)):lt(12)'
-                : 'body&&dd:has(a:not(:empty)):gt(0):lt(12)';
-        } else {
-            subSelector = hasAll
-                ? 'body&&li:has(a:not(:empty)):lt(12)'
-                : 'body&&li:has(a:not(:empty)):gt(0):lt(12)';
-        }
-
-        result.push({
-            一级分类: 'body&&' + selector,
-            子分类: subSelector
-        });
     }
 
     // 排序选项
-    if (bestSort && bestSortS >= 15) {
-        let selector = buildSelector(bestSort.cls, bestSort.tag, bestSort.idx);
+    if (sortEl) {
+        let selector = '.' + firstClass(sortEl.cls);
         result.push({
             一级分类: 'body&&' + selector,
             子分类: 'body&&a'

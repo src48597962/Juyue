@@ -36,6 +36,7 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
+    // ========== 工具函数 ==========
     function parseElements(html, tag) {
         let regex = new RegExp('<' + tag + '[\\s>]([\\s\\S]*?)<\\/' + tag + '>', 'gi');
         let matches = [], m;
@@ -81,26 +82,29 @@ function autoGenerateLocationList(html) {
         return false;
     }
 
-    // ★ 修正：class前面加.前缀
-    function buildSelector(el, allEls, idx) {
-        let cls = getClass(el);
+    function stripTags(s) {
+        return s.replace(/<[^>]+>/g, '').trim();
+    }
+
+    function buildSelector(cls, tag, idx) {
         if (cls) {
             let parts = cls.split(/\s+/).filter(function(c) {
                 return c.length > 0 && !/^\d/.test(c) && c.length < 30;
             });
             if (parts.length > 0) return '.' + parts[0];
         }
-        return getTag(el) + ':eq(' + idx + ')';
+        return tag + ':eq(' + idx + ')';
     }
 
+    // ========== 关键词库 ==========
     let navKWs = [
         '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
         '纪录片', '短剧', '番剧', '影院', '动作片', '喜剧片', '爱情片',
         '科幻片', '恐怖片', '战争片', '国产剧', '港台剧', '日剧', '韩剧', '美剧',
-        '大陆剧', '港剧', '台剧', '泰剧', '英美剧'
+        '大陆剧', '港剧', '台剧', '泰剧', '英美剧', '纪录', '教育', '漫剧', '同步课堂'
     ];
 
-    let filterLabelKWs = ['类型', '地区', '年代', '年份', '语言', '状态', '版本', '画质', '分类'];
+    let filterLabelKWs = ['类型', '地区', '年代', '年份', '语言', '状态', '版本', '画质', '分类', '字母'];
 
     let filterValueKWs = [
         '内地', '大陆', '中国', '香港', '台湾', '日本', '韩国', '美国',
@@ -108,20 +112,23 @@ function autoGenerateLocationList(html) {
         '动作', '喜剧', '爱情', '科幻', '恐怖', '悬疑', '犯罪',
         '奇幻', '冒险', '古装', '武侠', '历史', '剧情', '惊悚',
         '国语', '英语', '粤语', '日语', '韩语', '普通话',
-        '连载中', '已完结', '正片', '预告片', '院线', '福利', '伦理'
+        '连载中', '已完结', '正片', '预告片', '院线', '福利', '伦理',
+        '儿童', '农村', '青春', '文艺', '微电影', '网络电影', '枪战', '警匪', '运动', '经典'
     ];
 
     let sortKWs = [
         '最新', '最热', '热门', '热播', '推荐', '评分', '人气',
-        '票房', '时间', '更新', '排行', '高分', '好评', '最近更新'
+        '票房', '时间', '更新', '排行', '高分', '好评', '最近更新',
+        '按最新', '按最热', '按评分', '按时间', '按热度'
     ];
 
     let excludeNavKWs = [
         '首页', '主页', '登录', '注册', '搜索', '留言', '论坛',
         '资讯', '新闻', '公告', '专题', 'APP', '下载', '客户端',
-        '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐'
+        '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐', '排行', '最新'
     ];
 
+    // ========== 收集候选容器 ==========
     let candidates = [];
     let tags = ['ul', 'dl', 'div', 'nav', 'section'];
 
@@ -141,6 +148,31 @@ function autoGenerateLocationList(html) {
             }
         }
     }
+
+    // ========== 收集筛选容器（处理标签在兄弟元素中的情况）==========
+    let filterCandidates = [];
+    let filterWrapRe = /<div[^>]*class=["'][^"']*(?:filter-wrap|screen-item|filter-item-wrap|filter-box)[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi;
+    let wm;
+    while ((wm = filterWrapRe.exec(html)) !== null) {
+        let wrapHtml = wm[0];
+        let labelMatch = wrapHtml.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
+        let labelText = labelMatch ? stripTags(labelMatch[1]) : '';
+        if (!labelText) {
+            let dtMatch = wrapHtml.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
+            labelText = dtMatch ? stripTags(dtMatch[1]) : '';
+        }
+        let links = extractLinks(wrapHtml);
+        if (links.length >= 2) {
+            filterCandidates.push({
+                html: wrapHtml,
+                label: labelText,
+                links: links,
+                cls: getClass(wrapHtml)
+            });
+        }
+    }
+
+    // ========== 评分函数 ==========
 
     function scoreNav(c) {
         let s = 0, links = c.links, cls = c.cls;
@@ -167,7 +199,14 @@ function autoGenerateLocationList(html) {
         if (tag === 'dl') s += 15;
         if (hasKW(cls, ['filter', 'screen', 'tag', 'category', 'select', 'condition', '筛', 'type-list'])) s += 15;
         let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
-        let labelText = dtMatch ? dtMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+        let labelText = dtMatch ? stripTags(dtMatch[1]) : '';
+        if (!labelText) {
+            let prevMatch = html.substring(0, html.indexOf(c.html));
+            if (prevMatch) {
+                let lastSpan = prevMatch.match(/<span[^>]*>([^<]*)<\/span>\s*$/i);
+                if (lastSpan) labelText = lastSpan[1].trim();
+            }
+        }
         s += countKW([{ text: labelText }], filterLabelKWs) * 15;
         s += countKW(links, filterValueKWs) * 5;
         let yearCount = 0;
@@ -182,6 +221,20 @@ function autoGenerateLocationList(html) {
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
         if (avg >= 1 && avg <= 6) s += 8;
+        return s;
+    }
+
+    function scoreFilterWrap(fc) {
+        let s = 0;
+        s += countKW([{ text: fc.label }], filterLabelKWs) * 20;
+        s += countKW(fc.links, filterValueKWs) * 5;
+        let yearCount = 0;
+        for (let i = 0; i < fc.links.length; i++) {
+            if (/^(20[12]\d|19[89]\d)$/.test(fc.links[i].text.trim())) yearCount++;
+        }
+        if (yearCount >= 3) s += 25;
+        if (fc.links.length > 0 && hasKW(fc.links[0].text, ['全部', '不限', '所有'])) s += 15;
+        if (hasKW(fc.cls, ['filter', 'screen'])) s += 10;
         return s;
     }
 
@@ -204,27 +257,35 @@ function autoGenerateLocationList(html) {
         return s;
     }
 
-    let bestNav = null, bestNavS = 0, bestNavIdx = -1;
-    let bestFilter = null, bestFilterS = 0, bestFilterIdx = -1;
-    let bestSort = null, bestSortS = 0, bestSortIdx = -1;
+    // ========== 执行评分竞赛 ==========
+    let bestNav = null, bestNavS = 0;
+    let bestFilter = null, bestFilterS = 0;
+    let bestSort = null, bestSortS = 0;
 
     for (let i = 0; i < candidates.length; i++) {
         let c = candidates[i];
         let ns = scoreNav(c);
-        if (ns > bestNavS) { bestNavS = ns; bestNav = c; bestNavIdx = i; }
+        if (ns > bestNavS) { bestNavS = ns; bestNav = c; }
         let fs = scoreFilter(c);
-        if (fs > bestFilterS) { bestFilterS = fs; bestFilter = c; bestFilterIdx = i; }
+        if (fs > bestFilterS) { bestFilterS = fs; bestFilter = c; }
         let ss = scoreSort(c);
-        if (ss > bestSortS) { bestSortS = ss; bestSort = c; bestSortIdx = i; }
+        if (ss > bestSortS) { bestSortS = ss; bestSort = c; }
     }
+
+    let bestFilterWrap = null, bestFilterWrapS = 0;
+    for (let i = 0; i < filterCandidates.length; i++) {
+        let fs = scoreFilterWrap(filterCandidates[i]);
+        if (fs > bestFilterWrapS) { bestFilterWrapS = fs; bestFilterWrap = filterCandidates[i]; }
+    }
+
+    // ========== 构建结果 ==========
 
     // 一级分类（导航）
     if (bestNav && bestNavS >= 20) {
-        let selector = buildSelector(bestNav.html, candidates, bestNavIdx);
-        let subLinks = bestNav.links;
+        let selector = buildSelector(bestNav.cls, bestNav.tag, bestNav.idx);
         let navTexts = [];
-        for (let i = 0; i < subLinks.length; i++) {
-            if (hasKW(subLinks[i].text, excludeNavKWs)) navTexts.push(subLinks[i].text);
+        for (let i = 0; i < bestNav.links.length; i++) {
+            if (hasKW(bestNav.links[i].text, excludeNavKWs)) navTexts.push(bestNav.links[i].text);
         }
         let subSelector = 'body&&li';
         if (navTexts.length > 0) {
@@ -237,20 +298,33 @@ function autoGenerateLocationList(html) {
     }
 
     // 小分类（筛选）
-    if (bestFilter && bestFilterS >= 15) {
-        let selector = buildSelector(bestFilter.html, candidates, bestFilterIdx);
+    if (bestFilterWrap && bestFilterWrapS >= 15 && bestFilterWrapS >= bestFilterS) {
+        let selector = buildSelector(bestFilterWrap.cls, 'div', -1);
+        let firstText = bestFilterWrap.links.length > 0 ? bestFilterWrap.links[0].text : '';
+        let hasAll = hasKW(firstText, ['全部', '不限', '所有']);
+
+        let subSelector = hasAll
+            ? 'body&&li:has(a:not(:empty)):lt(12)'
+            : 'body&&li:has(a:not(:empty)):gt(0):lt(12)';
+
+        result.push({
+            一级分类: 'body&&' + selector,
+            子分类: subSelector
+        });
+    } else if (bestFilter && bestFilterS >= 15) {
+        let selector = buildSelector(bestFilter.cls, bestFilter.tag, bestFilter.idx);
         let firstText = bestFilter.links.length > 0 ? bestFilter.links[0].text : '';
         let hasAll = hasKW(firstText, ['全部', '不限', '所有']);
 
         let subSelector;
         if (bestFilter.tag === 'dl') {
-            subSelector = 'body&&' + selector + ' dd:has(a:not(:empty))';
+            subSelector = hasAll
+                ? 'body&&dd:has(a:not(:empty)):lt(12)'
+                : 'body&&dd:has(a:not(:empty)):gt(0):lt(12)';
         } else {
-            subSelector = 'body&&' + selector + ' li:has(a:not(:empty))';
-        }
-        subSelector += ':lt(30)';
-        if (!hasAll) {
-            subSelector += ':gt(0)';
+            subSelector = hasAll
+                ? 'body&&li:has(a:not(:empty)):lt(12)'
+                : 'body&&li:has(a:not(:empty)):gt(0):lt(12)';
         }
 
         result.push({
@@ -261,7 +335,7 @@ function autoGenerateLocationList(html) {
 
     // 排序选项
     if (bestSort && bestSortS >= 15) {
-        let selector = buildSelector(bestSort.html, candidates, bestSortIdx);
+        let selector = buildSelector(bestSort.cls, bestSort.tag, bestSort.idx);
         result.push({
             一级分类: 'body&&' + selector,
             子分类: 'body&&a'
@@ -272,11 +346,10 @@ function autoGenerateLocationList(html) {
 }
 
 
-
 if(html){
     // 使用
-    //let 定位列表 = autoGenerateLocationList(html);
-    //log(JSON.stringify(定位列表, null, 2));
+    let 定位列表 = autoGenerateLocationList(html);
+    log(JSON.stringify(定位列表, null, 2));
 
     //log('html源码>'+html);
     /*
@@ -292,21 +365,6 @@ if(html){
     }]
     */
 
-
-    var 定位列表 = [
-        {
-            "一级分类": "body&&.hl-nav",
-            "子分类": "body&&li:not(:matches(首页|留言|最新|排行))"
-        },
-        {
-            "一级分类": "body&&.hl-filter-wrap",
-            "子分类": "body&&li:has(a:not(:empty)):lt(30)"
-        },
-        {
-            "一级分类": "body&&.hl-rb-title",
-            "子分类": "body&&a"
-  }
-]
 
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')

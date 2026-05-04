@@ -20,6 +20,7 @@ d.push({
     extra: { defaultValue: getMyVar('header.url', ''), hint: 'https://www.example.com' }
 });
 
+var 分类颜色 = '#3399cc';
 var page = MY_PAGE;
 var true_url = getMyVar('header.url', MY_URL);
 let 链接处理工具 = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/UrlProcessor.js')

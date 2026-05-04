@@ -151,7 +151,7 @@ function autoGenerateLocationList(html) {
         let foundSort = false;
         for (let i = 0; i < sortPatterns.length; i++) {
             let selector = sortPatterns[i];
-            let checkSelector = 'body&&' + selector + ' a[href*="time"] || ' + selector + 'a[href*="hits"] || ' + selector + 'a[href*="score"]';
+            let checkSelector = 'body&&' + selector + ' a[href*="time"] || a[href*="hits"] || a[href*="score"]';
             let hasSort = parseDomForArray(html, checkSelector).length > 0;
             if (hasSort) {
                 result[2] = {
@@ -187,13 +187,13 @@ function autoGenerateLocationList(html) {
     if (!result[0]) {
         result[0] = {
             一级分类: 'body&&body',
-            子分类: 'body&&a[href*="vodtype"] || body&&a[href*="/type/"]'
+            子分类: 'body&&a[href*="vodtype"] || a[href*="/type/"]'
         };
     }
     if (!result[1]) {
         result[1] = {
             一级分类: 'body&&body',
-            子分类: 'body&&a[href*="vodshow"] || body&&a[href*="/show/"]'
+            子分类: 'body&&a[href*="vodshow"] || a[href*="/show/"]'
         };
     }
     if (!result[2]) {

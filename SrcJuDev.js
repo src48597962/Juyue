@@ -47,7 +47,7 @@ function autoGenerateLocationList(html) {
         for (let i = 0; i < navPatterns.length; i++) {
             let selector = navPatterns[i];
             // 确保选择器没有多余空格
-            let checkSelector = 'body&&' + selector + ' li a[href*="type"]';
+            let checkSelector = 'body&&' + selector;
             let hasNav = parseDomForArray(html, checkSelector).length > 0;
             if (hasNav) {
                 result[0] = {
@@ -87,11 +87,11 @@ function autoGenerateLocationList(html) {
         let foundFilter = false;
         for (let i = 0; i < filterPatterns.length; i++) {
             let selector = filterPatterns[i];
-            let checkSelector = 'body&&' + selector + ' li a[href*="show"]';
+            let checkSelector = 'body&&' + selector;
             let hasFilter = parseDomForArray(html, checkSelector).length > 0;
             if (hasFilter) {
                 // 检查第一个li是不是"全部"
-                let firstLi = parseDomForArray(html, 'body&&' + selector + ' li:first');
+                let firstLi = parseDomForArray(html, 'body&&' + selector);
                 let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
                 let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
                 

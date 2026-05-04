@@ -36,171 +36,170 @@ function autoGenerateLocationList(html) {
     let result = [];
     
     // 1. 分析大分类（导航菜单）
-    let navPatterns = [
+    let navSelectors = [
         '.stui-header__menu',
         '.nav',
         '.hl-nav',
-        '.menu'
+        '.menu',
+        '.top-nav',
+        '.header-menu'
     ];
-    if(html){
-        let found = false;
-        for (let i = 0; i < navPatterns.length; i++) {
-            let selector = navPatterns[i];
-            // 确保选择器没有多余空格
-            let checkSelector = 'body&&' + selector;
-            let hasNav = parseDomForArray(html, checkSelector).length > 0;
-            if (hasNav) {
-                result[0] = {
-                    一级分类: 'body&&' + selector,
-                    子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
-                };
-                found = true;
-                break;
-            }
+    
+    let foundNav = false;
+    let navSelector = '';
+    for (let i = 0; i < navSelectors.length; i++) {
+        let selector = navSelectors[i];
+        navSelector = 'body&&' + selector;
+        if (parseDomForArray(html, navSelector).length > 0) {
+            foundNav = true;
+            break;
         }
-        
-        // 如果没找到，尝试自动识别
-        if (!found) {
-            let allUl = parseDomForArray(html, 'body&&ul');
-            let j = 0;
-            for (j = 0; j < allUl.length; j++) {
-                let links = parseDomForArray(allUl[j], 'a[href*="type"]');
-                if (links.length >= 3) {
-                    result[0] = {
-                        一级分类: 'body&&ul:eq(' + j + ')',
-                        子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
-                    };
-                    found = true;
+    }
+    
+    if (foundNav) {
+        result[0] = {
+            一级分类: navSelector,
+            子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
+        };
+    } else {
+        // 查找包含“电影”、“电视剧”等关键词的容器
+        let allContainers = parseDomForArray(html, 'body&&ul||div');
+        let keywords = ['电影', '电视剧', '综艺', '动漫', '短剧'];
+        let targetIndex = -1;
+        for (let i = 0; i < allContainers.length; i++) {
+            let containerHtml = allContainers[i] || '';
+            for (let j = 0; j < keywords.length; j++) {
+                if (containerHtml.indexOf(keywords[j]) > -1) {
+                    targetIndex = i;
                     break;
                 }
             }
         }
         
-        // 2. 分析小分类（筛选栏）
-        let filterPatterns = [
-            '.stui-screen__list',
-            '.screen-list',
-            '.hl-filter-wrap',
-            '.filter-list'
-        ];
+        if (targetIndex > -1) {
+            result[0] = {
+                一级分类: 'body&&ul||div:eq(' + targetIndex + ')',
+                子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
+            };
+        }
+    }
+            
+    
+    // 2. 分析小分类（筛选栏）
+    let filterSelectors = [
+        '.stui-screen__list',
+        '.screen-list',
+        '.hl-filter-wrap',
+        '.filter-list'
+    ];
+    
+    let foundFilter = false;
+    let filterSelector = '';
+    let isFirstAll = false;
+    
+    for (let i = 0; i < filterSelectors.length; i++) {
+        let selector = filterSelectors[i];
+        filterSelector = 'body&&' + selector;
+        if (parseDomForArray(html, filterSelector).length > 0) {
+            foundFilter = true;
+            // 检查第一个li是不是"全部"
+            let firstLi = parseDomForArray(html, filterSelector + ' li:first');
+            let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
+            isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1 || firstLiText.indexOf('所有') > -1;
+            break;
+        }
+    }
+    
+    if (foundFilter) {
+        if (isFirstAll) {
+            result[1] = {
+                一级分类: filterSelector,
+                子分类: 'body&&li:has(a:not(:empty)):lt(25)'
+            };
+        } else {
+            result[1] = {
+                一级分类: filterSelector,
+                子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(25)'
+            };
+        }
+    } else {
+        // 查找包含年份或“地区”文字的ul
+        let allUl = parseDomForArray(html, 'body&&ul');
+        let targetUlIndex = -1;
+        let isFirstAllUl = false;
         
-        let foundFilter = false;
-        for (let i = 0; i < filterPatterns.length; i++) {
-            let selector = filterPatterns[i];
-            let checkSelector = 'body&&' + selector;
-            let hasFilter = parseDomForArray(html, checkSelector).length > 0;
-            if (hasFilter) {
-                // 检查第一个li是不是"全部"
-                let firstLi = parseDomForArray(html, 'body&&' + selector);
+        for (let i = 0; i < allUl.length; i++) {
+            let yearMatch = parseDomForArray(allUl[i], 'a[href*="202"]').length;
+            let hasArea = (allUl[i] || '').indexOf('地区') > -1;
+            if (yearMatch >= 3 || hasArea) {
+                targetUlIndex = i;
+                let firstLi = parseDomForArray(allUl[i], 'li:first');
                 let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
-                let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
-                
-                if (isFirstAll) {
-                    result[1] = {
-                        一级分类: 'body&&' + selector + ':not(:matches(字母))',
-                        子分类: 'body&&li:has(a:not(:empty)):lt(20)'
-                    };
-                } else {
-                    result[1] = {
-                        一级分类: 'body&&' + selector + ':not(:matches(字母))',
-                        子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
-                    };
-                }
-                foundFilter = true;
+                isFirstAllUl = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
                 break;
             }
         }
         
-        // 如果没找到，尝试自动识别年份或地区筛选
-        if (!foundFilter) {
-            let allUl = parseDomForArray(html, 'body&&ul');
-            let k = 0;
-            for (let k = 0; k < allUl.length; k++) {
-                let yearLinks = parseDomForArray(allUl[k], 'a[href*="20"]').length;
-                let areaLinks = parseDomForArray(allUl[k], 'a[href*="area"]').length;
-                if (yearLinks >= 5 || areaLinks >= 3) {
-                    let firstLi = parseDomForArray(allUl[k], 'li:first');
-                    let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
-                    let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
-                    
-                    if (isFirstAll) {
-                        result[1] = {
-                            一级分类: 'body&&ul:eq(' + k + '):not(:matches(字母))',
-                            子分类: 'body&&li:has(a:not(:empty)):lt(20)'
-                        };
-                    } else {
-                        result[1] = {
-                            一级分类: 'body&&ul:eq(' + k + '):not(:matches(字母))',
-                            子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
-                        };
-                    }
-                    foundFilter = true;
-                    break;
-                }
-            }
-        }
-        
-        // 3. 分析排序选项
-        let sortPatterns = [
-            '.hl-rb-title',
-            '.sort',
-            '.order',
-            '.tabs'
-        ];
-        
-        let foundSort = false;
-        for (let i = 0; i < sortPatterns.length; i++) {
-            let selector = sortPatterns[i];
-            let checkSelector = 'body&&' + selector + ' a[href*="time"] || a[href*="hits"] || a[href*="score"]';
-            let hasSort = parseDomForArray(html, checkSelector).length > 0;
-            if (hasSort) {
-                result[2] = {
-                    一级分类: 'body&&' + selector,
-                    子分类: 'body&&a'
+        if (targetUlIndex > -1) {
+            if (isFirstAllUl) {
+                result[1] = {
+                    一级分类: 'body&&ul:eq(' + targetUlIndex + ')',
+                    子分类: 'body&&li:has(a:not(:empty)):lt(25)'
                 };
-                foundSort = true;
-                break;
-            }
-        }
-        
-        // 如果没找到，查找包含"最新"、"热门"文字的div
-        if (!foundSort) {
-            // 查找包含最新、热门、评分等文字的div
-            let allDiv = parseDomForArray(html, 'body&&div:has(a)');
-            let m = 0;
-            for (m = 0; m < allDiv.length; m++) {
-                let divText = allDiv[m] || '';
-                let hasNew = divText.indexOf('最新') > -1 || divText.indexOf('热门') > -1 || divText.indexOf('评分') > -1;
-                if (hasNew) {
-                    result[2] = {
-                        一级分类: 'body&&div:eq(' + m + ')',
-                        子分类: 'body&&a'
-                    };
-                    foundSort = true;
-                    break;
-                }
+            } else {
+                result[1] = {
+                    一级分类: 'body&&ul:eq(' + targetUlIndex + ')',
+                    子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(25)'
+                };
             }
         }
     }
     
-    // 兜底
-    if (!result[0]) {
-        result[0] = {
-            一级分类: 'body&&body',
-            子分类: 'body&&a[href*="vodtype"] || a[href*="/type/"]'
-        };
+    // 3. 分析排序选项
+    let sortSelectors = [
+        '.hl-rb-title',
+        '.sort'
+    ];
+    
+    let foundSort = false;
+    let sortSelector = '';
+    for (let i = 0; i < sortSelectors.length; i++) {
+        let selector = sortSelectors[i];
+        sortSelector = 'body&&' + selector;
+        if (parseDomForArray(html, sortSelector).length > 0) {
+            foundSort = true;
+            break;
+        }
     }
-    if (!result[1]) {
-        result[1] = {
-            一级分类: 'body&&body',
-            子分类: 'body&&a[href*="vodshow"] || a[href*="/show/"]'
-        };
-    }
-    if (!result[2]) {
+    
+    if (foundSort) {
         result[2] = {
-            一级分类: 'body&&.hl-rb-title',
+            一级分类: sortSelector,
             子分类: 'body&&a'
         };
+    } else {
+        // 查找包含“最新”、“热门”等文字的div
+        let allDiv = parseDomForArray(html, 'body&&div:has(a)');
+        let targetDivIndex = -1;
+        let sortKeywords = ['最新', '热门', '评分', '时间', '人气'];
+        
+        for (let i = 0; i < allDiv.length; i++) {
+            let divText = allDiv[i] || '';
+            for (let j = 0; j < sortKeywords.length; j++) {
+                if (divText.indexOf(sortKeywords[j]) > -1) {
+                    targetDivIndex = i;
+                    break;
+                }
+            }
+            if (targetDivIndex > -1) break;
+        }
+        
+        if (targetDivIndex > -1) {
+            result[2] = {
+                一级分类: 'body&&div:eq(' + targetDivIndex + ')',
+                子分类: 'body&&a'
+            };
+        }
     }
     
     return result;

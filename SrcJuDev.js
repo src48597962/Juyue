@@ -36,7 +36,7 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 栈式解析 ==========
+    // ========== 栈式解析（修正版：回溯检查漏掉的开标签）==========
     function parseElementsDeep(html, tag) {
         let matches = [];
         let openRe = new RegExp('<' + tag + '(\\s[^>]*)?>', 'gi');
@@ -48,13 +48,15 @@ function autoGenerateLocationList(html) {
             let depth = 1;
             let pos = innerStart;
             while (depth > 0 && pos < html.length) {
-                let nextOpen = html.indexOf('<' + tag + ' ', pos);
-                if (nextOpen === -1) nextOpen = html.indexOf('<' + tag + '>', pos);
                 let nextClose = html.indexOf(closeTag, pos);
                 if (nextClose === -1) break;
-                if (nextOpen !== -1 && nextOpen < nextClose) {
+                // ★ 向前回溯：pos和nextClose之间是否有漏掉的开标签
+                let backSearch = '<' + tag + ' ';
+                let backIdx = html.indexOf(backSearch, pos);
+                if (backIdx === -1) backIdx = html.indexOf('<' + tag + '>', pos);
+                if (backIdx !== -1 && backIdx < nextClose) {
                     depth++;
-                    pos = nextOpen + 1;
+                    pos = backIdx + 1;
                 } else {
                     depth--;
                     if (depth === 0) {
@@ -173,7 +175,7 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // ========== 筛选候选（从candidates中找filter-wrap/screen-item）==========
+    // ========== 筛选候选 ==========
     let filterCandidates = [];
     for (let i = 0; i < candidates.length; i++) {
         let c = candidates[i];
@@ -198,23 +200,16 @@ function autoGenerateLocationList(html) {
     function scoreNav(c) {
         let s = 0, links = c.links, cls = c.cls, tag = c.tag;
         let navMatch = countKW(links, navKWs);
-        // ★ 限制nav关键词匹配上限，防止大容器虚高
         s += Math.min(navMatch, 12) * 20;
-        // ★ nav标签大加分
         if (tag === 'nav') s += 25;
-        // 链接数量 3-15 最佳
         if (links.length >= 3 && links.length <= 15) s += 15;
-        else if (links.length > 20) s -= 10; // 大容器扣分
-        // class含nav/menu
+        else if (links.length > 20) s -= 10;
         if (hasKW(cls, ['nav', 'menu', 'header', 'head', 'top', 'category', 'type-nav'])) s += 15;
-        // ★ 导航项文本短（2-6字）
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;
         if (avg >= 1 && avg <= 6) s += 10;
-        // 排除词扣分
         s -= countKW(links, excludeNavKWs) * 5;
-        // href模式
         let listCount = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
@@ -229,8 +224,8 @@ function autoGenerateLocationList(html) {
         if (tag === 'dl') s += 15;
         // ★ filter-wrap优先级高于filter-list
         if (cls.indexOf('filter-wrap') > -1 || cls.indexOf('screen-item') > -1) s += 20;
+        else if (cls.indexOf('filter-list') > -1 || cls.indexOf('screen-list') > -1) s -= 5;
         else if (cls.indexOf('filter') > -1 || cls.indexOf('screen') > -1) s += 10;
-        // dt标签
         let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
         let labelText = dtMatch ? stripTags(dtMatch[1]) : '';
         if (!labelText) {
@@ -274,22 +269,17 @@ function autoGenerateLocationList(html) {
     function scoreSort(c) {
         let s = 0, links = c.links, cls = c.cls;
         let sortMatch = countKW(links, sortKWs);
-        // ★ 排序项少且精准的加分
         if (sortMatch >= 2 && sortMatch <= 4 && links.length <= 6) s += 20;
         s += sortMatch * 15;
-        // ★ 大容器扣分（排序区域通常只有2-5个链接）
         if (links.length > 8) s -= 15;
         if (links.length >= 2 && links.length <= 6) s += 15;
-        // class含排序词
         if (hasKW(cls, ['sort', 'order', 'rank', '排序', '排行', 'rb-title'])) s += 15;
-        // href含排序参数
         let sortHref = 0;
         for (let i = 0; i < links.length; i++) {
             let h = links[i].href;
             if (/[?&](order|sort|by)=/i.test(h) || /[-_]time|[-_]hot|[-_]score|[-_]new/i.test(h)) sortHref++;
         }
         s += sortHref * 5;
-        // 文本短
         let avg = 0;
         for (let i = 0; i < links.length; i++) avg += links[i].text.length;
         avg /= links.length;

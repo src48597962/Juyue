@@ -367,6 +367,10 @@ Object.assign(CategoriesHeader.prototype, {
                     sub_categories = this.evalJSRule(category.list, category.subListRule)
                 } else {
                     sub_categories = parseDomForArray(category.list, category.subListRule);
+                }               
+                // 添加过滤：如果子分类数量 <= 1，则清空数组
+                if (sub_categories.length <= 1) {
+                    sub_categories = [];    
                 }
                 if (index < (this[symbolMap.mFoldIndex] || 1)) {
                     sub_categories.forEach((item, key) => {

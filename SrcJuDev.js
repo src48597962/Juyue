@@ -23,14 +23,17 @@ d.push({
 var 分类颜色 = '#3399cc';
 var page = MY_PAGE;
 var true_url = getMyVar('header.url', MY_URL);
+log('请求地址>'+true_url);
+var html = fetch(true_url);
+
 let 链接处理工具 = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/UrlProcessor.js')
 true_url = 链接处理工具
     .链接(true_url)
     .页码(page)
     .获取处理结果();
 MY_URL = true_url;
-log('请求地址>'+MY_URL);
-var html = fetchPC(MY_URL);
+
+
 //log('html源码>'+html);
 // 临时调试代码
 // 在 build() 方法中添加

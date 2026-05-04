@@ -31,6 +31,7 @@ true_url = 链接处理工具
 MY_URL = true_url;
 log('请求地址>'+MY_URL);
 var html = fetch(MY_URL);
+log('html源码>'+html);
 // 临时调试代码
 let lists = parseDomForArray(html, 'body&&.stui-screen__list');
 lists.forEach((ul, idx) => {

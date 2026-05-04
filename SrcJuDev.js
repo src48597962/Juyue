@@ -35,10 +35,10 @@ var html = fetch(MY_URL, {
 
 var 定位列表 = ([{
     一级分类: 'body&&.stui-header__menu',
-    子分类: 'li:not(:matches(首页|资讯|专题|短视频|APP下载))',//:gt(0)
+    子分类: '> li:not(:matches(首页|资讯|专题|短视频|APP下载))',//:gt(0)
 },{
     一级分类: 'body&&.stui-screen__list:not(:matches(字母))',
-    子分类: 'li:lt(12):gt(0)',//:gt(0)
+    子分类: '> li:lt(12):gt(0)',//:gt(0)
 }])
 
 

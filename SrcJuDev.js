@@ -29,9 +29,16 @@ true_url = 链接处理工具
     .页码(page)
     .获取处理结果();
 MY_URL = true_url;
-var html = fetchPC(MY_URL, {
-    headers: {}
-})
+var html = fetchPC(MY_URL);
+// 临时调试代码
+let lists = parseDomForArray(html, 'body&&.stui-screen__list');
+lists.forEach((ul, idx) => {
+    log(`第${idx+1}个ul的HTML:`, ul);
+    let items = parseDomForArray(ul, 'li');
+    items.forEach((li, i) => {
+        log(`  第${i+1}个li:`, li);
+    });
+});
 
 var 定位列表 = ([{
     一级分类: 'body&&.stui-header__menu',

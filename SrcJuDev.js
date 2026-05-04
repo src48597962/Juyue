@@ -34,13 +34,28 @@ var html = fetch(MY_URL);
 
 //log('html源码>'+html);
 
-var 定位列表 = ([{
-    一级分类: 'body&&.stui-header__menu',
-    子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载))',//:gt(0)
-},{
-    一级分类: 'body&&.stui-screen__list:not(:matches(字母))',
-    子分类: 'body&&li:has(a:not(:empty)):lt(12):gt(0)',//:gt(0)
-}])
+var 定位列表 = ([
+    // 1. 导航菜单 - 一级分类链接是 vodtype 或 type
+    {
+        一级分类: 'body&&.stui-header__menu, body&&.nav, body&&.header-menu',
+        子分类: 'body&&li:has(a[href*="vodtype"]), body&&li:has(a[href*="/type/"])',
+    },
+    // 2. 筛选栏 - 子分类链接是 vodshow 或 show
+    {
+        一级分类: 'body&&.stui-screen__list, body&&.screen-list',
+        子分类: 'body&&li:has(a[href*="vodshow"]), body&&li:has(a[href*="/show/"]):gt(0):lt(20)',
+    },
+    // 3. 侧边栏
+    {
+        一级分类: 'body&&.stui-pannel-side, body&&.sidebar',
+        子分类: 'body&&li:has(a[href*="vodtype"]), body&&li:has(a[href*="/type/"])',
+    },
+    // 4. 兜底
+    {
+        一级分类: 'body&&body',
+        子分类: 'body&&a[href*="vodtype"], body&&a[href*="/type/"]',
+    }
+])
 
 
 // '0' 为默认不折叠，'1' 为默认折叠

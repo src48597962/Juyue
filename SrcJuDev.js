@@ -47,11 +47,13 @@ function autoGenerateLocationList(html) {
     let found = false;
     for (i = 0; i < navPatterns.length; i++) {
         let selector = navPatterns[i];
-        let hasNav = parseDomForArray(html, `body&&${selector} li a[href*="type"]`).length > 0;
+        // 确保选择器没有多余空格
+        let checkSelector = 'body&&' + selector + ' li a[href*="type"]';
+        let hasNav = parseDomForArray(html, checkSelector).length > 0;
         if (hasNav) {
             result[0] = {
-                一级分类: `body&&${selector}`,
-                子分类: `body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))`
+                一级分类: 'body&&' + selector,
+                子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
             };
             found = true;
             break;
@@ -66,8 +68,8 @@ function autoGenerateLocationList(html) {
             let links = parseDomForArray(allUl[j], 'a[href*="type"]');
             if (links.length >= 3) {
                 result[0] = {
-                    一级分类: `body&&ul:eq(${j})`,
-                    子分类: `body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))`
+                    一级分类: 'body&&ul:eq(' + j + ')',
+                    子分类: 'body&&li:not(:matches(首页|资讯|专题|短视频|APP下载|音乐|留言|最新|排行))'
                 };
                 found = true;
                 break;
@@ -86,23 +88,23 @@ function autoGenerateLocationList(html) {
     let foundFilter = false;
     for (i = 0; i < filterPatterns.length; i++) {
         let selector = filterPatterns[i];
-        let hasFilter = parseDomForArray(html, `body&&${selector} li a[href*="show"]`).length > 0;
+        let checkSelector = 'body&&' + selector + ' li a[href*="show"]';
+        let hasFilter = parseDomForArray(html, checkSelector).length > 0;
         if (hasFilter) {
             // 检查第一个li是不是"全部"
-            let firstLiText = parseDomForArray(html, `body&&${selector} li:first`)[0] || '';
+            let firstLi = parseDomForArray(html, 'body&&' + selector + ' li:first');
+            let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
             let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
             
             if (isFirstAll) {
-                // 第一个是"全部"，保留它，从第0个开始
                 result[1] = {
-                    一级分类: `body&&${selector}`,
-                    子分类: `body&&li:has(a:not(:empty)):lt(20)`
+                    一级分类: 'body&&' + selector,
+                    子分类: 'body&&li:has(a:not(:empty)):lt(20)'
                 };
             } else {
-                // 第一个不是"全部"，跳过第1个
                 result[1] = {
-                    一级分类: `body&&${selector}`,
-                    子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
+                    一级分类: 'body&&' + selector,
+                    子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
                 };
             }
             foundFilter = true;
@@ -118,19 +120,19 @@ function autoGenerateLocationList(html) {
             let yearLinks = parseDomForArray(allUl[k], 'a[href*="20"]').length;
             let areaLinks = parseDomForArray(allUl[k], 'a[href*="area"]').length;
             if (yearLinks >= 5 || areaLinks >= 3) {
-                // 检查第一个li是不是"全部"
-                let firstLiText = parseDomForArray(allUl[k], 'li:first')[0] || '';
+                let firstLi = parseDomForArray(allUl[k], 'li:first');
+                let firstLiText = (firstLi && firstLi[0]) ? firstLi[0] : '';
                 let isFirstAll = firstLiText.indexOf('全部') > -1 || firstLiText.indexOf('不限') > -1;
                 
                 if (isFirstAll) {
                     result[1] = {
-                        一级分类: `body&&ul:eq(${k})`,
-                        子分类: `body&&li:has(a:not(:empty)):lt(20)`
+                        一级分类: 'body&&ul:eq(' + k + ')',
+                        子分类: 'body&&li:has(a:not(:empty)):lt(20)'
                     };
                 } else {
                     result[1] = {
-                        一级分类: `body&&ul:eq(${k})`,
-                        子分类: `body&&li:has(a:not(:empty)):gt(0):lt(20)`
+                        一级分类: 'body&&ul:eq(' + k + ')',
+                        子分类: 'body&&li:has(a:not(:empty)):gt(0):lt(20)'
                     };
                 }
                 foundFilter = true;
@@ -150,11 +152,12 @@ function autoGenerateLocationList(html) {
     let foundSort = false;
     for (i = 0; i < sortPatterns.length; i++) {
         let selector = sortPatterns[i];
-        let hasSort = parseDomForArray(html, `body&&${selector} a[href*="time"], body&&${selector} a[href*="hits"], body&&${selector} a[href*="score"]`).length > 0;
+        let checkSelector = 'body&&' + selector + ' a[href*="time"], body&&' + selector + ' a[href*="hits"], body&&' + selector + ' a[href*="score"]';
+        let hasSort = parseDomForArray(html, checkSelector).length > 0;
         if (hasSort) {
             result[2] = {
-                一级分类: `body&&${selector}`,
-                子分类: `body&&a`
+                一级分类: 'body&&' + selector,
+                子分类: 'body&&a'
             };
             foundSort = true;
             break;
@@ -166,14 +169,14 @@ function autoGenerateLocationList(html) {
         let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
         if (allDiv.length > 0) {
             result[2] = {
-                一级分类: `body&&div:eq(0)`,
-                子分类: `body&&a`
+                一级分类: 'body&&div:eq(0)',
+                子分类: 'body&&a'
             };
             foundSort = true;
         }
     }
     
-    // 兜底：如果某个对象缺失，用默认值填充
+    // 兜底
     if (!result[0]) {
         result[0] = {
             一级分类: 'body&&body',

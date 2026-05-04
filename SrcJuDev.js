@@ -151,7 +151,7 @@ function autoGenerateLocationList(html) {
         let foundSort = false;
         for (let i = 0; i < sortPatterns.length; i++) {
             let selector = sortPatterns[i];
-            let checkSelector = 'body&&' + selector + ' a[href*="time"], body&&' + selector + ' a[href*="hits"], body&&' + selector + ' a[href*="score"]';
+            let checkSelector = 'body&&' + selector + ' a[href*="time"] || body&&' + selector + ' a[href*="hits"] || body&&' + selector + ' a[href*="score"]';
             let hasSort = parseDomForArray(html, checkSelector).length > 0;
             if (hasSort) {
                 result[2] = {
@@ -165,7 +165,7 @@ function autoGenerateLocationList(html) {
         
         // 如果没找到排序，尝试自动识别
         if (!foundSort) {
-            let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]), body&&div:has(a[href*="hits"])');
+            let allDiv = parseDomForArray(html, 'body&&div:has(a[href*="time"]) || body&&div:has(a[href*="hits"])');
             if (allDiv.length > 0) {
                 result[2] = {
                     一级分类: 'body&&div:eq(0)',

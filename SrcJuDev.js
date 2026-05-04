@@ -67,9 +67,17 @@ function autoGenerateLocationList(html) {
         return s.replace(/<[^>]+>/g, '').trim();
     }
 
-    // 在html中查找class含指定关键词的元素
+    function firstClass(clsStr) {
+        let m = clsStr.match(/class=["']([^"']*)["']/i);
+        if (!m) return '';
+        let parts = m[1].trim().split(/\s+/).filter(function(c) {
+            return c.length > 0 && !/^\d/.test(c) && c.length < 30;
+        });
+        return parts.length > 0 ? parts[0] : '';
+    }
+
+    // 在html中查找class含指定关键词的元素，返回第一个匹配
     function findElByClass(html, classKeyword) {
-        // 匹配带class的开标签，然后找到对应的闭标签
         let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
         let m = re.exec(html);
         if (!m) return null;
@@ -85,16 +93,6 @@ function autoGenerateLocationList(html) {
         };
     }
 
-    // 从class字符串中取第一个有效class名
-    function firstClass(clsStr) {
-        let m = clsStr.match(/class=["']([^"']*)["']/i);
-        if (!m) return '';
-        let parts = m[1].trim().split(/\s+/).filter(function(c) {
-            return c.length > 0 && !/^\d/.test(c) && c.length < 30;
-        });
-        return parts.length > 0 ? parts[0] : '';
-    }
-
     // ========== 关键词库 ==========
     let navKWs = [
         '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
@@ -103,7 +101,7 @@ function autoGenerateLocationList(html) {
         '大陆剧', '港剧', '台剧', '泰剧', '英美剧', '纪录', '教育', '漫剧', '同步课堂'
     ];
 
-    let filterLabelKWs = ['类型', '地区', '年代', '年份', '语言', '状态', '版本', '画质', '分类', '字母'];
+    let filterLabelKWs = ['类型', '地区', '年代', '年份', '语言', '状态', '版本', '画质', '分类'];
 
     let filterValueKWs = [
         '内地', '大陆', '中国', '香港', '台湾', '日本', '韩国', '美国',
@@ -129,17 +127,58 @@ function autoGenerateLocationList(html) {
 
     // ========== 第一步：直接找已知 class 模式 ==========
 
-    // 导航：找含 nav/menu 的 ul
+    // 导航：找含 nav/menu 的元素
     let navEl = findElByClass(html, 'hl-nav') ||
                 findElByClass(html, 'stui-header__menu') ||
                 findElByClass(html, 'nav-list') ||
                 findElByClass(html, 'hl-menus') ||
                 findElByClass(html, 'type-nav');
 
-    // 筛选：找含 filter-wrap/screen-item 的 div
-    let filterEl = findElByClass(html, 'filter-wrap') ||
-                   findElByClass(html, 'screen-item') ||
-                   findElByClass(html, 'filter-box');
+    // 筛选：找含 filter-wrap/screen-item 的div，优先选第一个链接含"全部"的
+    let filterEl = null;
+    let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box'];
+    for (let k = 0; k < filterClassKeywords.length; k++) {
+        let keyword = filterClassKeywords[k];
+        let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + keyword + '[^"\']*["\'][^>]*>', 'gi');
+        let m;
+        while ((m = re.exec(html)) !== null) {
+            let tag = m[1].toLowerCase();
+            let start = m.index;
+            let innerStart = start + m[0].length;
+            let closeTag = '</' + tag + '>';
+            let closeIdx = html.indexOf(closeTag, innerStart);
+            if (closeIdx === -1) continue;
+            let elHtml = html.substring(start, closeIdx + closeTag.length);
+            let elCls = m[0];
+            // 检查第一个链接是否含"全部"
+            let firstLinkMatch = elHtml.match(/<a[^>]*>([\s\S]*?)<\/a>/i);
+            let firstLinkText = firstLinkMatch ? stripTags(firstLinkMatch[1]) : '';
+            if (hasKW(firstLinkText, ['全部', '不限', '所有'])) {
+                filterEl = { html: elHtml, cls: elCls };
+                break;
+            }
+        }
+        if (filterEl) break;
+    }
+    // 兜底：第一个链接没有"全部"的也接受
+    if (!filterEl) {
+        for (let k = 0; k < filterClassKeywords.length; k++) {
+            let keyword = filterClassKeywords[k];
+            let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + keyword + '[^"\']*["\'][^>]*>', 'gi');
+            let m = re.exec(html);
+            if (m) {
+                let tag = m[1].toLowerCase();
+                let start = m.index;
+                let innerStart = start + m[0].length;
+                let closeTag = '</' + tag + '>';
+                let closeIdx = html.indexOf(closeTag, innerStart);
+                if (closeIdx !== -1) {
+                    filterEl = { html: html.substring(start, closeIdx + closeTag.length), cls: m[0] };
+                    break;
+                }
+            }
+        }
+    }
 
     // 排序：找含 rb-title/sort 的 div
     let sortEl = findElByClass(html, 'rb-title') ||
@@ -150,7 +189,6 @@ function autoGenerateLocationList(html) {
     // ========== 第二步：找不到的用评分兜底 ==========
 
     if (!navEl || !filterEl || !sortEl) {
-        // 用正则收集所有 ul/div 候选
         let candidates = [];
         let tagRe = /<(ul|div|nav|section|dl)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi;
         let cm;
@@ -238,7 +276,7 @@ function autoGenerateLocationList(html) {
 
     // 小分类（筛选）
     if (filterEl) {
-        let selector = '.' + firstClass(filterEl.cls);
+        let selector = '.' + firstClass(filterEl.cls) + ':not(:matches(字母))';
         let links = extractLinks(filterEl.html);
         let firstText = links.length > 0 ? links[0].text : '';
         let hasAll = hasKW(firstText, ['全部', '不限', '所有']);

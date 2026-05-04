@@ -36,12 +36,37 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 工具函数 ==========
-    function parseElements(html, tag) {
-        let regex = new RegExp('<' + tag + '[\\s>]([\\s\\S]*?)<\\/' + tag + '>', 'gi');
-        let matches = [], m;
-        while ((m = regex.exec(html)) !== null) {
-            matches.push({ html: m[0], inner: m[1] });
+    // ========== 栈式解析（正确处理嵌套标签）==========
+    function parseElementsDeep(html, tag) {
+        let matches = [];
+        let openRe = new RegExp('<' + tag + '(\\s[^>]*)?>', 'gi');
+        let closeTag = '</' + tag + '>';
+        let m;
+        while ((m = openRe.exec(html)) !== null) {
+            let start = m.index;
+            let innerStart = m.index + m[0].length;
+            let depth = 1;
+            let pos = innerStart;
+            while (depth > 0 && pos < html.length) {
+                let nextOpen = html.indexOf('<' + tag + ' ', pos);
+                if (nextOpen === -1) nextOpen = html.indexOf('<' + tag + '>', pos);
+                let nextClose = html.indexOf(closeTag, pos);
+                if (nextClose === -1) break;
+                if (nextOpen !== -1 && nextOpen < nextClose) {
+                    depth++;
+                    pos = nextOpen + 1;
+                } else {
+                    depth--;
+                    if (depth === 0) {
+                        matches.push({
+                            html: html.substring(start, nextClose + closeTag.length),
+                            inner: html.substring(innerStart, nextClose)
+                        });
+                        openRe.lastIndex = nextClose + closeTag.length;
+                    }
+                    pos = nextClose + 1;
+                }
+            }
         }
         return matches;
     }
@@ -128,18 +153,17 @@ function autoGenerateLocationList(html) {
         '关于', '联系', '帮助', '收藏', '历史', '播放记录', '短视频', '音乐', '排行', '最新'
     ];
 
-    // ========== 收集候选容器 ==========
+    // ========== 收集候选容器（栈式解析）==========
     let candidates = [];
     let tags = ['ul', 'dl', 'div', 'nav', 'section'];
 
     for (let t = 0; t < tags.length; t++) {
-        let els = parseElements(html, tags[t]);
+        let els = parseElementsDeep(html, tags[t]);
         for (let i = 0; i < els.length; i++) {
             let links = extractLinks(els[i].html);
             if (links.length >= 2 && links.length <= 60) {
                 candidates.push({
                     html: els[i].html,
-                    inner: els[i].inner,
                     links: links,
                     tag: tags[t],
                     cls: getClass(els[i].html),
@@ -149,25 +173,23 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // ========== 收集筛选容器（处理标签在兄弟元素中的情况）==========
+    // ========== 收集筛选容器 ==========
     let filterCandidates = [];
-    let filterWrapRe = /<div[^>]*class=["'][^"']*(?:filter-wrap|screen-item|filter-item-wrap|filter-box)[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi;
-    let wm;
-    while ((wm = filterWrapRe.exec(html)) !== null) {
-        let wrapHtml = wm[0];
-        let labelMatch = wrapHtml.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
-        let labelText = labelMatch ? stripTags(labelMatch[1]) : '';
-        if (!labelText) {
-            let dtMatch = wrapHtml.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
-            labelText = dtMatch ? stripTags(dtMatch[1]) : '';
-        }
-        let links = extractLinks(wrapHtml);
-        if (links.length >= 2) {
+    for (let i = 0; i < candidates.length; i++) {
+        let c = candidates[i];
+        let cls = c.cls;
+        if (cls.indexOf('filter-wrap') > -1 || cls.indexOf('screen-item') > -1 || cls.indexOf('filter-box') > -1) {
+            let labelMatch = c.html.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
+            let labelText = labelMatch ? stripTags(labelMatch[1]) : '';
+            if (!labelText) {
+                let dtMatch = c.html.match(/<dt[^>]*>([\s\S]*?)<\/dt>/i);
+                labelText = dtMatch ? stripTags(dtMatch[1]) : '';
+            }
             filterCandidates.push({
-                html: wrapHtml,
+                html: c.html,
                 label: labelText,
-                links: links,
-                cls: getClass(wrapHtml)
+                links: c.links,
+                cls: cls
             });
         }
     }
@@ -344,6 +366,7 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
+
 
 
 if(html){

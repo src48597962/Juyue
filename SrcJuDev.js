@@ -275,8 +275,8 @@ function autoGenerateLocationList(html) {
 
 if(html){
     // 使用
-    let 定位列表 = autoGenerateLocationList(html);
-    log(JSON.stringify(定位列表, null, 2));
+    //let 定位列表 = autoGenerateLocationList(html);
+    //log(JSON.stringify(定位列表, null, 2));
 
     //log('html源码>'+html);
     /*
@@ -291,6 +291,22 @@ if(html){
         子分类: 'body&&a'
     }]
     */
+
+
+    var 定位列表 = [
+        {
+            "一级分类": "body&&.hl-nav",
+            "子分类": "body&&li:not(:matches(首页|留言|最新|排行))"
+        },
+        {
+            "一级分类": "body&&.hl-filter-wrap",
+            "子分类": "body&&li:has(a:not(:empty)):lt(30)"
+        },
+        {
+            "一级分类": "body&&.hl-rb-title",
+            "子分类": "body&&a"
+  }
+]
 
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')

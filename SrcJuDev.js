@@ -35,45 +35,17 @@ var html = fetch(MY_URL);
 //log('html源码>'+html);
 
 var 定位列表 = ([
-    // 导航菜单 - vodtype
     {
-        一级分类: 'body&&.stui-header__menu',
-        子分类: 'body&&li:has(a[href*="vodtype"])',
+        一级分类: 'body&&.stui-header__menu || body&&.stui-pannel-side',
+        子分类: 'body&&li:has(a[href*="type"])',
     },
-    // 导航菜单 - type
-    {
-        一级分类: 'body&&.stui-header__menu',
-        子分类: 'body&&li:has(a[href*="/type/"])',
-    },
-    // 筛选栏 - vodshow
     {
         一级分类: 'body&&.stui-screen__list',
-        子分类: 'body&&li:has(a[href*="vodshow"]):gt(0):lt(20)',
+        子分类: 'body&&li:has(a[href*="show"]):gt(0):lt(20)',
     },
-    // 筛选栏 - show
-    {
-        一级分类: 'body&&.stui-screen__list',
-        子分类: 'body&&li:has(a[href*="/show/"]):gt(0):lt(20)',
-    },
-    // 侧边栏 - vodtype
-    {
-        一级分类: 'body&&.stui-pannel-side',
-        子分类: 'body&&li:has(a[href*="vodtype"])',
-    },
-    // 侧边栏 - type
-    {
-        一级分类: 'body&&.stui-pannel-side',
-        子分类: 'body&&li:has(a[href*="/type/"])',
-    },
-    // 兜底 - vodtype
     {
         一级分类: 'body&&body',
-        子分类: 'body&&a[href*="vodtype"]',
-    },
-    // 兜底 - type
-    {
-        一级分类: 'body&&body',
-        子分类: 'body&&a[href*="/type/"]',
+        子分类: 'body&&a[href*="type"]',
     },
 ])
 

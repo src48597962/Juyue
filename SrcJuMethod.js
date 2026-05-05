@@ -1349,7 +1349,28 @@ function getHtmlCode(ssurl, headers, timeout) {
     }
     return html;
 }
+// 打造动态分类
+function BuildCate(d, html, 定位列表){
+    let 分类颜色 = getItem('主题颜色','#3399cc');
+    // '0' 为默认不折叠，'1' 为默认折叠
+    let 当前折叠状态 = getMyVar('header.fold', '1')
 
+    // 引入动态分类依赖
+    // 框架已经稳定，使用 require 更佳
+    let htmlCategories = require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/categories-header.js')
+    htmlCategories.界面(d)
+        //.分类链接(true_url)
+        .源码(html)
+        .页码(1)
+        .添加分类定位(定位列表)
+        .开启内置折叠功能() // 必须
+        .折叠按钮样式({
+            title: 当前折叠状态 == "1" ? "‘‘️▼’’" : "‘‘▲’’"
+        }) // 可选
+        .折叠(当前折叠状态) // 必须
+        .选中的分类颜色(分类颜色)
+        .开始打造分类();
+}
 // 外部存入解析
 function importParse(obj){
     try{

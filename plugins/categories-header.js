@@ -350,7 +350,7 @@ Object.assign(CategoriesHeader.prototype, {
                 } else {
                     sub_categories = parseDomForArray(category.list, category.subListRule);
                 }               
-                sub_categories = sub_categories.filter(item => item?.title != null && item.title !== '');
+                sub_categories = sub_categories.filter(item => item.title);
                 
                 // 折叠 UI
                 if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1) && categories.length > 1) {

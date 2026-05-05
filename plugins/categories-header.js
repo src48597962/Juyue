@@ -350,8 +350,6 @@ Object.assign(CategoriesHeader.prototype, {
                 } else {
                     sub_categories = parseDomForArray(category.list, category.subListRule);
                 }
-
-                sub_categories = sub_categories.filter(item => this.getTitle(item, category));
                 
                 // 折叠 UI
                 if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1) && categories.length > 1) {
@@ -375,32 +373,33 @@ Object.assign(CategoriesHeader.prototype, {
                     sub_categories.forEach((item, key) => {
                         let title = this.getTitle(item, category)
                         let url = this.getUrl(item, category)
-
-                        this[symbolMap.mLayout].push({
-                            title: key.toString() === cate_temp[index] ? '““””<b><font color=' + this[symbolMap.mColor] + '>' + title + ' </font></b>' : title,
-                            url: $(url).lazyRule((params) => {
-                                let new_cate = []
-                                if (params.index === 0) {
-                                    params.cate_temp.forEach((cate, index) => {
-                                        new_cate.push(index === 0 ? params.key.toString() : "0")
-                                    });
-                                } else {
-                                    params.cate_temp[params.index] = params.key.toString()
-                                }
-                                putMyVar(params.tag + params.VARMAP.CATEGORY, JSON.stringify(params.index === 0 ? new_cate : params.cate_temp))
-                                putMyVar(params.tag + params.VARMAP.URL, input)
-                                refreshPage(true)
-                                return "hiker://empty"
-                            }, {
-                                cate_temp: cate_temp,
-                                index: index,
-                                VARMAP: this.VARMAP,
-                                tag: mTag,
-                                key: key,
-                                page: this[symbolMap.mPage],
-                            }),
-                            col_type: 'scroll_button',
-                        })
+                        if(title){
+                            this[symbolMap.mLayout].push({
+                                title: key.toString() === cate_temp[index] ? '““””<b><font color=' + this[symbolMap.mColor] + '>' + title + ' </font></b>' : title,
+                                url: $(url).lazyRule((params) => {
+                                    let new_cate = []
+                                    if (params.index === 0) {
+                                        params.cate_temp.forEach((cate, index) => {
+                                            new_cate.push(index === 0 ? params.key.toString() : "0")
+                                        });
+                                    } else {
+                                        params.cate_temp[params.index] = params.key.toString()
+                                    }
+                                    putMyVar(params.tag + params.VARMAP.CATEGORY, JSON.stringify(params.index === 0 ? new_cate : params.cate_temp))
+                                    putMyVar(params.tag + params.VARMAP.URL, input)
+                                    refreshPage(true)
+                                    return "hiker://empty"
+                                }, {
+                                    cate_temp: cate_temp,
+                                    index: index,
+                                    VARMAP: this.VARMAP,
+                                    tag: mTag,
+                                    key: key,
+                                    page: this[symbolMap.mPage],
+                                }),
+                                col_type: 'scroll_button',
+                            })
+                        }
                     })
                     this[symbolMap.mLayout].push({
                         col_type: "blank_block"
@@ -409,26 +408,27 @@ Object.assign(CategoriesHeader.prototype, {
                     sub_categories.forEach((item, key) => {
                         let title = this.getTitle(item, category)
                         let url = this.getUrl(item, category)
+                        if(title){
+                            this[symbolMap.mLayout].push({
+                                title: key.toString() === cate_temp[index] ? '““””<b><font color=' + this[symbolMap.mColor] + '>' + title + ' </font></b>' : title,
+                                url: $(url).lazyRule((params) => {
+                                    params.cate_temp[params.index] = params.key.toString()
 
-                        this[symbolMap.mLayout].push({
-                            title: key.toString() === cate_temp[index] ? '““””<b><font color=' + this[symbolMap.mColor] + '>' + title + ' </font></b>' : title,
-                            url: $(url).lazyRule((params) => {
-                                params.cate_temp[params.index] = params.key.toString()
-
-                                putMyVar(params.tag + params.VARMAP.CATEGORY, JSON.stringify(params.cate_temp))
-                                putMyVar(params.tag + params.VARMAP.URL, input)
-                                refreshPage(true)
-                                return "hiker://empty"
-                            }, {
-                                cate_temp: cate_temp,
-                                index: index,
-                                VARMAP: this.VARMAP,
-                                tag: mTag,
-                                key: key,
-                                page: this[symbolMap.mPage],
-                            }),
-                            col_type: 'scroll_button',
-                        })
+                                    putMyVar(params.tag + params.VARMAP.CATEGORY, JSON.stringify(params.cate_temp))
+                                    putMyVar(params.tag + params.VARMAP.URL, input)
+                                    refreshPage(true)
+                                    return "hiker://empty"
+                                }, {
+                                    cate_temp: cate_temp,
+                                    index: index,
+                                    VARMAP: this.VARMAP,
+                                    tag: mTag,
+                                    key: key,
+                                    page: this[symbolMap.mPage],
+                                }),
+                                col_type: 'scroll_button',
+                            })
+                        }
                     })
                     this[symbolMap.mLayout].push({
                         col_type: "blank_block"

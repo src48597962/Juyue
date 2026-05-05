@@ -253,7 +253,7 @@ if(html){
             "子分类": "body&&a:not(:matches(首页|导航))"
         },
         {
-            "一级分类": "body&&.fed-scre-list&&dl",
+            "一级分类": ".fed-scre-list&&dl",
             "子分类": "body&&dd:has(a)"
         },
         {

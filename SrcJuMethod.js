@@ -1359,7 +1359,7 @@ function BuildDynCate(d, html, 定位列表){
     // 框架已经稳定，使用 require 更佳
     let htmlCategories = require(config.聚阅.replace(/[^/]*$/,'') + 'plugins/categories-header.js')
     htmlCategories.界面(d)
-        //.分类链接(true_url)
+        .分类链接(MY_URL)
         .源码(html)
         .页码(1)
         .添加分类定位(定位列表)

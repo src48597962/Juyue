@@ -81,7 +81,7 @@ function autoGenerateLocationList(html) {
             } else {
                 depth--;
                 if (depth === 0) {
-                    return { html: html.substring(start, nextClose + closeTag.length), cls: m[0] };
+                    return { html: html.substring(start, nextClose + closeTag.length), cls: m[0], pos: start };
                 }
                 pos = nextClose + 1;
             }
@@ -109,7 +109,7 @@ function autoGenerateLocationList(html) {
                 } else {
                     depth--;
                     if (depth === 0) {
-                        results.push({ html: html.substring(start, nextClose + closeTag.length), cls: m[0] });
+                        results.push({ html: html.substring(start, nextClose + closeTag.length), cls: m[0], pos: start });
                         re.lastIndex = nextClose + closeTag.length;
                     }
                     pos = nextClose + 1;
@@ -119,25 +119,36 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    // 从元素中提取标签文本（支持 text-muted 格式）
+    // 从元素内部提取标签文本
     function extractLabelText(elHtml) {
-        let labelMatch = elHtml.match(/<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/i);
-        if (!labelMatch) labelMatch = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
-        let text = labelMatch ? labelMatch[1].trim() : '';
-        if (!text) {
-            let dtMatch = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
-            text = dtMatch ? dtMatch[1].trim() : '';
-        }
-        return text;
+        let m = elHtml.match(/<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/i);
+        if (!m) m = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
+        if (!m) m = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
+        return m ? m[1].trim() : '';
     }
 
-    // 通用 class 名是否为"通用容器"（应降权）
+    // 从元素前方的 HTML 中提取最近的标签文本（用于 stui 等模板，标签在兄弟元素中）
+    function extractLabelFromBefore(fullHtml, elPos) {
+        let before = fullHtml.substring(Math.max(0, elPos - 1000), elPos);
+        let re = /<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/gi;
+        let lastLabel = '', m;
+        while ((m = re.exec(before)) !== null) {
+            lastLabel = m[1].trim();
+        }
+        if (!lastLabel) {
+            re = /<dt[^>]*>([^<]*)<\/dt>/gi;
+            while ((m = re.exec(before)) !== null) {
+                lastLabel = m[1].trim();
+            }
+        }
+        return lastLabel;
+    }
+
     function isGenericContainer(cls) {
         let lower = cls.toLowerCase();
         return lower.indexOf('pannel') > -1 || lower.indexOf('panel') > -1 ||
-               lower.indexOf('content') > -1 || lower.indexOf('body') > -1 ||
-               lower.indexOf('_bd') > -1 || lower.indexOf('_hd') > -1 ||
-               lower.indexOf('wrapper') > -1 || lower.indexOf('container') > -1;
+               lower.indexOf('content') > -1 || lower.indexOf('wrapper') > -1 ||
+               lower.indexOf('container') > -1;
     }
 
     // ========== 白名单 ==========
@@ -167,7 +178,6 @@ function autoGenerateLocationList(html) {
 
     // ========== 第一步：找已知 class ==========
 
-    // 导航
     let navEl = findElByClass(html, 'hl-nav') ||
                 findElByClass(html, 'stui-header__menu') ||
                 findElByClass(html, 'nav-list') ||
@@ -176,31 +186,37 @@ function autoGenerateLocationList(html) {
 
     // 筛选
     let filterEl = null;
+    let filterHasAll = false;
     let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box', 'screen__list'];
+    // 第一轮：白名单 + "全部"
     for (let k = 0; k < filterClassKeywords.length; k++) {
         let allFilters = findAllByClass(html, filterClassKeywords[k]);
         for (let i = 0; i < allFilters.length; i++) {
-            let elHtml = allFilters[i].html;
-            let labelText = extractLabelText(elHtml);
+            let el = allFilters[i];
+            let labelText = extractLabelText(el.html);
+            if (!labelText) labelText = extractLabelFromBefore(html, el.pos);
             if (!hasKW(labelText, allowFilterKWs)) continue;
-            let links = extractLinks(elHtml);
+            let links = extractLinks(el.html);
             if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) {
-                filterEl = allFilters[i]; break;
+                filterEl = el; filterHasAll = true; break;
             }
         }
         if (filterEl) break;
     }
+    // 第二轮：白名单，不要求"全部"
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
             for (let i = 0; i < allFilters.length; i++) {
-                let elHtml = allFilters[i].html;
-                let labelText = extractLabelText(elHtml);
-                if (hasKW(labelText, allowFilterKWs)) { filterEl = allFilters[i]; break; }
+                let el = allFilters[i];
+                let labelText = extractLabelText(el.html);
+                if (!labelText) labelText = extractLabelFromBefore(html, el.pos);
+                if (hasKW(labelText, allowFilterKWs)) { filterEl = el; break; }
             }
             if (filterEl) break;
         }
     }
+    // 第三轮：任意 filter-wrap
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
@@ -208,7 +224,6 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 排序
     let sortEl = findElByClass(html, 'rb-title') ||
                  findElByClass(html, 'hl-rb-title') ||
                  findElByClass(html, 'sort') ||
@@ -216,7 +231,6 @@ function autoGenerateLocationList(html) {
 
     // ========== 第二步：评分兜底 ==========
 
-    // 导航评分兜底
     if (!navEl) {
         let candidates = [];
         let navKeywords = ['header', 'nav', 'menu', 'top'];
@@ -233,8 +247,7 @@ function autoGenerateLocationList(html) {
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2 || links.length > 30) continue;
-                let score = 0;
-                let matchCount = 0;
+                let score = 0, matchCount = 0;
                 for (let li = 0; li < links.length; li++) {
                     if (hasKW(links[li].text, navScoreKWs)) matchCount++;
                 }
@@ -260,7 +273,6 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 筛选评分兜底
     if (!filterEl) {
         let candidates = [];
         let filterKeywords = ['filter', 'screen', 'category', 'type-list', 'tag-list', 'classify'];
@@ -277,14 +289,11 @@ function autoGenerateLocationList(html) {
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2) continue;
-                let score = 0;
-                let matchCount = 0;
+                let score = 0, matchCount = 0;
                 for (let li = 0; li < links.length; li++) {
                     if (hasKW(links[li].text, filterValueKWs)) matchCount++;
                 }
                 score += matchCount * 8;
-                let tagMatch = el.cls.match(/^<(\w+)/);
-                if (tagMatch && tagMatch[1] === 'dl') score += 10;
                 let clsLower = cls.toLowerCase();
                 if (clsLower.indexOf('filter') > -1) score += 20;
                 if (clsLower.indexOf('screen') > -1) score += 18;
@@ -296,21 +305,23 @@ function autoGenerateLocationList(html) {
                 if (clsLower.indexOf('header') > -1) score -= 10;
                 if (clsLower.indexOf('sort') > -1) score -= 10;
                 if (clsLower.indexOf('search') > -1) score -= 10;
-                // 通用容器降权
                 if (isGenericContainer(cls)) score -= 20;
-                // 白名单标签加分
                 let labelText = extractLabelText(el.html);
+                if (!labelText) labelText = extractLabelFromBefore(html, el.pos);
                 if (hasKW(labelText, allowFilterKWs)) score += 25;
                 candidates.push({ el: el, score: score, cls: el.cls });
             }
         }
         if (candidates.length > 0) {
             candidates.sort(function(a, b) { return b.score - a.score; });
-            if (candidates[0].score > 0) filterEl = candidates[0].el;
+            if (candidates[0].score > 0) {
+                filterEl = candidates[0].el;
+                let links = extractLinks(filterEl.html);
+                filterHasAll = links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有']);
+            }
         }
     }
 
-    // 排序评分兜底
     if (!sortEl) {
         let candidates = [];
         let sortKeywords = ['sort', 'order', 'rb', 'rank', 'tab'];
@@ -327,8 +338,7 @@ function autoGenerateLocationList(html) {
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2 || links.length > 10) continue;
-                let score = 0;
-                let matchCount = 0;
+                let score = 0, matchCount = 0;
                 for (let li = 0; li < links.length; li++) {
                     if (hasKW(links[li].text, sortKWs)) matchCount++;
                 }
@@ -345,7 +355,6 @@ function autoGenerateLocationList(html) {
                 if (clsLower.indexOf('filter') > -1) score -= 10;
                 if (clsLower.indexOf('screen') > -1) score -= 10;
                 if (clsLower.indexOf('search') > -1) score -= 10;
-                // 通用容器降权
                 if (isGenericContainer(cls)) score -= 20;
                 if (clsLower.indexOf('list') > -1) score -= 8;
                 candidates.push({ el: el, score: score, cls: el.cls });
@@ -358,29 +367,26 @@ function autoGenerateLocationList(html) {
     }
 
     // ========== 构建结果 ==========
+    // 大分类没获取到 → 返回空数组
+    if (!navEl) return result;
 
-    // 导航：白名单过滤
-    if (navEl) {
-        let selector = '.' + firstClass(navEl.cls);
-        let links = extractLinks(navEl.html);
-        let excludeTexts = [];
-        for (let i = 0; i < links.length; i++) {
-            if (!hasKW(links[i].text, allowNavKWs)) excludeTexts.push(links[i].text);
-        }
-        let subSelector = 'body&&li';
-        if (excludeTexts.length > 0) {
-            subSelector += ':not(:matches(' + excludeTexts.join('|') + '))';
-        }
-        result.push({ 一级分类: 'body&&' + selector, 子分类: subSelector });
+    // 导航
+    let navSelector = '.' + firstClass(navEl.cls);
+    let navLinks = extractLinks(navEl.html);
+    let excludeTexts = [];
+    for (let i = 0; i < navLinks.length; i++) {
+        if (!hasKW(navLinks[i].text, allowNavKWs)) excludeTexts.push(navLinks[i].text);
     }
+    let navSub = 'body&&li';
+    if (excludeTexts.length > 0) {
+        navSub += ':not(:matches(' + excludeTexts.join('|') + '))';
+    }
+    result.push({ 一级分类: 'body&&' + navSelector, 子分类: navSub });
 
     // 筛选
     if (filterEl) {
         let selector = '.' + firstClass(filterEl.cls) + ':not(:matches(字母))';
-        let links = extractLinks(filterEl.html);
-        let firstText = links.length > 0 ? links[0].text : '';
-        let hasAll = hasKW(firstText, ['全部', '不限', '所有']);
-        let subSelector = hasAll
+        let subSelector = filterHasAll
             ? 'body&&li:has(a:not(:empty)):lt(12)'
             : 'body&&li:has(a:not(:empty)):gt(0):lt(12)';
         result.push({ 一级分类: 'body&&' + selector, 子分类: subSelector });

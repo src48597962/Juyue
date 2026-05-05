@@ -119,7 +119,6 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    // 从元素内部提取标签文本
     function extractLabelText(elHtml) {
         let m = elHtml.match(/<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/i);
         if (!m) m = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
@@ -127,7 +126,6 @@ function autoGenerateLocationList(html) {
         return m ? m[1].trim() : '';
     }
 
-    // 从元素前方的HTML中提取最近的标签文本（stui等模板，标签在兄弟元素中）
     function extractLabelFromBefore(fullHtml, elPos) {
         let before = fullHtml.substring(Math.max(0, elPos - 1000), elPos);
         let re = /<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/gi;
@@ -151,7 +149,6 @@ function autoGenerateLocationList(html) {
                lower.indexOf('container') > -1;
     }
 
-    // 检测容器的子元素结构
     function detectChildSelector(elHtml) {
         if (/<li[\s>]/i.test(elHtml)) return 'li';
         if (/<dd[\s>]/i.test(elHtml)) return 'dd';
@@ -161,7 +158,6 @@ function autoGenerateLocationList(html) {
     // ========== 白名单 ==========
     let allowNavKWs = ['电影', '电视剧', '剧集', '综艺', '动漫', '短剧'];
     let allowFilterKWs = ['类型', '剧情', '地区', '分类', '年代', '年份', '状态'];
-
     let navScoreKWs = [
         '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
         '纪录片', '短剧', '番剧', '影院', '动作片', '喜剧片', '爱情片',
@@ -183,7 +179,7 @@ function autoGenerateLocationList(html) {
         '按最新', '按最热', '按评分', '按时间', '按热度'
     ];
 
-    // ========== 第一步：找已知 class ==========
+    // ========== 第一步：直接匹配 ==========
 
     let navEl = findElByClass(html, 'hl-nav') ||
                 findElByClass(html, 'stui-header__menu') ||
@@ -191,11 +187,9 @@ function autoGenerateLocationList(html) {
                 findElByClass(html, 'hl-menus') ||
                 findElByClass(html, 'type-nav');
 
-    // 筛选
     let filterEl = null;
-    let filterHasAll = false;
     let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box', 'screen__list', 'scre-list'];
-    // 第一轮：白名单 + "全部"
+    // 第一轮：白名单标签 + "全部"
     for (let k = 0; k < filterClassKeywords.length; k++) {
         let allFilters = findAllByClass(html, filterClassKeywords[k]);
         for (let i = 0; i < allFilters.length; i++) {
@@ -205,12 +199,12 @@ function autoGenerateLocationList(html) {
             if (!hasKW(labelText, allowFilterKWs)) continue;
             let links = extractLinks(el.html);
             if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) {
-                filterEl = el; filterHasAll = true; break;
+                filterEl = el; break;
             }
         }
         if (filterEl) break;
     }
-    // 第二轮：白名单，不要求"全部"
+    // 第二轮：白名单标签，不要求"全部"
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
@@ -231,7 +225,6 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 排序
     let sortEl = findElByClass(html, 'rb-title') ||
                  findElByClass(html, 'hl-rb-title') ||
                  findElByClass(html, 'sort') ||
@@ -324,11 +317,7 @@ function autoGenerateLocationList(html) {
         }
         if (candidates.length > 0) {
             candidates.sort(function(a, b) { return b.score - a.score; });
-            if (candidates[0].score > 0) {
-                filterEl = candidates[0].el;
-                let links = extractLinks(filterEl.html);
-                filterHasAll = links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有']);
-            }
+            if (candidates[0].score > 0) filterEl = candidates[0].el;
         }
     }
 
@@ -395,17 +384,15 @@ function autoGenerateLocationList(html) {
     }
     result.push({ 一级分类: 'body&&' + navSelector, 子分类: navSub });
 
-    // 筛选：自动检测子元素结构
+    // 筛选：:has(a) 自动过滤标签元素，不需要 gt(0)
     if (filterEl) {
         let selector = '.' + firstClass(filterEl.cls) + ':not(:matches(字母))';
         let filterChild = detectChildSelector(filterEl.html);
         let subSelector;
         if (filterChild === 'a') {
-            subSelector = filterHasAll ? 'body&&a:lt(12)' : 'body&&a:gt(0):lt(12)';
+            subSelector = 'body&&a:lt(12)';
         } else {
-            subSelector = filterHasAll
-                ? 'body&&' + filterChild + ':has(a:not(:empty)):lt(12)'
-                : 'body&&' + filterChild + ':has(a:not(:empty)):gt(0):lt(12)';
+            subSelector = 'body&&' + filterChild + ':has(a:not(:empty)):lt(12)';
         }
         result.push({ 一级分类: 'body&&' + selector, 子分类: subSelector });
     }

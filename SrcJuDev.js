@@ -247,7 +247,20 @@ if(html){
         子分类: 'body&&a'
     }]
     */
-
+    定位列表 = [
+        {
+            "一级分类": "body&&.fed-navs-left",
+            "子分类": "body&&a:not(:matches(首页|导航))"
+        },
+        {
+            "一级分类": "body&&.fed-scre-list",
+            "子分类": "body&&dd:has(a)"
+        },
+        {
+            "一级分类": "body&&.fed-list-head",
+            "子分类": "body&&a"
+        }
+    ]
 
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')

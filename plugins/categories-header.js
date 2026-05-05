@@ -344,7 +344,7 @@ Object.assign(CategoriesHeader.prototype, {
             categories.forEach((category, index) => {
 
                 // 折叠 UI
-                if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1)) {
+                if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1) && sub_categories.length > 0) {
                     let foldLayout = {
                         title: this[symbolMap.mFoldLayout].title || (this[symbolMap.mFold] === '1' ? '““””<b><span style="color: #FF0000">∨</span></b>' : '““””<b><span style="color: #1aad19">∧</span></b>'),
                         url: this[symbolMap.mFoldLayout].url || $("hiker://empty#noHistory#").lazyRule((params) => {

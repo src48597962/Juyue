@@ -1350,7 +1350,7 @@ function getHtmlCode(ssurl, headers, timeout) {
     return html;
 }
 // 打造动态分类
-function BuildCate(d, html, 定位列表){
+function BuildDynCate(d, html, 定位列表){
     let 分类颜色 = getItem('主题颜色','#3399cc');
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')

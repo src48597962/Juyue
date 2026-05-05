@@ -5,7 +5,8 @@ var newVersion = {
         title: "beta V2.5",
         records: [
             "优化：聚阅解析部份判断逻辑",
-            "优化：二级封面图片取值逻辑"
+            "优化：二级封面图片取值逻辑",
+            "新增：打造动态分类方法BuildDynCate"
         ]
     },{
         title: "2026/03/28 V2.4",

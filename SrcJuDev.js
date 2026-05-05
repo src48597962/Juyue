@@ -118,58 +118,31 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    function extractLabelText(elHtml) {
-        let m = elHtml.match(/<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/i);
-        if (!m) m = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
-        if (!m) m = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
-        return m ? m[1].trim() : '';
-    }
-
-    function isGenericContainer(cls) {
-        let lower = cls.toLowerCase();
-        return lower.indexOf('pannel') > -1 || lower.indexOf('panel') > -1 ||
-               lower.indexOf('content') > -1 || lower.indexOf('wrapper') > -1 ||
-               lower.indexOf('container') > -1;
-    }
-
     function detectChildSelector(elHtml) {
         if (/<li[\s>]/i.test(elHtml)) return 'li';
         if (/<dd[\s>]/i.test(elHtml)) return 'dd';
-        if (/<dl[\s>]/i.test(elHtml)) return 'dl';
         return 'a';
     }
 
-    // 白名单关键词
     let allowNavKWs = ['电影', '电视剧', '剧集', '综艺', '动漫', '短剧'];
-    let allowFilterKWs = ['类型', '剧情', '地区', '分类', '年代', '年份', '状态', '语言'];
-    let filterValueKWs = ['内地', '大陆', '中国', '香港', '台湾', '日本', '韩国', '美国', '欧美', '泰国', '2022', '2023', '2024', '2025', '2026', '国语', '英语', '粤语'];
-    let sortKWs = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '票房', '时间', '更新', '排行'];
+    let sortKWs = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新'];
 
-    // ========== 1. 大分类 - 优先匹配顶部导航栏 ==========
+    // ========== 1. 大分类 ==========
     let navEl = findElByClass(html, 'fed-navs-left') || findElByClass(html, 'hl-nav') || findElByClass(html, 'stui-header__menu');
     
     if (!navEl) {
         let candidates = [];
-        let navKeywords = ['header', 'nav', 'menu', 'top'];
-        for (let k = 0; k < navKeywords.length; k++) {
-            let allEls = findAllByClass(html, navKeywords[k]);
-            for (let i = 0; i < allEls.length; i++) {
-                let el = allEls[i];
-                let links = extractLinks(el.html);
-                if (links.length < 2 || links.length > 30) continue;
-                let score = 0, matchCount = 0;
-                for (let li = 0; li < links.length; li++) {
-                    if (hasKW(links[li].text, allowNavKWs)) matchCount++;
-                }
-                score += matchCount * 10;
-                let clsLower = firstClass(el.cls).toLowerCase();
-                if (clsLower.indexOf('nav') > -1) score += 20;
-                if (clsLower.indexOf('menu') > -1) score += 18;
-                if (clsLower.indexOf('header') > -1) score += 15;
-                if (clsLower.indexOf('pops') > -1) score -= 30; // 排除弹出菜单
-                if (clsLower.indexOf('filter') > -1) score -= 20;
-                if (clsLower.indexOf('screen') > -1) score -= 20;
-                if (score > 0) candidates.push({ el: el, score: score });
+        let allEls = findAllByClass(html, 'nav');
+        for (let i = 0; i < allEls.length; i++) {
+            let el = allEls[i];
+            let links = extractLinks(el.html);
+            if (links.length < 2 || links.length > 30) continue;
+            let matchCount = 0;
+            for (let li = 0; li < links.length; li++) {
+                if (hasKW(links[li].text, allowNavKWs)) matchCount++;
+            }
+            if (matchCount >= 2) {
+                candidates.push({ el: el, score: matchCount });
             }
         }
         if (candidates.length > 0) {
@@ -194,59 +167,49 @@ function autoGenerateLocationList(html) {
         }
         result.push({ 一级分类: 'body&&' + navSelector, 子分类: navSub });
     } else {
-        result.push({ 一级分类: 'body&&.fed-navs-left', 子分类: 'body&&a:has(a[href*="vodtype"])' });
+        result.push({ 一级分类: 'body&&.fed-navs-left', 子分类: 'body&&a' });
     }
 
-    // ========== 2. 小分类 - 匹配筛选栏 ==========
-    let filterEl = findElByClass(html, 'fed-scre-list');
-    if (!filterEl) {
-        let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box', 'screen__list', 'scre-list', 'select-list'];
-        for (let k = 0; k < filterClassKeywords.length; k++) {
-            let allFilters = findAllByClass(html, filterClassKeywords[k]);
-            for (let i = 0; i < allFilters.length; i++) {
-                let el = allFilters[i];
-                let links = extractLinks(el.html);
-                if (links.length >= 3) {
-                    filterEl = el;
-                    break;
+    // ========== 2. 小分类 - 直接遍历所有 dl 并返回合并后的选择器 ==========
+    let allDLs = findAllByClass(html, 'fed-scre-list');
+    if (allDLs.length > 0) {
+        let dlSelector = '';
+        let innerDLs = findAllByClass(allDLs[0].html, 'dl');
+        
+        if (innerDLs.length > 0) {
+            // 有多个 dl，分别定位每个
+            let selectors = [];
+            for (let i = 0; i < innerDLs.length; i++) {
+                let dlClass = firstClass(innerDLs[i].cls);
+                if (dlClass) {
+                    selectors.push('body&&.' + dlClass);
+                } else {
+                    selectors.push('body&&dl:eq(' + i + ')');
                 }
             }
-            if (filterEl) break;
-        }
-    }
-
-    if (filterEl) {
-        let containerClass = firstClass(filterEl.cls);
-        // 检查内部是否有多个 dl 子元素（欧乐影院的筛选结构）
-        let innerDLs = filterEl.html.match(/<dl[\s>]/gi) || [];
-        
-        if (innerDLs.length > 1) {
-            // 多个 dl 分组，每个分组独立，指向单个 dl
-            result.push({ 一级分类: 'body&&.' + containerClass + ' dl', 子分类: 'body&&dd:has(a)' });
+            dlSelector = selectors.join(' || ');
+            result.push({ 一级分类: dlSelector, 子分类: 'body&&dd:has(a)' });
         } else {
-            let filterChild = detectChildSelector(filterEl.html);
-            if (filterChild === 'dl') {
-                result.push({ 一级分类: 'body&&.' + containerClass, 子分类: 'body&&dd:has(a)' });
-            } else {
-                result.push({ 一级分类: 'body&&.' + containerClass, 子分类: 'body&&li:has(a:not(:empty)):lt(15)' });
-            }
+            // 单个 dl
+            let containerClass = firstClass(allDLs[0].cls);
+            result.push({ 一级分类: 'body&&.' + containerClass, 子分类: 'body&&dd:has(a)' });
         }
     } else {
-        result.push({ 一级分类: 'body&&.fed-scre-list', 子分类: 'body&&dd:has(a)' });
+        result.push({ 一级分类: 'body&&.fed-scre-list dl', 子分类: 'body&&dd:has(a)' });
     }
 
-    // ========== 3. 排序选项 - 匹配 fed-list-head 中的排序链接 ==========
+    // ========== 3. 排序选项 ==========
     let sortEl = findElByClass(html, 'fed-list-head');
     if (!sortEl) {
-        let sortCandidates = findAllByClass(html, 'tabs');
-        for (let i = 0; i < sortCandidates.length; i++) {
-            let links = extractLinks(sortCandidates[i].html);
+        let allTabs = findAllByClass(html, 'tabs');
+        for (let i = 0; i < allTabs.length; i++) {
+            let links = extractLinks(allTabs[i].html);
             let matchCount = 0;
             for (let j = 0; j < links.length; j++) {
                 if (hasKW(links[j].text, sortKWs)) matchCount++;
             }
             if (matchCount >= 2) {
-                sortEl = sortCandidates[i];
+                sortEl = allTabs[i];
                 break;
             }
         }

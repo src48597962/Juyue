@@ -77,8 +77,7 @@ function autoGenerateLocationList(html) {
             let nextClose = html.indexOf(closeTag, pos);
             if (nextClose === -1) break;
             if (nextOpen !== -1 && nextOpen < nextClose) {
-                depth++;
-                pos = nextOpen + 1;
+                depth++; pos = nextOpen + 1;
             } else {
                 depth--;
                 if (depth === 0) {
@@ -106,8 +105,7 @@ function autoGenerateLocationList(html) {
                 let nextClose = html.indexOf(closeTag, pos);
                 if (nextClose === -1) break;
                 if (nextOpen !== -1 && nextOpen < nextClose) {
-                    depth++;
-                    pos = nextOpen + 1;
+                    depth++; pos = nextOpen + 1;
                 } else {
                     depth--;
                     if (depth === 0) {
@@ -121,11 +119,31 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
+    // 从元素中提取标签文本（支持 text-muted 格式）
+    function extractLabelText(elHtml) {
+        let labelMatch = elHtml.match(/<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/i);
+        if (!labelMatch) labelMatch = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
+        let text = labelMatch ? labelMatch[1].trim() : '';
+        if (!text) {
+            let dtMatch = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
+            text = dtMatch ? dtMatch[1].trim() : '';
+        }
+        return text;
+    }
+
+    // 通用 class 名是否为"通用容器"（应降权）
+    function isGenericContainer(cls) {
+        let lower = cls.toLowerCase();
+        return lower.indexOf('pannel') > -1 || lower.indexOf('panel') > -1 ||
+               lower.indexOf('content') > -1 || lower.indexOf('body') > -1 ||
+               lower.indexOf('_bd') > -1 || lower.indexOf('_hd') > -1 ||
+               lower.indexOf('wrapper') > -1 || lower.indexOf('container') > -1;
+    }
+
     // ========== 白名单 ==========
     let allowNavKWs = ['电影', '电视剧', '剧集', '综艺', '动漫', '短剧'];
     let allowFilterKWs = ['类型', '剧情', '地区', '分类', '年代', '年份', '状态'];
 
-    // ========== 评分兜底用关键词 ==========
     let navScoreKWs = [
         '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
         '纪录片', '短剧', '番剧', '影院', '动作片', '喜剧片', '爱情片',
@@ -156,46 +174,33 @@ function autoGenerateLocationList(html) {
                 findElByClass(html, 'hl-menus') ||
                 findElByClass(html, 'type-nav');
 
-    // 筛选：白名单标签 + 第一个链接含"全部"
+    // 筛选
     let filterEl = null;
-    let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box'];
+    let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box', 'screen__list'];
     for (let k = 0; k < filterClassKeywords.length; k++) {
         let allFilters = findAllByClass(html, filterClassKeywords[k]);
         for (let i = 0; i < allFilters.length; i++) {
             let elHtml = allFilters[i].html;
-            let labelMatch = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
-            let labelText = labelMatch ? labelMatch[1].trim() : '';
-            if (!labelText) {
-                let dtMatch = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
-                labelText = dtMatch ? dtMatch[1].trim() : '';
-            }
+            let labelText = extractLabelText(elHtml);
             if (!hasKW(labelText, allowFilterKWs)) continue;
             let links = extractLinks(elHtml);
             if (links.length > 0 && hasKW(links[0].text, ['全部', '不限', '所有'])) {
-                filterEl = allFilters[i];
-                break;
+                filterEl = allFilters[i]; break;
             }
         }
         if (filterEl) break;
     }
-    // 兜底1：白名单内但没有"全部"
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
             for (let i = 0; i < allFilters.length; i++) {
                 let elHtml = allFilters[i].html;
-                let labelMatch = elHtml.match(/<span[^>]*>([^<]*)<\/span>/i);
-                let labelText = labelMatch ? labelMatch[1].trim() : '';
-                if (!labelText) {
-                    let dtMatch = elHtml.match(/<dt[^>]*>([^<]*)<\/dt>/i);
-                    labelText = dtMatch ? dtMatch[1].trim() : '';
-                }
+                let labelText = extractLabelText(elHtml);
                 if (hasKW(labelText, allowFilterKWs)) { filterEl = allFilters[i]; break; }
             }
             if (filterEl) break;
         }
     }
-    // 兜底2：任意filter-wrap
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
@@ -211,77 +216,144 @@ function autoGenerateLocationList(html) {
 
     // ========== 第二步：评分兜底 ==========
 
-    if (!navEl || !filterEl || !sortEl) {
+    // 导航评分兜底
+    if (!navEl) {
         let candidates = [];
-        let tagRe = /<(ul|div|nav|section|dl)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi;
-        let cm;
-        while ((cm = tagRe.exec(html)) !== null) {
-            let links = extractLinks(cm[0]);
-            if (links.length >= 2 && links.length <= 60) {
-                candidates.push({
-                    html: cm[0], tag: cm[1].toLowerCase(),
-                    cls: (cm[2] || '').toLowerCase(), links: links
-                });
+        let navKeywords = ['header', 'nav', 'menu', 'top'];
+        for (let k = 0; k < navKeywords.length; k++) {
+            let allEls = findAllByClass(html, navKeywords[k]);
+            for (let i = 0; i < allEls.length; i++) {
+                let el = allEls[i];
+                let cls = firstClass(el.cls);
+                if (!cls) continue;
+                let skip = false;
+                for (let j = 0; j < candidates.length; j++) {
+                    if (candidates[j].cls === el.cls) { skip = true; break; }
+                }
+                if (skip) continue;
+                let links = extractLinks(el.html);
+                if (links.length < 2 || links.length > 30) continue;
+                let score = 0;
+                let matchCount = 0;
+                for (let li = 0; li < links.length; li++) {
+                    if (hasKW(links[li].text, navScoreKWs)) matchCount++;
+                }
+                score += Math.min(matchCount, 12) * 10;
+                if (matchCount > 20) score -= 30;
+                let tag = el.cls.match(/^<(\w+)/);
+                if (tag && (tag[1] === 'nav' || tag[1] === 'header')) score += 15;
+                let clsLower = cls.toLowerCase();
+                if (clsLower.indexOf('nav') > -1) score += 20;
+                if (clsLower.indexOf('menu') > -1) score += 18;
+                if (clsLower.indexOf('header') > -1) score += 15;
+                if (clsLower.indexOf('top') > -1) score += 8;
+                if (clsLower.indexOf('filter') > -1) score -= 10;
+                if (clsLower.indexOf('screen') > -1) score -= 10;
+                if (clsLower.indexOf('sort') > -1) score -= 10;
+                if (clsLower.indexOf('search') > -1) score -= 10;
+                candidates.push({ el: el, score: score, cls: el.cls });
             }
         }
-
-        if (!navEl) {
-            let best = null, bestS = 0;
-            for (let i = 0; i < candidates.length; i++) {
-                let c = candidates[i], s = 0;
-                let matchCount = 0;
-                for (let j = 0; j < c.links.length; j++) {
-                    if (hasKW(c.links[j].text, navScoreKWs)) matchCount++;
-                }
-                s += Math.min(matchCount, 12) * 20;
-                if (c.tag === 'nav') s += 25;
-                if (c.links.length >= 3 && c.links.length <= 15) s += 15;
-                else if (c.links.length > 20) s -= 10;
-                if (hasKW(c.cls, ['nav', 'menu', 'header', 'head', 'top', 'category'])) s += 15;
-                if (s > bestS) { bestS = s; best = c; }
-            }
-            if (best && bestS >= 20) navEl = { html: best.html, cls: best.cls };
+        if (candidates.length > 0) {
+            candidates.sort(function(a, b) { return b.score - a.score; });
+            if (candidates[0].score > 0) navEl = candidates[0].el;
         }
+    }
 
-        if (!filterEl) {
-            let best = null, bestS = 0;
-            for (let i = 0; i < candidates.length; i++) {
-                let c = candidates[i], s = 0;
-                if (hasKW(c.cls, ['filter-wrap', 'screen-item'])) s += 25;
-                else if (hasKW(c.cls, ['filter-list', 'screen-list'])) s -= 5;
-                else if (hasKW(c.cls, ['filter', 'screen'])) s += 10;
-                if (c.tag === 'dl') s += 15;
+    // 筛选评分兜底
+    if (!filterEl) {
+        let candidates = [];
+        let filterKeywords = ['filter', 'screen', 'category', 'type-list', 'tag-list', 'classify'];
+        for (let k = 0; k < filterKeywords.length; k++) {
+            let allEls = findAllByClass(html, filterKeywords[k]);
+            for (let i = 0; i < allEls.length; i++) {
+                let el = allEls[i];
+                let cls = firstClass(el.cls);
+                if (!cls) continue;
+                let skip = false;
+                for (let j = 0; j < candidates.length; j++) {
+                    if (candidates[j].cls === el.cls) { skip = true; break; }
+                }
+                if (skip) continue;
+                let links = extractLinks(el.html);
+                if (links.length < 2) continue;
+                let score = 0;
                 let matchCount = 0;
-                for (let j = 0; j < c.links.length; j++) {
-                    if (hasKW(c.links[j].text, filterValueKWs)) matchCount++;
+                for (let li = 0; li < links.length; li++) {
+                    if (hasKW(links[li].text, filterValueKWs)) matchCount++;
                 }
-                s += matchCount * 5;
-                let yearCount = 0;
-                for (let j = 0; j < c.links.length; j++) {
-                    if (/^(20[12]\d|19[89]\d)$/.test(c.links[j].text.trim())) yearCount++;
-                }
-                if (yearCount >= 3) s += 20;
-                if (c.links.length > 0 && hasKW(c.links[0].text, ['全部', '不限', '所有'])) s += 15;
-                if (s > bestS) { bestS = s; best = c; }
+                score += matchCount * 8;
+                let tagMatch = el.cls.match(/^<(\w+)/);
+                if (tagMatch && tagMatch[1] === 'dl') score += 10;
+                let clsLower = cls.toLowerCase();
+                if (clsLower.indexOf('filter') > -1) score += 20;
+                if (clsLower.indexOf('screen') > -1) score += 18;
+                if (clsLower.indexOf('type') > -1) score += 8;
+                if (clsLower.indexOf('tag') > -1) score += 5;
+                if (clsLower.indexOf('category') > -1) score += 5;
+                if (clsLower.indexOf('classify') > -1) score += 5;
+                if (clsLower.indexOf('nav') > -1) score -= 10;
+                if (clsLower.indexOf('header') > -1) score -= 10;
+                if (clsLower.indexOf('sort') > -1) score -= 10;
+                if (clsLower.indexOf('search') > -1) score -= 10;
+                // 通用容器降权
+                if (isGenericContainer(cls)) score -= 20;
+                // 白名单标签加分
+                let labelText = extractLabelText(el.html);
+                if (hasKW(labelText, allowFilterKWs)) score += 25;
+                candidates.push({ el: el, score: score, cls: el.cls });
             }
-            if (best && bestS >= 15) filterEl = { html: best.html, cls: best.cls };
         }
+        if (candidates.length > 0) {
+            candidates.sort(function(a, b) { return b.score - a.score; });
+            if (candidates[0].score > 0) filterEl = candidates[0].el;
+        }
+    }
 
-        if (!sortEl) {
-            let best = null, bestS = 0;
-            for (let i = 0; i < candidates.length; i++) {
-                let c = candidates[i], s = 0;
-                let matchCount = 0;
-                for (let j = 0; j < c.links.length; j++) {
-                    if (hasKW(c.links[j].text, sortKWs)) matchCount++;
+    // 排序评分兜底
+    if (!sortEl) {
+        let candidates = [];
+        let sortKeywords = ['sort', 'order', 'rb', 'rank', 'tab'];
+        for (let k = 0; k < sortKeywords.length; k++) {
+            let allEls = findAllByClass(html, sortKeywords[k]);
+            for (let i = 0; i < allEls.length; i++) {
+                let el = allEls[i];
+                let cls = firstClass(el.cls);
+                if (!cls) continue;
+                let skip = false;
+                for (let j = 0; j < candidates.length; j++) {
+                    if (candidates[j].cls === el.cls) { skip = true; break; }
                 }
-                s += matchCount * 15;
-                if (c.links.length > 8) s -= 15;
-                if (c.links.length >= 2 && c.links.length <= 6) s += 15;
-                if (hasKW(c.cls, ['sort', 'order', 'rank', 'rb-title'])) s += 15;
-                if (s > bestS) { bestS = s; best = c; }
+                if (skip) continue;
+                let links = extractLinks(el.html);
+                if (links.length < 2 || links.length > 10) continue;
+                let score = 0;
+                let matchCount = 0;
+                for (let li = 0; li < links.length; li++) {
+                    if (hasKW(links[li].text, sortKWs)) matchCount++;
+                }
+                score += matchCount * 15;
+                if (links.length >= 2 && links.length <= 6) score += 10;
+                let clsLower = cls.toLowerCase();
+                if (clsLower.indexOf('sort') > -1) score += 20;
+                if (clsLower.indexOf('order') > -1) score += 18;
+                if (clsLower.indexOf('rb') > -1) score += 10;
+                if (clsLower.indexOf('rank') > -1) score += 8;
+                if (clsLower.indexOf('tab') > -1) score += 5;
+                if (clsLower.indexOf('nav') > -1) score -= 10;
+                if (clsLower.indexOf('header') > -1) score -= 10;
+                if (clsLower.indexOf('filter') > -1) score -= 10;
+                if (clsLower.indexOf('screen') > -1) score -= 10;
+                if (clsLower.indexOf('search') > -1) score -= 10;
+                // 通用容器降权
+                if (isGenericContainer(cls)) score -= 20;
+                if (clsLower.indexOf('list') > -1) score -= 8;
+                candidates.push({ el: el, score: score, cls: el.cls });
             }
-            if (best && bestS >= 15) sortEl = { html: best.html, cls: best.cls };
+        }
+        if (candidates.length > 0) {
+            candidates.sort(function(a, b) { return b.score - a.score; });
+            if (candidates[0].score > 0) sortEl = candidates[0].el;
         }
     }
 
@@ -322,6 +394,7 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
+
 
 
 

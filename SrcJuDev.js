@@ -61,33 +61,6 @@ function autoGenerateLocationList(html) {
         return parts.length > 0 ? parts[0] : '';
     }
 
-    function findElByClass(html, classKeyword) {
-        let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
-        let m = re.exec(html);
-        if (!m) return null;
-        let tag = m[1].toLowerCase();
-        let start = m.index;
-        let innerStart = start + m[0].length;
-        let closeTag = '</' + tag + '>';
-        let depth = 1, pos = innerStart;
-        while (depth > 0 && pos < html.length) {
-            let nextOpen = html.indexOf('<' + tag + ' ', pos);
-            if (nextOpen === -1) nextOpen = html.indexOf('<' + tag + '>', pos);
-            let nextClose = html.indexOf(closeTag, pos);
-            if (nextClose === -1) break;
-            if (nextOpen !== -1 && nextOpen < nextClose) {
-                depth++; pos = nextOpen + 1;
-            } else {
-                depth--;
-                if (depth === 0) {
-                    return { html: html.substring(start, nextClose + closeTag.length), cls: m[0], pos: start };
-                }
-                pos = nextClose + 1;
-            }
-        }
-        return null;
-    }
-
     function findAllByClass(html, classKeyword) {
         let results = [];
         let re = new RegExp('<(\\w+)[^>]*class=["\'][^"\']*' + classKeyword + '[^"\']*["\'][^>]*>', 'gi');
@@ -118,114 +91,125 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    function detectChildSelector(elHtml) {
-        if (/<li[\s>]/i.test(elHtml)) return 'li';
-        if (/<dd[\s>]/i.test(elHtml)) return 'dd';
-        return 'a';
-    }
-
-    let allowNavKWs = ['电影', '电视剧', '剧集', '综艺', '动漫', '短剧'];
-    let sortKWs = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新'];
-
-    // ========== 1. 大分类 ==========
-    let navEl = findElByClass(html, 'fed-navs-left') || findElByClass(html, 'hl-nav') || findElByClass(html, 'stui-header__menu');
-    
-    if (!navEl) {
+    function findCandidates(html, classKeywords, minLinks, scoreKeywords) {
         let candidates = [];
-        let allEls = findAllByClass(html, 'nav');
-        for (let i = 0; i < allEls.length; i++) {
-            let el = allEls[i];
-            let links = extractLinks(el.html);
-            if (links.length < 2 || links.length > 30) continue;
-            let matchCount = 0;
-            for (let li = 0; li < links.length; li++) {
-                if (hasKW(links[li].text, allowNavKWs)) matchCount++;
-            }
-            if (matchCount >= 2) {
-                candidates.push({ el: el, score: matchCount });
+        for (let k = 0; k < classKeywords.length; k++) {
+            let allEls = findAllByClass(html, classKeywords[k]);
+            for (let i = 0; i < allEls.length; i++) {
+                let el = allEls[i];
+                let links = extractLinks(el.html);
+                if (links.length < minLinks) continue;
+                let score = 0;
+                for (let j = 0; j < links.length; j++) {
+                    if (hasKW(links[j].text, scoreKeywords)) score++;
+                }
+                if (score > 0) {
+                    candidates.push({ el: el, score: score, links: links });
+                }
             }
         }
         if (candidates.length > 0) {
             candidates.sort(function(a, b) { return b.score - a.score; });
-            navEl = candidates[0].el;
+            return candidates[0];
         }
+        return null;
     }
 
-    if (navEl) {
-        let navSelector = '.' + firstClass(navEl.cls);
-        let navChild = detectChildSelector(navEl.html);
-        let navLinks = extractLinks(navEl.html);
-        let excludeTexts = [];
-        for (let i = 0; i < navLinks.length; i++) {
-            if (!hasKW(navLinks[i].text, allowNavKWs)) {
-                excludeTexts.push(navLinks[i].text);
+    function getExcludeTexts(links, whiteList) {
+        let exclude = [];
+        for (let i = 0; i < links.length; i++) {
+            if (!hasKW(links[i].text, whiteList)) {
+                exclude.push(links[i].text);
             }
         }
-        let navSub = 'body&&' + navChild;
-        if (excludeTexts.length > 0) {
-            navSub += ':not(:matches(' + excludeTexts.join('|') + '))';
-        }
-        result.push({ 一级分类: 'body&&' + navSelector, 子分类: navSub });
-    } else {
-        result.push({ 一级分类: 'body&&.fed-navs-left', 子分类: 'body&&a' });
+        return exclude;
     }
 
-    // ========== 2. 小分类 - 直接遍历所有 dl 并返回合并后的选择器 ==========
-    let allDLs = findAllByClass(html, 'fed-scre-list');
-    if (allDLs.length > 0) {
-        let dlSelector = '';
-        let innerDLs = findAllByClass(allDLs[0].html, 'dl');
-        
-        if (innerDLs.length > 0) {
-            // 有多个 dl，分别定位每个
-            let selectors = [];
-            for (let i = 0; i < innerDLs.length; i++) {
-                let dlClass = firstClass(innerDLs[i].cls);
-                if (dlClass) {
-                    selectors.push('body&&.' + dlClass);
-                } else {
-                    selectors.push('body&&dl:eq(' + i + ')');
-                }
-            }
-            dlSelector = selectors.join(' || ');
-            result.push({ 一级分类: dlSelector, 子分类: 'body&&dd:has(a)' });
-        } else {
-            // 单个 dl
-            let containerClass = firstClass(allDLs[0].cls);
-            result.push({ 一级分类: 'body&&.' + containerClass, 子分类: 'body&&dd:has(a)' });
-        }
-    } else {
-        result.push({ 一级分类: 'body&&.fed-scre-list dl', 子分类: 'body&&dd:has(a)' });
+    function buildSelector(cls, childType) {
+        if (cls) return 'body&&.' + cls;
+        return 'body&&' + childType;
     }
 
-    // ========== 3. 排序选项 ==========
-    let sortEl = findElByClass(html, 'fed-list-head');
-    if (!sortEl) {
-        let allTabs = findAllByClass(html, 'tabs');
-        for (let i = 0; i < allTabs.length; i++) {
-            let links = extractLinks(allTabs[i].html);
-            let matchCount = 0;
-            for (let j = 0; j < links.length; j++) {
-                if (hasKW(links[j].text, sortKWs)) matchCount++;
-            }
-            if (matchCount >= 2) {
-                sortEl = allTabs[i];
-                break;
-            }
-        }
-    }
+    // ========== 白名单配置 ==========
+    let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片', '国产剧', '港剧', '韩剧', '美剧', '日剧', '泰剧', '海外剧', '台剧'];
+    let filterWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '排序', '字母', '首字母', '全部', '不限', '所有'];
+    let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '票房', '时间', '更新', '排行', '高分', '好评'];
     
-    if (sortEl) {
-        let selector = '.' + firstClass(sortEl.cls);
-        result.push({ 一级分类: 'body&&' + selector, 子分类: 'body&&a' });
+    let navClassKeywords = ['nav', 'menu', 'header', 'top', 'navbar', 'pannel', 'list'];
+    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'type', 'category', 'classify', 'tag'];
+    let sortClassKeywords = ['sort', 'order', 'tabs', 'head', 'title', 'rb'];
+
+    // ========== 1. 大分类 ==========
+    let navCandidate = findCandidates(html, navClassKeywords, 2, navWhiteList);
+    if (navCandidate) {
+        let cls = firstClass(navCandidate.el.cls);
+        let childType = 'li';
+        if (!/<li[\s>]/i.test(navCandidate.el.html)) childType = 'a';
+        let excludeTexts = getExcludeTexts(navCandidate.links, navWhiteList);
+        let subSelector = 'body&&' + childType;
+        if (excludeTexts.length > 0) {
+            subSelector += ':not(:matches(' + excludeTexts.join('|') + '))';
+        }
+        result.push({ 一级分类: buildSelector(cls, childType), 子分类: subSelector });
     } else {
-        result.push({ 一级分类: 'body&&.fed-list-head', 子分类: 'body&&a' });
+        result.push({ 一级分类: 'body&&.nav', 子分类: 'body&&li:has(a[href*="type"])' });
+    }
+
+    // ========== 2. 小分类 ==========
+    let filterCandidate = findCandidates(html, filterClassKeywords, 3, filterWhiteList);
+    if (filterCandidate) {
+        let cls = firstClass(filterCandidate.el.cls);
+        let elHtml = filterCandidate.el.html;
+        
+        // 检查内部是否有多个分组（dl/ul）
+        let innerGroups = [];
+        let dlMatches = elHtml.match(/<dl[\s>]/gi) || [];
+        let ulMatches = elHtml.match(/<ul[\s>]/gi) || [];
+        
+        if (dlMatches.length > 1) {
+            // 多个 dl 分组，分别提取每个 dl 的 class
+            let dlRe = /<dl[^>]*class=["']([^"']*)["'][^>]*>/gi;
+            let dlMatch;
+            while ((dlMatch = dlRe.exec(elHtml)) !== null) {
+                let dlClass = dlMatch[1].split(/\s+/)[0];
+                if (dlClass) innerGroups.push('body&&.' + dlClass);
+            }
+        } else if (ulMatches.length > 1) {
+            // 多个 ul 分组
+            let ulRe = /<ul[^>]*class=["']([^"']*)["'][^>]*>/gi;
+            let ulMatch;
+            while ((ulMatch = ulRe.exec(elHtml)) !== null) {
+                let ulClass = ulMatch[1].split(/\s+/)[0];
+                if (ulClass) innerGroups.push('body&&.' + ulClass);
+            }
+        }
+        
+        if (innerGroups.length > 0) {
+            // 多个分组，用 || 连接
+            result.push({ 一级分类: innerGroups.join(' || '), 子分类: 'body&&a:has(a)' });
+        } else {
+            // 单个分组
+            let childType = 'li';
+            if (/<dd[\s>]/i.test(elHtml)) childType = 'dd';
+            else if (!/<li[\s>]/i.test(elHtml)) childType = 'a';
+            result.push({ 一级分类: buildSelector(cls, childType), 子分类: 'body&&' + childType + ':has(a:not(:empty)):lt(20)' });
+        }
+    } else {
+        result.push({ 一级分类: 'body&&.filter', 子分类: 'body&&a[href*="show"]' });
+    }
+
+    // ========== 3. 排序 ==========
+    let sortCandidate = findCandidates(html, sortClassKeywords, 2, sortWhiteList);
+    if (sortCandidate) {
+        let cls = firstClass(sortCandidate.el.cls);
+        let childType = 'a';
+        result.push({ 一级分类: buildSelector(cls, childType), 子分类: 'body&&a' });
+    } else {
+        result.push({ 一级分类: 'body&&.sort', 子分类: 'body&&a' });
     }
 
     return result;
 }
-
-
 
 
 
@@ -247,20 +231,7 @@ if(html){
         子分类: 'body&&a'
     }]
     */
-    定位列表 = [
-        {
-            "一级分类": "body&&.fed-navs-left",
-            "子分类": "body&&a:not(:matches(首页|导航))"
-        },
-        {
-            "一级分类": "body&&dl",
-            "子分类": "body&&dd:has(a)"
-        },
-        {
-            "一级分类": "body&&.fed-list-head",
-            "子分类": "body&&a"
-        }
-    ]
+
 
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')

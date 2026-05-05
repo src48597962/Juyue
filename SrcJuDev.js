@@ -64,8 +64,7 @@ if(html){
     }]
 
 
-    var 分类颜色 = getItem('主题颜色','#3399cc');
-    
+    let 分类颜色 = getItem('主题颜色','#3399cc');
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')
 
@@ -75,7 +74,7 @@ if(html){
     htmlCategories.界面(d)
         //.分类链接(true_url)
         .源码(html)
-        .页码(page)
+        .页码(1)
         .添加分类定位(定位列表)
         .开启内置折叠功能() // 必须
         .折叠按钮样式({

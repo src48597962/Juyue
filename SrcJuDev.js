@@ -20,7 +20,7 @@ d.push({
     extra: { defaultValue: getMyVar('header.url', ''), hint: 'https://www.example.com' }
 });
 
-var 分类颜色 = getItem('主题颜色','#3399cc');
+//var 分类颜色 = getItem('主题颜色','#3399cc');
 var page = MY_PAGE || 1;
 var true_url = getMyVar('header.url', MY_URL);
 let 链接处理工具 = require(config.聚阅.match(/http(s)?:\/\/.*\//)[0] + 'plugins/UrlProcessor.js')
@@ -65,7 +65,7 @@ if(html){
 
 
     var 分类颜色 = getItem('主题颜色','#3399cc');
-    var page = MY_PAGE || 1;
+    
     // '0' 为默认不折叠，'1' 为默认折叠
     let 当前折叠状态 = getMyVar('header.fold', '1')
 

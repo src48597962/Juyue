@@ -91,14 +91,12 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    // 大分类白名单（只包含频道名称）
+    // 白名单配置
     let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片'];
-    // 小分类白名单（筛选条件的标签文字）
-    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '字母', '首字母'];
-    // 排序白名单
+    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '字母'];
     let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新', '排行'];
 
-    // ========== 1. 大分类 - 只取链接数少且匹配白名单的 ==========
+    // ========== 1. 大分类 ==========
     let navCandidates = [];
     let navClassKeywords = ['nav', 'menu', 'header', 'top', 'navbar'];
     
@@ -107,13 +105,11 @@ function autoGenerateLocationList(html) {
         for (let i = 0; i < allEls.length; i++) {
             let el = allEls[i];
             let links = extractLinks(el.html);
-            // 大分类链接数通常 2-10 个
             if (links.length < 2 || links.length > 15) continue;
             let matchCount = 0;
             for (let j = 0; j < links.length; j++) {
                 if (hasKW(links[j].text, navWhiteList)) matchCount++;
             }
-            // 至少匹配2个才算大分类
             if (matchCount >= 2) {
                 navCandidates.push({ el: el, score: matchCount, links: links });
             }
@@ -139,36 +135,89 @@ function autoGenerateLocationList(html) {
         result.push({ 一级分类: 'body&&.nav', 子分类: 'body&&a[href*="type"]' });
     }
 
-    // ========== 2. 小分类 - 查找包含白名单标签的容器 ==========
-    let filterCandidates = [];
-    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'casc'];
+    // ========== 2. 小分类 - 分别获取每个筛选区块 ==========
+    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'casc', 'list'];
+    let allFilterBlocks = [];
     
     for (let k = 0; k < filterClassKeywords.length; k++) {
         let allEls = findAllByClass(html, filterClassKeywords[k]);
         for (let i = 0; i < allEls.length; i++) {
             let el = allEls[i];
-            let htmlLower = el.html.toLowerCase();
-            // 检查是否包含筛选标签文字
-            let hasLabel = false;
-            for (let j = 0; j < filterLabelWhiteList.length; j++) {
-                if (htmlLower.indexOf(filterLabelWhiteList[j].toLowerCase()) > -1) {
-                    hasLabel = true;
-                    break;
+            // 查找内部的 dl 或 ul 分组
+            let innerDLs = el.html.match(/<dl[\s>]/gi) || [];
+            let innerULs = el.html.match(/<ul[\s>]/gi) || [];
+            
+            if (innerDLs.length > 1) {
+                // 多个 dl，分别提取每个
+                let dlRe = /<dl[^>]*class=["']([^"']*)["'][^>]*>([\s\S]*?)<\/dl>/gi;
+                let dlMatch;
+                while ((dlMatch = dlRe.exec(el.html)) !== null) {
+                    let dlClass = dlMatch[1].split(/\s+/)[0];
+                    let dlHtml = dlMatch[2];
+                    // 检查是否包含筛选标签（地区、年代等）
+                    let hasLabel = false;
+                    for (let j = 0; j < filterLabelWhiteList.length; j++) {
+                        if (dlHtml.indexOf(filterLabelWhiteList[j]) > -1) {
+                            hasLabel = true;
+                            break;
+                        }
+                    }
+                    if (hasLabel && dlClass) {
+                        allFilterBlocks.push({ selector: 'body&&.' + dlClass, childType: 'dd' });
+                    }
                 }
-            }
-            if (hasLabel) {
-                filterCandidates.push({ el: el, htmlLower: htmlLower });
+            } else if (innerULs.length > 1) {
+                // 多个 ul
+                let ulRe = /<ul[^>]*class=["']([^"']*)["'][^>]*>([\s\S]*?)<\/ul>/gi;
+                let ulMatch;
+                while ((ulMatch = ulRe.exec(el.html)) !== null) {
+                    let ulClass = ulMatch[1].split(/\s+/)[0];
+                    let ulHtml = ulMatch[2];
+                    let hasLabel = false;
+                    for (let j = 0; j < filterLabelWhiteList.length; j++) {
+                        if (ulHtml.indexOf(filterLabelWhiteList[j]) > -1) {
+                            hasLabel = true;
+                            break;
+                        }
+                    }
+                    if (hasLabel && ulClass) {
+                        allFilterBlocks.push({ selector: 'body&&.' + ulClass, childType: 'li' });
+                    }
+                }
+            } else {
+                // 单个分组，检查本身是否包含标签
+                let hasLabel = false;
+                for (let j = 0; j < filterLabelWhiteList.length; j++) {
+                    if (el.html.indexOf(filterLabelWhiteList[j]) > -1) {
+                        hasLabel = true;
+                        break;
+                    }
+                }
+                if (hasLabel) {
+                    let cls = firstClass(el.cls);
+                    let childType = 'li';
+                    if (/<dd[\s>]/i.test(el.html)) childType = 'dd';
+                    if (cls) {
+                        allFilterBlocks.push({ selector: 'body&&.' + cls, childType: childType });
+                    }
+                }
             }
         }
     }
     
-    if (filterCandidates.length > 0) {
-        let filterEl = filterCandidates[0].el;
-        let cls = firstClass(filterEl.cls);
-        // 检查子元素类型
-        let childType = 'li';
-        if (/<dd[\s>]/i.test(filterEl.html)) childType = 'dd';
-        result.push({ 一级分类: 'body&&.' + cls, 子分类: 'body&&' + childType + ':has(a:not(:empty))' });
+    // 去重并添加到结果
+    if (allFilterBlocks.length > 0) {
+        let seen = {};
+        for (let i = 0; i < allFilterBlocks.length; i++) {
+            let block = allFilterBlocks[i];
+            if (!seen[block.selector]) {
+                seen[block.selector] = true;
+                result.push({
+                    一级分类: block.selector,
+                    子分类: 'body&&' + block.childType + ':has(a:not(:empty))'
+                });
+            }
+        }
     } else {
         result.push({ 一级分类: 'body&&.filter', 子分类: 'body&&a[href*="show"]' });
     }
@@ -203,7 +252,6 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
-
 
 if(html){
     // 使用

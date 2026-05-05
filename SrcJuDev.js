@@ -36,7 +36,6 @@ function autoGenerateLocationList(html) {
     let result = [];
     if (!html || html.length < 100) return result;
 
-    // ========== 工具函数 ==========
     function extractLinks(block) {
         let links = [], re = /<a[^>]*href=["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi, m;
         while ((m = re.exec(block)) !== null) {
@@ -130,14 +129,10 @@ function autoGenerateLocationList(html) {
         let before = fullHtml.substring(Math.max(0, elPos - 1000), elPos);
         let re = /<span[^>]*class="[^"]*text-muted[^"]*"[^>]*>([^<]*)<\/span>/gi;
         let lastLabel = '', m;
-        while ((m = re.exec(before)) !== null) {
-            lastLabel = m[1].trim();
-        }
+        while ((m = re.exec(before)) !== null) { lastLabel = m[1].trim(); }
         if (!lastLabel) {
             re = /<dt[^>]*>([^<]*)<\/dt>/gi;
-            while ((m = re.exec(before)) !== null) {
-                lastLabel = m[1].trim();
-            }
+            while ((m = re.exec(before)) !== null) { lastLabel = m[1].trim(); }
         }
         return lastLabel;
     }
@@ -155,41 +150,17 @@ function autoGenerateLocationList(html) {
         return 'a';
     }
 
-    // ========== 白名单 ==========
     let allowNavKWs = ['电影', '电视剧', '剧集', '综艺', '动漫', '短剧'];
     let allowFilterKWs = ['类型', '剧情', '地区', '分类', '年代', '年份', '状态'];
-    let navScoreKWs = [
-        '电影', '电视剧', '剧集', '连续剧', '综艺', '动漫', '动画',
-        '纪录片', '短剧', '番剧', '影院', '动作片', '喜剧片', '爱情片',
-        '科幻片', '恐怖片', '战争片', '国产剧', '港台剧', '日剧', '韩剧', '美剧',
-        '大陆剧', '港剧', '台剧', '泰剧', '英美剧', '纪录', '教育', '漫剧', '同步课堂'
-    ];
-    let filterValueKWs = [
-        '内地', '大陆', '中国', '香港', '台湾', '日本', '韩国', '美国',
-        '欧美', '泰国', '印度', '英国', '法国', '新加坡', '马来西亚',
-        '动作', '喜剧', '爱情', '科幻', '恐怖', '悬疑', '犯罪',
-        '奇幻', '冒险', '古装', '武侠', '历史', '剧情', '惊悚',
-        '国语', '英语', '粤语', '日语', '韩语', '普通话',
-        '连载中', '已完结', '正片', '预告片', '院线', '福利', '伦理',
-        '儿童', '农村', '青春', '文艺', '微电影', '网络电影', '枪战', '警匪', '运动', '经典'
-    ];
-    let sortKWs = [
-        '最新', '最热', '热门', '热播', '推荐', '评分', '人气',
-        '票房', '时间', '更新', '排行', '高分', '好评', '最近更新',
-        '按最新', '按最热', '按评分', '按时间', '按热度'
-    ];
+    let navScoreKWs = ['电影','电视剧','剧集','连续剧','综艺','动漫','动画','纪录片','短剧','番剧','影院','动作片','喜剧片','爱情片','科幻片','恐怖片','战争片','国产剧','港台剧','日剧','韩剧','美剧','大陆剧','港剧','台剧','泰剧','英美剧','纪录','教育','漫剧','同步课堂'];
+    let filterValueKWs = ['内地','大陆','中国','香港','台湾','日本','韩国','美国','欧美','泰国','印度','英国','法国','新加坡','马来西亚','动作','喜剧','爱情','科幻','恐怖','悬疑','犯罪','奇幻','冒险','古装','武侠','历史','剧情','惊悚','国语','英语','粤语','日语','韩语','普通话','连载中','已完结','正片','预告片','院线','福利','伦理','儿童','农村','青春','文艺','微电影','网络电影','枪战','警匪','运动','经典'];
+    let sortKWs = ['最新','最热','热门','热播','推荐','评分','人气','票房','时间','更新','排行','高分','好评','最近更新','按最新','按最热','按评分','按时间','按热度'];
 
-    // ========== 第一步：直接匹配 ==========
-
-    let navEl = findElByClass(html, 'hl-nav') ||
-                findElByClass(html, 'stui-header__menu') ||
-                findElByClass(html, 'nav-list') ||
-                findElByClass(html, 'hl-menus') ||
-                findElByClass(html, 'type-nav');
+    // 第一步：直接匹配
+    let navEl = findElByClass(html, 'hl-nav') || findElByClass(html, 'stui-header__menu') || findElByClass(html, 'nav-list') || findElByClass(html, 'hl-menus') || findElByClass(html, 'type-nav');
 
     let filterEl = null;
     let filterClassKeywords = ['filter-wrap', 'screen-item', 'filter-box', 'screen__list', 'scre-list'];
-    // 第一轮：白名单标签 + "全部"
     for (let k = 0; k < filterClassKeywords.length; k++) {
         let allFilters = findAllByClass(html, filterClassKeywords[k]);
         for (let i = 0; i < allFilters.length; i++) {
@@ -204,7 +175,6 @@ function autoGenerateLocationList(html) {
         }
         if (filterEl) break;
     }
-    // 第二轮：白名单标签，不要求"全部"
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
@@ -217,7 +187,6 @@ function autoGenerateLocationList(html) {
             if (filterEl) break;
         }
     }
-    // 第三轮：任意 filter-wrap
     if (!filterEl) {
         for (let k = 0; k < filterClassKeywords.length; k++) {
             let allFilters = findAllByClass(html, filterClassKeywords[k]);
@@ -225,14 +194,9 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    let sortEl = findElByClass(html, 'rb-title') ||
-                 findElByClass(html, 'hl-rb-title') ||
-                 findElByClass(html, 'sort') ||
-                 findElByClass(html, 'order');
+    let sortEl = findElByClass(html, 'rb-title') || findElByClass(html, 'hl-rb-title') || findElByClass(html, 'sort') || findElByClass(html, 'order');
 
-    // ========== 第二步：评分兜底 ==========
-
-    // 导航评分兜底
+    // 第二步：评分兜底
     if (!navEl) {
         let candidates = [];
         let navKeywords = ['header', 'nav', 'menu', 'top'];
@@ -243,16 +207,12 @@ function autoGenerateLocationList(html) {
                 let cls = firstClass(el.cls);
                 if (!cls) continue;
                 let skip = false;
-                for (let j = 0; j < candidates.length; j++) {
-                    if (candidates[j].cls === el.cls) { skip = true; break; }
-                }
+                for (let j = 0; j < candidates.length; j++) { if (candidates[j].cls === el.cls) { skip = true; break; } }
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2 || links.length > 30) continue;
                 let score = 0, matchCount = 0;
-                for (let li = 0; li < links.length; li++) {
-                    if (hasKW(links[li].text, navScoreKWs)) matchCount++;
-                }
+                for (let li = 0; li < links.length; li++) { if (hasKW(links[li].text, navScoreKWs)) matchCount++; }
                 score += Math.min(matchCount, 12) * 10;
                 if (matchCount > 20) score -= 30;
                 let tag = el.cls.match(/^<(\w+)/);
@@ -266,7 +226,7 @@ function autoGenerateLocationList(html) {
                 if (clsLower.indexOf('screen') > -1) score -= 10;
                 if (clsLower.indexOf('sort') > -1) score -= 10;
                 if (clsLower.indexOf('search') > -1) score -= 10;
-                candidates.push({ el: el, score: score, cls: el.cls });
+                candidates.push({ el: el, score: score, cls: el.cls, clsName: cls });
             }
         }
         if (candidates.length > 0) {
@@ -275,7 +235,6 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 筛选评分兜底
     if (!filterEl) {
         let candidates = [];
         let filterKeywords = ['filter', 'screen', 'category', 'type-list', 'tag-list', 'classify', 'scre'];
@@ -286,16 +245,12 @@ function autoGenerateLocationList(html) {
                 let cls = firstClass(el.cls);
                 if (!cls) continue;
                 let skip = false;
-                for (let j = 0; j < candidates.length; j++) {
-                    if (candidates[j].cls === el.cls) { skip = true; break; }
-                }
+                for (let j = 0; j < candidates.length; j++) { if (candidates[j].cls === el.cls) { skip = true; break; } }
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2) continue;
                 let score = 0, matchCount = 0;
-                for (let li = 0; li < links.length; li++) {
-                    if (hasKW(links[li].text, filterValueKWs)) matchCount++;
-                }
+                for (let li = 0; li < links.length; li++) { if (hasKW(links[li].text, filterValueKWs)) matchCount++; }
                 score += matchCount * 8;
                 let clsLower = cls.toLowerCase();
                 if (clsLower.indexOf('filter') > -1) score += 20;
@@ -312,7 +267,7 @@ function autoGenerateLocationList(html) {
                 let labelText = extractLabelText(el.html);
                 if (!labelText) labelText = extractLabelFromBefore(html, el.pos);
                 if (hasKW(labelText, allowFilterKWs)) score += 25;
-                candidates.push({ el: el, score: score, cls: el.cls });
+                candidates.push({ el: el, score: score, cls: el.cls, clsName: cls, label: labelText });
             }
         }
         if (candidates.length > 0) {
@@ -321,7 +276,6 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // 排序评分兜底
     if (!sortEl) {
         let candidates = [];
         let sortKeywords = ['sort', 'order', 'rb', 'rank', 'tab'];
@@ -332,16 +286,12 @@ function autoGenerateLocationList(html) {
                 let cls = firstClass(el.cls);
                 if (!cls) continue;
                 let skip = false;
-                for (let j = 0; j < candidates.length; j++) {
-                    if (candidates[j].cls === el.cls) { skip = true; break; }
-                }
+                for (let j = 0; j < candidates.length; j++) { if (candidates[j].cls === el.cls) { skip = true; break; } }
                 if (skip) continue;
                 let links = extractLinks(el.html);
                 if (links.length < 2 || links.length > 10) continue;
                 let score = 0, matchCount = 0;
-                for (let li = 0; li < links.length; li++) {
-                    if (hasKW(links[li].text, sortKWs)) matchCount++;
-                }
+                for (let li = 0; li < links.length; li++) { if (hasKW(links[li].text, sortKWs)) matchCount++; }
                 score += matchCount * 15;
                 if (links.length >= 2 && links.length <= 6) score += 10;
                 let clsLower = cls.toLowerCase();
@@ -357,7 +307,7 @@ function autoGenerateLocationList(html) {
                 if (clsLower.indexOf('search') > -1) score -= 10;
                 if (isGenericContainer(cls)) score -= 20;
                 if (clsLower.indexOf('list') > -1) score -= 8;
-                candidates.push({ el: el, score: score, cls: el.cls });
+                candidates.push({ el: el, score: score, cls: el.cls, clsName: cls });
             }
         }
         if (candidates.length > 0) {
@@ -366,11 +316,8 @@ function autoGenerateLocationList(html) {
         }
     }
 
-    // ========== 构建结果 ==========
-    // 大分类没获取到 → 返回空数组
     if (!navEl) return result;
 
-    // 导航：自动检测子元素结构
     let navSelector = '.' + firstClass(navEl.cls);
     let navChild = detectChildSelector(navEl.html);
     let navLinks = extractLinks(navEl.html);
@@ -379,25 +326,35 @@ function autoGenerateLocationList(html) {
         if (!hasKW(navLinks[i].text, allowNavKWs)) excludeTexts.push(navLinks[i].text);
     }
     let navSub = 'body&&' + navChild;
-    if (excludeTexts.length > 0) {
-        navSub += ':not(:matches(' + excludeTexts.join('|') + '))';
-    }
+    if (excludeTexts.length > 0) navSub += ':not(:matches(' + excludeTexts.join('|') + '))';
     result.push({ 一级分类: 'body&&' + navSelector, 子分类: navSub });
 
-    // 筛选：:has(a) 自动过滤标签元素，不需要 gt(0)
     if (filterEl) {
-        let selector = '.' + firstClass(filterEl.cls) + ':not(:matches(字母))';
-        let filterChild = detectChildSelector(filterEl.html);
-        let subSelector;
-        if (filterChild === 'a') {
-            subSelector = 'body&&a:lt(12)';
+        // 检查是否包含多个子分组（多个 dl 或 ul）
+        let innerDLs = filterEl.html.match(/<dl[\s>]/gi) || [];
+        let innerULs = filterEl.html.match(/<ul[\s>]/gi) || [];
+        let containerClass = firstClass(filterEl.cls);
+
+        if (innerDLs.length > 1) {
+            // 多个 dl 分组（飞飞模板：地区/年代/语言等）- 指向单个 dl
+            result.push({ 一级分类: 'body&&.' + containerClass + ' dl', 子分类: 'body&&a:lt(12)' });
+        } else if (innerULs.length > 1) {
+            // 多个 ul 分组 - 指向单个 ul
+            result.push({ 一级分类: 'body&&.' + containerClass + ' ul:has(a)', 子分类: 'body&&a:lt(12)' });
         } else {
-            subSelector = 'body&&' + filterChild + ':has(a:not(:empty)):lt(12)';
+            // 单个分组 - 使用原有逻辑
+            let selector = '.' + containerClass + ':not(:matches(字母))';
+            let filterChild = detectChildSelector(filterEl.html);
+            let subSelector;
+            if (filterChild === 'a') {
+                subSelector = 'body&&a:lt(12)';
+            } else {
+                subSelector = 'body&&' + filterChild + ':has(a:not(:empty)):lt(12)';
+            }
+            result.push({ 一级分类: 'body&&' + selector, 子分类: subSelector });
         }
-        result.push({ 一级分类: 'body&&' + selector, 子分类: subSelector });
     }
 
-    // 排序
     if (sortEl) {
         let selector = '.' + firstClass(sortEl.cls);
         result.push({ 一级分类: 'body&&' + selector, 子分类: 'body&&a' });
@@ -405,7 +362,6 @@ function autoGenerateLocationList(html) {
 
     return result;
 }
-
 
 
 

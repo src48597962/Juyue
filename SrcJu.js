@@ -255,14 +255,7 @@ function yiji(testSource) {
             pic_url: getIcon(homeIcons[4].img, false, homeIcons[4].color),
             col_type: icon5_col,
             extra: {
-                longClick: [{
-                    title: "测试",
-                    js: $.toString(() => {
-                        return $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                            eval(fetch(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuDev.js'));
-                        })
-                    })
-                }]
+                longClick: []
             }
         })
         

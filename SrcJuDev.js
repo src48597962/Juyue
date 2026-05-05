@@ -91,126 +91,118 @@ function autoGenerateLocationList(html) {
         return results;
     }
 
-    function findCandidates(html, classKeywords, minLinks, scoreKeywords) {
-        let candidates = [];
-        for (let k = 0; k < classKeywords.length; k++) {
-            let allEls = findAllByClass(html, classKeywords[k]);
-            for (let i = 0; i < allEls.length; i++) {
-                let el = allEls[i];
-                let links = extractLinks(el.html);
-                if (links.length < minLinks) continue;
-                let score = 0;
-                for (let j = 0; j < links.length; j++) {
-                    if (hasKW(links[j].text, scoreKeywords)) score++;
-                }
-                if (score > 0) {
-                    candidates.push({ el: el, score: score, links: links });
-                }
-            }
-        }
-        if (candidates.length > 0) {
-            candidates.sort(function(a, b) { return b.score - a.score; });
-            return candidates[0];
-        }
-        return null;
-    }
+    // 大分类白名单（只包含频道名称）
+    let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片'];
+    // 小分类白名单（筛选条件的标签文字）
+    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '字母', '首字母'];
+    // 排序白名单
+    let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新', '排行'];
 
-    function getExcludeTexts(links, whiteList) {
-        let exclude = [];
-        for (let i = 0; i < links.length; i++) {
-            if (!hasKW(links[i].text, whiteList)) {
-                exclude.push(links[i].text);
-            }
-        }
-        return exclude;
-    }
-
-    function buildSelector(cls, childType) {
-        if (cls) return 'body&&.' + cls;
-        return 'body&&' + childType;
-    }
-
-    // ========== 白名单配置 ==========
-    let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片', '国产剧', '港剧', '韩剧', '美剧', '日剧', '泰剧', '海外剧', '台剧'];
-    let filterWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '排序', '字母', '首字母', '全部', '不限', '所有'];
-    let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '票房', '时间', '更新', '排行', '高分', '好评'];
+    // ========== 1. 大分类 - 只取链接数少且匹配白名单的 ==========
+    let navCandidates = [];
+    let navClassKeywords = ['nav', 'menu', 'header', 'top', 'navbar'];
     
-    let navClassKeywords = ['nav', 'menu', 'header', 'top', 'navbar', 'pannel', 'list'];
-    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'type', 'category', 'classify', 'tag'];
-    let sortClassKeywords = ['sort', 'order', 'tabs', 'head', 'title', 'rb'];
-
-    // ========== 1. 大分类 ==========
-    let navCandidate = findCandidates(html, navClassKeywords, 2, navWhiteList);
-    if (navCandidate) {
-        let cls = firstClass(navCandidate.el.cls);
-        let childType = 'li';
-        if (!/<li[\s>]/i.test(navCandidate.el.html)) childType = 'a';
-        let excludeTexts = getExcludeTexts(navCandidate.links, navWhiteList);
-        let subSelector = 'body&&' + childType;
+    for (let k = 0; k < navClassKeywords.length; k++) {
+        let allEls = findAllByClass(html, navClassKeywords[k]);
+        for (let i = 0; i < allEls.length; i++) {
+            let el = allEls[i];
+            let links = extractLinks(el.html);
+            // 大分类链接数通常 2-10 个
+            if (links.length < 2 || links.length > 15) continue;
+            let matchCount = 0;
+            for (let j = 0; j < links.length; j++) {
+                if (hasKW(links[j].text, navWhiteList)) matchCount++;
+            }
+            // 至少匹配2个才算大分类
+            if (matchCount >= 2) {
+                navCandidates.push({ el: el, score: matchCount, links: links });
+            }
+        }
+    }
+    
+    if (navCandidates.length > 0) {
+        navCandidates.sort(function(a, b) { return b.score - a.score; });
+        let best = navCandidates[0];
+        let cls = firstClass(best.el.cls);
+        let excludeTexts = [];
+        for (let i = 0; i < best.links.length; i++) {
+            if (!hasKW(best.links[i].text, navWhiteList)) {
+                excludeTexts.push(best.links[i].text);
+            }
+        }
+        let subSelector = 'body&&a';
         if (excludeTexts.length > 0) {
             subSelector += ':not(:matches(' + excludeTexts.join('|') + '))';
         }
-        result.push({ 一级分类: buildSelector(cls, childType), 子分类: subSelector });
+        result.push({ 一级分类: 'body&&.' + cls, 子分类: subSelector });
     } else {
-        result.push({ 一级分类: 'body&&.nav', 子分类: 'body&&li:has(a[href*="type"])' });
+        result.push({ 一级分类: 'body&&.nav', 子分类: 'body&&a[href*="type"]' });
     }
 
-    // ========== 2. 小分类 ==========
-    let filterCandidate = findCandidates(html, filterClassKeywords, 3, filterWhiteList);
-    if (filterCandidate) {
-        let cls = firstClass(filterCandidate.el.cls);
-        let elHtml = filterCandidate.el.html;
-        
-        // 检查内部是否有多个分组（dl/ul）
-        let innerGroups = [];
-        let dlMatches = elHtml.match(/<dl[\s>]/gi) || [];
-        let ulMatches = elHtml.match(/<ul[\s>]/gi) || [];
-        
-        if (dlMatches.length > 1) {
-            // 多个 dl 分组，分别提取每个 dl 的 class
-            let dlRe = /<dl[^>]*class=["']([^"']*)["'][^>]*>/gi;
-            let dlMatch;
-            while ((dlMatch = dlRe.exec(elHtml)) !== null) {
-                let dlClass = dlMatch[1].split(/\s+/)[0];
-                if (dlClass) innerGroups.push('body&&.' + dlClass);
+    // ========== 2. 小分类 - 查找包含白名单标签的容器 ==========
+    let filterCandidates = [];
+    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'casc'];
+    
+    for (let k = 0; k < filterClassKeywords.length; k++) {
+        let allEls = findAllByClass(html, filterClassKeywords[k]);
+        for (let i = 0; i < allEls.length; i++) {
+            let el = allEls[i];
+            let htmlLower = el.html.toLowerCase();
+            // 检查是否包含筛选标签文字
+            let hasLabel = false;
+            for (let j = 0; j < filterLabelWhiteList.length; j++) {
+                if (htmlLower.indexOf(filterLabelWhiteList[j].toLowerCase()) > -1) {
+                    hasLabel = true;
+                    break;
+                }
             }
-        } else if (ulMatches.length > 1) {
-            // 多个 ul 分组
-            let ulRe = /<ul[^>]*class=["']([^"']*)["'][^>]*>/gi;
-            let ulMatch;
-            while ((ulMatch = ulRe.exec(elHtml)) !== null) {
-                let ulClass = ulMatch[1].split(/\s+/)[0];
-                if (ulClass) innerGroups.push('body&&.' + ulClass);
+            if (hasLabel) {
+                filterCandidates.push({ el: el, htmlLower: htmlLower });
             }
         }
-        
-        if (innerGroups.length > 0) {
-            // 多个分组，用 || 连接
-            result.push({ 一级分类: innerGroups.join(' || '), 子分类: 'body&&a:has(a)' });
-        } else {
-            // 单个分组
-            let childType = 'li';
-            if (/<dd[\s>]/i.test(elHtml)) childType = 'dd';
-            else if (!/<li[\s>]/i.test(elHtml)) childType = 'a';
-            result.push({ 一级分类: buildSelector(cls, childType), 子分类: 'body&&' + childType + ':has(a:not(:empty)):lt(20)' });
-        }
+    }
+    
+    if (filterCandidates.length > 0) {
+        let filterEl = filterCandidates[0].el;
+        let cls = firstClass(filterEl.cls);
+        // 检查子元素类型
+        let childType = 'li';
+        if (/<dd[\s>]/i.test(filterEl.html)) childType = 'dd';
+        result.push({ 一级分类: 'body&&.' + cls, 子分类: 'body&&' + childType + ':has(a:not(:empty))' });
     } else {
         result.push({ 一级分类: 'body&&.filter', 子分类: 'body&&a[href*="show"]' });
     }
 
     // ========== 3. 排序 ==========
-    let sortCandidate = findCandidates(html, sortClassKeywords, 2, sortWhiteList);
-    if (sortCandidate) {
-        let cls = firstClass(sortCandidate.el.cls);
-        let childType = 'a';
-        result.push({ 一级分类: buildSelector(cls, childType), 子分类: 'body&&a' });
+    let sortCandidates = [];
+    let sortClassKeywords = ['sort', 'order', 'tabs', 'head'];
+    
+    for (let k = 0; k < sortClassKeywords.length; k++) {
+        let allEls = findAllByClass(html, sortClassKeywords[k]);
+        for (let i = 0; i < allEls.length; i++) {
+            let el = allEls[i];
+            let links = extractLinks(el.html);
+            if (links.length < 2 || links.length > 10) continue;
+            let matchCount = 0;
+            for (let j = 0; j < links.length; j++) {
+                if (hasKW(links[j].text, sortWhiteList)) matchCount++;
+            }
+            if (matchCount >= 2) {
+                sortCandidates.push({ el: el, score: matchCount });
+            }
+        }
+    }
+    
+    if (sortCandidates.length > 0) {
+        sortCandidates.sort(function(a, b) { return b.score - a.score; });
+        let cls = firstClass(sortCandidates[0].el.cls);
+        result.push({ 一级分类: 'body&&.' + cls, 子分类: 'body&&a' });
     } else {
         result.push({ 一级分类: 'body&&.sort', 子分类: 'body&&a' });
     }
 
     return result;
 }
-
 
 
 if(html){

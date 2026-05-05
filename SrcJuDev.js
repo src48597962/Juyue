@@ -75,7 +75,7 @@ if(html){
     htmlCategories.界面(d)
         //.分类链接(true_url)
         .源码(html)
-        //.页码(page)
+        .页码(page)
         .添加分类定位(定位列表)
         .开启内置折叠功能() // 必须
         .折叠按钮样式({

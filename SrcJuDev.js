@@ -93,7 +93,7 @@ function autoGenerateLocationList(html) {
 
     // 白名单配置
     let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片'];
-    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '字母'];
+    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态'];
     let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新', '排行'];
 
     // ========== 1. 大分类 ==========

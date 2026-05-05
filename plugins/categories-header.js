@@ -407,7 +407,7 @@ Object.assign(CategoriesHeader.prototype, {
                     this[symbolMap.mLayout].push({
                         col_type: "blank_block"
                     });
-                } else if (this[symbolMap.mFold] === '0') {
+                } else if (this[symbolMap.mFold] === '0' && sub_categories.length > 0) {
                     sub_categories.forEach((item, key) => {
                         let title = this.getTitle(item, category)
                         let url = this.getUrl(item, category)

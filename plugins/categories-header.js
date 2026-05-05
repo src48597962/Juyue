@@ -343,6 +343,18 @@ Object.assign(CategoriesHeader.prototype, {
 
             categories.forEach((category, index) => {
 
+                //具体列表下的分类
+                let sub_categories = [];
+                if (category.subListRule.startsWith("@js:")) {
+                    sub_categories = this.evalJSRule(category.list, category.subListRule)
+                } else {
+                    sub_categories = parseDomForArray(category.list, category.subListRule);
+                }               
+                // 添加过滤：如果子分类数量 <= 1，则清空数组
+                if (sub_categories.length <= 1) {
+                    sub_categories = [];    
+                }
+                
                 // 折叠 UI
                 if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1) && sub_categories.length > 0) {
                     let foldLayout = {
@@ -361,17 +373,6 @@ Object.assign(CategoriesHeader.prototype, {
                     this[symbolMap.mLayout].push(foldLayout)
                 }
 
-                //具体列表下的分类
-                let sub_categories = [];
-                if (category.subListRule.startsWith("@js:")) {
-                    sub_categories = this.evalJSRule(category.list, category.subListRule)
-                } else {
-                    sub_categories = parseDomForArray(category.list, category.subListRule);
-                }               
-                // 添加过滤：如果子分类数量 <= 1，则清空数组
-                if (sub_categories.length <= 1) {
-                    sub_categories = [];    
-                }
                 if (index < (this[symbolMap.mFoldIndex] || 1)) {
                     sub_categories.forEach((item, key) => {
                         let title = this.getTitle(item, category)

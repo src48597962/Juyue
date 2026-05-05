@@ -349,8 +349,9 @@ Object.assign(CategoriesHeader.prototype, {
                     sub_categories = this.evalJSRule(category.list, category.subListRule)
                 } else {
                     sub_categories = parseDomForArray(category.list, category.subListRule);
-                }               
-                sub_categories = sub_categories.filter(item => item.title);
+                }
+
+                sub_categories = sub_categories.filter(item => this.getTitle(item, category));
                 
                 // 折叠 UI
                 if (this[symbolMap.mFoldInnerEnable] && this[symbolMap.mFoldLayout].injectIndex === (index+1) && categories.length > 1) {

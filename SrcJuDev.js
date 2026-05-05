@@ -93,7 +93,7 @@ function autoGenerateLocationList(html) {
 
     // 白名单配置
     let navWhiteList = ['电影', '电视剧', '剧集', '综艺', '动漫', '动画', '短剧', '影片', '连续剧', '纪录片'];
-    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态'];
+    let filterLabelWhiteList = ['地区', '年代', '年份', '类型', '剧情', '分类', '语言', '状态', '字母', '按时间', '按人气', '按评分'];
     let sortWhiteList = ['最新', '最热', '热门', '热播', '推荐', '评分', '人气', '时间', '更新', '排行'];
 
     // ========== 1. 大分类 ==========
@@ -105,7 +105,7 @@ function autoGenerateLocationList(html) {
         for (let i = 0; i < allEls.length; i++) {
             let el = allEls[i];
             let links = extractLinks(el.html);
-            if (links.length < 2 || links.length > 15) continue;
+            if (links.length < 2 || links.length > 20) continue;
             let matchCount = 0;
             for (let j = 0; j < links.length; j++) {
                 if (hasKW(links[j].text, navWhiteList)) matchCount++;
@@ -120,10 +120,19 @@ function autoGenerateLocationList(html) {
         navCandidates.sort(function(a, b) { return b.score - a.score; });
         let best = navCandidates[0];
         let cls = firstClass(best.el.cls);
+        // 排除不在白名单的项
         let excludeTexts = [];
         for (let i = 0; i < best.links.length; i++) {
-            if (!hasKW(best.links[i].text, navWhiteList)) {
-                excludeTexts.push(best.links[i].text);
+            let text = best.links[i].text;
+            let inWhite = false;
+            for (let j = 0; j < navWhiteList.length; j++) {
+                if (text.indexOf(navWhiteList[j]) > -1) {
+                    inWhite = true;
+                    break;
+                }
+            }
+            if (!inWhite && text.length > 0 && text.length < 10) {
+                excludeTexts.push(text);
             }
         }
         let subSelector = 'body&&a';
@@ -136,7 +145,7 @@ function autoGenerateLocationList(html) {
     }
 
     // ========== 2. 小分类 - 分别获取每个筛选区块 ==========
-    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'casc', 'list'];
+    let filterClassKeywords = ['filter', 'screen', 'scre', 'select', 'casc', 'list', 'pannel'];
     let allFilterBlocks = [];
     
     for (let k = 0; k < filterClassKeywords.length; k++) {
@@ -154,7 +163,7 @@ function autoGenerateLocationList(html) {
                 while ((dlMatch = dlRe.exec(el.html)) !== null) {
                     let dlClass = dlMatch[1].split(/\s+/)[0];
                     let dlHtml = dlMatch[2];
-                    // 检查是否包含筛选标签（地区、年代等）
+                    // 检查是否包含筛选标签
                     let hasLabel = false;
                     for (let j = 0; j < filterLabelWhiteList.length; j++) {
                         if (dlHtml.indexOf(filterLabelWhiteList[j]) > -1) {
@@ -163,7 +172,7 @@ function autoGenerateLocationList(html) {
                         }
                     }
                     if (hasLabel && dlClass) {
-                        allFilterBlocks.push({ selector: 'body&&.' + dlClass, childType: 'dd' });
+                        allFilterBlocks.push({ selector: 'body&&.' + dlClass, childType: 'dd', maxItems: 12 });
                     }
                 }
             } else if (innerULs.length > 1) {
@@ -181,11 +190,11 @@ function autoGenerateLocationList(html) {
                         }
                     }
                     if (hasLabel && ulClass) {
-                        allFilterBlocks.push({ selector: 'body&&.' + ulClass, childType: 'li' });
+                        allFilterBlocks.push({ selector: 'body&&.' + ulClass, childType: 'li', maxItems: 12 });
                     }
                 }
             } else {
-                // 单个分组，检查本身是否包含标签
+                // 单个分组
                 let hasLabel = false;
                 for (let j = 0; j < filterLabelWhiteList.length; j++) {
                     if (el.html.indexOf(filterLabelWhiteList[j]) > -1) {
@@ -198,33 +207,37 @@ function autoGenerateLocationList(html) {
                     let childType = 'li';
                     if (/<dd[\s>]/i.test(el.html)) childType = 'dd';
                     if (cls) {
-                        allFilterBlocks.push({ selector: 'body&&.' + cls, childType: childType });
+                        allFilterBlocks.push({ selector: 'body&&.' + cls, childType: childType, maxItems: 12 });
                     }
                 }
             }
         }
     }
     
-    // 去重并添加到结果
+    // 去重并添加到结果（限制12项）
     if (allFilterBlocks.length > 0) {
         let seen = {};
         for (let i = 0; i < allFilterBlocks.length; i++) {
             let block = allFilterBlocks[i];
             if (!seen[block.selector]) {
                 seen[block.selector] = true;
+                let subSelector = 'body&&' + block.childType + ':has(a:not(:empty))';
+                if (block.maxItems) {
+                    subSelector += ':lt(' + block.maxItems + ')';
+                }
                 result.push({
                     一级分类: block.selector,
-                    子分类: 'body&&' + block.childType + ':has(a:not(:empty))'
+                    子分类: subSelector
                 });
             }
         }
     } else {
-        result.push({ 一级分类: 'body&&.filter', 子分类: 'body&&a[href*="show"]' });
+        result.push({ 一级分类: 'body&&.filter', 子分类: 'body&&a[href*="show"]:lt(12)' });
     }
 
     // ========== 3. 排序 ==========
     let sortCandidates = [];
-    let sortClassKeywords = ['sort', 'order', 'tabs', 'head'];
+    let sortClassKeywords = ['sort', 'order', 'tabs', 'head', 'rb'];
     
     for (let k = 0; k < sortClassKeywords.length; k++) {
         let allEls = findAllByClass(html, sortClassKeywords[k]);

@@ -329,7 +329,7 @@ Object.assign(CategoriesHeader.prototype, {
             })
         })
 
-        // log($.stringify(categories))
+        log($.stringify(categories))
 
         let init_cate = []
         for (let i = 0; i < 20; i++) {

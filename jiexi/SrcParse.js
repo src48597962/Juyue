@@ -1008,71 +1008,64 @@ function 解析方法(obj) {
             },p1)
         }
 
-        function autoClick(iframeSelector, buttonSelector, maxRetries) {
-            log('autoClick');
+        function autoClick(iframeSelector, maxRetries) {
             if (!iframeSelector) {
-                iframeSelector = 'iframe';
-            }
-            if (!buttonSelector) {
-                buttonSelector = [
-                    '[class*="play"]', '[id*="play"]',
-                    '[class*="start"]', '[id*="start"]',
-                    '.vjs-big-play-button',
-                    'video', 'button'
-                ].join(',');
+                // 针对这个站点，播放器区域就是 #playleft
+                iframeSelector = '#playleft';
             }
             if (!maxRetries) {
-                maxRetries = 3;
+                maxRetries = 1; // 点击1次就够了
             }
-            
-            return $.toString((iframeSel, btnSel, max) => {
+            log('autoClick');
+            return $.toString((selector, max) => {
                 let count = 0;
                 
-                function check() {
-                    fba.log('点击');
+                function clickPlayArea() {
                     if (count >= max) return;
                     count++;
                     
                     try {
-                        let iframes = document.querySelectorAll(iframeSel);
-                        for (let iframe of iframes) {
-                            try {
-                                let doc = iframe.contentDocument || iframe.contentWindow.document;
-                                let btn = doc.querySelector(btnSel);
-                                if (btn) {
-                                    btn.click();
-                                    return;
-                                }
-                            } catch(e) {
-                                try {
-                                    iframe.click();
-                                    let rect = iframe.getBoundingClientRect();
-                                    let event = new MouseEvent('click', {
-                                        view: window,
-                                        bubbles: true,
-                                        cancelable: true,
-                                        clientX: rect.left + rect.width/2,
-                                        clientY: rect.top + rect.height/2
-                                    });
-                                    iframe.dispatchEvent(event);
-                                    return;
-                                } catch(e2) {}
-                            }
+                        let target = document.querySelector(selector);
+                        if (!target) {
+                            if (count < max) setTimeout(clickPlayArea, 200);
+                            return;
                         }
-                        if (count < max) {
-                            setTimeout(check, 100);
-                        }
+                        
+                        // 获取位置
+                        let rect = target.getBoundingClientRect();
+                        let x = rect.left + rect.width / 2;
+                        let y = rect.top + rect.height / 2;
+                        
+                        // 多种方式模拟真实点击
+                        // 方式1: 原生click
+                        target.click();
+                        
+                        // 方式2: MouseEvent
+                        let clickEvent = new MouseEvent('click', {
+                            view: window,
+                            bubbles: true,
+                            cancelable: true,
+                            clientX: x,
+                            clientY: y
+                        });
+                        target.dispatchEvent(clickEvent);
+                        
+                        // 方式3: 尝试点击iframe本身
+                        let iframe = target.querySelector('iframe') || target;
+                        iframe.click();
+                        iframe.dispatchEvent(clickEvent);
+                        
                     } catch (e) {
-                        if (count < max) {
-                            setTimeout(check, 100);
-                        }
+                        if (count < max) setTimeout(clickPlayArea, 200);
                     }
                 }
-                check();
-            }, iframeSelector, buttonSelector, maxRetries);
+                
+                // 等播放器加载好再点击
+                setTimeout(clickPlayArea, 1000);
+            }, iframeSelector, maxRetries);
         }
 
-        if(/jqqzx\.|dadazhu\.|dadagui|freeok|wbbb1\./.test(playUrl)){
+        if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
             return click1('#playleft iframe','#start');
         }else if(/media\.staticfile\.link/.test(playUrl)){
             return click2();

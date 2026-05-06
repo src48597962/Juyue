@@ -1017,90 +1017,51 @@ function 解析方法(obj) {
             if (count >= max) return;
             count++;
             
-            let iframe = document.querySelector('#playleft iframe');
-            if (!iframe) {
-                setTimeout(check, 100);
-                return;
-            }
+            // 目标优先级：外层容器 > iframe本身 > 其他可能元素
+            let targets = [
+                document.querySelector('#playleft'),           // td容器
+                document.querySelector('#playleft iframe'),    // iframe
+                document.querySelector('.MacPlayer'),          // 播放器外层
+                document.querySelector('.MacPlayer table'),    // table
+                document.querySelector('.player-box-main')     // 最外层
+            ];
             
-            let src = iframe.src;
-            if (!src || src === 'about:blank') {
-                setTimeout(check, 100);
-                return;
-            }
-            
-            let rect = iframe.getBoundingClientRect();
-            let x = rect.left + rect.width / 2;
-            let y = rect.top + rect.height / 2;
-            
-            // 1. 先解除限制
-            iframe.removeAttribute('sandbox');
-            iframe.setAttribute('allow', 'autoplay; fullscreen');
-            
-            // 2. postMessage通信
-            try {
-                iframe.contentWindow.postMessage({type: 'play', action: 'click'}, '*');
-                iframe.contentWindow.postMessage('play', '*');
-                iframe.contentWindow.postMessage('player.play()', '*');
-            } catch(e) {}
-            
-            // 3. 多种点击事件
-            try {
-                // click事件
-                iframe.click();
-                iframe.dispatchEvent(new MouseEvent('click', {
-                    view: window, bubbles: true, cancelable: true,
-                    clientX: x, clientY: y
-                }));
-                
-                // 触摸事件
-                let touch = new TouchEvent('touchstart', {
-                    bubbles: true, cancelable: true,
-                    touches: [new Touch({
-                        identifier: Date.now(), target: iframe,
-                        clientX: x, clientY: y,
-                        radiusX: 2.5, radiusY: 2.5,
-                        rotationAngle: 0, force: 1
-                    })]
-                });
-                iframe.dispatchEvent(touch);
-                
-                // pointer事件
-                iframe.dispatchEvent(new PointerEvent('pointerdown', {
-                    bubbles: true, cancelable: true,
-                    clientX: x, clientY: y,
-                    pointerType: 'mouse', isPrimary: true
-                }));
-            } catch(e) {}
-            
-            // 4. 重新加载触发播放
-            if (count === max) {
-                // 最后一次尝试：重新加载并加autoplay参数
-                let newSrc = src;
-                if (!newSrc.includes('autoplay')) {
-                    newSrc += (newSrc.includes('?') ? '&' : '?') + 'autoplay=1';
-                }
-                iframe.src = '';
-                setTimeout(() => {
-                    iframe.src = newSrc;
-                    // 加载完再点一次
-                    setTimeout(() => {
-                        try {
-                            iframe.click();
-                            iframe.contentWindow.postMessage({type: 'play'}, '*');
-                        } catch(e) {}
-                    }, 2000);
-                }, 100);
-                return;
+            for (let el of targets) {
+                if (!el) continue;
+                try {
+                    let rect = el.getBoundingClientRect();
+                    if (rect.width === 0 || rect.height === 0) continue;
+                    
+                    let x = rect.left + rect.width / 2;
+                    let y = rect.top + rect.height / 2;
+                    
+                    // 模拟真实点击
+                    el.click();
+                    el.dispatchEvent(new MouseEvent('click', {
+                        view: window, bubbles: true, cancelable: true,
+                        clientX: x, clientY: y
+                    }));
+                    el.dispatchEvent(new MouseEvent('mousedown', {
+                        view: window, bubbles: true, cancelable: true,
+                        clientX: x, clientY: y
+                    }));
+                    el.dispatchEvent(new MouseEvent('mouseup', {
+                        view: window, bubbles: true, cancelable: true,
+                        clientX: x, clientY: y
+                    }));
+                    
+                    return;
+                } catch(e) {}
             }
             
             setTimeout(check, 1500);
         }
         
-        // 等播放器加载
         setTimeout(check, 2000);
     }, maxRetries);
 }
+
+
 
 
 
@@ -1111,7 +1072,7 @@ function 解析方法(obj) {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return autoClick(5);
+            return autoClick();
         }
     }
     /*

@@ -1072,7 +1072,7 @@ function 解析方法(obj) {
             }, iframeSelector, buttonSelector, maxRetries);
         }
 
-        if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
+        if(/jqqzx\.|dadazhu\.|dadagui|freeok|wbbb1\./.test(playUrl)){
             return click1('#playleft iframe','#start');
         }else if(/media\.staticfile\.link/.test(playUrl)){
             return click2();

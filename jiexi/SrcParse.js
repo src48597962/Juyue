@@ -1007,7 +1007,7 @@ function 解析方法(obj) {
             },p1)
         }
 
-        function autoPlay() {
+        function autoClick() {
     return $.toString(() => {
         function check() {
             let iframe = document.querySelector('#playleft iframe');
@@ -1016,61 +1016,22 @@ function 解析方法(obj) {
                 return;
             }
             
-            let src = iframe.src;
-            if (!src) {
-                setTimeout(check, 100);
-                return;
-            }
+            // 移除限制属性
+            iframe.removeAttribute('sandbox');
+            iframe.removeAttribute('security');
             
-            // 直接在新窗口打开播放器地址，绕过跨域限制
-            // 或者用fetch请求触发播放器初始化
-            try {
-                // 方式1：重新设置src触发加载
-                iframe.src = '';
-                setTimeout(() => {
-                    iframe.src = src;
-                }, 50);
-                
-                // 方式2：尝试postMessage与iframe通信
-                iframe.contentWindow.postMessage({
-                    type: 'play',
-                    action: 'click'
-                }, '*');
-                
-                // 方式3：模拟触摸事件（移动端播放器）
-                let rect = iframe.getBoundingClientRect();
-                let touch = new TouchEvent('touchstart', {
-                    bubbles: true,
-                    cancelable: true,
-                    touches: [new Touch({
-                        identifier: Date.now(),
-                        target: iframe,
-                        clientX: rect.left + rect.width/2,
-                        clientY: rect.top + rect.height/2,
-                        radiusX: 2.5,
-                        radiusY: 2.5,
-                        rotationAngle: 0,
-                        force: 1
-                    })]
-                });
-                iframe.dispatchEvent(touch);
-                
-                // 方式4：pointer事件（最新标准）
-                let pointer = new PointerEvent('pointerdown', {
-                    bubbles: true,
-                    cancelable: true,
-                    clientX: rect.left + rect.width/2,
-                    clientY: rect.top + rect.height/2,
-                    pointerType: 'mouse',
-                    isPrimary: true,
-                    pressure: 0.5
-                });
-                iframe.dispatchEvent(pointer);
-                
-            } catch(e) {}
+            // 尝试设置allow属性
+            iframe.setAttribute('allow', 'autoplay; fullscreen');
+            iframe.setAttribute('allowfullscreen', 'true');
+            
+            // 重新加载
+            let src = iframe.src;
+            iframe.src = '';
+            setTimeout(() => {
+                iframe.src = src;
+            }, 100);
         }
-        
-        setTimeout(check, 1500);
+        check();
     });
 }
 
@@ -1082,7 +1043,7 @@ function 解析方法(obj) {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return autoPlay();
+            return autoClick();
         }
     }
     /*

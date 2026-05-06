@@ -1039,6 +1039,7 @@ function 解析方法(obj) {
                 if(!rurl){
                     //可用于注入js模似点击
                     function extraJS(playUrl) {
+                        log('获取js');
                         function click1(p1,p2) {
                             return $.toString((p1,p2) => {
                                 function check() {
@@ -1088,6 +1089,7 @@ function 解析方法(obj) {
                         }
 
                         function autoClick(iframeSelector, buttonSelector, maxRetries) {
+                            log('autoClick');
                             if (!iframeSelector) {
                                 iframeSelector = 'iframe';
                             }

@@ -1007,34 +1007,99 @@ function 解析方法(obj) {
             },p1)
         }
 
-        // 在页面头部注入，拦截iframe创建
-function interceptIframe() {
-    return $.toString(() => {
-        // 监听DOM变化
-        let observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeName === 'IFRAME') {
-                        // 给iframe添加自动播放参数
-                        let src = node.src;
-                        if (src && src.includes('850088.xyz')) {
-                            // 添加autoplay参数
-                            if (!src.includes('autoplay')) {
-                                node.src = src + '&autoplay=1&auto=1';
-                            }
-                            // 移除referrer以可能绕过限制
-                            node.setAttribute('referrerpolicy', 'unsafe-url');
-                        }
-                    }
-                });
-            });
-        });
+        function autoClick(maxRetries) {
+    if (!maxRetries) maxRetries = 3;
+    
+    return $.toString((max) => {
+        let count = 0;
         
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true
-        });
-    });
+        function check() {
+            if (count >= max) return;
+            count++;
+            
+            let iframe = document.querySelector('#playleft iframe');
+            if (!iframe) {
+                setTimeout(check, 100);
+                return;
+            }
+            
+            let src = iframe.src;
+            if (!src || src === 'about:blank') {
+                setTimeout(check, 100);
+                return;
+            }
+            
+            let rect = iframe.getBoundingClientRect();
+            let x = rect.left + rect.width / 2;
+            let y = rect.top + rect.height / 2;
+            
+            // 1. 先解除限制
+            iframe.removeAttribute('sandbox');
+            iframe.setAttribute('allow', 'autoplay; fullscreen');
+            
+            // 2. postMessage通信
+            try {
+                iframe.contentWindow.postMessage({type: 'play', action: 'click'}, '*');
+                iframe.contentWindow.postMessage('play', '*');
+                iframe.contentWindow.postMessage('player.play()', '*');
+            } catch(e) {}
+            
+            // 3. 多种点击事件
+            try {
+                // click事件
+                iframe.click();
+                iframe.dispatchEvent(new MouseEvent('click', {
+                    view: window, bubbles: true, cancelable: true,
+                    clientX: x, clientY: y
+                }));
+                
+                // 触摸事件
+                let touch = new TouchEvent('touchstart', {
+                    bubbles: true, cancelable: true,
+                    touches: [new Touch({
+                        identifier: Date.now(), target: iframe,
+                        clientX: x, clientY: y,
+                        radiusX: 2.5, radiusY: 2.5,
+                        rotationAngle: 0, force: 1
+                    })]
+                });
+                iframe.dispatchEvent(touch);
+                
+                // pointer事件
+                iframe.dispatchEvent(new PointerEvent('pointerdown', {
+                    bubbles: true, cancelable: true,
+                    clientX: x, clientY: y,
+                    pointerType: 'mouse', isPrimary: true
+                }));
+            } catch(e) {}
+            
+            // 4. 重新加载触发播放
+            if (count === max) {
+                // 最后一次尝试：重新加载并加autoplay参数
+                let newSrc = src;
+                if (!newSrc.includes('autoplay')) {
+                    newSrc += (newSrc.includes('?') ? '&' : '?') + 'autoplay=1';
+                }
+                iframe.src = '';
+                setTimeout(() => {
+                    iframe.src = newSrc;
+                    // 加载完再点一次
+                    setTimeout(() => {
+                        try {
+                            iframe.click();
+                            iframe.contentWindow.postMessage({type: 'play'}, '*');
+                        } catch(e) {}
+                    }, 2000);
+                }, 100);
+                return;
+            }
+            
+            setTimeout(check, 1500);
+        }
+        
+        // 等播放器加载
+        setTimeout(check, 2000);
+    }, maxRetries);
 }
 
 
@@ -1046,7 +1111,7 @@ function interceptIframe() {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return interceptIframe();
+            return autoClick(5);
         }
     }
     /*

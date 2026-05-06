@@ -1007,33 +1007,36 @@ function 解析方法(obj) {
             },p1)
         }
 
-        function autoClick() {
+        // 在页面头部注入，拦截iframe创建
+function interceptIframe() {
     return $.toString(() => {
-        function check() {
-            let iframe = document.querySelector('#playleft iframe');
-            if (!iframe) {
-                setTimeout(check, 100);
-                return;
-            }
-            
-            // 移除限制属性
-            iframe.removeAttribute('sandbox');
-            iframe.removeAttribute('security');
-            
-            // 尝试设置allow属性
-            iframe.setAttribute('allow', 'autoplay; fullscreen');
-            iframe.setAttribute('allowfullscreen', 'true');
-            
-            // 重新加载
-            let src = iframe.src;
-            iframe.src = '';
-            setTimeout(() => {
-                iframe.src = src;
-            }, 100);
-        }
-        check();
+        // 监听DOM变化
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeName === 'IFRAME') {
+                        // 给iframe添加自动播放参数
+                        let src = node.src;
+                        if (src && src.includes('850088.xyz')) {
+                            // 添加autoplay参数
+                            if (!src.includes('autoplay')) {
+                                node.src = src + '&autoplay=1&auto=1';
+                            }
+                            // 移除referrer以可能绕过限制
+                            node.setAttribute('referrerpolicy', 'unsafe-url');
+                        }
+                    }
+                });
+            });
+        });
+        
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true
+        });
     });
 }
+
 
 
         if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
@@ -1043,7 +1046,7 @@ function 解析方法(obj) {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return autoClick();
+            return interceptIframe();
         }
     }
     /*

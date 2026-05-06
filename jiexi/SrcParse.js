@@ -1107,6 +1107,7 @@ function 解析方法(obj) {
                                 let count = 0;
                                 
                                 function check() {
+                                    fba.log('点击');
                                     if (count >= max) return;
                                     count++;
                                     

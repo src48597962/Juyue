@@ -957,6 +957,141 @@ function 解析方法(obj) {
         let decrypted = JSON.parse(datadec);
         return JSON.parse(decrypted.json).url;
     }
+    //可用于注入js模似点击
+    function extraJS(playUrl) {
+        log('获取js');
+        function click1(p1,p2) {
+            return $.toString((p1,p2) => {
+                function check() {
+                    try {
+                        let iframe = document.querySelector(p1);
+                        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                        iframeDocument.querySelector(p2).click();
+                    } catch (e) {
+                        setTimeout(check, 100);
+                    }
+                }
+                check();
+            },p1,p2)
+        }
+        function click2() {
+            return $.toString(() => {
+                function check() {
+                    var is = 0;
+                    // 获取所有具有 id 属性的元素
+                    var elementsWithId = Array.from(document.querySelectorAll('[id]'));
+                    // 遍历每个元素，检查文本内容并触发点击事件
+                    elementsWithId.forEach(element => {
+                        // 检查元素的文本内容是否包含 "点击播放"
+                        if (element.outerHTML.includes("播放")) {
+                            element.click();
+                            is = 1;
+                        }
+                    });
+                    if(is==0){
+                        setTimeout(check, 100);
+                    }
+                }
+                check();
+            })
+        }
+        function click3(p1) {
+            return $.toString((p1) => {
+                function check() {
+                    try {
+                        document.getElementsByClassName(p1)[0].click();
+                    } catch (e) {
+                        setTimeout(check, 100);
+                    }
+                }
+                check();
+            },p1)
+        }
+
+        function autoClick(iframeSelector, buttonSelector, maxRetries) {
+            log('autoClick');
+            if (!iframeSelector) {
+                iframeSelector = 'iframe';
+            }
+            if (!buttonSelector) {
+                buttonSelector = [
+                    '[class*="play"]', '[id*="play"]',
+                    '[class*="start"]', '[id*="start"]',
+                    '.vjs-big-play-button',
+                    'video', 'button'
+                ].join(',');
+            }
+            if (!maxRetries) {
+                maxRetries = 3;
+            }
+            
+            return $.toString((iframeSel, btnSel, max) => {
+                let count = 0;
+                
+                function check() {
+                    fba.log('点击');
+                    if (count >= max) return;
+                    count++;
+                    
+                    try {
+                        let iframes = document.querySelectorAll(iframeSel);
+                        for (let iframe of iframes) {
+                            try {
+                                let doc = iframe.contentDocument || iframe.contentWindow.document;
+                                let btn = doc.querySelector(btnSel);
+                                if (btn) {
+                                    btn.click();
+                                    return;
+                                }
+                            } catch(e) {
+                                try {
+                                    iframe.click();
+                                    let rect = iframe.getBoundingClientRect();
+                                    let event = new MouseEvent('click', {
+                                        view: window,
+                                        bubbles: true,
+                                        cancelable: true,
+                                        clientX: rect.left + rect.width/2,
+                                        clientY: rect.top + rect.height/2
+                                    });
+                                    iframe.dispatchEvent(event);
+                                    return;
+                                } catch(e2) {}
+                            }
+                        }
+                        if (count < max) {
+                            setTimeout(check, 100);
+                        }
+                    } catch (e) {
+                        if (count < max) {
+                            setTimeout(check, 100);
+                        }
+                    }
+                }
+                check();
+            }, iframeSelector, buttonSelector, maxRetries);
+        }
+
+        if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
+            return click1('#playleft iframe','#start');
+        }else if(/media\.staticfile\.link/.test(playUrl)){
+            return click2();
+        }else if(/maolvys\.com/.test(playUrl)){
+            return click3();
+        }else{
+            return autoClick();
+        }
+    }
+    /*
+    var button = document.querySelectorAll(jsButtonExtra)[0];
+    if (button) {
+        [button, button.querySelector('svg'), button.querySelector('div')].forEach(function(target) {
+            if (target) target.click();
+        });
+    }
+    */
+    //"document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
+    
 
     if(obj.isWeb){
         //网页播放页，非官源解析
@@ -965,7 +1100,7 @@ function 解析方法(obj) {
         }else if(obj.videoplay){
             return 'video://' + obj.vipUrl;
         }else{
-            return exeWebRule({webUrl:obj.vipUrl, js:obj.js}, 0) || "toast://webRule解析失败";
+            return exeWebRule({webUrl:obj.vipUrl, js:obj.js||extraJS(obj.vipUrl)}, 0) || "toast://webRule解析失败";
         }
     }else if(/^function/.test(obj.ulist.url.trim())){
         //js解析
@@ -1037,141 +1172,6 @@ function 解析方法(obj) {
                 }
                 //明码失败，最后一步走嗅探
                 if(!rurl){
-                    //可用于注入js模似点击
-                    function extraJS(playUrl) {
-                        log('获取js');
-                        function click1(p1,p2) {
-                            return $.toString((p1,p2) => {
-                                function check() {
-                                    try {
-                                        let iframe = document.querySelector(p1);
-                                        let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-                                        iframeDocument.querySelector(p2).click();
-                                    } catch (e) {
-                                        setTimeout(check, 100);
-                                    }
-                                }
-                                check();
-                            },p1,p2)
-                        }
-                        function click2() {
-                            return $.toString(() => {
-                                function check() {
-                                    var is = 0;
-                                    // 获取所有具有 id 属性的元素
-                                    var elementsWithId = Array.from(document.querySelectorAll('[id]'));
-                                    // 遍历每个元素，检查文本内容并触发点击事件
-                                    elementsWithId.forEach(element => {
-                                        // 检查元素的文本内容是否包含 "点击播放"
-                                        if (element.outerHTML.includes("播放")) {
-                                            element.click();
-                                            is = 1;
-                                        }
-                                    });
-                                    if(is==0){
-                                        setTimeout(check, 100);
-                                    }
-                                }
-                                check();
-                            })
-                        }
-                        function click3(p1) {
-                            return $.toString((p1) => {
-                                function check() {
-                                    try {
-                                        document.getElementsByClassName(p1)[0].click();
-                                    } catch (e) {
-                                        setTimeout(check, 100);
-                                    }
-                                }
-                                check();
-                            },p1)
-                        }
-
-                        function autoClick(iframeSelector, buttonSelector, maxRetries) {
-                            log('autoClick');
-                            if (!iframeSelector) {
-                                iframeSelector = 'iframe';
-                            }
-                            if (!buttonSelector) {
-                                buttonSelector = [
-                                    '[class*="play"]', '[id*="play"]',
-                                    '[class*="start"]', '[id*="start"]',
-                                    '.vjs-big-play-button',
-                                    'video', 'button'
-                                ].join(',');
-                            }
-                            if (!maxRetries) {
-                                maxRetries = 3;
-                            }
-                            
-                            return $.toString((iframeSel, btnSel, max) => {
-                                let count = 0;
-                                
-                                function check() {
-                                    fba.log('点击');
-                                    if (count >= max) return;
-                                    count++;
-                                    
-                                    try {
-                                        let iframes = document.querySelectorAll(iframeSel);
-                                        for (let iframe of iframes) {
-                                            try {
-                                                let doc = iframe.contentDocument || iframe.contentWindow.document;
-                                                let btn = doc.querySelector(btnSel);
-                                                if (btn) {
-                                                    btn.click();
-                                                    return;
-                                                }
-                                            } catch(e) {
-                                                try {
-                                                    iframe.click();
-                                                    let rect = iframe.getBoundingClientRect();
-                                                    let event = new MouseEvent('click', {
-                                                        view: window,
-                                                        bubbles: true,
-                                                        cancelable: true,
-                                                        clientX: rect.left + rect.width/2,
-                                                        clientY: rect.top + rect.height/2
-                                                    });
-                                                    iframe.dispatchEvent(event);
-                                                    return;
-                                                } catch(e2) {}
-                                            }
-                                        }
-                                        if (count < max) {
-                                            setTimeout(check, 100);
-                                        }
-                                    } catch (e) {
-                                        if (count < max) {
-                                            setTimeout(check, 100);
-                                        }
-                                    }
-                                }
-                                check();
-                            }, iframeSelector, buttonSelector, maxRetries);
-                        }
-
-                        if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
-                            return click1('#playleft iframe','#start');
-                        }else if(/media\.staticfile\.link/.test(playUrl)){
-                            return click2();
-                        }else if(/maolvys\.com/.test(playUrl)){
-                            return click3();
-                        }else{
-                            return autoClick();
-                        }
-                    }
-                    /*
-                    var button = document.querySelectorAll(jsButtonExtra)[0];
-                    if (button) {
-                        [button, button.querySelector('svg'), button.querySelector('div')].forEach(function(target) {
-                            if (target) target.click();
-                        });
-                    }
-                    */
-                    //"document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
-                    
                     let purl = obj.ulist.url+obj.vipUrl;
                     if(/jx\.playerjy\.com/.test(purl)){
                         taskheader['referer'] = purl;

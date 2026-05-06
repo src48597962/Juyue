@@ -1007,64 +1007,6 @@ function 解析方法(obj) {
             },p1)
         }
 
-        function autoClick(maxRetries) {
-    if (!maxRetries) maxRetries = 3;
-    
-    return $.toString((max) => {
-        let count = 0;
-        
-        function check() {
-            if (count >= max) return;
-            count++;
-            
-            // 目标优先级：外层容器 > iframe本身 > 其他可能元素
-            let targets = [
-                document.querySelector('#playleft'),           // td容器
-                document.querySelector('#playleft iframe'),    // iframe
-                document.querySelector('.MacPlayer'),          // 播放器外层
-                document.querySelector('.MacPlayer table'),    // table
-                document.querySelector('.player-box-main')     // 最外层
-            ];
-            
-            for (let el of targets) {
-                if (!el) continue;
-                try {
-                    let rect = el.getBoundingClientRect();
-                    if (rect.width === 0 || rect.height === 0) continue;
-                    
-                    let x = rect.left + rect.width / 2;
-                    let y = rect.top + rect.height / 2;
-                    
-                    // 模拟真实点击
-                    el.click();
-                    el.dispatchEvent(new MouseEvent('click', {
-                        view: window, bubbles: true, cancelable: true,
-                        clientX: x, clientY: y
-                    }));
-                    el.dispatchEvent(new MouseEvent('mousedown', {
-                        view: window, bubbles: true, cancelable: true,
-                        clientX: x, clientY: y
-                    }));
-                    el.dispatchEvent(new MouseEvent('mouseup', {
-                        view: window, bubbles: true, cancelable: true,
-                        clientX: x, clientY: y
-                    }));
-                    
-                    return;
-                } catch(e) {}
-            }
-            
-            setTimeout(check, 1500);
-        }
-        
-        setTimeout(check, 2000);
-    }, maxRetries);
-}
-
-
-
-
-
         if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
             return click1('#playleft iframe','#start');
         }else if(/media\.staticfile\.link/.test(playUrl)){
@@ -1072,7 +1014,7 @@ function 解析方法(obj) {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return autoClick();
+            return undefined;
         }
     }
     /*

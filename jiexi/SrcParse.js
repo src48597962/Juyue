@@ -959,7 +959,6 @@ function 解析方法(obj) {
     }
     //可用于注入js模似点击
     function extraJS(playUrl) {
-        log('获取js');
         function click1(p1,p2) {
             return $.toString((p1,p2) => {
                 function check() {
@@ -1008,62 +1007,73 @@ function 解析方法(obj) {
             },p1)
         }
 
-        function autoClick(iframeSelector, maxRetries) {
-            if (!iframeSelector) {
-                // 针对这个站点，播放器区域就是 #playleft
-                iframeSelector = '#playleft';
+        function autoPlay() {
+    return $.toString(() => {
+        function check() {
+            let iframe = document.querySelector('#playleft iframe');
+            if (!iframe) {
+                setTimeout(check, 100);
+                return;
             }
-            if (!maxRetries) {
-                maxRetries = 1; // 点击1次就够了
+            
+            let src = iframe.src;
+            if (!src) {
+                setTimeout(check, 100);
+                return;
             }
-            log('autoClick');
-            return $.toString((selector, max) => {
-                let count = 0;
+            
+            // 直接在新窗口打开播放器地址，绕过跨域限制
+            // 或者用fetch请求触发播放器初始化
+            try {
+                // 方式1：重新设置src触发加载
+                iframe.src = '';
+                setTimeout(() => {
+                    iframe.src = src;
+                }, 50);
                 
-                function clickPlayArea() {
-                    if (count >= max) return;
-                    count++;
-                    
-                    try {
-                        let target = document.querySelector(selector);
-                        if (!target) {
-                            if (count < max) setTimeout(clickPlayArea, 200);
-                            return;
-                        }
-                        
-                        // 获取位置
-                        let rect = target.getBoundingClientRect();
-                        let x = rect.left + rect.width / 2;
-                        let y = rect.top + rect.height / 2;
-                        
-                        // 多种方式模拟真实点击
-                        // 方式1: 原生click
-                        target.click();
-                        
-                        // 方式2: MouseEvent
-                        let clickEvent = new MouseEvent('click', {
-                            view: window,
-                            bubbles: true,
-                            cancelable: true,
-                            clientX: x,
-                            clientY: y
-                        });
-                        target.dispatchEvent(clickEvent);
-                        
-                        // 方式3: 尝试点击iframe本身
-                        let iframe = target.querySelector('iframe') || target;
-                        iframe.click();
-                        iframe.dispatchEvent(clickEvent);
-                        
-                    } catch (e) {
-                        if (count < max) setTimeout(clickPlayArea, 200);
-                    }
-                }
+                // 方式2：尝试postMessage与iframe通信
+                iframe.contentWindow.postMessage({
+                    type: 'play',
+                    action: 'click'
+                }, '*');
                 
-                // 等播放器加载好再点击
-                setTimeout(clickPlayArea, 1000);
-            }, iframeSelector, maxRetries);
+                // 方式3：模拟触摸事件（移动端播放器）
+                let rect = iframe.getBoundingClientRect();
+                let touch = new TouchEvent('touchstart', {
+                    bubbles: true,
+                    cancelable: true,
+                    touches: [new Touch({
+                        identifier: Date.now(),
+                        target: iframe,
+                        clientX: rect.left + rect.width/2,
+                        clientY: rect.top + rect.height/2,
+                        radiusX: 2.5,
+                        radiusY: 2.5,
+                        rotationAngle: 0,
+                        force: 1
+                    })]
+                });
+                iframe.dispatchEvent(touch);
+                
+                // 方式4：pointer事件（最新标准）
+                let pointer = new PointerEvent('pointerdown', {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX: rect.left + rect.width/2,
+                    clientY: rect.top + rect.height/2,
+                    pointerType: 'mouse',
+                    isPrimary: true,
+                    pressure: 0.5
+                });
+                iframe.dispatchEvent(pointer);
+                
+            } catch(e) {}
         }
+        
+        setTimeout(check, 1500);
+    });
+}
+
 
         if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
             return click1('#playleft iframe','#start');
@@ -1072,7 +1082,7 @@ function 解析方法(obj) {
         }else if(/maolvys\.com/.test(playUrl)){
             return click3();
         }else{
-            return autoClick();
+            return autoPlay();
         }
     }
     /*

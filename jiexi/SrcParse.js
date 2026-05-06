@@ -1086,6 +1086,7 @@ function 解析方法(obj) {
                                 check();
                             },p1)
                         }
+
                         if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
                             return click1('#playleft iframe','#start');
                         }else if(/media\.staticfile\.link/.test(playUrl)){
@@ -1096,6 +1097,14 @@ function 解析方法(obj) {
                             return undefined;
                         }
                     }
+                    /*
+                    var button = document.querySelectorAll(jsButtonExtra)[0];
+                    if (button) {
+                        [button, button.querySelector('svg'), button.querySelector('div')].forEach(function(target) {
+                            if (target) target.click();
+                        });
+                    }
+                    */
                     //"document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
                     
                     let purl = obj.ulist.url+obj.vipUrl;

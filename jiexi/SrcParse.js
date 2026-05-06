@@ -1087,6 +1087,68 @@ function 解析方法(obj) {
                             },p1)
                         }
 
+                        function autoClick(iframeSelector, buttonSelector, maxRetries) {
+                            if (!iframeSelector) {
+                                iframeSelector = 'iframe';
+                            }
+                            if (!buttonSelector) {
+                                buttonSelector = [
+                                    '[class*="play"]', '[id*="play"]',
+                                    '[class*="start"]', '[id*="start"]',
+                                    '.vjs-big-play-button',
+                                    'video', 'button'
+                                ].join(',');
+                            }
+                            if (!maxRetries) {
+                                maxRetries = 3;
+                            }
+                            
+                            return $.toString((iframeSel, btnSel, max) => {
+                                let count = 0;
+                                
+                                function check() {
+                                    if (count >= max) return;
+                                    count++;
+                                    
+                                    try {
+                                        let iframes = document.querySelectorAll(iframeSel);
+                                        for (let iframe of iframes) {
+                                            try {
+                                                let doc = iframe.contentDocument || iframe.contentWindow.document;
+                                                let btn = doc.querySelector(btnSel);
+                                                if (btn) {
+                                                    btn.click();
+                                                    return;
+                                                }
+                                            } catch(e) {
+                                                try {
+                                                    iframe.click();
+                                                    let rect = iframe.getBoundingClientRect();
+                                                    let event = new MouseEvent('click', {
+                                                        view: window,
+                                                        bubbles: true,
+                                                        cancelable: true,
+                                                        clientX: rect.left + rect.width/2,
+                                                        clientY: rect.top + rect.height/2
+                                                    });
+                                                    iframe.dispatchEvent(event);
+                                                    return;
+                                                } catch(e2) {}
+                                            }
+                                        }
+                                        if (count < max) {
+                                            setTimeout(check, 100);
+                                        }
+                                    } catch (e) {
+                                        if (count < max) {
+                                            setTimeout(check, 100);
+                                        }
+                                    }
+                                }
+                                check();
+                            }, iframeSelector, buttonSelector, maxRetries);
+                        }
+
                         if(/jqqzx\.|dadazhu\.|dadagui|freeok/.test(playUrl)){
                             return click1('#playleft iframe','#start');
                         }else if(/media\.staticfile\.link/.test(playUrl)){
@@ -1094,7 +1156,7 @@ function 解析方法(obj) {
                         }else if(/maolvys\.com/.test(playUrl)){
                             return click3();
                         }else{
-                            return undefined;
+                            return autoClick();
                         }
                     }
                     /*

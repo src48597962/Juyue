@@ -38,7 +38,7 @@ function juItemF(id, s){
             return items;
         },
         'set': function (key, str, id2) {
-            if(!key || str === undefined || str === null || str === '') return;
+            if(!key || str === undefined || str === null) return;
             if(str.toString().length>1000){
                 xlog(key+':无法写入长度超1000');
                 return;
@@ -742,7 +742,7 @@ function removeByValue(arr, val) {
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
     // 读取接口对象规则内容
-    function getSource(input) {
+    function getSource(input, sid) {
         let rule;
         if($.type(input)=='object'){
             if(input.url){
@@ -761,12 +761,12 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            const parse = (function(jkdata) {
-                let juItem = juItemF(jkdata.id);
-                let juFile = juFileF(jkdata.id);
+            const parse = (function(jkdata, sid) {
+                let juItem = juItemF(sid||jkdata.id);
+                let juFile = juFileF(sid||jkdata.id);
                 eval(rule);
                 return parse;
-            })(input);
+            })(input, sid);
             return parse;
         }else{
             return {};
@@ -778,7 +778,7 @@ function getObjCode(jkdata, key) {
         let tmpldata = jkdata.tmpl || parse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
-                let tmplparse = getSource(tmpldata);
+                let tmplparse = getSource(tmpldata, jkdata.id);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + parse['模板名']);

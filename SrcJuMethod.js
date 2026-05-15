@@ -1343,6 +1343,31 @@ function getHtmlCode(ssurl, headers, timeout) {
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
+        } else if (/smart-verify-btn/.test(html)) {
+            html = executeWebRule(ssurl, $.toString(() => {
+                try{
+                    return document.documentElement.outerHTML;
+                }catch(e){
+                    fba.log("exeWebRule获取源码失败>"+e.message);
+                }
+            }), {
+                blockRules: ['.m4a','.mp3','.gif','.jpg','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js','/klad/*.php','layer.css'],
+                jsLoadingInject: true,
+                js: $.toString(() => {
+                    function check() {
+                        try {
+                            document.querySelector('#smart-verify-btn').click();
+                        } catch (e) {
+                            setTimeout(check, 100);
+                        }
+                    }
+                    check();
+                }),
+                ua: headers['user-agent'] || MOBILE_UA,
+                referer: headers['referer'] || undefined,
+                checkTime: 100,
+                timeout: 10000
+            })
         }
     } catch (e) {
         xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);

@@ -1337,13 +1337,14 @@ function getHtmlCode(ssurl, headers, timeout) {
             let cook = fetchCookie(codeurl, { headers: headers });
             headers.Cookie = JSON.parse(cook || '[]').join(';');
             let vcode = ocr(codeurl, headers);
-            const matchResult = html.match(/\/index.php.*?verify=/);
+            const matchResult = html.match(/\/index\.php\/(?!.*?(?:\$\(|function|\.click)).*?verify=/);
             fetch(home + (ssurl.indexOf('search-pg-1-wd-') > -1 ? '/inc/ajax.php?ac=code_check&type=search&code=' : (matchResult ? matchResult[0] : '/index.php/ajax/verify_check?type=search&verify=')) + vcode, {
                 headers: headers,
                 method: ssurl.indexOf('search-pg-1-wd-') > -1 ? 'GET' : 'POST'
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
-        } else if (/smart-verify-btn/.test(html)) {
+        }
+        /* else if (/smart-verify-btn/.test(html)) {
             html = executeWebRule(ssurl, $.toString(() => {
                 try{
                     return document.documentElement.outerHTML;
@@ -1368,7 +1369,7 @@ function getHtmlCode(ssurl, headers, timeout) {
                 checkTime: 100,
                 timeout: 10000
             })
-        }
+        }*/
     } catch (e) {
         xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);
     }

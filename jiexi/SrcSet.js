@@ -145,7 +145,7 @@ function jxSetPage(dd) {
         });
         d.push({
             title: '弹幕获取源：' + (playSet['danmuSource']||'hls弹幕'),
-            url: $(['hls弹幕', 'dm盒子'], 2).select(() => {
+            url: $(['hls弹幕', 'dm盒子', 'zxz弹幕'], 2).select(() => {
                 let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
                 let playSet = jxSetCfg['playSet'] || {};
                 playSet['danmuSource'] = input;

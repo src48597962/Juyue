@@ -789,6 +789,7 @@ function 弹幕(vipUrl) {
                     // 构建XML头
                     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
                     xml += `<i>\n`;
+                    let num = 0;
                     danmakuArray.slice(1).forEach((danmaku) => {
                         let [time, type, color, size, text] = danmaku;
                         if(time){
@@ -796,8 +797,12 @@ function 弹幕(vipUrl) {
                             let pAttribute = `${time},1,23,${decimalColor}`;
                             // 添加弹幕到XML
                             xml += `<d p="${pAttribute}">${text}</d>\n`;
+                            num++;
                         }
                     });
+                    if(num==0){
+                        return '';
+                    }
                     xml += `</i>`;
                     writeFile(dmfile, xml);
                     return dmfile;

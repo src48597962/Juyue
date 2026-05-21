@@ -807,11 +807,17 @@ function 弹幕(vipUrl) {
                     writeFile(dmfile, xml);
                     return dmfile;
                 }
-                let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
-                if(hlshtml){
-                    dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
+                if(playSet['danmuSource']=='zxz弹幕'){
+                    let xmlhtml = fetch('https://danmu.zxz.ee/?type=xml&id='+vipUrl, {time:3000});
+                    if(xmlhtml){
+                        writeFile(dmfile, xmlhtml);
+                        dm = dmfile;
+                    }
                 }else{
-                    log('未获取到弹幕');
+                    let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
+                    if(hlshtml){
+                        dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
+                    }
                 }
             }
         }

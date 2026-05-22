@@ -514,7 +514,7 @@ function jiexiapi(data) {
     });
 
     d.push({
-	    title: 'flag设置',
+	    title: 'flag设置（支持白名单和黑名单分别设置）',
         col_type: 'text_1',
         url: $(['白名单','黑名单'], 1).select((ext) => {
             return $('#noLoading#').lazyRule((lx, ext)=>{
@@ -548,7 +548,7 @@ function jiexiapi(data) {
                 let inputBox;
                 let pop = hikerPop.FlexMenuBottom({
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                        hint: "选择解析"+lx+"flag",
+                        hint: "已选择的flag",
                         title: "确定",
                         defaultValue: selectTag.join(','),
                         click(s, pop) {
@@ -578,7 +578,7 @@ function jiexiapi(data) {
                         }
                     })),
                     sections: [new FlexSection("", flags)], 
-                    title: "选择分组标签", 
+                    title: "选择解析"+lx+"flag", 
                     click(button, sectionIndex, i) {
                         if(button.title.includes('‘‘’’')){
                             let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');

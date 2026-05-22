@@ -7,7 +7,8 @@ var newVersion = {
             "优化：聚阅解析部份判断逻辑",
             "优化：二级封面图片取值逻辑",
             "优化：juItem方法适用性优化",
-            "新增：动态分类方法buildDynCate"
+            "新增：动态分类方法buildDynCate",
+            "新增：解析增加zxz弹幕且兼容hls异常"
         ]
     },{
         title: "2026/03/28 V2.4",

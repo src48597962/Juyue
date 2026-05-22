@@ -459,6 +459,7 @@ function jiexiapi(data) {
         clearMyVar('parsetype');
         clearMyVar('parseext');
         clearMyVar('isload');
+        clearMyVar('selectext');
     }));
     let d = [];
     if(!data){
@@ -570,6 +571,7 @@ function jiexiapi(data) {
 
                             if(Object.keys(ext).length === 0){
                                 clearMyVar('parseext');
+                                putMyVar('selectext', '1');
                             }else{
                                 storage0.putMyVar('parseext', ext);
                             }
@@ -604,7 +606,7 @@ function jiexiapi(data) {
         col_type: 'input',
         desc: "ext对象数据{}，如header、flag、noflag、js, 可以留空",
         extra: {
-            defaultValue: storage0.getMyVar('parseext', data?data.ext:"") || "",
+            defaultValue: storage0.getMyVar('parseext', data&&!getMyVar('selectext')?data.ext:"") || "",
             titleVisible: false,
             type: "textarea",
             highlight: true,

@@ -566,6 +566,8 @@ function jiexiapi(data) {
                                     delete ext.noflag;
                                 }
                             }
+                            log(ext);
+                            log($.type(ext));
                             storage0.putMyVar('parseext', ext);
                             refreshPage();
                             pop.dismiss();

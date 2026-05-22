@@ -513,9 +513,90 @@ function jiexiapi(data) {
         }
     });
     d.push({
+	    title: 'flag设置',
+        col_type: 'text_1',
+        url: $(['白名单','黑名单'], 1).select((ext) => {
+            return $('#noLoading#').lazyRule((lx, ext)=>{
+                let recordfile = "hiker://files/rules/Src/Jiexi/record.json";
+                let record = fetch(recordfile);
+                let parseRecord = {};
+                if(record != ""){
+                    try{
+                        eval("parseRecord = " + record + ";");
+                    }catch(e){}
+                }
+                parseRecord['flag'] = parseRecord['flag'] || [];
+                let flags = ['qq','youku','iqiyi','mgtv','bilibili','souhu'];
+                parseRecord['flag'].forEach(it=>{
+                    if(flags.indexOf(it)==-1){
+                        flags.push(it);
+                    }
+                })
+
+                let selectTag = lx=='白名单'?(ext.flag || []):(ext.noflag || []);
+                
+                flags = flags.map(it=>{
+                    if(selectTag.indexOf(it)>-1){
+                        it = '‘‘’’<span style="color:red">' + it;
+                    }
+                    return it;
+                })
+
+                const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+                let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
+                let inputBox;
+                let pop = hikerPop.FlexMenuBottom({
+                    extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                        hint: "已选择的分组标签",
+                        title: "确定",
+                        defaultValue: selectTag.join(','),
+                        click(s, pop) {
+                            s = s.replace(/，/g, ',');
+                            selectTag = s.split(',').filter(item => item !== '');
+                            if(lx=='白名单'){
+                                if(selectTag.length>0){
+                                    ext.flag = selectTag;
+                                }else{
+                                    delete ext.flag;
+                                }
+                            }else if(lx=='黑名单'){
+                                if(selectTag.length>0){
+                                    ext.noflag = selectTag;
+                                }else{
+                                    delete ext.noflag;
+                                }
+                            }
+                            storage0.putMyVar('parseext', ext);
+                            refreshPage();
+                            pop.dismiss();
+                        }
+                    })),
+                    sections: [new FlexSection("", flags)], 
+                    title: "选择分组标签", 
+                    click(button, sectionIndex, i) {
+                        if(button.title.includes('‘‘’’')){
+                            let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
+                            selectTag = selectTag.filter(x=>x!=newtitle);
+                            pop.updateButtonTitle(sectionIndex, i, newtitle);
+                        }else{
+                            selectTag.push(button.title);
+                            pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                        }
+                        inputBox.setDefaultValue(selectTag.join(','));
+                    }
+                });
+                
+                return "hiker://empty";
+            }, input, ext)
+        }, storage0.getMyVar('parseext', data?data.ext:{})),
+        extra: {
+            lineVisible: false
+        }
+    });
+    d.push({
         title: 'ext数据',
         col_type: 'input',
-        desc: "ext对象数据{}，如header、flag、js, 可以留空",
+        desc: "ext对象数据{}，如header、flag、noflag、js, 可以留空",
         extra: {
             defaultValue: storage0.getMyVar('parseext', data?data.ext:"") || "",
             titleVisible: false,

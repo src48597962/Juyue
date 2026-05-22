@@ -571,10 +571,10 @@ function jiexiapi(data) {
 
                             if(Object.keys(ext).length === 0){
                                 clearMyVar('parseext');
-                                putMyVar('selectext', '1');
                             }else{
                                 storage0.putMyVar('parseext', ext);
                             }
+                            putMyVar('selectext', '1');
                             refreshPage();
                             pop.dismiss();
                         }

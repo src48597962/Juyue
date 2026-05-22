@@ -516,6 +516,8 @@ function jiexiapi(data) {
 	    title: 'flag设置',
         col_type: 'text_1',
         url: $(['白名单','黑名单'], 1).select((ext) => {
+            log(ext);
+            log($.type(ext));
             return $('#noLoading#').lazyRule((lx, ext)=>{
                 let recordfile = "hiker://files/rules/Src/Jiexi/record.json";
                 let record = fetch(recordfile);

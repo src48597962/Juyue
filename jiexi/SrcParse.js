@@ -254,10 +254,11 @@ function SrcParse(vipUrl, dataObj) {
                 if(!it.stop){
                     let ext = it.ext||{};
                     let flag = ext.flag || [];
+                    let noflag = ext.noflag || [];
                     if(flag.indexOf("qiyi")>-1 && flag.indexOf("iqiyi")==-1){
                         flag.push("iqiyi");
                     }
-                    if((flag.length==0 && isVip) || flag.indexOf(from)>-1){
+                    if(((flag.length==0 && isVip) || flag.indexOf(from)>-1) && noflag.indexOf(from)==-1){
                         parselist.push({stype:'myjx', type:it.type, name:it.name, url:it.url, sort:it.sort||0, ext:ext});
                     }
                 }
@@ -556,13 +557,17 @@ function SrcParse(vipUrl, dataObj) {
                     jxList[j]['type'] = faillist[p]['type'];//修正类型
                     jxList[j]['sort'] = (jxList[j]['sort']||0) + 1;//降权排序
                     failparse.push(jxList[j].name);//加入提示失败列表
-                    /*
+                    
                     //解析失败的,且排序大于5次从私有中排除片源
-                    if(jxList[j].sort>5 && jxList[j].stopfrom.indexOf(from)==-1){
-                        jxList[j].stopfrom[jxList[j].stopfrom.length] = from;
+                    let jxext = jxList[j]['ext'] || {};
+                    let jxnoflag = jxext['noflag'] || [];
+                    if(jxList[j].sort>5 && jxnoflag.indexOf(from)==-1){
+                        jxnoflag.push(from);
+                        jxext['noflag'] = jxnoflag;
+                        jxList[j]['ext'] = jxext;
                         log(jxList[j].name+'>解析失败大于5次，排除片源'+from);
                     }
-                    */
+                    
                     myJXchange = 1;
                     break;
                 }

@@ -512,6 +512,7 @@ function jiexiapi(data) {
             lineVisible: false
         }
     });
+    log(storage0.getMyVar('parseext', data?data.ext:{}));
     d.push({
 	    title: 'flag设置',
         col_type: 'text_1',

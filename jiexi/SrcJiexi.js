@@ -596,7 +596,7 @@ function jiexiapi(data) {
                 
                 return "hiker://empty";
             }, input, ext)
-        }, storage0.getMyVar('parseext', data?data.ext:'')||{}),
+        }, storage0.getMyVar('parseext', data&&!getMyVar('selectext')?data.ext:'')||{}),
         extra: {
             lineVisible: false
         }

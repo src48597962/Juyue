@@ -512,7 +512,7 @@ function jiexiapi(data) {
             lineVisible: false
         }
     });
-    log(storage0.getMyVar('parseext', data?data.ext:'')||{});
+
     d.push({
 	    title: 'flag设置',
         col_type: 'text_1',
@@ -571,7 +571,11 @@ function jiexiapi(data) {
                             }
                             log(ext);
                             log($.type(ext));
-                            storage0.putMyVar('parseext', ext);
+                            if(Object.keys(ext).length === 0){
+                                clearMyVar('parseext');
+                            }else{
+                                storage0.putMyVar('parseext', ext);
+                            }
                             refreshPage();
                             pop.dismiss();
                         }
@@ -593,7 +597,7 @@ function jiexiapi(data) {
                 
                 return "hiker://empty";
             }, input, ext)
-        }, storage0.getMyVar('parseext', data?data.ext:{})),
+        }, storage0.getMyVar('parseext', data?data.ext:'')||{}),
         extra: {
             lineVisible: false
         }

@@ -517,8 +517,6 @@ function jiexiapi(data) {
 	    title: 'flag设置',
         col_type: 'text_1',
         url: $(['白名单','黑名单'], 1).select((ext) => {
-            log(ext);
-            log($.type(ext));
             return $('#noLoading#').lazyRule((lx, ext)=>{
                 let recordfile = "hiker://files/rules/Src/Jiexi/record.json";
                 let record = fetch(recordfile);
@@ -550,7 +548,7 @@ function jiexiapi(data) {
                 let inputBox;
                 let pop = hikerPop.FlexMenuBottom({
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                        hint: "已选择的分组标签",
+                        hint: "选择解析"+lx+"flag",
                         title: "确定",
                         defaultValue: selectTag.join(','),
                         click(s, pop) {
@@ -569,8 +567,7 @@ function jiexiapi(data) {
                                     delete ext.noflag;
                                 }
                             }
-                            log(ext);
-                            log($.type(ext));
+
                             if(Object.keys(ext).length === 0){
                                 clearMyVar('parseext');
                             }else{

@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu": "2.4",
+    "SrcJu": "2.5",
     "hint": "",
     "JYUpdateRecords": [{
-        title: "beta V2.5",
+        title: "2026/05/23 V2.5",
         records: [
             "优化：聚阅解析部份判断逻辑",
             "优化：二级封面图片取值逻辑",

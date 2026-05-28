@@ -194,7 +194,7 @@ function SrcParse(vipUrl, dataObj) {
         }
         isVip = 1;
     }else if(!needparse.test(vipUrl) && /^http/.test(vipUrl)){
-        log("网页嗅探播放");
+        log("Web网页智能获取");
         let obj = {
             vipUrl: vipUrl,
             isWeb: 1,

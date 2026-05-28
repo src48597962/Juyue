@@ -868,13 +868,31 @@ function 解析方法(obj) {
                 if (typeof (request) == 'undefined' || !request) {
                     eval(fba.getInternalJs());
                 };
-                fba.log(document.documentElement.outerHTML);
-                var urls = _getUrls();
-                fba.log(fy_bridge_app.getUrls());
-                var exclude = /\/404\.m3u8|\/xiajia\.mp4|\/余额不足\.m3u8|\.avif|\.css|\.ico|\.js|\.gif|\.png|\.jpg|\.jpeg|html,http|m3u88.com\/admin|\.php\?v=h|url=http|vid=http|%253Furl%253Dh|#amp=1|\.t-ui\.cn|ac=dm/;//设置排除地址
-                var contain = /\.mp4|\.m3u8|\.avi|\.mov|\.dat|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
-                for (var i in urls) {
-                    if(!fba.getVar("getParse") && !webUrl.includes("=http") && /url=h|v=h|youku|mgtv|ixigua|qq\.com|iqiyi|migu|bilibili|sohu|pptv|\.le\.|\.1905|cctv/.test(urls[i])&&!/\/bid\?|\.gif\?|ads\?|img\.php|index\/\?|cityjson/.test(urls[i])){
+                let exclude = /\/404\.m3u8|\/xiajia\.mp4|\/余额不足\.m3u8|\.avif|\.css|\.ico|\.js|\.gif|\.png|\.jpg|\.jpeg|html,http|m3u88.com\/admin|\.php\?v=h|url=http|vid=http|%253Furl%253Dh|#amp=1|\.t-ui\.cn|ac=dm/;//设置排除地址
+                let contain = /\.mp4|\.m3u8|\.avi|\.mov|\.dat|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
+                
+                if(!music){
+                    let html = document.documentElement.outerHTML;
+                    let playerstr = html.match(/r player_.*?=(.*?)</);
+                    if (playerstr) {
+                        let player = JSON.parse(playerstr[1]);
+                        let playurl = player.url;
+                        if (player.encrypt == '1') {
+                            playurl = unescape(playurl);
+                        } else if (player.encrypt == '2') {
+                            playurl = unescape(base64Decode(playurl));
+                        }
+                        if (contain.test(playurl)&&!exclude.test(playurl)) {
+                            fba.log("exeWebRule明码视频>"+playurl);
+                            return fy_bridge_app.getHeaderUrl(playurl + '#isVideo=true#');
+                        }
+                    }
+                }
+
+                let urls = _getUrls();
+                //fba.log(fy_bridge_app.getUrls());
+                for (let i in urls) {
+                    if(!fba.getVar("getParse") && !webUrl.includes("=http") && /url=h|v=h|youku|mgtv|ixigua|qq\.com|iqiyi|migu|bilibili|sohu|pptv|\.le\.|\.1905|cctv/.test(urls[i])&&!/\/bid\?|\.gif\?|ads\?|img\.php|index\/\?|cityjson|\.m3u8/.test(urls[i])){
                         try{
                             fba.log("获取解析>"+urls[i].match(/http.*?=/)[0]);
                             fba.putVar("getParse","1");

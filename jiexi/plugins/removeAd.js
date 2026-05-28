@@ -60,65 +60,71 @@ function cleanM3u8RemoveAds(m3u8Content) {
                 fullPath: tsLine,
                 dirPath: getDirPath(tsLine),
                 domain: getDomain(tsLine),
-                isAd: false
+                isAd: false,
+                adReason: '' // 记录广告原因
             });
         }
     }
 
-    // ========== 第一步：域名和路径快速检测（前置） ==========
+    // ========== 第一步：域名和路径快速检测（最高优先级） ==========
     markAdsByPathAndDomain(segments);
     
-    // 检查是否已经标记了足够的广告
-    let markedCount = segments.filter(s => s.isAd).length;
-    if (markedCount > 0) {
-        log(`🔍 路径/域名检测标记了 ${markedCount} 个潜在广告切片`);
+    let pathMarkedCount = segments.filter(s => s.isAd).length;
+    let pathMarkedIndices = [];
+    segments.forEach((s, idx) => {
+        if (s.isAd) pathMarkedIndices.push(idx);
+    });
+    
+    if (pathMarkedCount > 0) {
+        log(`🔍 路径/域名检测发现 ${pathMarkedCount} 个异常切片: [${pathMarkedIndices.join(', ')}]`);
+        
+        // 如果域名/路径检测已经标记了广告，先检查是否需要应用安全锁
+        // 但不要被时长一致性检查覆盖
     }
 
     // ========== 第二步：兜底逻辑检查时长一致性 ==========
-    let durCount = {};
-    for (let seg of segments) {
-        let key = seg.duration.toFixed(3);
-        durCount[key] = (durCount[key] || 0) + 1;
-    }
-    let sortedDurs = Object.entries(durCount).sort((a, b) => b[1] - a[1]);
-    let mainDuration = sortedDurs.length > 0 ? parseFloat(sortedDurs[0][0]) : 0;
-    let mainDurationPercent = sortedDurs.length > 0 ? (sortedDurs[0][1] / segments.length) * 100 : 0;
+    // 注意：这个检查只对未被路径/域名标记的切片生效
+    let unmarkedSegments = segments.filter(s => !s.isAd);
     
-    log(`主时长: ${mainDuration}s, 占比: ${mainDurationPercent.toFixed(1)}%`);
-    
-    // 如果超过 70% 的切片是同一个时长，说明正片时长高度一致，不执行任何广告删除
-    if (mainDurationPercent > 70) {
-        log('✅ 正片时长高度一致（超过70%切片相同时长），跳过广告检测，保留全部内容');
-        return m3u8Content;
+    if (unmarkedSegments.length > 0) {
+        let durCount = {};
+        for (let seg of unmarkedSegments) {
+            let key = seg.duration.toFixed(3);
+            durCount[key] = (durCount[key] || 0) + 1;
+        }
+        let sortedDurs = Object.entries(durCount).sort((a, b) => b[1] - a[1]);
+        let mainDuration = sortedDurs.length > 0 ? parseFloat(sortedDurs[0][0]) : 0;
+        let mainDurationPercent = sortedDurs.length > 0 ? (sortedDurs[0][1] / unmarkedSegments.length) * 100 : 0;
+        
+        log(`未标记切片主时长: ${mainDuration}s, 占比: ${mainDurationPercent.toFixed(1)}% (基于${unmarkedSegments.length}个未标记切片)`);
+        
+        // 如果超过 90% 的未标记切片是同一个时长，跳过对这些切片的进一步检测
+        if (mainDurationPercent > 90) {
+            log('✅ 未标记切片时长高度一致，跳过进一步检测');
+            // 但保留路径/域名检测的结果
+        } else {
+            // 时长多样化，继续执行其他检测
+            log('⚠️ 未标记切片时长多样，继续检测');
+            
+            // ========== 第三步：基础广告识别（仅对未标记切片） ==========
+            markAdsUltraSafe(segments);
+            
+            // ========== 第四步：分组检测 ==========
+            groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lines);
+        }
     }
-    
-    // 如果超过 80% 的切片时长都在 [主时长-0.1, 主时长+0.1] 范围内，也跳过
-    let similarCount = 0;
-    for (let seg of segments) {
-        if (Math.abs(seg.duration - mainDuration) <= 0.1) similarCount++;
-    }
-    if (similarCount / segments.length > 0.8) {
-        log('✅ 正片时长高度相似（80%切片时长接近主时长），跳过广告检测，保留全部内容');
-        return m3u8Content;
-    }
 
-    // 只有时长多样化时才执行广告检测
-    log('⚠️ 检测到多种时长，执行广告检测');
-
-    // ========== 第三步：基础广告识别 ==========
-    markAdsUltraSafe(segments);
-
-    // ========== 第四步：分组检测 ==========
-    groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lines);
-
-    // ========== 第五步：连续集群安全锁 ==========
-    applyContinuitySafetyLock(segments);
+    // ========== 第五步：连续集群安全锁（但对路径标记的广告放宽要求） ==========
+    applyContinuitySafetyLock(segments, pathMarkedIndices);
 
     let adLines = new Set();
     segments.forEach(s => {
         if (s.isAd) {
             adLines.add(s.infLine);
             adLines.add(s.tsLine);
+            if (s.adReason) {
+                log(`🗑️ 删除: ${s.adReason} - ${s.filename}`);
+            }
         }
     });
 
@@ -128,11 +134,12 @@ function cleanM3u8RemoveAds(m3u8Content) {
         result.push(lines[i]);
     }
 
+    log(`📊 最终结果：总切片 ${segments.length}，删除 ${segments.filter(s => s.isAd).length} 个`);
     return result.join('\n');
 }
 
 /**
- * 路径和域名快速检测（前置）
+ * 路径和域名快速检测（最高优先级）
  */
 function markAdsByPathAndDomain(segments) {
     if (segments.length < 3) return;
@@ -151,8 +158,21 @@ function markAdsByPathAndDomain(segments) {
         pathCount[path] = (pathCount[path] || 0) + 1;
     });
 
-    // 找到主要域名（占比最高的）
+    // 统计文件命名模式
+    let namePatterns = {};
+    segments.forEach(s => {
+        let name = s.filename;
+        let pattern = 'other';
+        if (/^\d+\.ts$/.test(name)) pattern = 'numeric';
+        else if (/^[0-9a-f]{32}\.ts$/.test(name)) pattern = 'hex32';
+        else if (/^[0-9a-f]{8}-[0-9a-f]{4}/.test(name)) pattern = 'uuid';
+        else if (/^segment-\d+/.test(name)) pattern = 'segment';
+        namePatterns[pattern] = (namePatterns[pattern] || 0) + 1;
+    });
+
     let totalSegs = segments.length;
+    
+    // 找到主要域名（占比最高的）
     let mainDomain = '';
     let maxDomainCount = 0;
     for (let d in domainCount) {
@@ -172,92 +192,107 @@ function markAdsByPathAndDomain(segments) {
         }
     }
 
+    // 找到主要命名模式
+    let mainPattern = '';
+    let maxPatternCount = 0;
+    for (let p in namePatterns) {
+        if (namePatterns[p] > maxPatternCount) {
+            maxPatternCount = namePatterns[p];
+            mainPattern = p;
+        }
+    }
+
     log(`主域名: ${mainDomain} (${maxDomainCount}/${totalSegs})`);
     log(`主路径: ${mainPath} (${maxPathCount}/${totalSegs})`);
+    log(`主命名模式: ${mainPattern} (${maxPatternCount}/${totalSegs})`);
 
-    // 阈值：少于5%的域名或路径视为异常
-    let domainThreshold = Math.max(2, Math.floor(totalSegs * 0.05));
-    let pathThreshold = Math.max(2, Math.floor(totalSegs * 0.05));
+    // 阈值：域名或路径出现次数少于总切片的5%且少于3个，视为异常
+    let threshold = Math.max(2, Math.floor(totalSegs * 0.05));
 
-    // 标记异常域名和路径的切片
+    // 标记异常切片
     segments.forEach(seg => {
         let reasons = [];
         
-        // 检查域名
-        if (seg.domain !== mainDomain && domainCount[seg.domain] < domainThreshold) {
-            reasons.push(`异常域名: ${seg.domain} (出现${domainCount[seg.domain]}次)`);
+        // 检查域名（最关键）
+        if (seg.domain !== mainDomain && domainCount[seg.domain] <= threshold) {
+            reasons.push(`异域名:${seg.domain}(${domainCount[seg.domain]}次)`);
         }
         
         // 检查路径
-        if (seg.dirPath !== mainPath && pathCount[seg.dirPath] < pathThreshold) {
-            reasons.push(`异常路径: ${seg.dirPath} (出现${pathCount[seg.dirPath]}次)`);
+        if (seg.dirPath !== mainPath && pathCount[seg.dirPath] <= threshold) {
+            reasons.push(`异路径:${seg.dirPath.substring(seg.dirPath.lastIndexOf('/'))}(${pathCount[seg.dirPath]}次)`);
         }
 
         // 检查文件命名模式
         let name = seg.filename;
-        let isNumericTs = /^\d+\.ts$/.test(name); // 纯数字.ts
-        let isHexTs = /^[0-9a-f]{32}\.ts$/.test(name); // 32位十六进制.ts
+        let segPattern = 'other';
+        if (/^\d+\.ts$/.test(name)) segPattern = 'numeric';
+        else if (/^[0-9a-f]{32}\.ts$/.test(name)) segPattern = 'hex32';
         
-        // 如果主流是十六进制命名，但这个是其他格式
-        let hexCount = segments.filter(s => /^[0-9a-f]{32}\.ts$/.test(s.filename)).length;
-        if (hexCount > totalSegs * 0.7 && !isHexTs) {
-            reasons.push(`命名模式异常: ${name}`);
+        if (segPattern !== mainPattern && namePatterns[segPattern] <= threshold) {
+            reasons.push(`命名异常:${name}`);
         }
 
-        // 标记为广告
+        // 标记为广告（不需要高分，域名/路径异常本身就是强信号）
         if (reasons.length > 0) {
             seg.isAd = true;
-            log(`🔴 路径/域名检测标记: ${reasons.join(', ')}`);
+            seg.adReason = reasons.join(', ');
         }
     });
 
-    // 额外检查：如果某个路径下的切片全是连续的且数量很少，标记为广告
-    let pathSegments = {};
-    segments.forEach((seg, idx) => {
-        if (!pathSegments[seg.dirPath]) {
-            pathSegments[seg.dirPath] = [];
-        }
-        pathSegments[seg.dirPath].push(idx);
-    });
-
-    for (let path in pathSegments) {
-        let indices = pathSegments[path];
-        // 如果这个路径的切片数很少（< 总切片的5%）
-        if (indices.length < totalSegs * 0.05 && path !== mainPath) {
-            // 检查是否连续
-            let isConsecutive = true;
-            for (let i = 1; i < indices.length; i++) {
-                if (indices[i] - indices[i-1] !== 1) {
-                    isConsecutive = false;
-                    break;
-                }
+    // 额外检查：连续的异路径块
+    let i = 0;
+    while (i < segments.length) {
+        if (segments[i].isAd && segments[i].adReason.includes('异路径')) {
+            let start = i;
+            let pathBlock = [];
+            while (i < segments.length && segments[i].isAd && segments[i].adReason.includes('异路径')) {
+                pathBlock.push(i);
+                i++;
             }
-            if (isConsecutive) {
-                indices.forEach(idx => {
-                    if (!segments[idx].isAd) {
-                        segments[idx].isAd = true;
-                        log(`🔴 连续异路径广告块: ${path} (${indices.length}个切片)`);
+            // 如果连续异路径块 >= 2 个，确认全部删除
+            if (pathBlock.length >= 2) {
+                pathBlock.forEach(idx => {
+                    if (!segments[idx].adReason.includes('连续块')) {
+                        segments[idx].adReason += ' [连续异路径块]';
                     }
                 });
+                log(`🔴 确认连续异路径块: 索引[${pathBlock[0]}-${pathBlock[pathBlock.length-1]}] (${pathBlock.length}个)`);
+            } else {
+                // 单个异路径切片，需要更谨慎
+                // 检查是否在开头或结尾（更可能是广告）
+                if (pathBlock[0] === 0 || pathBlock[0] === segments.length - 1) {
+                    log(`🔴 边缘异路径切片: 索引${pathBlock[0]}`);
+                } else {
+                    // 中间的单个异路径切片，降低标记强度
+                    pathBlock.forEach(idx => {
+                        segments[idx].isAd = true;
+                        segments[idx].adReason += ' [独立异路径]';
+                    });
+                    log(`⚠️ 独立异路径切片: 索引${pathBlock[0]}，标记但可能被安全锁解除`);
+                }
             }
+        } else {
+            i++;
         }
     }
 }
 
 /**
- * 广告识别（改进版）
+ * 广告识别（改进版，仅对未标记切片）
  */
 function markAdsUltraSafe(segments) {
     let segCount = segments.length;
     if (segCount < 10) return;
 
-    // 统计正片样本
-    let sampleSize = Math.max(8, Math.floor(segCount * 0.2));
-    let sample = segments.slice(0, sampleSize);
-    let avgDuration = sample.map(s => s.duration).reduce((a, b) => a + b, 0) / sampleSize;
+    let unmarkedSegments = segments.filter(s => !s.isAd);
+    if (unmarkedSegments.length < 5) return;
+
+    let avgDuration = unmarkedSegments.map(s => s.duration).reduce((a, b) => a + b, 0) / unmarkedSegments.length;
 
     segments.forEach((seg, idx) => {
         if (seg.isAd) return; // 已经被路径/域名检测标记的跳过
+        
         let score = 0;
         let d = seg.duration;
 
@@ -283,7 +318,10 @@ function markAdsUltraSafe(segments) {
         }
 
         // 阈值
-        seg.isAd = score >= 80;
+        if (score >= 80) {
+            seg.isAd = true;
+            seg.adReason = `时长异常(d=${d.toFixed(1)}s, 平均=${avgDuration.toFixed(1)}s)`;
+        }
     });
 }
 
@@ -313,6 +351,7 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
     let groupSegCount = new Array(totalGroups).fill(0);
     let groupHasVeryShort = new Array(totalGroups).fill(false);
     let groupAdCount = new Array(totalGroups).fill(0);
+    let groupPathDiff = new Array(totalGroups).fill(false);
 
     for (let i = 0; i < segments.length; i++) {
         let g = groupIds[i];
@@ -321,23 +360,32 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
         groupSegCount[g]++;
         if (d < 0.5) groupHasVeryShort[g] = true;
         if (segments[i].isAd) groupAdCount[g]++;
+        if (segments[i].adReason && segments[i].adReason.includes('异路径')) groupPathDiff[g] = true;
     }
 
     // 标记广告组
     for (let i = 0; i < segments.length; i++) {
+        if (segments[i].isAd) continue; // 已经标记的跳过
+        
         let g = groupIds[i];
         let isAdGroup = false;
         
-        // 规则1：组内已有多个广告标记
-        if (groupAdCount[g] >= 2 && groupSegCount[g] >= 3) {
+        // 规则1：组内已有路径差异标记
+        if (groupPathDiff[g] && groupSegCount[g] >= 2) {
             isAdGroup = true;
-            log(`组 ${g}: 组内广告标记触发 (已标记${groupAdCount[g]}个, 总切片${groupSegCount[g]})`);
+            segments[i].adReason = `异路径组(${groupSegCount[g]}片)`;
         }
         
-        // 规则2：极短切片 + 总时长 < 8s，且组切片数 >= 2
+        // 规则2：组内已有多个广告标记
+        if (groupAdCount[g] >= 2 && groupSegCount[g] >= 2) {
+            isAdGroup = true;
+            if (!segments[i].adReason) segments[i].adReason = `广告组(${groupAdCount[g]}/${groupSegCount[g]}片)`;
+        }
+        
+        // 规则3：极短切片 + 总时长 < 8s
         if (groupHasVeryShort[g] && groupTotalDur[g] < 8.0 && groupSegCount[g] >= 2) {
             isAdGroup = true;
-            log(`组 ${g}: 触发分组删除 (时长=${groupTotalDur[g].toFixed(2)}s, 切片=${groupSegCount[g]})`);
+            if (!segments[i].adReason) segments[i].adReason = `极短组(总${groupTotalDur[g].toFixed(1)}s/${groupSegCount[g]}片)`;
         }
 
         if (isAdGroup) {
@@ -347,26 +395,37 @@ function groupCleanByDiscontinuityAdvanced(segments, discontinuityPositions, lin
 }
 
 /**
- * 连续集群安全锁：需要连续 ≥3 个才删除
+ * 连续集群安全锁（对路径标记的广告放宽要求）
  */
-function applyContinuitySafetyLock(segments) {
+function applyContinuitySafetyLock(segments, pathMarkedIndices) {
+    let pathMarkedSet = new Set(pathMarkedIndices);
+    
     let i = 0;
     while (i < segments.length) {
         if (segments[i].isAd) {
             let chain = 0;
             let start = i;
+            let hasPathMarked = false;
+            
             while (i < segments.length && segments[i].isAd) {
+                if (pathMarkedSet.has(i)) hasPathMarked = true;
                 chain++;
                 i++;
             }
-            // 连续广告必须达到 3 个才删除
-            if (chain < 3) {
+            
+            // 路径/域名标记的广告：2个连续就删除
+            // 其他标记的广告：需要3个连续才删除
+            let minChain = hasPathMarked ? 2 : 3;
+            
+            if (chain < minChain) {
                 for (let j = start; j < i; j++) {
-                    segments[j].isAd = false;
+                    if (!pathMarkedSet.has(j)) { // 保留路径标记的
+                        segments[j].isAd = false;
+                    }
                 }
-                log(`🔒 安全锁: 解除 ${chain} 个连续标记 (需要>=3)`);
+                log(`🔒 安全锁: 解除 ${chain} 个标记 (需要>=${minChain})`);
             } else {
-                log(`✅ 确认广告块: ${chain} 个连续切片`);
+                log(`✅ 确认广告块: ${chain} 个连续切片${hasPathMarked ? ' (含路径标记)' : ''}`);
             }
         } else {
             i++;

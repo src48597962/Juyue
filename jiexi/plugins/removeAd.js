@@ -11,13 +11,25 @@ function cleanM3u8(url, ref) {
     if(json.statusCode!=200){
         return url;
     }
+    let strs = json.body.split('\n');
+    if(strs.length<10 && json.body.includes('.m3u8')){
+        strs.forEach(it=>{
+            if(it.includes('.m3u8')){
+                if(!it.startsWith('http')){
+                    it = getHome(url) + it;
+                    log(it);
+                    json = JSON.parse(fetch(it, {headers:{referer: ref||it}, withStatusCode:true}));
+                }
+            }
+        })
+    }
     let m3u8Content = fixM3u8(url, json.body);
     log(m3u8Content);
     let fixcontent = cleanM3u8RemoveAds(m3u8Content);
     log(fixcontent);
     let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";
     writeFile(playurl, fixcontent);
-    return getPath(playurl)+"#isVideo=true###"+input;
+    return getPath(playurl);
 }
 
 function cleanM3u8RemoveAds(m3u8Content) {

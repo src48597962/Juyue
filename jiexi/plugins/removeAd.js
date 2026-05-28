@@ -22,9 +22,9 @@ function cleanM3u8(url, ref) {
         })
     }
     let m3u8Content = fixM3u8(url, json.body);
-    log(m3u8Content);
+    //log(m3u8Content);
     let fixcontent = cleanM3u8RemoveAds(m3u8Content);
-    log(fixcontent);
+    //log(fixcontent);
     let playurl = "hiker://files/_cache/"+md5(url)+".m3u8";
     writeFile(playurl, fixcontent);
     return getPath(playurl);

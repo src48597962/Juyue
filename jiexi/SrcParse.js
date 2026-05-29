@@ -871,7 +871,7 @@ function 解析方法(obj) {
                 let exclude = /\/404\.m3u8|\/xiajia\.mp4|\/余额不足\.m3u8|\.avif|\.css|\.ico|\.js|\.gif|\.png|\.jpg|\.jpeg|html,http|m3u88.com\/admin|\.php\?v=h|url=http|vid=http|%253Furl%253Dh|#amp=1|\.t-ui\.cn|ac=dm/;//设置排除地址
                 let contain = /\.mp4|\.m3u8|\.avi|\.mov|\.dat|qqBFdownload|mime=video%2F|video_mp4|\.ts\?|TG@UosVod|video\/tos\/|m3u8\?pt=m3u8|\.mpd/;//设置符合条件的正确地址
                 
-                if(!music){
+                if(!music && !fba.getVar("outerHTML")){
                     let html = document.documentElement.outerHTML;
                     let playerstr = html.match(/r player_.*?=(.*?)</);
                     if (playerstr) {
@@ -887,6 +887,7 @@ function 解析方法(obj) {
                             return fy_bridge_app.getHeaderUrl(playurl + '#isVideo=true#');
                         }
                     }
+                    fba.putVar("outerHTML","1");
                 }
 
                 let urls = _getUrls();
@@ -904,6 +905,7 @@ function 解析方法(obj) {
                         }
                     }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
                         fba.clearVar('getParse');
+                        fba.clearVar('outerHTML');
                         fba.log("exeWebRule捕获视频>"+urls[i]);
                         return fy_bridge_app.getHeaderUrl(urls[i] + '#isVideo=true#');
                     }

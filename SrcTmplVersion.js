@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "2.5",
     "hint": "",
     "JYUpdateRecords": [{
+        title: "beta V2.6",
+        records: [
+            "优化：聚阅解析web解析能力提升"
+        ]
+    },{
         title: "2026/05/23 V2.5",
         records: [
             "优化：聚阅解析部份判断逻辑",

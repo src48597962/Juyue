@@ -70,13 +70,17 @@ d.push({
         let u = startProxyServer($.toString((mediaUrl) => {
             let url = base64Decode(MY_PARAMS.url);
             log("url：" + url);
-            log("url：" + mediaUrl);
+            log("mediaUrl" + mediaUrl);
             if (url.includes("|")) {
                 log("代理ts：" + url);
                 //此时可以根据实际逻辑得到真实有效的ts地址
-                let start = parseInt(url.split("|")[0], 10);
-                let size = parseInt(url.split("|")[1], 10);
+                let m = url.match(/"(\d+)|(\d+)"/)
+                let start = parseInt(m.split("|")[1], 10);
+                let size = parseInt(m.split("|")[2], 10);
                 let end = start + size;
+                log(start);
+                log(size);
+                log(end);
                 return JSON.stringify({
                     statusCode: 302,
                     headers: {
@@ -93,7 +97,6 @@ d.push({
             log("我在代理" + url);
             let f = fetch(url).split("\n");
             return f.map(it => {
-                log(it);
                 if (it.includes("|")) {
                     return "/proxy?url=" + base64Encode(it);
                 }

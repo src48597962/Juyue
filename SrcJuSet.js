@@ -577,7 +577,7 @@ function jiekouapi(data, look) {
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
-            let pop = hikerPop.FlexMenuBottom({
+            /*let pop = hikerPop.FlexMenuBottom({
                 extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                     hint: "已选择的分组标签",
                     title: "确定",
@@ -599,6 +599,35 @@ function jiekouapi(data, look) {
                     }else{
                         selectTag.push(button.title);
                         pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                    }
+                    inputBox.setDefaultValue(selectTag.join(','));
+                }
+            });
+            */
+            let pop = hikerPop.selectBottomRes({
+                options: groupNames,
+                columns: 4,
+                title: "长按调整，最后确定",
+                noAutoDismiss: true,
+                extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                    title: '确定',
+                    defaultValue: getMyVar('apigroup','') || "",
+                    click(s, manage) {
+                        s = s.replace(/，/g, ',');
+                        putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
+                        refreshPage();
+                        pop.dismiss();
+                    },
+                    titleVisible: true
+                })),
+                click(s, i, manage) {
+                    if(selectTag.includes(s)){
+                        let newtitle = s.replace('‘‘’’<span style="color:red">', '');
+                        selectTag = selectTag.filter(x=>x!=newtitle);
+                        pop.updateButtonTitle(i, newtitle);
+                    }else{
+                        selectTag.push(s);
+                        pop.updateButtonTitle(i, '‘‘’’<span style="color:red">'+s);
                     }
                     inputBox.setDefaultValue(selectTag.join(','));
                 }

@@ -10,6 +10,7 @@ d.push({
         if (!txt) return "toast://未获取到M3U8内容";
 
         let lines = txt.split("\n");
+        log(lines);
         let mediaUrl = ""; 
 
         for (let i = 0; i < lines.length; i++) {

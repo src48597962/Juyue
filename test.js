@@ -68,7 +68,7 @@ d.push({
         writeFile('hiker://files/_cache/tmzyz.m3u8', newLines.join("\n"));
         //return "hiker://empty";
         let u = startProxyServer($.toString((mediaUrl) => {
-            let url = MY_PARAMS.url;
+            let url = base64Decode(MY_PARAMS.url);
             log("url：" + url);
             log("url：" + mediaUrl);
             if (url.includes("|")) {
@@ -93,15 +93,16 @@ d.push({
             log("我在代理" + url);
             let f = fetch(url).split("\n");
             return f.map(it => {
+                log(it);
                 if (it.includes("|")) {
-                    return "/proxy?url=" + it;
+                    return "/proxy?url=" + base64Encode(it);
                 }
                 return it;
             }).join("\n");
         }, mediaUrl));
 
 
-        return u + "?url=hiker://files/_cache/tmzyz.m3u8#.mp4";
+        return u + "?url=" + base64Encode("hiker://files/_cache/tmzyz.m3u8");
 
 
 

@@ -5,12 +5,11 @@ d.push({
         let html = request("https://player.tmzyz.com/?url=" + input);
         let urlMatch = html.match(/url: '(.*?)',/);
         if (!urlMatch) return "toast://未匹配到M3U8地址";
-        let m3u8Url = "https://player.tmzyz.com/" + urlMatch[0];
+        let m3u8Url = "https://player.tmzyz.com/" + urlMatch[1];
         let txt = request(m3u8Url);
         if (!txt) return "toast://未获取到M3U8内容";
 
         let lines = txt.split("\n");
-        log(lines);
         let mediaUrl = ""; 
 
         for (let i = 0; i < lines.length; i++) {

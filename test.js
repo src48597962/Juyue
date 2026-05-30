@@ -1,7 +1,7 @@
 var d = [];
 d.push({
     title: "终极超频·全伪装免限速测试",
-    url: 'ff256c6c181d58556b729223ada77eb7' + $().lazyRule(() => {
+    url: 'ff256c6c181d58556b729223ada77eb7' + $('').lazyRule(() => {
         let html = request("https://player.tmzyz.com/?url=" + input);
         let urlMatch = html.match(/url: '(.*?)',/);
         if (!urlMatch) return "toast://未匹配到M3U8地址";

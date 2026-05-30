@@ -624,10 +624,10 @@ function jiekouapi(data, look) {
                     if(selectTag.includes(s)){
                         let newtitle = s.replace('‘‘’’<span style="color:red">', '');
                         selectTag = selectTag.filter(x=>x!=newtitle);
-                        pop.updateButtonTitle(i, newtitle);
+                        manage.setTitle(newtitle);
                     }else{
                         selectTag.push(s);
-                        pop.updateButtonTitle(i, '‘‘’’<span style="color:red">'+s);
+                        manage.setTitle('‘‘’’<span style="color:red">'+s);
                     }
                     inputBox.setDefaultValue(selectTag.join(','));
                 }

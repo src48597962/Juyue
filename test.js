@@ -105,7 +105,7 @@ d.push({
         }, mediaUrl));
 
 
-        return u + "?url=" + base64Encode("hiker://files/_cache/tmzyz.m3u8") + "#.m3u8";
+        return u + "?url=" + base64Encode("hiker://files/_cache/tmzyz.m3u8") + "#.mp4";
 
 
 

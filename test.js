@@ -70,11 +70,11 @@ d.push({
         let u = startProxyServer($.toString((mediaUrl) => {
             let url = base64Decode(MY_PARAMS.url);
             log("url：" + url);
-            log("mediaUrl" + mediaUrl);
+            log("mediaUrl：" + mediaUrl);
             if (url.includes("|")) {
                 log("代理ts：" + url);
                 //此时可以根据实际逻辑得到真实有效的ts地址
-                let m = url.match(/"(\d+)|(\d+)"/)
+                let m = url.match(/"(\d+)\|(\d+)"/);
                 let start = parseInt(m.split("|")[1], 10);
                 let size = parseInt(m.split("|")[2], 10);
                 let end = start + size;

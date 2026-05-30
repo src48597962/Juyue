@@ -637,7 +637,7 @@ function jiekouapi(data, look) {
         extra: {
             //lineVisible: false,
             longClick: [{
-                    title: '弹窗类型：' + juItem2.get('popSelectGroup', 'FlexMenuBottom'),
+                    title: '切换弹窗类型',
                     js: $.toString(()=>{
                         if(juItem2.get('popSelectGroup', 'FlexMenuBottom')=='FlexMenuBottom'){
                             juItem2.set('popSelectGroup', 'selectBottomRes');

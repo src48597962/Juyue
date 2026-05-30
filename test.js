@@ -1,10 +1,9 @@
-js:
 var d = [];
 d.push({
     title: "终极超频·全伪装免限速测试",
     url: $().lazyRule(() => {
         
-        var OUTPUT_M3U8 = "/storage/emulated/0/Download/hikerview_proxy.m3u8";
+        var OUTPUT_M3U8 = getPath("hiker://files/_cache/hikerview_proxy.m3u8").slice(7);
 
         // ---------- 核心：高伪装、免限速流式下载引擎 ----------
         function pipeAndDecryptJava(urlStr, start, end, clientOutputStream) {

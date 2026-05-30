@@ -40,7 +40,7 @@ d.push({
                 if (m) {
                     let size = parseInt(m[1], 10);
                     let start = parseInt(m[2], 10);
-                    let proxyMapUrl = start + "|" + size;
+                    let proxyMapUrl = start + "@" + size;
                     newLines.push('#EXT-X-MAP:URI="' + proxyMapUrl + '"');
                     currentStart = start + size;
                 } else {
@@ -60,7 +60,7 @@ d.push({
             } else if (line.charAt(0) === "#") {
                 newLines.push(line);
             } else {
-                let proxySegUrl = prevStart + "|" + prevSize;
+                let proxySegUrl = prevStart + "@" + prevSize;
                 newLines.push(proxySegUrl);
             }
         }
@@ -71,12 +71,12 @@ d.push({
             let url = base64Decode(MY_PARAMS.url);
             log("url：" + url);
             log("mediaUrl：" + mediaUrl);
-            if (url.includes("|")) {
+            if (url.includes("@")) {
                 log("代理ts：" + url);
                 //此时可以根据实际逻辑得到真实有效的ts地址
-                let m = url.match(/"(\d+)\|(\d+)"/);
-                let start = parseInt(m.split("|")[1], 10);
-                let size = parseInt(m.split("|")[2], 10);
+                let m = url.match(/"(\d+)\@(\d+)"/);
+                let start = parseInt(m[1], 10);
+                let size = parseInt(m[2], 10);
                 let end = start + size;
                 log(start);
                 log(size);
@@ -97,7 +97,7 @@ d.push({
             log("我在代理" + url);
             let f = fetch(url).split("\n");
             return f.map(it => {
-                if (it.includes("|")) {
+                if (it.includes("@")) {
                     return "/proxy?url=" + base64Encode(it);
                 }
                 return it;

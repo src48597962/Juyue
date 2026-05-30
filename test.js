@@ -69,6 +69,8 @@ d.push({
         //return "hiker://empty";
         let u = startProxyServer($.toString((mediaUrl) => {
             let url = MY_PARAMS.url;
+            log("url：" + url);
+            log("url：" + mediaUrl);
             if (url.includes("|")) {
                 log("代理ts：" + url);
                 //此时可以根据实际逻辑得到真实有效的ts地址

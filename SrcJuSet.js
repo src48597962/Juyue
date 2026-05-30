@@ -566,14 +566,14 @@ function jiekouapi(data, look) {
                     groupNames.push(it);
                 }
             })
-            
+            /*
             groupNames = groupNames.filter(item => runTypes.indexOf(item)==-1).map(it=>{
                 if(selectTag.indexOf(it)>-1){
                     it = '‘‘’’<span style="color:red">' + it;
                 }
                 return it;
             })
-
+*/
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
             let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
@@ -622,12 +622,12 @@ function jiekouapi(data, look) {
                 })),
                 click(s, i, manage) {
                     if(selectTag.includes(s)){
-                        let newtitle = s.replace('‘‘’’<span style="color:red">', '');
-                        selectTag = selectTag.filter(x=>x!=newtitle);
-                        manage.setTitle(newtitle);
+                        //let newtitle = s.replace('‘‘’’<span style="color:red">', '');
+                        selectTag = selectTag.filter(x=>x!=s);
+                        
                     }else{
                         selectTag.push(s);
-                        manage.setTitle('‘‘’’<span style="color:red">'+s);
+                        
                     }
                     inputBox.setDefaultValue(selectTag.join(','));
                 }

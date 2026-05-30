@@ -64,8 +64,9 @@ d.push({
                 newLines.push(proxySegUrl);
             }
         }
+        log(newLines);
         writeFile('hiker://files/_cache/tmzyz.m3u8', newLines.join("\n"));
-
+return "hiker://empty";
         let u = startProxyServer($.toString((mediaUrl) => {
             let url = MY_PARAMS.url;
             if (url.includes("|")) {

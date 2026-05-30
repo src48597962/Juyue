@@ -566,77 +566,87 @@ function jiekouapi(data, look) {
                     groupNames.push(it);
                 }
             })
-            /*
-            groupNames = groupNames.filter(item => runTypes.indexOf(item)==-1).map(it=>{
-                if(selectTag.indexOf(it)>-1){
-                    it = '‘‘’’<span style="color:red">' + it;
-                }
-                return it;
-            })
-*/
+
             const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-            let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
             let inputBox;
-            /*let pop = hikerPop.FlexMenuBottom({
-                extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                    hint: "已选择的分组标签",
-                    title: "确定",
-                    defaultValue: getMyVar('apigroup',''),
-                    click(s, pop) {
-                        s = s.replace(/，/g, ',');
-                        putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
-                        refreshPage();
-                        pop.dismiss();
+            if(juItem2.get('popSelectGroup', 'FlexMenuBottom')=='FlexMenuBottom'){
+                groupNames = groupNames.filter(item => runTypes.indexOf(item)==-1).map(it=>{
+                    if(selectTag.indexOf(it)>-1){
+                        it = '‘‘’’<span style="color:red">' + it;
                     }
-                })),
-                sections: [new FlexSection("", groupNames)], 
-                title: "选择分组标签", 
-                click(button, sectionIndex, i) {
-                    if(button.title.includes('‘‘’’')){
-                        let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
-                        selectTag = selectTag.filter(x=>x!=newtitle);
-                        pop.updateButtonTitle(sectionIndex, i, newtitle);
-                    }else{
-                        selectTag.push(button.title);
-                        pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                    return it;
+                })
+                let FlexSection = hikerPop.FlexMenuBottom.FlexSection;
+                let pop = hikerPop.FlexMenuBottom({
+                    extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                        hint: "已选择的分组标签",
+                        title: "确定",
+                        defaultValue: getMyVar('apigroup',''),
+                        click(s, pop) {
+                            s = s.replace(/，/g, ',');
+                            putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
+                            refreshPage();
+                            pop.dismiss();
+                        }
+                    })),
+                    sections: [new FlexSection("", groupNames)], 
+                    title: "选择分组标签", 
+                    click(button, sectionIndex, i) {
+                        if(button.title.includes('‘‘’’')){
+                            let newtitle = button.title.replace('‘‘’’<span style="color:red">', '');
+                            selectTag = selectTag.filter(x=>x!=newtitle);
+                            pop.updateButtonTitle(sectionIndex, i, newtitle);
+                        }else{
+                            selectTag.push(button.title);
+                            pop.updateButtonTitle(sectionIndex, i, '‘‘’’<span style="color:red">'+button.title);
+                        }
+                        inputBox.setDefaultValue(selectTag.join(','));
                     }
-                    inputBox.setDefaultValue(selectTag.join(','));
-                }
-            });
-            */
-            let pop = hikerPop.selectBottomRes({
-                options: groupNames,
-                columns: 4,
-                title: "长按调整，最后确定",
-                noAutoDismiss: true,
-                extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                    title: '确定',
-                    defaultValue: getMyVar('apigroup','') || "",
-                    click(s, manage) {
-                        s = s.replace(/，/g, ',');
-                        putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
-                        refreshPage();
-                        pop.dismiss();
-                    },
-                    titleVisible: true
-                })),
-                click(s, i, manage) {
-                    if(selectTag.includes(s)){
-                        //let newtitle = s.replace('‘‘’’<span style="color:red">', '');
-                        selectTag = selectTag.filter(x=>x!=s);
-                        
-                    }else{
-                        selectTag.push(s);
-                        
+                });
+            }else{
+                let pop = hikerPop.selectBottomRes({
+                    options: groupNames,
+                    columns: 4,
+                    title: "选择分组，最后确定",
+                    noAutoDismiss: true,
+                    extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                        title: '确定',
+                        defaultValue: getMyVar('apigroup','') || "",
+                        click(s, manage) {
+                            s = s.replace(/，/g, ',');
+                            putMyVar('apigroup', s.split(',').filter(item => item !== '' && runTypes.indexOf(item)==-1).join(','));
+                            refreshPage();
+                            pop.dismiss();
+                        },
+                        titleVisible: true
+                    })),
+                    click(s, i, manage) {
+                        if(selectTag.includes(s)){
+                            selectTag = selectTag.filter(x=>x!=s);
+                            
+                        }else{
+                            selectTag.push(s);
+                        }
+                        inputBox.setDefaultValue(selectTag.join(','));
                     }
-                    inputBox.setDefaultValue(selectTag.join(','));
-                }
-            });
+                });
+            }
             
             return "hiker://empty";
         }),
         extra: {
-            //lineVisible: false
+            //lineVisible: false,
+            longClick: [{
+                    title: '弹窗类型：' + juItem2.get('popSelectGroup', 'FlexMenuBottom'),
+                    js: $.toString(()=>{
+                        if(juItem2.get('popSelectGroup', 'FlexMenuBottom')=='FlexMenuBottom'){
+                            juItem2.set('popSelectGroup', 'selectBottomRes');
+                        }else{
+                            juItem2.clear('popSelectGroup');
+                        }
+                        return 'toast://已切换';
+                    })
+                }]
         }
     });
     d.push({

@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V2.6",
         records: [
-            "优化：聚阅解析web解析能力提升"
+            "优化：聚阅解析web解析能力提升",
+            "修复：源小分组长按切换弹窗类型，解决FlexMenuBottom和手机系统兼容问题"
         ]
     },{
         title: "2026/05/23 V2.5",

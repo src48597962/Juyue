@@ -74,7 +74,7 @@ d.push({
             if (url.includes("@")) {
                 log("代理ts：" + url);
                 //此时可以根据实际逻辑得到真实有效的ts地址
-                let m = url.match(/"(\d+)\@(\d+)"/);
+                let m = url.match(/"(\d+)@(\d+)"/);
                 let start = parseInt(m[1], 10);
                 let size = parseInt(m[2], 10);
                 let end = start + size;

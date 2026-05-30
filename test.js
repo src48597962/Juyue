@@ -1,6 +1,6 @@
 var d = [];
 d.push({
-    title: "终极超频·全伪装免限速测试",
+    title: "天美代理播放",
     url: 'ff256c6c181d58556b729223ada77eb7' + $('').lazyRule(() => {
         let html = request("https://player.tmzyz.com/?url=" + input);
         let urlMatch = html.match(/url: '(.*?)',/);
@@ -78,9 +78,6 @@ d.push({
                 let start = parseInt(m[1], 10);
                 let size = parseInt(m[2], 10);
                 let end = start + size;
-                log(start);
-                log(size);
-                log(end);
                 return JSON.stringify({
                     statusCode: 302,
                     headers: {
@@ -105,7 +102,7 @@ d.push({
         }, mediaUrl));
 
 
-        return u + "?url=" + base64Encode("hiker://files/_cache/tmzyz.m3u8") + "#.mp4";
+        return u + "?url=" + base64Encode("hiker://files/_cache/tmzyz.m3u8") + "#.m3u8";
 
 
 

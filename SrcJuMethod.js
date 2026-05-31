@@ -1344,7 +1344,7 @@ function getHtmlCode(ssurl, headers, timeout) {
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
         }
-        else if (/smart-verify-btn/.test(html)) {
+        else if (/身份验证|smart-verify-btn/.test(html)) {
             log2('按钮验证');
             html = executeWebRule(ssurl, $.toString(() => {
                 try{

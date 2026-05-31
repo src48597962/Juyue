@@ -1344,7 +1344,8 @@ function getHtmlCode(ssurl, headers, timeout) {
             })
             html = request(ssurl, { headers: headers, timeout: timeout });
         }
-        /* else if (/smart-verify-btn/.test(html)) {
+        else if (/smart-verify-btn/.test(html)) {
+            log2('按钮验证');
             html = executeWebRule(ssurl, $.toString(() => {
                 try{
                     return document.documentElement.outerHTML;
@@ -1369,7 +1370,7 @@ function getHtmlCode(ssurl, headers, timeout) {
                 checkTime: 100,
                 timeout: 10000
             })
-        }*/
+        }
     } catch (e) {
         xlog("请求返回html源码异常>" + e.message + " 错误行#" + e.lineNumber);
     }

@@ -177,10 +177,26 @@ function jxSetPage(dd) {
                             title: "输入弹幕源信息",
                             //hideCancel: true,
                             confirm(s1, s2) {
+                                showLoading('正在较验有效性');//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
+                                let lx = '';
+                                let url = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';
+                                let html = fetch(url);
+                                if (html.startsWith('{')) {
+                                    lx = 'json';
+
+                                }else if (html.startsWith('<?xml')) {
+                                    lx = 'xml';
+
+                                }else{
+                                    log(url);
+                                    log(html);
+                                    return 'toast://较验失败，请看日志';
+                                }
+
                                 return "toast://你输入了:" + s1 + " " + s2;
                             },
                             cancel() {
-                                return "toast://你取消了"
+                                return "hiker://empty"
                             }
                         });
                         return "hiker://empty";

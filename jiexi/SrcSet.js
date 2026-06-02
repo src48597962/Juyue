@@ -173,7 +173,7 @@ function jxSetPage(dd) {
                             urlHint: "弹幕源接口地址",
                             urlDefault: "",
                             noAutoSoft: true, //不自动打开输入法
-                            title: "输入",
+                            title: "输入弹幕源信息",
                             //hideCancel: true,
                             confirm(s1, s2) {
                                 return "toast://你输入了:" + s1 + " " + s2;
@@ -185,7 +185,7 @@ function jxSetPage(dd) {
                         return "hiker://empty";
                     }),
                     img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),
-                    col_type: "icon_small_4"
+                    col_type: "icon_small_3"
                 });
                 d.push({
                     title: '导入',
@@ -201,7 +201,7 @@ function jxSetPage(dd) {
                         }, input)
                     }),
                     img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
-                    col_type: "icon_small_4"
+                    col_type: "icon_small_3"
                 });
 
                 let pastes = getPastes();
@@ -212,7 +212,7 @@ function jxSetPage(dd) {
                         return JYshare(input);
                     }),
                     img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
-                    col_type: "icon_small_4"
+                    col_type: "icon_small_3"
                 });
                 setResult(d);
             }),

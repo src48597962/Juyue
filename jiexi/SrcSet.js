@@ -160,8 +160,9 @@ function jxSetPage(dd) {
         d.push({
             title: '弹幕源列表管理',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                let d = [];
+                require(config.jxCodePath + 'SrcPublic.js');
                 let jxIcons = currentTheme['接口图标'];
+                let d = [];
                 d.push({
                     title: '增加',
                     url: $('#noLoading#').lazyRule(() => {

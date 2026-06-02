@@ -157,6 +157,67 @@ function jxSetPage(dd) {
             pic_url: 箭头图标,
             col_type: "text_icon"
         });
+        d.push({
+            title: '弹幕源列表管理',
+            url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                let d = [];
+                let jxIcons = currentTheme['接口图标'];
+                d.push({
+                    title: '增加',
+                    url: $('#noLoading#').lazyRule(() => {
+                        const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+                        hikerPop.inputTwoRow({
+                            titleHint: "弹幕源名字",
+                            titleDefault: "",
+                            urlHint: "弹幕源接口地址",
+                            urlDefault: "",
+                            noAutoSoft: true, //不自动打开输入法
+                            title: "输入",
+                            //hideCancel: true,
+                            confirm(s1, s2) {
+                                return "toast://你输入了:" + s1 + " " + s2;
+                            },
+                            cancel() {
+                                return "toast://你取消了"
+                            }
+                        });
+                        return "hiker://empty";
+                    }),
+                    img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),
+                    col_type: "icon_small_4"
+                });
+                d.push({
+                    title: '导入',
+                    url: $("").input(()=>{
+                        input = input.trim();
+                        if(input==""){
+                            return 'toast://不能为空';
+                        }
+                        
+                        return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
+                            require(config.jxCodePath + 'SrcPublic.js');
+                            importConfirm(input);
+                        }, input)
+                    }),
+                    img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
+                    col_type: "icon_small_4"
+                });
+
+                let pastes = getPastes();
+                d.push({
+                    title: '分享',
+                    url: jxdatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+                        require(config.jxCodePath + 'SrcJiexi.js');
+                        return JYshare(input);
+                    }),
+                    img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
+                    col_type: "icon_small_4"
+                });
+                setResult(d);
+            }),
+            pic_url: 箭头图标,
+            col_type: "text_icon"
+        });
     } 
     d.push({
         col_type: "line_blank"

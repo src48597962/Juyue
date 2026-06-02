@@ -207,7 +207,7 @@ function jxSetPage(dd) {
                 let pastes = getPastes();
                 d.push({
                     title: '分享',
-                    url: jxdatalist.length == 0 ? "hiker://empty" : $(pastes,2).select(()=>{
+                    url: $(pastes,2).select(()=>{
                         require(config.jxCodePath + 'SrcJiexi.js');
                         return JYshare(input);
                     }),

@@ -167,15 +167,15 @@ function jxSetPage(dd) {
                 d.push({
                     title: '增加',
                     url: $('#noLoading#').lazyRule(() => {
-                        // 异步检测
+                        // 异步检测 
                         function Async(s1, s2) {
-                            // 延迟 10 毫秒执行，让 UI 线程先把弹窗关掉、把 toast 弹出来
-                            setTimeout(() => {
+                            // 【核心改动】利用 Promise.resolve().then 将代码推入微任务队列
+                            Promise.resolve().then(() => {
                                 showLoading('正在校验有效性');
                                 let lx;
                                 try {
                                     let dmurl = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';
-                                    let html = fetch(dmurl, {timeout: 8000}); // 这个如果是同步的，现在卡住也不会影响刚才的弹窗了
+                                    let html = fetch(dmurl, {timeout: 8000}); 
                                     
                                     if (html.startsWith('{') && html.includes('comments')) {
                                         lx = 'json';
@@ -192,14 +192,20 @@ function jxSetPage(dd) {
                                         }
                                         if (dmlist.some(v => v.url == s2)) {
                                             toast('已存在'); 
+                                            hideLoading();
+                                            return; // 结束执行
                                         }
                                         dmlist.push({name: s1, url: s2, type: lx});
                                         writeFile(jxdmfile, JSON.stringify(dmlist));
                                         toast('添加成功'); 
+                                    } else {
+                                        toast('未检测到有效弹幕格式');
                                     }
-                                } catch (e) {}
+                                } catch (e) {
+                                    // toast('发生错误: ' + e.message);
+                                }
                                 hideLoading();
-                            }, 10);
+                            });
                         }
 
                         // 2. 弹窗调用部分
@@ -214,10 +220,10 @@ function jxSetPage(dd) {
                                     return "toast://输入信息不完整";
                                 }
                                 
-                                // 把 s1, s2 一并传进去，因为异步里面需要用到
+                                // 把 s1, s2 一并传进去
                                 Async(s1, s2); 
                                 
-                                // 这里的 return 会立刻执行，弹窗立刻响应，不会卡死
+                                // 这里的 return 会立刻执行，告诉弹窗组件可以关闭并弹出提示
                                 return "toast://正在后台校验，请稍候...";
                             },
                             cancel() {

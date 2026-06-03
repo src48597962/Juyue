@@ -158,9 +158,9 @@ function jxSetPage(dd) {
             col_type: "text_icon"
         });
         d.push({
-            title: '弹幕源列表管理',
+            title: '弹幕库列表管理',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                setPageTitle('弹幕源列表管理');
+                setPageTitle('弹幕库列表管理');
                 require(config.jxCodePath + 'SrcPublic.js');
                 let jxIcons = currentTheme['接口图标'];
                 let d = [];
@@ -169,30 +169,43 @@ function jxSetPage(dd) {
                     url: $('#noLoading#').lazyRule(() => {
                         const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                         hikerPop.inputTwoRow({
-                            titleHint: "弹幕源名字",
+                            titleHint: "弹幕名字",
                             titleDefault: "",
-                            urlHint: "弹幕源接口地址",
+                            urlHint: "弹幕接口地址",
                             urlDefault: "",
                             noAutoSoft: true, //不自动打开输入法
-                            title: "输入弹幕源信息",
+                            title: "输入弹幕库信息",
                             //hideCancel: true,
                             confirm(s1, s2) {
+                                if(!s1 || !s2){
+                                    return "toast://输入信息不完整";
+                                }
                                 showLoading('正在较验有效性');//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
                                 let lx = '';
                                 let url = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';
                                 let html = fetch(url);
-                                if (html.startsWith('{')) {
+                                if (html.startsWith('{') && html.includes('comments')) {
                                     lx = 'json';
 
-                                }else if (html.startsWith('<?xml')) {
+                                }else if (html.startsWith('<?xml') && html.includes('<d p="')) {
                                     lx = 'xml';
 
                                 }else{
-                                    log(url);
-                                    log(html);
-                                    return 'toast://较验失败，请看日志';
+                                    log("请求地址：" + url);
+                                    log("返回信息：" + html.slice(0, 1000) + "......");
+                                    return 'toast://较验失败，非json或xml格式的弹幕内容，请看日志';
                                 }
-
+                                require(config.jxCodePath + 'SrcPublic.js');
+                                let dmfile = jxrulepath + 'danmus.json';
+                                let dmlist = [];
+                                let dmfilestr = fetch(dmfile);
+                                if (dmfilestr != "") {
+                                    eval("dmlist=" + dmfilestr + ";");
+                                }
+                                if(dmlist.some(v=>v.url==s2)){
+                                    return "toast://此弹幕库已存在";
+                                }
+                                dmlist.push({name: s1, url: s2, type: lx})
                                 return "toast://你输入了:" + s1 + " " + s2;
                             },
                             cancel() {

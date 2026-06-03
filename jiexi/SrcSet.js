@@ -196,9 +196,8 @@ function jxSetPage(dd) {
                                     return 'toast://较验失败，非json或xml格式的弹幕内容，请看日志';
                                 }
                                 require(config.jxCodePath + 'SrcPublic.js');
-                                let dmfile = jxrulepath + 'danmus.json';
                                 let dmlist = [];
-                                let dmfilestr = fetch(dmfile);
+                                let dmfilestr = fetch(jxdmfile);
                                 if (dmfilestr != "") {
                                     eval("dmlist=" + dmfilestr + ";");
                                 }
@@ -206,6 +205,8 @@ function jxSetPage(dd) {
                                     return "toast://此弹幕库已存在";
                                 }
                                 dmlist.push({name: s1, url: s2, type: lx})
+                                writeFile(jxdmfile, JSON.stringify(dmlist));
+                                hideLoading();
                                 return "toast://你输入了:" + s1 + " " + s2;
                             },
                             cancel() {

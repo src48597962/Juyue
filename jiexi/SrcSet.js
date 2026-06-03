@@ -167,6 +167,24 @@ function jxSetPage(dd) {
                 d.push({
                     title: '增加',
                     url: $('#noLoading#').lazyRule(() => {
+                        // 异步检测
+                        function Async(url) {
+                            return new Promise((resolve) => {
+                                showLoading('正在较验有效性');
+                                let lx;
+                                try{
+                                    let dmurl = url + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
+                                    let html = fetch(dmurl, {timeout: 8000});
+                                    if (html.startsWith('{') && html.includes('comments')) {
+                                        lx = 'json';
+                                    }else if (html.startsWith('<?xml') && html.includes('<d p="')) {
+                                        lx = 'xml';
+                                    }
+                                }catch(e){}
+                                resolve(lx);
+                            });
+                        }
+
                         const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                         hikerPop.inputTwoRow({
                             titleHint: "弹幕名字",
@@ -180,10 +198,28 @@ function jxSetPage(dd) {
                                 if(!s1 || !s2){
                                     return "toast://输入信息不完整";
                                 }
-                                showLoading('正在较验有效性');//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
+                                Async(s2)
+                                    .then((lx) => {
+                                        if(lx){
+                                            require(config.jxCodePath + 'SrcPublic.js');
+                                            let dmlist = [];
+                                            let dmfilestr = fetch(jxdmfile);
+                                            if (dmfilestr != "") {
+                                                eval("dmlist=" + dmfilestr + ";");
+                                            }
+                                            hideLoading();
+                                            if(dmlist.some(v=>v.url==s2)){
+                                                return "toast://此弹幕库已存在";
+                                            }
+                                            dmlist.push({name: s1, url: s2, type: lx})
+                                            writeFile(jxdmfile, JSON.stringify(dmlist));
+                                        }
+                                    })
+                                /*
+                                showLoading('正在较验有效性');
                                 let lx = '';
-                                let url = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';
-                                let html = fetch(url);
+                                let url = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
+                                let html = fetch(url, {timeout: 8000});
                                 if (html.startsWith('{') && html.includes('comments')) {
                                     lx = 'json';
 
@@ -201,12 +237,13 @@ function jxSetPage(dd) {
                                 if (dmfilestr != "") {
                                     eval("dmlist=" + dmfilestr + ";");
                                 }
+                                hideLoading();
                                 if(dmlist.some(v=>v.url==s2)){
                                     return "toast://此弹幕库已存在";
                                 }
                                 dmlist.push({name: s1, url: s2, type: lx})
                                 writeFile(jxdmfile, JSON.stringify(dmlist));
-                                hideLoading();
+                                */
                                 return "toast://你输入了:" + s1 + " " + s2;
                             },
                             cancel() {

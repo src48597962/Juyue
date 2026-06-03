@@ -202,7 +202,7 @@ function jxSetPage(dd) {
                                         toast('未检测到有效弹幕格式');
                                     }
                                 } catch (e) {
-                                    // toast('发生错误: ' + e.message);
+                                    toast('发生错误: ' + e.message);
                                 }
                                 hideLoading();
                             });

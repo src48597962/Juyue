@@ -168,83 +168,60 @@ function jxSetPage(dd) {
                     title: '增加',
                     url: $('#noLoading#').lazyRule(() => {
                         // 异步检测
-                        function Async(url) {
-                            return new Promise(() => {
-                                showLoading('正在较验有效性');
+                        function Async(s1, s2) {
+                            // 延迟 10 毫秒执行，让 UI 线程先把弹窗关掉、把 toast 弹出来
+                            setTimeout(() => {
+                                showLoading('正在校验有效性');
                                 let lx;
-                                try{
-                                    let dmurl = url + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
-                                    let html = fetch(dmurl, {timeout: 8000});
+                                try {
+                                    let dmurl = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';
+                                    let html = fetch(dmurl, {timeout: 8000}); // 这个如果是同步的，现在卡住也不会影响刚才的弹窗了
+                                    
                                     if (html.startsWith('{') && html.includes('comments')) {
                                         lx = 'json';
-                                    }else if (html.startsWith('<?xml') && html.includes('<d p="')) {
+                                    } else if (html.startsWith('<?xml') && html.includes('<d p="')) {
                                         lx = 'xml';
                                     }
-                                    if(lx){
+                                    
+                                    if (lx) {
                                         require(config.jxCodePath + 'SrcPublic.js');
                                         let dmlist = [];
                                         let dmfilestr = fetch(jxdmfile);
                                         if (dmfilestr != "") {
                                             eval("dmlist=" + dmfilestr + ";");
                                         }
-                                        if(dmlist.some(v=>v.url==s2)){
-                                            return "toast://此弹幕库已存在";
+                                        if (dmlist.some(v => v.url == s2)) {
+                                            toast('已存在'); 
                                         }
-                                        dmlist.push({name: s1, url: s2, type: lx})
+                                        dmlist.push({name: s1, url: s2, type: lx});
                                         writeFile(jxdmfile, JSON.stringify(dmlist));
+                                        toast('添加成功'); 
                                     }
-                                }catch(e){}
+                                } catch (e) {}
                                 hideLoading();
-                            });
+                            }, 10);
                         }
 
+                        // 2. 弹窗调用部分
                         const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                         hikerPop.inputTwoRow({
-                            titleHint: "弹幕名字",
-                            titleDefault: "",
-                            urlHint: "弹幕接口地址",
-                            urlDefault: "",
-                            noAutoSoft: true, //不自动打开输入法
                             title: "输入弹幕库信息",
-                            //hideCancel: true,
+                            titleHint: "弹幕名字",
+                            urlHint: "弹幕接口地址",
+                            noAutoSoft: true,
                             confirm(s1, s2) {
-                                if(!s1 || !s2){
+                                if (!s1 || !s2) {
                                     return "toast://输入信息不完整";
                                 }
-                                Async(s2);
-                                /*
-                                showLoading('正在较验有效性');
-                                let lx = '';
-                                let url = s2 + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html';//http://120.5.233.188:8098/87654321/api/v2/comment?format=xml&url=
-                                let html = fetch(url, {timeout: 8000});
-                                if (html.startsWith('{') && html.includes('comments')) {
-                                    lx = 'json';
-
-                                }else if (html.startsWith('<?xml') && html.includes('<d p="')) {
-                                    lx = 'xml';
-
-                                }else{
-                                    log("请求地址：" + url);
-                                    log("返回信息：" + html.slice(0, 1000) + "......");
-                                    return 'toast://较验失败，非json或xml格式的弹幕内容，请看日志';
-                                }
-                                require(config.jxCodePath + 'SrcPublic.js');
-                                let dmlist = [];
-                                let dmfilestr = fetch(jxdmfile);
-                                if (dmfilestr != "") {
-                                    eval("dmlist=" + dmfilestr + ";");
-                                }
-                                hideLoading();
-                                if(dmlist.some(v=>v.url==s2)){
-                                    return "toast://此弹幕库已存在";
-                                }
-                                dmlist.push({name: s1, url: s2, type: lx})
-                                writeFile(jxdmfile, JSON.stringify(dmlist));
-                                */
-                                return "toast://你输入了:" + s1 + " " + s2;
+                                
+                                // 把 s1, s2 一并传进去，因为异步里面需要用到
+                                Async(s1, s2); 
+                                
+                                // 这里的 return 会立刻执行，弹窗立刻响应，不会卡死
+                                return "toast://正在后台校验，请稍候...";
                             },
                             cancel() {
-                                return "hiker://empty"
+                                return "hiker://empty";
                             }
                         });
                         return "hiker://empty";

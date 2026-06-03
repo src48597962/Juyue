@@ -169,7 +169,7 @@ function jxSetPage(dd) {
                     url: $('#noLoading#').lazyRule(() => {
                         // 异步检测
                         function Async(url) {
-                            return new Promise((resolve) => {
+                            return new Promise(() => {
                                 showLoading('正在较验有效性');
                                 let lx;
                                 try{
@@ -180,8 +180,21 @@ function jxSetPage(dd) {
                                     }else if (html.startsWith('<?xml') && html.includes('<d p="')) {
                                         lx = 'xml';
                                     }
+                                    if(lx){
+                                        require(config.jxCodePath + 'SrcPublic.js');
+                                        let dmlist = [];
+                                        let dmfilestr = fetch(jxdmfile);
+                                        if (dmfilestr != "") {
+                                            eval("dmlist=" + dmfilestr + ";");
+                                        }
+                                        if(dmlist.some(v=>v.url==s2)){
+                                            return "toast://此弹幕库已存在";
+                                        }
+                                        dmlist.push({name: s1, url: s2, type: lx})
+                                        writeFile(jxdmfile, JSON.stringify(dmlist));
+                                    }
                                 }catch(e){}
-                                resolve(lx);
+                                hideLoading();
                             });
                         }
 
@@ -198,23 +211,7 @@ function jxSetPage(dd) {
                                 if(!s1 || !s2){
                                     return "toast://输入信息不完整";
                                 }
-                                Async(s2)
-                                    .then((lx) => {
-                                        if(lx){
-                                            require(config.jxCodePath + 'SrcPublic.js');
-                                            let dmlist = [];
-                                            let dmfilestr = fetch(jxdmfile);
-                                            if (dmfilestr != "") {
-                                                eval("dmlist=" + dmfilestr + ";");
-                                            }
-                                            hideLoading();
-                                            if(dmlist.some(v=>v.url==s2)){
-                                                return "toast://此弹幕库已存在";
-                                            }
-                                            dmlist.push({name: s1, url: s2, type: lx})
-                                            writeFile(jxdmfile, JSON.stringify(dmlist));
-                                        }
-                                    })
+                                Async(s2);
                                 /*
                                 showLoading('正在较验有效性');
                                 let lx = '';

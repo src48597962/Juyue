@@ -79,7 +79,7 @@ function dmapi(data) {
     d.push({
         title: 'dmurl',
         col_type: 'input',
-        desc: "弹幕地址",
+        desc: "弹幕链接",
         extra: {
             titleVisible: false,
             defaultValue: getMyVar('dmurl', ""),
@@ -134,6 +134,20 @@ function dmapi(data) {
             }
             let dmtype = getMyVar('dmtype');
 
+            require(config.jxCodePath + 'SrcPublic.js');
+            let dmlist = [];
+            let dmfilestr = fetch(jxdmfile);
+            if (dmfilestr != "") {
+                eval("dmlist=" + dmfilestr + ";");
+            }
+            if (dmlist.some(v => v.name == dmname)) {
+                return 'toast://名称已存在：' + dmname;
+            }
+            if (dmlist.some(v => v.url == dmurl)) {
+                return 'toast://链接已存在：' + dmurl;
+            }
+
+
             showLoading('正在校验有效性');
             try {
                 let html = fetch(dmurl + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html', { timeout: 8000 });
@@ -146,22 +160,10 @@ function dmapi(data) {
                 }
                 hideLoading();
                 if (dmtype) {
-                    require(config.jxCodePath + 'SrcPublic.js');
-                    let dmlist = [];
-                    let dmfilestr = fetch(jxdmfile);
-                    if (dmfilestr != "") {
-                        eval("dmlist=" + dmfilestr + ";");
-                    }
                     if(data){
                         dmlist = dmlist.filter(v => v.url != data.url);
                     }
                     
-                    if (dmlist.some(v => v.name == dmname)) {
-                        return 'toast://已存在：' + dmname; // 结束执行
-                    }
-                    if (dmlist.some(v => v.url == dmurl)) {
-                        return 'toast://已存在：' + dmurl; // 结束执行
-                    }
                     dmlist.push({ name: dmname, url: dmurl, type: dmtype });
                     writeFile(jxdmfile, JSON.stringify(dmlist));
                     toast('添加成功');

@@ -1,0 +1,209 @@
+require(config.jxCodePath + 'SrcPublic.js');
+
+function dmhome(){
+    setPageTitle('弹幕库管理');
+    let jxIcons = currentTheme['接口图标'];
+        let d = [];
+    d.push({
+        title: '增加',
+        url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+            addListener("onClose", $.toString(() => {
+                clearMyVar('dmname');
+                clearMyVar('dmurl');
+                refreshPage();
+            }));
+            let d = [];
+
+
+            // 2. 弹窗调用部分
+            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+            hikerPop.inputTwoRow({
+                title: "输入弹幕库信息",
+                titleHint: "弹幕名字",
+                urlHint: "弹幕接口地址",
+                noAutoSoft: true,
+                confirm(s1, s2) {
+                    if (!s1 || !s2) {
+                        return "toast://输入信息不完整";
+                    }
+
+                    // 把 s1, s2 一并传进去
+                    Async(s1, s2);
+
+                    // 这里的 return 会立刻执行，告诉弹窗组件可以关闭并弹出提示
+                    return "toast://正在后台校验，请稍候...";
+                },
+                cancel() {
+                    return "hiker://empty";
+                }
+            });
+            return "hiker://empty";
+        }),
+        img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),
+        col_type: "icon_small_3"
+    });
+    d.push({
+        title: '导入',
+        url: $("").input(() => {
+            input = input.trim();
+            if (input == "") {
+                return 'toast://不能为空';
+            }
+
+            return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
+                require(config.jxCodePath + 'SrcPublic.js');
+                importConfirm(input);
+            }, input)
+        }),
+        img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
+        col_type: "icon_small_3"
+    });
+
+    let pastes = getPastes();
+    d.push({
+        title: '分享',
+        url: $(pastes, 2).select(() => {
+            require(config.jxCodePath + 'SrcJiexi.js');
+            return JYshare(input);
+        }),
+        img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
+        col_type: "icon_small_3"
+    });
+    setResult(d);
+}
+
+
+
+//弹幕新增或编辑
+function dmapi(data) {
+    addListener("onClose", $.toString(() => {
+        clearMyVar('dmname');
+        clearMyVar('dmurl');
+        clearMyVar('dmtype');
+        clearMyVar('isload');
+        refreshPage();
+    }));
+    let d = [];
+    if (!data) {
+        setPageTitle("弹幕库-新增");
+    } else {
+        if (getMyVar('isload', '0') == "0") {
+            setPageTitle("弹幕库-变更");
+            putMyVar('dmname', data.name);
+            putMyVar('dmurl', data.url || "");
+            putMyVar('dmtype', data.type || "");
+            putMyVar('isload', '1');
+        }
+    }
+    d.push({
+        title: 'dmname',
+        col_type: 'input',
+        desc: "弹幕名称",
+        extra: {
+            titleVisible: false,
+            defaultValue: getMyVar('dmname', ""),
+            onChange: 'putMyVar("dmname",input)'
+        }
+    });
+    d.push({
+        title: 'dmurl',
+        col_type: 'input',
+        desc: "弹幕地址",
+        extra: {
+            titleVisible: false,
+            defaultValue: getMyVar('dmurl', ""),
+            onChange: 'putMyVar("dmurl",input)'
+        }
+    });
+    d.push({
+        title: '弹幕类型：' + getMyVar('dmtype', '自动识别'),
+        col_type: 'text_1',
+        url: $(['json', 'xml'], 1).select(() => {
+            putMyVar('dmtype', input);
+            refreshPage(false);
+            return "toast://选择了" + input;
+        }),
+        extra: {
+            lineVisible: false
+        }
+    });
+    if (data) {
+        d.push({
+            title: '删除',
+            col_type: 'text_2',
+            url: $("确定删除解析：" + getMyVar('dmname')).confirm((data) => {
+                require(config.jxCodePath + 'SrcJiexi.js');
+                deleteData(data);
+                deleteItem(data.name);
+                back(false);
+                return 'toast://已删除:' + data.name;
+            }, data)
+        });
+    } else {
+        d.push({
+            title: '清空',
+            col_type: 'text_2',
+            url: $("确定要清空上面填写的内容？").confirm(() => {
+                clearMyVar('dmname');
+                clearMyVar('dmurl');
+                clearMyVar('dmtype');
+                refreshPage(false);
+                return "toast://已清空";
+            })
+        });
+    }
+    d.push({
+        title: '保存',
+        col_type: 'text_2',
+        url: $().lazyRule((data) => {
+            let dmname = getMyVar('dmname');
+            let dmurl = getMyVar('dmurl');
+            if (!dmname || !dmurl) {
+                return "toast://信息不完整"
+            }
+            let dmtype = getMyVar('dmtype');
+
+            showLoading('正在校验有效性');
+            try {
+                let html = fetch(dmurl + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html', { timeout: 8000 });
+                if (html.startsWith('{') && html.includes('comments')) {
+                    dmtype = 'json';
+                } else if (html.startsWith('<?xml') && html.includes('<d p="')) {
+                    dmtype = 'xml';
+                } else {
+                    dmtype = '';
+                }
+                hideLoading();
+                if (dmtype) {
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    let dmlist = [];
+                    let dmfilestr = fetch(jxdmfile);
+                    if (dmfilestr != "") {
+                        eval("dmlist=" + dmfilestr + ";");
+                    }
+                    if(data){
+                        dmlist = dmlist.filter(v => v.url != data.url);
+                    }
+                    
+                    if (dmlist.some(v => v.name == dmname)) {
+                        return 'toast://已存在：' + dmname; // 结束执行
+                    }
+                    if (dmlist.some(v => v.url == dmurl)) {
+                        return 'toast://已存在：' + dmurl; // 结束执行
+                    }
+                    dmlist.push({ name: dmname, url: dmurl, type: dmtype });
+                    writeFile(jxdmfile, JSON.stringify(dmlist));
+                    toast('添加成功');
+                } else {
+                    toast('未检测到有效弹幕格式');
+                }
+            } catch (e) {
+                toast('发生错误: ' + e.message);
+            }
+            hideLoading();
+            return 'hiker://empty';
+        }, data)
+    });
+    setResult(d);
+}
+

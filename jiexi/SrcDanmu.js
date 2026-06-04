@@ -126,7 +126,7 @@ function dmapi(data) {
     d.push({
         title: '保存',
         col_type: 'text_2',
-        url: $().lazyRule((data) => {
+        url: $('#noLoading#').lazyRule((data) => {
             let dmname = getMyVar('dmname');
             let dmurl = getMyVar('dmurl');
             if (!dmname || !dmurl) {

@@ -7,37 +7,8 @@ function dmhome(){
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-            addListener("onClose", $.toString(() => {
-                clearMyVar('dmname');
-                clearMyVar('dmurl');
-                refreshPage();
-            }));
-            let d = [];
-
-
-            // 2. 弹窗调用部分
-            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-            hikerPop.inputTwoRow({
-                title: "输入弹幕库信息",
-                titleHint: "弹幕名字",
-                urlHint: "弹幕接口地址",
-                noAutoSoft: true,
-                confirm(s1, s2) {
-                    if (!s1 || !s2) {
-                        return "toast://输入信息不完整";
-                    }
-
-                    // 把 s1, s2 一并传进去
-                    Async(s1, s2);
-
-                    // 这里的 return 会立刻执行，告诉弹窗组件可以关闭并弹出提示
-                    return "toast://正在后台校验，请稍候...";
-                },
-                cancel() {
-                    return "hiker://empty";
-                }
-            });
-            return "hiker://empty";
+            require(config.jxCodePath + 'SrcDanmu.js');
+            dmapi();
         }),
         img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),
         col_type: "icon_small_3"

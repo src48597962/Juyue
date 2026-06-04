@@ -160,7 +160,8 @@ function jxSetPage(dd) {
         d.push({
             title: '弹幕库管理',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
-                
+                require(config.jxCodePath + 'SrcDanmu.js');
+                dmhome();
             }),
             pic_url: 箭头图标,
             col_type: "text_icon"

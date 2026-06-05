@@ -124,7 +124,7 @@ function dmapi(data) {
     });
     d.push({
         title: '',
-        col_type: 'icon_3_fill',
+        col_type: 'icon_small_3',
         url: 'hiker://empty'
     });
     d.push({
@@ -188,7 +188,7 @@ function dmapi(data) {
     });
     d.push({
         title: '',
-        col_type: 'icon_3_fill',
+        col_type: 'icon_small_3',
         url: 'hiker://empty'
     });
     setResult(d);

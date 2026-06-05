@@ -40,6 +40,22 @@ function dmhome(){
         img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
         col_type: "icon_small_3"
     });
+    let dmlist = [];
+    let dmfilestr = fetch(jxdmfile);
+    if (dmfilestr != "") {
+        eval("dmlist=" + dmfilestr + ";");
+    }
+    dmlist.forEach(it=>{
+        d.push({
+            title: it.name,
+            desc: it.url,
+            col_type: 'text_1',
+            url: $('hiker://empty#noRecordHistory##noHistory#').rule((it) => {
+                require(config.jxCodePath + 'SrcDanmu.js');
+                dmapi(it);
+            }, it)
+        })
+    })
     setResult(d);
 }
 
@@ -87,50 +103,26 @@ function dmapi(data) {
         }
     });
     d.push({
-        title: '弹幕类型：' + getMyVar('dmtype', '自动识别'),
+        title: '弹幕类型：' + getMyVar('dmtype', ''),
         col_type: 'text_1',
-        url: $(['json', 'xml'], 1).select(() => {
-            putMyVar('dmtype', input);
-            refreshPage(false);
-            return "toast://选择了" + input;
-        }),
-        extra: {
-            lineVisible: false
-        }
+        url: 'hiker://empty'
     });
-    if (data) {
-        d.push({
-            title: '删除',
-            col_type: 'text_2',
-            url: $("确定删除解析：" + getMyVar('dmname')).confirm((data) => {
-                require(config.jxCodePath + 'SrcJiexi.js');
-                deleteData(data);
-                deleteItem(data.name);
-                back(false);
-                return 'toast://已删除:' + data.name;
-            }, data)
-        });
-    } else {
-        d.push({
-            title: '清空',
-            col_type: 'text_2',
-            url: $("确定要清空上面填写的内容？").confirm(() => {
-                clearMyVar('dmname');
-                clearMyVar('dmurl');
-                clearMyVar('dmtype');
-                refreshPage(false);
-                return "toast://已清空";
-            })
-        });
-    }
+    d.push({
+        title: '',
+        col_type: 'text_3',
+        url: 'hiker://empty'
+    });
     d.push({
         title: '保存',
-        col_type: 'text_2',
+        col_type: 'text_3',
         url: $('#noLoading#').lazyRule((data) => {
             let dmname = getMyVar('dmname');
             let dmurl = getMyVar('dmurl');
             if (!dmname || !dmurl) {
                 return "toast://信息不完整"
+            }
+            if (dmname=='dm盒子') {
+                return "toast://名称不能是dm盒子"
             }
             let dmtype = getMyVar('dmtype');
 
@@ -158,6 +150,7 @@ function dmapi(data) {
                 } else {
                     dmtype = '';
                 }
+
                 hideLoading();
                 if (dmtype) {
                     if(data){
@@ -174,8 +167,14 @@ function dmapi(data) {
                 toast('发生错误: ' + e.message);
             }
             hideLoading();
+            back();
             return 'hiker://empty';
         }, data)
+    });
+    d.push({
+        title: '',
+        col_type: 'text_3',
+        url: 'hiker://empty'
     });
     setResult(d);
 }

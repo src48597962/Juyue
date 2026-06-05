@@ -47,7 +47,7 @@ function dmhome(){
     }
     dmlist.forEach(it=>{
         d.push({
-            title: it.name,
+            title: it.name + '   [' + it.type + ']',
             desc: it.url,
             col_type: 'text_1',
             url: $(['编辑', '删除'], 2).select((data) => {
@@ -124,7 +124,7 @@ function dmapi(data) {
     });
     d.push({
         title: '',
-        col_type: 'text_3',
+        col_type: 'icon_3_fill',
         url: 'hiker://empty'
     });
     d.push({
@@ -188,7 +188,7 @@ function dmapi(data) {
     });
     d.push({
         title: '',
-        col_type: 'text_3',
+        col_type: 'icon_3_fill',
         url: 'hiker://empty'
     });
     setResult(d);

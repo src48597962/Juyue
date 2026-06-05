@@ -123,13 +123,11 @@ function dmapi(data) {
         url: 'hiker://empty'
     });
     d.push({
-        title: '',
-        col_type: 'icon_small_3',
-        url: 'hiker://empty'
+        col_type: 'blank_block'
     });
     d.push({
         title: '保存',
-        col_type: 'text_3',
+        col_type: 'text_center_1',
         url: $('#noLoading#').lazyRule((data) => {
             let dmname = getMyVar('dmname');
             let dmurl = getMyVar('dmurl');
@@ -185,11 +183,6 @@ function dmapi(data) {
             back();
             return 'hiker://empty';
         }, data)
-    });
-    d.push({
-        title: '',
-        col_type: 'icon_small_3',
-        url: 'hiker://empty'
     });
     setResult(d);
 }

@@ -50,9 +50,24 @@ function dmhome(){
             title: it.name,
             desc: it.url,
             col_type: 'text_1',
-            url: $('hiker://empty#noRecordHistory##noHistory#').rule((it) => {
-                require(config.jxCodePath + 'SrcDanmu.js');
-                dmapi(it);
+            url: $(['编辑', '删除'], 2).select((data) => {
+                if(input=='编辑'){
+                    return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
+                        require(config.jxCodePath + 'SrcDanmu.js');
+                        dmapi(data);
+                    }, data)
+                }else if(input=='删除'){
+                    require(config.jxCodePath + 'SrcPublic.js');
+                    let dmlist = [];
+                    let dmfilestr = fetch(jxdmfile);
+                    if (dmfilestr != "") {
+                        eval("dmlist=" + dmfilestr + ";");
+                    }
+                    dmlist = dmlist.filter(v => v.url != data.url);
+                    writeFile(jxdmfile, JSON.stringify(dmlist));
+                    refreshPage();
+                    return 'toast://已删除';
+                }
             }, it)
         })
     })

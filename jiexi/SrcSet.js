@@ -158,7 +158,7 @@ function jxSetPage(dd) {
             col_type: "text_icon"
         });
         d.push({
-            title: '弹幕库管理',
+            title: '弹幕获取源管理',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
                 require(config.jxCodePath + 'SrcDanmu.js');
                 dmhome();

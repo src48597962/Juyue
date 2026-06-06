@@ -176,15 +176,7 @@ function jxSetPage(dd) {
                     */
                 });
                 return "hiker://empty";
-            })/*$(['hls弹幕', 'dm盒子', 'zxz弹幕'], 2).select(() => {
-                    let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-                    let playSet = jxSetCfg['playSet'] || {};
-                    playSet['danmuSource'] = input;
-                    jxSetCfg['playSet'] = playSet;
-                    storage0.putMyVar('jxSetCfg', jxSetCfg);
-                    refreshPage(false);
-                    return 'toast://当前弹幕获取源：' + input;
-            })*/,
+            }),
             pic_url: 箭头图标,
             col_type: "text_icon"
         })

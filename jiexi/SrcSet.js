@@ -152,7 +152,7 @@ function jxSetPage(dd) {
                 if (dmfilestr != "") {
                     eval("dmlist=" + dmfilestr + ";");
                 }
-
+                log(dmlist.map(v=>v.name).unshift('dm盒子'));
                 const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
                 hikerPop.selectBottom({
                     options: dmlist.map(v=>v.name).unshift('dm盒子'),
@@ -175,10 +175,9 @@ function jxSetPage(dd) {
                     storage0.putMyVar('jxSetCfg', jxSetCfg);
                     refreshPage(false);
                     return 'toast://当前弹幕获取源：' + input;
-                }),
-                pic_url: 箭头图标,
-                col_type: "text_icon"
-            })*/
+            })*/,
+            pic_url: 箭头图标,
+            col_type: "text_icon"
         })
         d.push({
             title: '弹幕获取源管理',

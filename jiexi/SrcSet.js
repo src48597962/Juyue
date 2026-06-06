@@ -118,6 +118,10 @@ function jxSetPage(dd) {
         pic_url: playSet['testvideo']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
+    let danmuname = '未选择';
+    try{
+        danmuname = playSet['danmuSource'].name;
+    }catch(e){}
     d.push({
         title: '解析播放获取弹幕',
         url: $('#noLoading#').lazyRule(() => {
@@ -129,7 +133,7 @@ function jxSetPage(dd) {
                 sm = '关闭播放弹幕';
             } else {
                 playSet['danmu'] = 1;
-                sm = '仅针对官网地址有效，当前弹幕获取源:' + (playSet['danmuSource']||'hls弹幕');
+                sm = '仅针对官网地址有效，当前弹幕获取源:' + danmuname;
             }
             jxSetCfg['playSet'] = playSet;
             storage0.putMyVar('jxSetCfg', jxSetCfg);
@@ -143,8 +147,9 @@ function jxSetPage(dd) {
         d.push({
             col_type: "line"
         });
+
         d.push({
-            title: '弹幕获取源：' + (playSet['danmuSource']||'hls弹幕'),
+            title: '弹幕获取源：' + danmuname,
             url: $('#noLoading#').lazyRule(() => {
                 require(config.jxCodePath + 'SrcPublic.js');
                 let dmlist = [];
@@ -160,11 +165,19 @@ function jxSetPage(dd) {
                     height: 0.6, //0-1
                     position: 1,
                     click(a) {
-                        return "toast://点击了" + a;
-                    },
+                        let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                        let playSet = jxSetCfg['playSet'] || {};
+                        playSet['danmuSource'] = a=='dm盒子'?{name: 'dm盒子'}:dmlist.find(v=>v.name===a);
+                        jxSetCfg['playSet'] = playSet;
+                        storage0.putMyVar('jxSetCfg', jxSetCfg);
+                        refreshPage(false);
+                        return 'toast://当前弹幕获取源：' +  a;
+                    }
+                    /*,
                     longClick(a) {
                         return "toast://长按了" + a;
                     }
+                    */
                 });
                 return "hiker://empty";
             })/*$(['hls弹幕', 'dm盒子', 'zxz弹幕'], 2).select(() => {

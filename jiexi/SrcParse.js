@@ -824,6 +824,8 @@ function 弹幕(vipUrl) {
                                 num++;
                             }
                         });
+                    }else{
+                        log('未能识别的json弹幕，请提交给作者');
                     }
                     if(num==0){
                         return;

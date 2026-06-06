@@ -11,7 +11,22 @@ function dmhome(){
             dmapi();
         }),
         img: getJxIcon(jxIcons[0].img, false, jxIcons[0].color),
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
+    });
+    d.push({
+        title: '操作',
+        url: $(["清空所有"], 2).select(() => {
+            require(config.jxCodePath + 'SrcPublic.js');
+            if(input=="清空所有"){
+                return $("确定要删除本地所有的弹幕接口吗？").confirm((jxdmfile)=>{
+                    writeFile(jxdmfile, JSON.stringify([]));
+                    refreshPage(false);
+                    return 'toast://已全部清空';
+                }, jxdmfile)
+            }
+        }),
+        img: getJxIcon(jxIcons[1].img, false, jxIcons[1].color),//'http://123.56.105.145/tubiao/more/290.png',
+        col_type: "icon_small_4"
     });
     d.push({
         title: '导入',
@@ -42,7 +57,7 @@ function dmhome(){
             return 'toast://已导入';
         }),
         img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
     });
 
     let pastes = getPastes();
@@ -72,7 +87,10 @@ function dmhome(){
             }
         }),
         img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
-        col_type: "icon_small_3"
+        col_type: "icon_small_4"
+    });
+    d.push({
+        col_type: "line_blank"
     });
     let dmlist = [];
     let dmfilestr = fetch(jxdmfile);

@@ -145,18 +145,41 @@ function jxSetPage(dd) {
         });
         d.push({
             title: '弹幕获取源：' + (playSet['danmuSource']||'hls弹幕'),
-            url: $(['hls弹幕', 'dm盒子', 'zxz弹幕'], 2).select(() => {
-                let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
-                let playSet = jxSetCfg['playSet'] || {};
-                playSet['danmuSource'] = input;
-                jxSetCfg['playSet'] = playSet;
-                storage0.putMyVar('jxSetCfg', jxSetCfg);
-                refreshPage(false);
-                return 'toast://当前弹幕获取源：' + input;
-            }),
-            pic_url: 箭头图标,
-            col_type: "text_icon"
-        });
+            url: $('#noLoading#').lazyRule(() => {
+                require(config.jxCodePath + 'SrcPublic.js');
+                let dmlist = [];
+                let dmfilestr = fetch(jxdmfile);
+                if (dmfilestr != "") {
+                    eval("dmlist=" + dmfilestr + ";");
+                }
+
+                const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
+                hikerPop.selectBottom({
+                    options: dmlist.map(v=>v.name).unshift('dm盒子'),
+                    columns: 3,
+                    height: 0.6, //0-1
+                    position: 1,
+                    click(a) {
+                        return "toast://点击了" + a;
+                    },
+                    longClick(a) {
+                        return "toast://长按了" + a;
+                    }
+                });
+                return "hiker://empty";
+            })/*$(['hls弹幕', 'dm盒子', 'zxz弹幕'], 2).select(() => {
+                    let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
+                    let playSet = jxSetCfg['playSet'] || {};
+                    playSet['danmuSource'] = input;
+                    jxSetCfg['playSet'] = playSet;
+                    storage0.putMyVar('jxSetCfg', jxSetCfg);
+                    refreshPage(false);
+                    return 'toast://当前弹幕获取源：' + input;
+                }),
+                pic_url: 箭头图标,
+                col_type: "text_icon"
+            })*/
+        })
         d.push({
             title: '弹幕获取源管理',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {

@@ -816,7 +816,7 @@ function 弹幕(vipUrl) {
                         });
                     }else if(dmObj.comments){
                         dmObj.comments.forEach((dmitem) => {
-                            let [time, type, color, site] = dmitem.p;
+                            let [time, type, color, site] = dmitem.p.split(',');
                             if(isNumeric(time)){
                                 let decimalColor = convertColorToDecimal(color);
                                 let pAttribute = `${time},${type},23,${decimalColor}`;

@@ -771,7 +771,7 @@ function 弹幕(vipUrl) {
         return;
     }
     let dm = "";
-    log("开始获取弹幕>" + (playSet['danmuSource']||'hls弹幕'));
+    log("开始获取弹幕>" + dmname);
     
     try{
         if(dmname=='dm盒子'){

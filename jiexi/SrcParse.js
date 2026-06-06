@@ -838,7 +838,7 @@ function 弹幕(vipUrl) {
                         writeFile(dmfile, dmhtml);
                         dm = dmfile;
                     }else if(danmuSource.type=='json'){
-                        dm = convertJsonDmToXML(JSON.parse(hlshtml));
+                        dm = convertJsonDmToXML(JSON.parse(dmhtml));
                     }
                 }
             }

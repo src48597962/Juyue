@@ -197,13 +197,14 @@ function dmapi(data) {
             if (dmfilestr != "") {
                 eval("dmlist=" + dmfilestr + ";");
             }
-            if (dmlist.some(v => v.name == dmname)) {
-                return 'toast://名称已存在：' + dmname;
+            if(!data){
+                if (dmlist.some(v => v.name == dmname)) {
+                    return 'toast://名称已存在：' + dmname;
+                }
+                if (dmlist.some(v => v.url == dmurl)) {
+                    return 'toast://链接已存在：' + dmurl;
+                }
             }
-            if (dmlist.some(v => v.url == dmurl)) {
-                return 'toast://链接已存在：' + dmurl;
-            }
-
 
             showLoading('正在校验有效性');
             try {

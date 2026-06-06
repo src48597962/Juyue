@@ -129,7 +129,7 @@ function jxSetPage(dd) {
                 sm = '关闭播放弹幕';
             } else {
                 playSet['danmu'] = 1;
-                sm = '仅针对官网地址有效，当前弹幕获取源:' + (playSet['danmuSource'].name || '未选择');
+                sm = '仅针对官网地址有效，可选择弹幕获取源';
             }
             jxSetCfg['playSet'] = playSet;
             storage0.putMyVar('jxSetCfg', jxSetCfg);
@@ -145,7 +145,7 @@ function jxSetPage(dd) {
         });
 
         d.push({
-            title: '弹幕获取源：' + (playSet['danmuSource'].name || '未选择'),
+            title: '弹幕获取源：' + ((playSet['danmuSource']||{}).name || '未选择'),
             url: $('#noLoading#').lazyRule(() => {
                 require(config.jxCodePath + 'SrcPublic.js');
                 let dmlist = [];

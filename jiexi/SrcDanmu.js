@@ -21,10 +21,25 @@ function dmhome(){
                 return 'toast://不能为空';
             }
 
-            return $("hiker://empty#noRecordHistory##noHistory##immersiveTheme#").rule((input) => {
-                require(config.jxCodePath + 'SrcPublic.js');
-                importConfirm(input);
-            }, input)
+            let code = aesDecode('danmu', input.split('￥')[1]);
+            let text = parsePaste(code);
+            let sharetxt = base64Decode(text);
+            let imports = JSON.parse(sharetxt); 
+
+            require(config.jxCodePath + 'SrcPublic.js');
+            let dmlist = [];
+            let dmfilestr = fetch(jxdmfile);
+            if (dmfilestr != "") {
+                eval("dmlist=" + dmfilestr + ";");
+            }
+            imports.forEach(it=>{
+                if(!dmlist.some(v=>v.name==it.name || v.url==it.url)){
+                    dmlist.push(it);
+                }
+            })
+            writeFile(jxdmfile, JSON.stringify(dmlist));
+            refreshPage();
+            return 'toast://已导入';
         }),
         img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
         col_type: "icon_small_3"
@@ -34,8 +49,27 @@ function dmhome(){
     d.push({
         title: '分享',
         url: $(pastes, 2).select(() => {
-            require(config.jxCodePath + 'SrcJiexi.js');
-            return JYshare(input);
+            require(config.jxCodePath + 'SrcPublic.js');
+            let dmlist = [];
+            let dmfilestr = fetch(jxdmfile);
+            if (dmfilestr != "") {
+                eval("dmlist=" + dmfilestr + ";");
+            }
+            if(dmlist.length==0){
+                return 'toast://列表为空';
+            }
+            showLoading('分享生成中，请稍后...');
+            let sharetxt = base64Encode(JSON.stringify(dmlist));
+            let pasteurl = sharePaste(sharetxt, input);
+            hideLoading();
+            if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
+                log('剪贴板地址>' + pasteurl);
+                copy('解析弹幕￥' + aesEncode('danmu', pasteurl) + '￥聚阅');
+                return "toast://分享口令已生成";
+            } else {
+                log('分享失败>' + pasteurl);
+                return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
+            }
         }),
         img: getJxIcon(jxIcons[3].img, false, jxIcons[3].color),
         col_type: "icon_small_3"

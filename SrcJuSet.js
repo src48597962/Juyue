@@ -153,6 +153,7 @@ function SRCSet() {
                 return 'toast://不能为空';
             }
             writeFile("hiker://files/_cache/Juyue/cloudimport.txt", input);
+
             return "hiker://page/importConfirm#immersiveTheme##noRecordHistory##noHistory#?rule=聚阅"
         }),
         img: getIcon(jkIcons[2].img, false, jkIcons[2].color),
@@ -1092,6 +1093,9 @@ function importConfirm(importStr) {
         deleteFile(importfile);
         clearMyVar('importConfirm');
         clearMyVar("选择列表项");
+        if(getMyVar('jkdatalist')){
+            refreshPage();
+        }
     },importfile));
 
     let importdatas = storage0.getMyVar('importConfirm', []);

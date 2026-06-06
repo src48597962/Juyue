@@ -152,10 +152,10 @@ function jxSetPage(dd) {
                 if (dmfilestr != "") {
                     eval("dmlist=" + dmfilestr + ";");
                 }
-                log(dmlist.map(v=>v.name).unshift('dm盒子'));
+
                 const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
                 hikerPop.selectBottom({
-                    options: dmlist.map(v=>v.name).unshift('dm盒子'),
+                    options: ['dm盒子'].concat(dmlist.map(v => v.name)),
                     columns: 3,
                     height: 0.6, //0-1
                     position: 1,

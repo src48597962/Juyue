@@ -764,11 +764,17 @@ function mulheader (url) {
     return header;
 }
 function 弹幕(vipUrl) {
+    let danmuSource = playSet['danmuSource'] || {};
+    let dmname = danmuSource.name;
+    if(!dmname){
+        log("未设置获取弹幕源，跳过");
+        return;
+    }
     let dm = "";
     log("开始获取弹幕>" + (playSet['danmuSource']||'hls弹幕'));
     
     try{
-        if(playSet['danmuSource']=='dm盒子'){
+        if(dmname=='dm盒子'){
             //dm盒子弹幕
             dm = $.require('hiker://page/dmFun?rule=dm盒子').dmRoute(vipUrl);
         }else{
@@ -776,7 +782,7 @@ function 弹幕(vipUrl) {
             if(fileExist(dmfile)){
                 dm = dmfile;
             }else{
-                function convertDanmakuToSimpleXML(danmakuArray, dmfile) {
+                function convertJsonDmToXML(dmObj) {
                     function convertColorToDecimal(color) {
                         const lowerColor = color.toLowerCase();
                         // 处理十六进制颜色 (#fff, #ffffff)
@@ -791,37 +797,48 @@ function 弹幕(vipUrl) {
                         }
                         return '16777215'; // 默认白色
                     }
+                    function isNumeric(str) {
+                        return !isNaN(str) && !isNaN(parseFloat(str));
+                    }
                     // 构建XML头
                     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
                     xml += `<i>\n`;
                     let num = 0;
-                    danmakuArray.slice(1).forEach((danmaku) => {
-                        let [time, type, color, size, text] = danmaku;
-                        if(time){
-                            let decimalColor = convertColorToDecimal(color);
-                            let pAttribute = `${time},1,23,${decimalColor}`;
-                            // 添加弹幕到XML
-                            xml += `<d p="${pAttribute}">${text}</d>\n`;
-                            num++;
-                        }
-                    });
+                    if(dmObj.danmuku){
+                        dmObj.danmuku.slice(1).forEach((dmitem) => {
+                            let [time, type, color, size, text] = dmitem;
+                            if(isNumeric(time)){
+                                let decimalColor = convertColorToDecimal(color);
+                                let pAttribute = `${time},1,23,${decimalColor}`;
+                                xml += `<d p="${pAttribute}">${text}</d>\n`;
+                                num++;
+                            }
+                        });
+                    }else if(dmObj.comments){
+                        dmObj.comments.forEach((dmitem) => {
+                            let [time, type, color, site] = dmitem.p;
+                            if(isNumeric(time)){
+                                let decimalColor = convertColorToDecimal(color);
+                                let pAttribute = `${time},${type},23,${decimalColor}`;
+                                xml += `<d p="${pAttribute}">${dmitem.m}</d>\n`;
+                                num++;
+                            }
+                        });
+                    }
                     if(num==0){
-                        return '';
+                        return;
                     }
                     xml += `</i>`;
                     writeFile(dmfile, xml);
                     return dmfile;
                 }
-                if(playSet['danmuSource']=='zxz弹幕'){
-                    let xmlhtml = fetch('https://danmu.zxz.ee/?type=xml&id='+vipUrl, {time:3000});
-                    if(xmlhtml){
-                        writeFile(dmfile, xmlhtml);
+                let dmhtml = fetch(danmuSource.url + vipUrl, {time:3000});
+                if(dmhtml){
+                    if(danmuSource.type=='xml'){
+                        writeFile(dmfile, dmhtml);
                         dm = dmfile;
-                    }
-                }else{
-                    let hlshtml = fetch('https://dmku.hls.one/?ac=dm&url='+vipUrl, {time:3000});
-                    if(hlshtml){
-                        dm = convertDanmakuToSimpleXML(JSON.parse(hlshtml).danmuku || [], dmfile);
+                    }else if(danmuSource.type=='json'){
+                        dm = convertJsonDmToXML(JSON.parse(hlshtml));
                     }
                 }
             }

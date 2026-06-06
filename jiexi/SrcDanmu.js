@@ -162,7 +162,7 @@ function dmapi(data) {
     d.push({
         title: 'dmurl',
         col_type: 'input',
-        desc: "弹幕链接",
+        desc: "弹幕接口",
         extra: {
             titleVisible: false,
             defaultValue: getMyVar('dmurl', ""),
@@ -206,18 +206,20 @@ function dmapi(data) {
                 }
             }
 
-            showLoading('正在校验有效性');
             try {
-                let html = fetch(dmurl + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html', { timeout: 8000 });
-                if (html.startsWith('{') && html.includes('comments')) {
-                    dmtype = 'json';
-                } else if (html.startsWith('<?xml') && html.includes('<d p="')) {
-                    dmtype = 'xml';
-                } else {
-                    dmtype = '';
+                if(!data){
+                    showLoading('正在校验有效性');
+                    let html = fetch(dmurl + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html', { timeout: 8000 });
+                    if (html.startsWith('{') && html.includes('comments')) {
+                        dmtype = 'json';
+                    } else if (html.startsWith('<?xml') && html.includes('<d p="')) {
+                        dmtype = 'xml';
+                    } else {
+                        dmtype = '';
+                    }
+                    hideLoading();
                 }
 
-                hideLoading();
                 if (dmtype) {
                     if(data){
                         dmlist = dmlist.filter(v => v.url != data.url);

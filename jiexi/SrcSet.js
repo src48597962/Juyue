@@ -118,10 +118,6 @@ function jxSetPage(dd) {
         pic_url: playSet['testvideo']?getJxIcon("开.svg"):getJxIcon("关.svg"),
         col_type: "text_icon"
     });
-    let danmuname = '未选择';
-    try{
-        danmuname = playSet['danmuSource'].name;
-    }catch(e){}
     d.push({
         title: '解析播放获取弹幕',
         url: $('#noLoading#').lazyRule(() => {
@@ -133,7 +129,7 @@ function jxSetPage(dd) {
                 sm = '关闭播放弹幕';
             } else {
                 playSet['danmu'] = 1;
-                sm = '仅针对官网地址有效，当前弹幕获取源:' + danmuname;
+                sm = '仅针对官网地址有效，当前弹幕获取源:' + (playSet['danmuSource'].name || '未选择');
             }
             jxSetCfg['playSet'] = playSet;
             storage0.putMyVar('jxSetCfg', jxSetCfg);
@@ -149,7 +145,7 @@ function jxSetPage(dd) {
         });
 
         d.push({
-            title: '弹幕获取源：' + danmuname,
+            title: '弹幕获取源：' + (playSet['danmuSource'].name || '未选择'),
             url: $('#noLoading#').lazyRule(() => {
                 require(config.jxCodePath + 'SrcPublic.js');
                 let dmlist = [];

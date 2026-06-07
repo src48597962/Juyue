@@ -23,7 +23,7 @@ function home() {
         col_type: "icon_small_3"
     });
     d.push({
-        title: getMyVar('主页显示内容', '1')=="2"?`<b><span style="color: `+Color+`">调用管理</span></b>`:'调用管理',
+        title: getMyVar('主页显示内容', '1')=="2"?`<b><span style="color: `+Color+`">调用列表</span></b>`:'调用列表',
         url: $('#noLoading#').lazyRule(() => {
             putMyVar('主页显示内容', '2');
             refreshPage();

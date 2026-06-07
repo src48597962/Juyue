@@ -1115,7 +1115,7 @@ function erji() {
                     }
                 })
 
-                let morecols = ["选集分页设置","修整选集标题:"+(reviseLiTitle=="1"?"是":"否"), "解析管理设置"];
+                let morecols = ["选集分页设置", "解析管理设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 if(erLoadData.detail1 && erLoadData.detailObj){
@@ -1227,27 +1227,6 @@ function erji() {
                     extra: {
                         cls: "Juloadlist",
                         longClick: [{
-                            title: "解析列表",
-                            js: $.toString(() => {
-                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                                    let {jxItem} = $.require(codePath + 'jiexi/SrcInvoke.js');
-                                    jxItem();
-                                })
-                            })
-                        },{
-                            title: "调用管理",
-                            js: $.toString(() => {
-                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                                    let {dyItem} = $.require(codePath + 'jiexi/SrcInvoke.js');
-                                    dyItem();
-                                })
-                            })
-                        },{
-                            title: "解析设置",
-                            js: $.toString(() => {
-                                return $.require("parseUrl").设置;
-                            })
-                        },{
                             title: "显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),
                             js: $.toString(() => {
                                 let sm;

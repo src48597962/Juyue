@@ -244,7 +244,7 @@ function jxSetPage(dd) {
     });
     d.push({
         col_type: "line"
-    });
+    });    
     d.push({
         title: '嗅探方式：'+(playSet['videoplay']==1?"video":"WebRule"),
         url: $('#noLoading#').lazyRule(() => {
@@ -259,9 +259,13 @@ function jxSetPage(dd) {
         pic_url: 箭头图标,
         col_type: "text_icon"
     });
+
     if(parsemode==1){
         d.push({
-            title: '线路指定优先',
+            col_type: "line"
+        });   
+        d.push({
+            title: '线路指定解析优先',
             url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
                 addListener("onClose", $.toString(() => {
                     
@@ -309,7 +313,7 @@ function jxSetPage(dd) {
             col_type: "text_icon"
         });
         d.push({
-            title: '多线路数：'+(playSet['mulnum']||"1"),
+            title: '多线程路数：'+(playSet['mulnum']||"1"),
             url: $(playSet['mulnum']||"1", "当多线路数大于1时可能会拖慢解析速度").input(() => {
                 let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
                 let playSet = jxSetCfg['playSet'] || {};

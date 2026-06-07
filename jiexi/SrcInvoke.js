@@ -134,11 +134,6 @@ function call(input, testarr) {
 
     return callcode || (testarr?'toast://调用匹配失败':'');
 }
-// 弹幕下载
-function danmu(input) {
-    require(jxCodePath + 'SrcParse.js');
-    return 弹幕(input);
-}
 
 $.exports = {
     home: home,
@@ -146,6 +141,5 @@ $.exports = {
     dyItem: dyItem,
     jxSet: jxSet,
     lazy: lazy,
-    call: call,
-    danmu: danmu
+    call: call
 }

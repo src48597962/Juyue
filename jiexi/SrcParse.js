@@ -763,11 +763,22 @@ function mulheader (url) {
     }
     return header;
 }
-function 弹幕(vipUrl) {
+function 弹幕(input) {
+    let vipUrl = '';
+    if($.type(input)=='object'){
+        playSet['danmuSource'] = input.danmuSource;
+        vipUrl = input.vipUrl;
+    }else{
+        vipUrl = input;
+    }
     let danmuSource = playSet['danmuSource'] || {};
     let dmname = danmuSource.name;
     if(!dmname){
         log("未设置获取弹幕源，跳过");
+        return;
+    }
+    if(!vipUrl){
+        log("未传输视频地址，跳过");
         return;
     }
     let dm = "";
@@ -834,7 +845,8 @@ function 弹幕(vipUrl) {
                     writeFile(dmfile, xml);
                     return dmfile;
                 }
-                let dmhtml = fetch(danmuSource.url + vipUrl, {time:3000});
+
+                let dmhtml = fetch(danmuSource.url.includes('**') ? danmuSource.url.replace('**', vipUrl) : danmuSource.url + vipUrl, {time:3000});
                 if(dmhtml){
                     if(danmuSource.type=='xml'){
                         writeFile(dmfile, dmhtml);
@@ -848,9 +860,7 @@ function 弹幕(vipUrl) {
     }catch(e){
         log('获取弹幕异常>' + e.message);
     }
-    if(dm){
-        log("获取弹幕成功");
-    }else{
+    if(!dm){
         log("获取弹幕失败");
     }
     return dm;

@@ -1,5 +1,5 @@
 //子页面读接口规则数据
-let parse = function(jkdata) {
+function parse(jkdata) {
     jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息') || {};
     if($.type(jkdata)=="string"){
         jkdata = {id: jkdata}
@@ -95,12 +95,14 @@ function compress(bmpOriginal, inSampleSize, quality) {
         bitmap.recycle();
     }
 }
+
 let exports = {
     "parse": parse,
     "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
     "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
     "toGrayscale": (inSampleSize) => toGrayscale(input, inSampleSize)
 }
+/*
 try{
     let exportskeys = Object.keys(exports);
     let getexp = parse() || {};
@@ -117,5 +119,5 @@ try{
         }
     })
 }catch(e){}
-
+*/
 $.exports = exports

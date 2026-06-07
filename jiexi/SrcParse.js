@@ -763,15 +763,8 @@ function mulheader (url) {
     }
     return header;
 }
-function 弹幕(input) {
-    let vipUrl = '';
-    if($.type(input)=='object'){
-        playSet['danmuSource'] = input.danmuSource;
-        vipUrl = input.vipUrl;
-    }else{
-        vipUrl = input;
-    }
-    let danmuSource = playSet['danmuSource'] || {};
+function 弹幕(vipUrl, dataObj) {
+    let danmuSource = dataObj || playSet['danmuSource'] || {};
     let dmname = danmuSource.name;
     if(!dmname){
         log("未设置获取弹幕源，跳过");

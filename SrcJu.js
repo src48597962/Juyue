@@ -1443,8 +1443,10 @@ function erji() {
                     }
                     return str.trim();
                 }
+                //列表默认样式
                 let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
-                let list_col_type = getItem('SrcJuList_col_type', '自动')=='自动'?(列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2'):getItem('SrcJuList_col_type'); //列表默认样式
+                let list_col_type_auto = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2';
+                let list_col_type_set = getItem('SrcJuList_col_type', '自动');
                 
                 for(let i=0; i<列表.length; i++) {
                     let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
@@ -1471,7 +1473,7 @@ function erji() {
                         url: !列表[i].url?'toast://链接为空':(列表[i].url.includes('@lazyRule=')||列表[i].url.includes('@rule='))?列表[i].url:列表[i].url!="hiker://empty"?((isrule?"hiker://empty##":"") + 列表[i].url + lazy):列表[i].url,
                         desc: 列表[i].desc,
                         img: 列表[i].img,
-                        col_type: 列表[i].col_type || list_col_type,
+                        col_type: list_col_type_set=='自动'?(列表[i].col_type || list_col_type_auto):list_col_type_set,
                         extra: extra
                     });
                 }

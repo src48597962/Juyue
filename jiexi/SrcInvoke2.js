@@ -79,9 +79,9 @@ function call(input, testarr) {
 }
 
 // 弹幕下载
-function danmu(input) {
+function danmu(input, dataObj) {
     require(jxCodePath + 'SrcParse.js');
-    return 弹幕(input);
+    return 弹幕(input, dataObj);
 }
 
 $.exports = {

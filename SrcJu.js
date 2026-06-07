@@ -1181,8 +1181,8 @@ function erji() {
                             refreshPage(false);
                             return "toast://"+sm;
                         }else if(input.includes('选集样式')){
-                            return $(["自动判断","text_1","text_2","text_3","text_4","flex_button"],2,"选集列表样式").select(() => {
-                                if(input=='自动判断'){
+                            return $(["自动选择","text_1","text_2","text_3","text_4","flex_button"],2,"选集列表样式").select(() => {
+                                if(input=='自动选择'){
                                     clearItem('SrcJuList_col_type');
                                 }else{
                                     setItem('SrcJuList_col_type', input);

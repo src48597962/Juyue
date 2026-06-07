@@ -1082,7 +1082,7 @@ function erji() {
                 }
                 
                 d.push({
-                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span>` : `““””<span style="color: #55AA44">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span>`,
+                    title: getMyVar(sname + 'sort') == '1' ? `““””<span style="color: #66CCEE">⇅</span>` : `““””<span style="color: #55AA44">⇅</span>`,
                     url: $("#noLoading#").lazyRule((sname) => {
                         let 列表 = findItemsByCls('playlist') || [];
                         if(列表.length==0){
@@ -1092,12 +1092,12 @@ function erji() {
                         if (getMyVar(sname + 'sort') == '1') {
                             putMyVar(sname + 'sort', '0');
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #55AA44">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span></b>`
+                                title: `““””<b><span style="color: #55AA44">⇅</span></b>`
                             });
                         } else {
                             putMyVar(sname + 'sort', '1')
                             updateItem('listsort', {
-                                title: `““””<b><span style="color: #66CCEE">`+(juItem2.get('二级简洁模式')?"":"排序")+`⇅</span></b>`
+                                title: `““””<b><span style="color: #66CCEE">⇅</span></b>`
                             });
                         };
                         列表.reverse();
@@ -1115,16 +1115,15 @@ function erji() {
                     }
                 })
 
-                let morecols = ["选集分页设置","修整选集标题:"+(reviseLiTitle=="1"?"是":"否"),"显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否")];
+                let morecols = ["选集分页设置","修整选集标题:"+(reviseLiTitle=="1"?"是":"否"), "解析管理设置"];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
-                morecols.push("二级简洁模式:"+(juItem2.get('二级简洁模式')?"是":"否"))
                 if(erLoadData.detail1 && erLoadData.detailObj){
                     morecols.push("自定义封面样式:"+(isJuDetail(jkdata.id)?"否":"是"))
                 }
                 
                 d.push({
-                    title: `““””`+(juItem2.get('二级简洁模式')?"":`<span style="color: #f47983">样式</span>`)+`<small>🎨</small>`,
+                    title: `““””<small>🎨</small>`,
                     url: $(morecols, 1, "样式设置").select(() => {
                         if(input=="选集分页设置"){
                             return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
@@ -1153,6 +1152,12 @@ function erji() {
                                 refreshPage(false);
                                 return 'hiker://empty'
                             })
+                        }else if(input.includes('解析管理设置')){
+                            putMyVar('主页显示内容', '3');
+                            return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                let {home} = $.require(config.聚阅.replace(/[^/]*$/,'') + 'jiexi/SrcInvoke.js');
+                                home();
+                            })
                         }else if(input.includes('修整选集标题')){
                             let sm;
                             if(getItem('reviseLiTitle','0')=="1"){
@@ -1161,17 +1166,6 @@ function erji() {
                             }else{
                                 setItem('reviseLiTitle','1');
                                 sm = "统一修整选集标题名称";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
-                        }else if(input.includes('显示扩展项')){
-                            let sm;
-                            if(getItem('extenditems','1')=="1"){
-                                setItem('extenditems','0');
-                                sm = "取消显示二级扩展项";
-                            }else{
-                                clearItem('extenditems');
-                                sm = "显示二级扩展项";
                             }
                             refreshPage(false);
                             return "toast://"+sm;
@@ -1196,17 +1190,6 @@ function erji() {
                                 refreshPage();
                                 return 'hiker://empty';
                             })
-                        }else if(input.includes('二级简洁模式')){
-                            let sm;
-                            if(juItem2.get('二级简洁模式')){
-                                juItem2.clear('二级简洁模式');
-                                sm = "退出简洁模式，排序、样式等显示名称";
-                            }else{
-                                juItem2.set('二级简洁模式','1');
-                                sm = "简洁模式，排序、样式等不显示名称";
-                            }
-                            refreshPage(false);
-                            return "toast://"+sm;
                         }else if(input.includes('自定义封面样式')){
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级聚阅封面')?"关":"开"));
@@ -1263,6 +1246,20 @@ function erji() {
                             title: "解析设置",
                             js: $.toString(() => {
                                 return $.require("parseUrl").设置;
+                            })
+                        },{
+                            title: "显示扩展项:"+(getItem('extenditems','1')=="1"?"是":"否"),
+                            js: $.toString(() => {
+                                let sm;
+                                if(getItem('extenditems','1')=="1"){
+                                    setItem('extenditems','0');
+                                    sm = "取消显示二级扩展项";
+                                }else{
+                                    clearItem('extenditems');
+                                    sm = "显示二级扩展项";
+                                }
+                                refreshPage(false);
+                                return "toast://"+sm;
                             })
                         }]
                     }

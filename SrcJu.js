@@ -897,6 +897,26 @@ function erji() {
                     }
                 })
                 let sskeyword = name.split('/')[0].trim();
+                let expandBtn = [];
+                if(addCaseObj.length==1){
+                    expandBtn.push(addCaseObj[0].title);
+                }
+                if(stype=="视频"){
+                    expandBtn.push("扩展搜索");
+                }
+                d.push({
+                    title: "扩展功能",
+                    url: $(expandBtn, 1).select(()=>{
+                        
+                    }),
+                    pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
+                    col_type: 'icon_small_3',
+                    extra: {
+                        cls: "Juloadlist",
+                        longClick: addCaseObj
+                    }
+                })
+                /*
                 if(stype=="视频"){
                     d.push({
                         title: "扩展搜索",
@@ -961,6 +981,7 @@ function erji() {
                         }
                     })
                 }
+                */
                 function processChineseText(input) {
                     // 1. 只保留汉字、字母、数字
                     let cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');

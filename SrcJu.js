@@ -900,6 +900,7 @@ function erji() {
                 let expandBtn = [];
                 if(addCaseObj.length==1){
                     expandBtn.push(addCaseObj[0].title);
+                    $.extend({addCaseObj: addCaseObj[0].js});
                 }
                 if(stype=="视频"){
                     expandBtn.push("扩展搜索");
@@ -910,6 +911,8 @@ function erji() {
                     url: $(expandBtn, 1).select(()=>{
                         if(input=='扩展搜索'){
                             return $.expandSearch;
+                        }else if(input.includes('收藏')){
+                            return $.addCaseObj;
                         }
                     }),
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),

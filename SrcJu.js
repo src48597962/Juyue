@@ -524,6 +524,7 @@ function erji() {
         clearMyVar('换源变更列表id');
         clearMyVar('二级源接口信息');
         clearMyVar('线路显示翻页内容');
+        clearMyVar("$:extend");//清除$扩展挂载
         if(getMyVar('从书架进二级')){
             refreshPage(false);
         }
@@ -896,13 +897,14 @@ function erji() {
                         cls: "Juloadlist"
                     }
                 })
-                xlog(getMyVar("$:extend"));
+
                 let sskeyword = name.split('/')[0].trim();
                 let expandBtn = [];
                 if(addCaseObj.length==1){
                     expandBtn.push(addCaseObj[0].title);
                     $.extend({addCaseObj: addCaseObj[0].js});
                 }
+                expandBtn.push('查看收藏');
                 if(stype=="视频"){
                     expandBtn.push("扩展搜索");
                     $.extend({expandSearch: expandSearch(sskeyword)});
@@ -912,8 +914,13 @@ function erji() {
                     url: $(expandBtn, 1).select(()=>{
                         if(input=='扩展搜索'){
                             return $.expandSearch;
-                        }else if(input.includes('收藏')){
+                        }else if(input.includes('加入收藏')||input.includes('取消收藏')){
                             return '#noLoading#@lazyRule=.js:' + $.addCaseObj;
+                        }else if(input=='查看收藏'){
+                            return $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
+                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
+                                bookCase();
+                            })
                         }
                     }),
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),

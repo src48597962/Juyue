@@ -985,7 +985,7 @@ function getCaseID(item) {
 function getCaseClick(caseData, refresh){
     let isCase = refresh?isBookCase(caseData.id):false;
     return {
-        title: isCase?"取消收藏":"加入收藏",
+        title: isCase?"取消收藏":"加入收藏🗄",
         js: isCase?$.toString((caseid, refresh) => {
                 removeBookCase(caseid, refresh);
                 refreshPage();

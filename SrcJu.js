@@ -912,8 +912,7 @@ function erji() {
                         if(input=='扩展搜索'){
                             return $.expandSearch;
                         }else if(input.includes('收藏')){
-                            xlog($.addCaseObj);
-                            return $.addCaseObj;
+                            return 'hiker://emtpy@lazyRule=.js:' + $.addCaseObj;
                         }
                     }),
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),

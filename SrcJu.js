@@ -962,7 +962,7 @@ function erji() {
                             return $.expandSearch;
                         }else if(input.includes('加入收藏')||input.includes('取消收藏')){
                             return '#noLoading#@lazyRule=.js:' + $.addCaseObj;
-                        }else if(input=='查看收藏'){
+                        }else if(input.includes('查看收藏')){
                             return $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
                                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                                 bookCase();

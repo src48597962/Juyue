@@ -933,7 +933,7 @@ function getThemeList(isEnable) {
             fill = fill || '';
             return arr.concat(Array(length - arr.length).fill(fill)).slice(0, length);
         }
-        let 图标数量 = {主页: 5, 二级: 5, 接口: 4, 书架: 3}
+        let 图标数量 = {主页: 5, 二级: 4, 接口: 4, 书架: 3}
         currentTheme['主页图标'] = padArray(currentTheme['主页图标'] || [], 图标数量['主页']);
         currentTheme['二级图标'] = padArray(currentTheme['二级图标'] || [], 图标数量['二级']);
         currentTheme['接口图标'] = padArray(currentTheme['接口图标'] || [], 图标数量['接口']);

@@ -903,11 +903,14 @@ function erji() {
                 }
                 if(stype=="视频"){
                     expandBtn.push("扩展搜索");
+                    $.extend({expandSearch: expandSearch(sskeyword)});
                 }
                 d.push({
                     title: "扩展功能",
                     url: $(expandBtn, 1).select(()=>{
-                        
+                        if(input=='扩展搜索'){
+                            return $.expandSearch;
+                        }
                     }),
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                     col_type: 'icon_small_3',

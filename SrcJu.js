@@ -904,12 +904,12 @@ function erji() {
                     expandBtn.push(addCaseObj[0].title);
                     $.extend({addCaseObj: addCaseObj[0].js});
                 }
-                expandBtn.push('解析管理设置');
                 expandBtn.push('查看收藏|书架');
                 let expandext = {
                     cls: "Juloadlist"
                 }
                 if(stype=="视频"){
+                    expandBtn.push('解析管理设置');
                     expandBtn.push("更多搜索🔍");
                     $.extend({expandSearch: expandSearch(sskeyword)});
                 }else{
@@ -977,7 +977,7 @@ function erji() {
                             return '#noLoading#@lazyRule=.js:' + $.downloadLocal;
                         }
                     }),
-                    pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
+                    pic_url: getIcon(erIcons[1].img, false, erIcons[1].color),
                     col_type: 'icon_small_3',
                     extra: expandext
                 })

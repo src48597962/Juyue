@@ -905,9 +905,36 @@ function erji() {
                     $.extend({addCaseObj: addCaseObj[0].js});
                 }
                 expandBtn.push('查看收藏');
+                expandBtn.push('解析管理设置');
+                let expandext = {
+                    cls: "Juloadlist"
+                }
                 if(stype=="视频"){
                     expandBtn.push("扩展搜索");
                     $.extend({expandSearch: expandSearch(sskeyword)});
+                }else{
+                    expandBtn.push("下载本地📥");
+                    $.extend({downloadLocal: $.toString((itype) => {
+                        if(itype){
+                            return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
+                        }else{
+                            return "toast://不支持下载的类型"
+                        }
+                    },itype)});
+                    expandext = {
+                        "cls": "Juloadlist",
+                        "inheritTitle": false,
+                        "chapterList": 列表,
+                        "defaultView": "1",
+                        "info": {
+                            "bookName": name,
+                            "bookTopPic": erTempData.img,
+                            "parseCode": download,
+                            "ruleName": sname + " (聚阅)",
+                            "type": itype,
+                            "decode": imgdecode
+                        }
+                    }
                 }
                 d.push({
                     title: "扩展功能",
@@ -921,14 +948,19 @@ function erji() {
                                 require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
                                 bookCase();
                             })
+                        }else if(input.includes('解析管理设置')){
+                            putMyVar('主页显示内容', '3');
+                            return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                let {home} = $.require(config.聚阅.replace(/[^/]*$/,'') + 'jiexi/SrcInvoke.js');
+                                home();
+                            })
+                        }else if(input=='下载本地📥'){
+                            return '#noLoading#@lazyRule=.js:' + $.downloadLocal;
                         }
                     }),
                     pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
                     col_type: 'icon_small_3',
-                    extra: {
-                        cls: "Juloadlist",
-                        longClick: addCaseObj
-                    }
+                    extra: expandext
                 })
                 /*
                 if(stype=="视频"){

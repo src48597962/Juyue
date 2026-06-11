@@ -886,7 +886,7 @@ function getThemeList(isEnable) {
                 "img": "http://123.56.105.145/juyue/themes/078/2_简介.svg",
                 "color": "#CCCCCC"
             }, {
-                "img": "http://123.56.105.145/juyue/themes/078/2_书架.svg",
+                "img": "http://123.56.105.145/juyue/themes/078/2_搜索.svg",
                 "color": "#ccc"
             }, {
                 "img": "http://123.56.105.145/juyue/themes/078/2_换源.svg",
@@ -894,9 +894,6 @@ function getThemeList(isEnable) {
             }, {
                 "img": "http://123.56.105.145/juyue/themes/078/2_详情.svg",
                 "color": "#CCCCCC"
-            }, {
-                "img": "http://123.56.105.145/juyue/themes/078/2_搜索.svg",
-                "color": "#ccc"
             }],
             "书架图标": [{
                 "img": "http://123.56.105.145/juyue/themes/078/s_本地.svg",

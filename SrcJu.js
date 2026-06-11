@@ -921,6 +921,25 @@ function erji() {
                             return "toast://不支持下载的类型"
                         }
                     },itype)});
+
+                    let imgdecode = "";
+                    if(parse["imgdec"]){
+                        try{
+                            if($.type(parse["imgdec"])=="function"){
+                                imgdecode = parse["imgdec"]();
+                                if($.type(imgdecode)=="function"){
+                                    imgdecode = $.toString((imgdec)=>{
+                                        let imgDecrypt = imgdec;
+                                        return imgDecrypt();
+                                    }, imgdecode)
+                                }
+                            }else if($.type(parse["imgdec"])=="string"){
+                                imgdecode = parse["imgdec"];
+                            }
+                        }catch(e){
+                            xlog('获取图片解密imgdec出错，信息>' + e.message + " 错误行#" + e.lineNumber);
+                        }
+                    }
                     expandext = {
                         "cls": "Juloadlist",
                         "inheritTitle": false,

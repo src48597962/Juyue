@@ -905,12 +905,12 @@ function erji() {
                     $.extend({addCaseObj: addCaseObj[0].js});
                 }
                 expandBtn.push('解析管理设置');
-                expandBtn.push('查看收藏|本地');
+                expandBtn.push('查看收藏|书架');
                 let expandext = {
                     cls: "Juloadlist"
                 }
                 if(stype=="视频"){
-                    expandBtn.push("扩展搜索");
+                    expandBtn.push("更多搜索🔍");
                     $.extend({expandSearch: expandSearch(sskeyword)});
                 }else{
                     expandBtn.push("下载本地📥");
@@ -958,7 +958,7 @@ function erji() {
                 d.push({
                     title: "扩展功能",
                     url: $(expandBtn, 1).select(()=>{
-                        if(input=='扩展搜索'){
+                        if(input=='更多搜索🔍'){
                             return $.expandSearch;
                         }else if(input.includes('加入收藏')||input.includes('取消收藏')){
                             return '#noLoading#@lazyRule=.js:' + $.addCaseObj;
@@ -1201,7 +1201,7 @@ function erji() {
                     }
                 })
 
-                let morecols = ["选集分页设置", "解析管理设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
+                let morecols = ["选集分页设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
                 if(erLoadData.detail1 && erLoadData.detailObj){
@@ -1237,12 +1237,6 @@ function erji() {
                                 }
                                 refreshPage(false);
                                 return 'hiker://empty'
-                            })
-                        }else if(input.includes('解析管理设置')){
-                            putMyVar('主页显示内容', '3');
-                            return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                                let {home} = $.require(config.聚阅.replace(/[^/]*$/,'') + 'jiexi/SrcInvoke.js');
-                                home();
                             })
                         }else if(input.includes('修整选集标题')){
                             let sm;

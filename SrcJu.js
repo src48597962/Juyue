@@ -904,8 +904,8 @@ function erji() {
                     expandBtn.push(addCaseObj[0].title);
                     $.extend({addCaseObj: addCaseObj[0].js});
                 }
-                expandBtn.push('查看收藏');
                 expandBtn.push('解析管理设置');
+                expandBtn.push('查看收藏|本地');
                 let expandext = {
                     cls: "Juloadlist"
                 }

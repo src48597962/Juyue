@@ -896,6 +896,7 @@ function erji() {
                         cls: "Juloadlist"
                     }
                 })
+                xlog(getMyVar("$:extend"));
                 let sskeyword = name.split('/')[0].trim();
                 let expandBtn = [];
                 if(addCaseObj.length==1){

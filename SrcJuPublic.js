@@ -931,6 +931,9 @@ function getThemeList(isEnable) {
         });
         function padArray(arr, length, fill) {
             fill = fill || '';
+            if(length<arr.length){
+                arr.length = length;
+            }
             return arr.concat(Array(length - arr.length).fill(fill)).slice(0, length);
         }
         let 图标数量 = {主页: 5, 二级: 4, 接口: 4, 书架: 3}

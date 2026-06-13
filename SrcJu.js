@@ -1534,7 +1534,7 @@ function erji() {
                     try{
                         extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
                     }catch(e){}
-                    extra.id = name + "_选集_" + (pageid?pageid+"_":"") + i;
+                    extra.id = name + "_选集_" + (pageid+"_") + i;
                     extra.cls = "Juloadlist playlist";
                     if(stype=="视频"||stype=="音频"||stype=="聚合"){
                         extra.jsLoadingInject = true;

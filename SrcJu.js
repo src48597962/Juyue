@@ -1213,8 +1213,8 @@ function erji() {
                     title: `““””<small>🎨</small>`,
                     url: $(morecols, 1, "样式设置").select(() => {
                         if(input=="选集分页设置"){
-                            return $(["开启分页","关闭分页","每页数量","分页阀值"],2).select(() => {
-                                let partpage = storage0.getItem('partpage') || {};
+                            let partpage = storage0.getItem('partpage') || {};
+                            return $([partpage.ispage?"关闭分页":"开启分页","每页数量","分页阀值"],2).select((partpage) => {
                                 if(input=="开启分页"){
                                     partpage.ispage = 1;
                                     storage0.setItem('partpage',partpage);
@@ -1238,7 +1238,7 @@ function erji() {
                                 }
                                 refreshPage(false);
                                 return 'hiker://empty'
-                            })
+                            },partpage)
                         }else if(input.includes('修整选集标题')){
                             let sm;
                             if(getItem('reviseLiTitle','0')=="1"){

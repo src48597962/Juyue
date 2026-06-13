@@ -97,9 +97,10 @@ function dmhome(){
     if (dmfilestr != "") {
         eval("dmlist=" + dmfilestr + ";");
     }
+    dmlist.reverse();
     dmlist.forEach(it=>{
         d.push({
-            title: it.name + '   [' + it.type + ']',
+            title: it.name + '  [' + it.type + ']  ' + (it.select?'{搜索}':''),
             desc: it.url,
             col_type: 'text_1',
             url: $(['编辑', '删除'], 2).select((data) => {

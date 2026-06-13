@@ -912,6 +912,7 @@ function erji() {
                     expandBtn.push('解析管理设置');
                     expandBtn.push("更多搜索🔍");
                     $.extend({expandSearch: expandSearch(sskeyword)});
+                    expandBtn.push("弹幕下载📥");
                 }else{
                     expandBtn.push("下载本地📥");
                     $.extend({downloadLocal: $.toString((itype) => {

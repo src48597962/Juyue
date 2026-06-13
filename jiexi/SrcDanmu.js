@@ -134,6 +134,7 @@ function dmapi(data) {
         clearMyVar('dmname');
         clearMyVar('dmurl');
         clearMyVar('dmtype');
+        clearMyVar('dmselect');
         clearMyVar('isload');
         refreshPage();
     }));
@@ -146,6 +147,7 @@ function dmapi(data) {
             putMyVar('dmname', data.name);
             putMyVar('dmurl', data.url || "");
             putMyVar('dmtype', data.type || "");
+            putMyVar('dmselect', data.select || "");
             putMyVar('isload', '1');
         }
     }
@@ -170,9 +172,22 @@ function dmapi(data) {
         }
     });
     d.push({
-        title: '弹幕类型：' + getMyVar('dmtype', ''),
+        title: '弹幕类型：' + getMyVar('dmtype', '自动识别'),
         col_type: 'text_1',
         url: 'hiker://empty'
+    });
+    d.push({
+        title: '是否支持关键字搜索：' + (getMyVar('dmselect')?'是':'否'),
+        col_type: 'text_1',
+        url: $('#noLoading#').lazyRule(() => {
+            if(getMyVar('dmselect')){
+                clearMyVar('dmselect');
+            }else{
+                putMyVar('dmselect', '1');
+            }
+            refreshPage();
+            return 'hiker://empty';
+        })
     });
     d.push({
         col_type: 'blank_block'
@@ -190,6 +205,7 @@ function dmapi(data) {
                 return "toast://名称不能是dm盒子"
             }
             let dmtype = getMyVar('dmtype');
+            let dmselect = getMyVar('dmselect');
 
             require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
@@ -224,8 +240,11 @@ function dmapi(data) {
                     if(data){
                         dmlist = dmlist.filter(v => v.url != data.url);
                     }
-                    
-                    dmlist.push({ name: dmname, url: dmurl, type: dmtype });
+                    let item = { name: dmname, url: dmurl, type: dmtype };
+                    if(dmselect){
+                        item['select'] = '1';
+                    }
+                    dmlist.push(item);
                     writeFile(jxdmfile, JSON.stringify(dmlist));
                     toast('添加成功');
                 } else {

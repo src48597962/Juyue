@@ -100,7 +100,7 @@ function dmhome(){
     dmlist.reverse();
     dmlist.forEach(it=>{
         d.push({
-            title: it.name + '  [' + it.type + ']  ' + (it.select?'{搜索}':''),
+            title: it.name + '  [' + it.type + ']  ' + (it.search?'{搜索}':''),
             desc: it.url,
             col_type: 'text_1',
             url: $(['编辑', '删除'], 2).select((data) => {
@@ -135,7 +135,7 @@ function dmapi(data) {
         clearMyVar('dmname');
         clearMyVar('dmurl');
         clearMyVar('dmtype');
-        clearMyVar('dmselect');
+        clearMyVar('dmsearch');
         clearMyVar('isload');
         refreshPage();
     }));
@@ -148,7 +148,7 @@ function dmapi(data) {
             putMyVar('dmname', data.name);
             putMyVar('dmurl', data.url || "");
             putMyVar('dmtype', data.type || "");
-            putMyVar('dmselect', data.select || "");
+            putMyVar('dmsearch', data.search || "");
             putMyVar('isload', '1');
         }
     }
@@ -178,13 +178,13 @@ function dmapi(data) {
         url: 'hiker://empty'
     });
     d.push({
-        title: '是否支持关键字搜索：' + (getMyVar('dmselect')?'是':'否'),
+        title: '是否支持关键字搜索：' + (getMyVar('dmsearch')?'是':'否'),
         col_type: 'text_1',
         url: $('#noLoading#').lazyRule(() => {
-            if(getMyVar('dmselect')){
-                clearMyVar('dmselect');
+            if(getMyVar('dmsearch')){
+                clearMyVar('dmsearch');
             }else{
-                putMyVar('dmselect', '1');
+                putMyVar('dmsearch', '1');
             }
             refreshPage();
             return 'hiker://empty';
@@ -206,7 +206,7 @@ function dmapi(data) {
                 return "toast://名称不能是dm盒子"
             }
             let dmtype = getMyVar('dmtype');
-            let dmselect = getMyVar('dmselect');
+            let dmsearch = getMyVar('dmsearch');
 
             require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
@@ -242,8 +242,8 @@ function dmapi(data) {
                         dmlist = dmlist.filter(v => v.url != data.url);
                     }
                     let item = { name: dmname, url: dmurl, type: dmtype };
-                    if(dmselect){
-                        item['select'] = '1';
+                    if(dmsearch){
+                        item['search'] = '1';
                     }
                     dmlist.push(item);
                     writeFile(jxdmfile, JSON.stringify(dmlist));

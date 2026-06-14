@@ -1009,7 +1009,7 @@ function danmuDownLoad(data) {
                             title: '点击下面对应的选集进行下载',
                             col_type: 'rich_text'
                         })
-                        let dmid = data.name+'_'+data.pageid+'_'+listid;
+                        let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({

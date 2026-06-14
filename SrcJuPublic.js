@@ -877,8 +877,8 @@ function danmuDownLoad(data) {
             let searchd = [];
             searchList.forEach(it=>{
                 searchd.push({
-                    title: it.animeTitle,
-                    desc: it.typeDescription,
+                    title: it.animeTitle.split('【')[0],
+                    desc: it.typeDescription + ' from' + it.source,
                     pic_url: it.imageUrl,
                     url: $('#noLoading#').lazyRule((bangumiId) => {
                         

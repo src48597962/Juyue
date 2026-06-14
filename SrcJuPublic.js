@@ -880,8 +880,7 @@ function danmuDownLoad(data) {
                 body : {"fileName": data.keyword},
                 method: 'POST'
             }));
-            
-            fetch(dmSource.url);
+
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
             

@@ -915,8 +915,8 @@ function erji() {
                     $.extend({danmudata: {
                         name: name,
                         keyword: sskeyword,
-                        lineid: lineid,
-                        list: 列表
+                        pageid: pageid,
+                        listnames: 列表.map(v=>v.title)
                     }});
                     $.extend({sskeyword: sskeyword});
                 }else{

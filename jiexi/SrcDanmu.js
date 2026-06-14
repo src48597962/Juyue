@@ -235,11 +235,9 @@ function dmapi(data) {
                         dmtype = '';
                     }
                     dmsearch = '';
-                    if(getMyVar('dmsearch') && dmurl.includes('api/v2/comment')){
-                        let searchhtml = fetch(dmurl.split('comment')[0] + 'search/episodes?anime=剑来', { timeout: 8000 });
-                        if(searchhtml.startsWith('{') && searchhtml.includes('animes')){
-                            dmsearch = '1';
-                        }
+                    if(getMyVar('dmsearch') && !dmurl.includes('api/v2/comment')){
+                        dmsearch = '';
+                        toast('仅支持含api/v2/comment的弹幕源搜索');
                     }
                     hideLoading();
                 }

@@ -937,15 +937,70 @@ function danmuDownLoad(data) {
                     title: it.title,
                     desc: it.desc,
                     pic_url: it.pic_url,
-                    url: $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((bangumiId, data) => {
+                    url: $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((dmSource, bangumiId, data) => {
+                        addListener("onClose", $.toString(() => {
+                            clearMyVar('bangumiId');
+                            clearMyVar('listId');
+                        }));
+                        let dmepisodes = storage0.getMyVar('bangumiId'+bangumiId);
+                        if(!dmepisodes){
+                            let dmhtml = fetch(dmSource.url.split('comment')[0] + 'bangumi/' + bangumiId, {timeout: 8000});
+                            dmepisodes = JSON.parse(dmhtml).bangumi.episodes;
+                            storage0.putMyVar('bangumiId', dmepisodes);
+                        }
+                        let listid = parseInt(getMyVar('listId', '0'));
                         let d = [];
                         let listname = data.list.map(v=>v.title);
                         d.push({
-                            title: '现在需下载的弹幕是：\n'+listname[0]+'~'+listname[listname.length - 1],
+                            title: '选择要下载弹幕的播放选集',
                             col_type: 'rich_text'
                         })
+                        d.push({
+                            title: '上一集',
+                            url: $('#noLoading#').lazyRule((listid) => {
+                                if(listid==0){
+                                    return 'toast://第1集了';
+                                }
+                                listid = listid - 1;
+                                putMyVar('listId', listid);
+                                refreshPage(false);
+                                return 'hiker://empty';
+                            }, listid),
+                            col_type: 'text_4'
+                        })
+                        d.push({
+                            title: listname[listid],
+                            url: $('#noLoading#').lazyRule((listid, listname) => {
+                                const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+                                hikerPop.selectBottomMark({
+                                    options: listname,
+                                    position: listid,
+                                    click(a) {
+                                        putMyVar('listId', listname.indexOf(a));
+                                        refreshPage(false);
+                                        return 'hiker://empty';
+                                    }
+                                });
+                                return 'hiker://empty';
+                            }, listid, listname),
+                            col_type: 'text_2'
+                        })
+                        d.push({
+                            title: '下一集',
+                            url: $('#noLoading#').lazyRule((listid, maxid) => {
+                                if(listid==maxid){
+                                    return 'toast://最后1集了';
+                                }
+                                listid = listid + 1;
+                                putMyVar('listId', listid);
+                                refreshPage(false);
+                                return 'hiker://empty';
+                            }, listid, listname.length),
+                            col_type: 'text_4'
+                        })
+                        
                         setResult(d);
-                    }, it.bangumiId, data),
+                    }, dmSource, it.bangumiId, data),
                     col_type: 'icon_1_left_pic'
                 }
             })

@@ -180,7 +180,7 @@ function dmapi(data) {
     d.push({
         title: '是否支持关键字搜索：' + (getMyVar('dmsearch')?'是':'否'),
         col_type: 'text_1',
-        url: $('#noLoading#').lazyRule(() => {
+        url: data?'toast://只能新增时修改':$('#noLoading#').lazyRule(() => {
             if(getMyVar('dmsearch')){
                 clearMyVar('dmsearch');
             }else{
@@ -234,9 +234,10 @@ function dmapi(data) {
                     } else {
                         dmtype = '';
                     }
+                    dmsearch = isDmSearch(dmurl);
                     hideLoading();
                 }
-
+                
                 if (dmtype) {
                     if(data){
                         dmlist = dmlist.filter(v => v.url != data.url);

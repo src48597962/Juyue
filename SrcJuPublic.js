@@ -953,7 +953,8 @@ function danmuDownLoad(data) {
                         }
                         let listid = parseInt(getMyVar('listId', '0'));
                         let d = [];
-                        let listname = data.listnames;
+                        let listnames = data.listnames;
+                        let downname = listnames[listid];
                         d.push({
                             title: '选择要下载弹幕的播放选集',
                             col_type: 'rich_text'
@@ -972,20 +973,20 @@ function danmuDownLoad(data) {
                             col_type: 'text_4'
                         })
                         d.push({
-                            title: listname[listid],
-                            url: $('#noLoading#').lazyRule((listid, listname) => {
+                            title: downname,
+                            url: $('#noLoading#').lazyRule((listid, listnames) => {
                                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                                 hikerPop.selectBottomMark({
-                                    options: listname,
+                                    options: listnames,
                                     position: listid,
                                     click(a) {
-                                        putMyVar('listId', listname.indexOf(a));
+                                        putMyVar('listId', listnames.indexOf(a));
                                         refreshPage(false);
                                         return 'hiker://empty';
                                     }
                                 });
                                 return 'hiker://empty';
-                            }, listid, listname),
+                            }, listid, listnames),
                             col_type: 'text_2'
                         })
                         d.push({
@@ -998,7 +999,7 @@ function danmuDownLoad(data) {
                                 putMyVar('listId', listid);
                                 refreshPage(false);
                                 return 'hiker://empty';
-                            }, listid, listname.length),
+                            }, listid, listnames.length),
                             col_type: 'text_4'
                         })
                         d.push({
@@ -1008,20 +1009,23 @@ function danmuDownLoad(data) {
                             title: '点击下面对应的选集进行下载',
                             col_type: 'rich_text'
                         })
-                        let downid = data.name+'_'+data.pageid+'_'+listid;
+                        let dmid = data.name+'_'+data.pageid+'_'+listid;
                         dmepisodes.forEach(it=>{
+                            let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
                                 title: it.episodeTitle,
-                                url: $('#noLoading#').lazyRule((dmurl, episodeId, downid) => {
-                                    let dmhtml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
-                                    if(dmhtml){
-                                        let dmfile = `hiker://files/_cache/Juyue/danmu/${downid}.xml`;
-                                        writeFile(dmfile, dmhtml);
+                                url: $("需下载:"+downname+"\n当前："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid)=>{
+                                    showLoading('正在请求.');
+                                    let dmxml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
+                                    hideLoading();
+                                    if(dmxml.startsWith('<?xml') && dmxml.includes('<d p="')){
+                                        let dmfile = `hiker://files/_cache/Juyue/danmu/${dmid}.xml`;
+                                        writeFile(dmfile, dmxml);
                                         return 'toast://下载成功';
                                     }else{
                                         return 'toast://下载失败';
                                     }
-                                }, dmSource.url, it.episodeId, downid),
+                                }, dmSource.url, it.episodeId, dmid),
                                 col_type: 'text_2'
                             })
                         })

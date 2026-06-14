@@ -871,8 +871,12 @@ function danmuDownLoad(data) {
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + encodeURIComponent(data.keyword));
-            xlog(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
+            xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
+            xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/match', {
+                body : {"fileName":"南部档案"},
+                method: 'POST'
+            }));
             let searchList = JSON.parse(searchHtml).animes;
             let searchd = [];
             searchList.forEach(it=>{

@@ -809,6 +809,38 @@ function expandSearch(keyword) {
         }
     }, keyword)
 }
+// 视频类弹幕下载
+function danmuDownLoad(data) {
+    let dmlist = [];
+    let dmfilestr = fetch("hiker://files/rules/Src/Jiexi/danmu.json");
+    if (dmfilestr != "") {
+        eval("dmlist=" + dmfilestr + ";");
+    }
+    dmlist = dmlist.filter(v=>v.search);
+    dmlist.reverse();
+    data['dmlist'] = dmlist;
+    if(dmlist.length==0){
+        return 'toast://无支持弹幕下载源接口';
+    }
+
+    return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
+        setPageTitle('下载“' + data.keyword + '”弹幕');
+        let d = [];
+        let dmlist = data.dmlist;
+        dmlist.forEach(it=>{
+            d.push({
+                title: it.name,
+                url: $('#noLoading#').lazyRule((input) => {
+                    putMyVar('SrcJu_弹幕下载', input);
+                    refreshPage(false);
+                    return 'hiker://empty';
+                }, it.name),
+                col_type: 'scroll_button'
+            })
+        })
+        setResult(d);
+    }, data)
+}
 // 按拼音排序
 function sortByPinyin(arr) {
     var arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));

@@ -825,11 +825,14 @@ function danmuDownLoad(data) {
 
     return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
         setPageTitle('下载“' + data.keyword + '”弹幕');
+        let Color = getItem('主题颜色','#3399cc');
+
         let d = [];
         let dmlist = data.dmlist;
+        let selectdm = getMyVar("SrcJu_弹幕下载",dmlist[0].name);
         dmlist.forEach(it=>{
             d.push({
-                title: it.name,
+                title: selectdm==it.name?`““””<b><span style="color: `+Color+`">`+it.name+`</span></b>`:it.name,
                 url: $('#noLoading#').lazyRule((input) => {
                     putMyVar('SrcJu_弹幕下载', input);
                     refreshPage(false);
@@ -838,7 +841,21 @@ function danmuDownLoad(data) {
                 col_type: 'scroll_button'
             })
         })
+        d.push({
+            col_type: "line"
+        });
+        d.push({
+            pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
+            col_type: "pic_1_center",
+            url: "hiker://empty",
+            extra: {
+                cls: "loading_gif"
+            }
+        })
+        //name + "_选集_" + (pageid?pageid+"_":"") + i
         setResult(d);
+        let dmSource = dmlist.find(v => v.name === selectdm);
+        
     }, data)
 }
 // 按拼音排序

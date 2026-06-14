@@ -868,25 +868,35 @@ function danmuDownLoad(data) {
         })
         //name + "_选集_" + (pageid?pageid+"_":"") + i
         setResult(d);
-        let dmSource = dmlist.find(v => v.name === selectdm);
-        let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword, { timeout: 8000 });
-        let searchList = JSON.parse(searchHtml).animes;
-        let searchd = [];
-        searchList.forEach(it=>{
-            searchd.push({
-                title: it.animeTitle,
-                desc: it.typeDescription,
-                pic_url: it.imageUrl,
-                url: $('#noLoading#').lazyRule((bangumiId) => {
-                    
-                    return 'hiker://empty';
-                }, it.bangumiId),
-                col_type: 'icon_1_left_pic'
+        try{
+            let dmSource = dmlist.find(v => v.name === selectdm);
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword, { timeout: 8000 });
+            xlog(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
+            xlog(searchHtml);
+            let searchList = JSON.parse(searchHtml).animes;
+            let searchd = [];
+            searchList.forEach(it=>{
+                searchd.push({
+                    title: it.animeTitle,
+                    desc: it.typeDescription,
+                    pic_url: it.imageUrl,
+                    url: $('#noLoading#').lazyRule((bangumiId) => {
+                        
+                        return 'hiker://empty';
+                    }, it.bangumiId),
+                    col_type: 'icon_1_left_pic'
+                })
             })
-        })
 
+        }catch(e){
+            addItemAfter("dmloading", {
+                title: '搜索获取弹幕失败',
+                desc: e.message,
+                url: 'hiker://empty',
+                col_type: 'text_1'
+            });
+        }
         deleteItemByCls("loading_gif");
-        addItemAfter("dmloading", searchd);
     }, data)
 }
 // 按拼音排序

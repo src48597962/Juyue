@@ -818,21 +818,6 @@ function erji() {
             
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
-            let dataObj = {
-                data: jkdata,
-                type: stype
-            }
-            let lazy = $("").lazyRule((dataObj) => {
-                let url = input;
-                let jkdata = dataObj.data;
-                let parse = getObjCode(jkdata, 'jx');
-                if(parse['解析']){
-                    eval("let 解析2 = " + parse['解析']);
-                    return 解析2.call(parse, url);
-                }else{
-                    return $.require("parseUrl").解析(url);
-                }
-            }, dataObj);
             let download = $.toString((jkdata) => {
                 let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
                 if(parse['解析']){
@@ -1469,17 +1454,39 @@ function erji() {
                     }
                     return str.trim();
                 }
-                //列表默认样式
+                // 列表默认样式
                 let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
                 let list_col_type_auto = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2';
                 let list_col_type_set = getItem('SrcJuList_col_type', '自动');
-                
+    
+                // 生成选集列表
                 for(let i=0; i<列表.length; i++) {
+                    let listId = name + "_选集_" + (pageid?pageid+"_":"") + i;
+                    let dataObj = {
+                        data: jkdata,
+                        type: stype,
+                        id: listId
+                    }
+                    let lazy = $("").lazyRule((dataObj) => {
+                        let url = input;
+                        let jkdata = dataObj.data;
+                        let parse = getObjCode(jkdata, 'jx');
+                        if(parse['解析']){
+                            eval("let 解析2 = " + parse['解析']);
+                            url = 解析2.call(parse, url);
+                        }
+                        let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
+                        if(fileExist(dmfile)){
+                            dataObj['dm'] = dmfile;
+                        }
+                        return $.require("parseUrl").解析(url, dataObj);
+                    }, dataObj);
+
                     let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
                     try{
                         extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
                     }catch(e){}
-                    extra.id = name + "_选集_" + (pageid?pageid+"_":"") + i;
+                    extra.id = listId;
                     extra.cls = "Juloadlist playlist";
                     if(stype=="视频"||stype=="音频"||stype=="聚合"){
                         extra.jsLoadingInject = true;

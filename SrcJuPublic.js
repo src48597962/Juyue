@@ -825,7 +825,7 @@ function danmuDownLoad(data) {
     if(dmlist.length==0){
         return 'toast://无支持弹幕下载源接口';
     }
-    if(data.list.length==0){
+    if(data.listnames.length==0){
         return 'toast://播放选集为空';
     }
 

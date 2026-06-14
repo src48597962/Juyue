@@ -828,6 +828,10 @@ function danmuDownLoad(data) {
         let Color = getItem('主题颜色','#3399cc');
 
         let d = [];
+        d.push({
+            title: '正在查找“' + data.keyword + '”弹幕，可切换下方弹幕源',
+            col_type: 'rich_text'
+        })
         let dmlist = data.dmlist;
         let selectdm = getMyVar("SrcJu_弹幕下载",dmlist[0].name);
         dmlist.forEach(it=>{
@@ -840,10 +844,6 @@ function danmuDownLoad(data) {
                 }, it.name),
                 col_type: 'scroll_button'
             })
-        })
-        d.push({
-            title: '正在查找“' + data.keyword + '”弹幕',
-            col_type: 'rich_text'
         })
         d.push({
             col_type: "line",
@@ -881,6 +881,7 @@ function danmuDownLoad(data) {
                 method: 'POST'
             }));
             */
+            fetch(dmSource.url);
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
             

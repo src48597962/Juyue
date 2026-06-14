@@ -822,6 +822,9 @@ function danmuDownLoad(data) {
     if(dmlist.length==0){
         return 'toast://无支持弹幕下载源接口';
     }
+    if(data.list.length==0){
+        return 'toast://播放选集为空';
+    }
 
     return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
         addListener("onClose", $.toString(() => {
@@ -846,7 +849,7 @@ function danmuDownLoad(data) {
                 refreshPage();
                 return 'hiker://empty';
             }),
-            desc: '正在查找 “' + data.keyword + '” 的弹幕',
+            desc: '输入要下载弹幕的影片名称',
             col_type: "input",
             extra: {
                 defaultValue: sskeyword,
@@ -897,7 +900,7 @@ function danmuDownLoad(data) {
             let dmSource = dmlist.find(v => v.name === selectdm);
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 10000});
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 6000});
             if(searchHtml){
                 let searchList = JSON.parse(searchHtml).animes;
                 searchList.forEach(it=>{
@@ -913,7 +916,8 @@ function danmuDownLoad(data) {
             let searchHtml2 = fetch(dmSource.url.split('comment')[0] + 'match', {
                 body : {"fileName": sskeyword},
                 headers: { "Content-Type": "application/json", "user-agent": PC_UA },
-                method: 'POST'
+                method: 'POST',
+                timeout: 6000
             })
 
             let searchList2 = JSON.parse(searchHtml2).matches;
@@ -933,10 +937,15 @@ function danmuDownLoad(data) {
                     title: it.title,
                     desc: it.desc,
                     pic_url: it.pic_url,
-                    url: $('#noLoading#').lazyRule((bangumiId) => {
-                        
-                        return 'hiker://empty';
-                    }, it.bangumiId),
+                    url: $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((bangumiId, data) => {
+                        let d = [];
+                        let listname = data.list.map(v=>v.title);
+                        d.push({
+                            title: '现在需下载的弹幕是：\n'+listname[0]+'~'+listname[listname.length - 1],
+                            col_type: 'rich_text'
+                        })
+                        setResult(d);
+                    }, it.bangumiId, data),
                     col_type: 'icon_1_left_pic'
                 }
             })

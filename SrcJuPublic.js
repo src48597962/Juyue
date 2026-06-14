@@ -842,8 +842,22 @@ function danmuDownLoad(data) {
             })
         })
         d.push({
-            col_type: "line"
+            col_type: "line",
+            extra: {
+                id: "dmloading"
+            }
         });
+        for(let i=0;i<2;i++){
+            d.push({
+                title: "",
+                url: "hiker://empty",
+                col_type: "text_1",
+                extra: {
+                    lineVisible: false,
+                    cls: "loading_gif"
+                }
+            })
+        }
         d.push({
             pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
             col_type: "pic_1_center",
@@ -855,7 +869,24 @@ function danmuDownLoad(data) {
         //name + "_选集_" + (pageid?pageid+"_":"") + i
         setResult(d);
         let dmSource = dmlist.find(v => v.name === selectdm);
-        
+        let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword, { timeout: 8000 });
+        let searchList = JSON.parse(searchHtml).animes;
+        let searchd = [];
+        searchList.forEach(it=>{
+            searchd.push({
+                title: it.animeTitle,
+                desc: it.typeDescription,
+                pic_url: it.imageUrl,
+                url: $('#noLoading#').lazyRule((bangumiId) => {
+                    
+                    return 'hiker://empty';
+                }, it.bangumiId),
+                col_type: 'icon_1_left_pic'
+            })
+        })
+
+        deleteItemByCls("loading_gif");
+        addItemAfter("dmloading", searchd);
     }, data)
 }
 // 按拼音排序

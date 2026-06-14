@@ -836,7 +836,7 @@ function danmuDownLoad(data) {
             col_type: 'rich_text'
         })
         d.push({
-            title: '搜索',
+            title: '🔍',
             url: $.toString(() => {
                 input = input.trim();
                 if(input == ''){
@@ -896,9 +896,9 @@ function danmuDownLoad(data) {
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
             
-            //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
+            //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
 
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword);
             let searchList = JSON.parse(searchHtml).animes;
             let searchd = [];
             searchList.forEach(it=>{
@@ -910,7 +910,7 @@ function danmuDownLoad(data) {
                 })
             })
             searchHtml = fetch(dmSource.url.split('comment')[0] + 'match', {
-                body : {"fileName": data.keyword},
+                body : {"fileName": sskeyword},
                 headers: { "Content-Type": "application/json", "user-agent": PC_UA },
                 method: 'POST'
             })

@@ -832,7 +832,7 @@ function danmuDownLoad(data) {
         let sskeyword = getMyVar('搜索关键词', data.keyword); 
         let d = [];
         d.push({
-            title: '正在查找 “' + data.keyword + '” 的弹幕',
+            title: '正在查找并下载 “' + data.keyword + '” 的弹幕',
             col_type: 'rich_text'
         })
         d.push({
@@ -895,27 +895,29 @@ function danmuDownLoad(data) {
         setResult(d);
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
-            
-            //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
-
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword);
-            let searchList = JSON.parse(searchHtml).animes;
             let searchd = [];
-            searchList.forEach(it=>{
-                searchd.push({
-                    bangumiId: it.bangumiId,
-                    title: it.animeTitle.split('【')[0],
-                    desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
-                    pic_url: it.imageUrl
+            //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 10000});
+            if(searchHtml){
+                let searchList = JSON.parse(searchHtml).animes;
+                searchList.forEach(it=>{
+                    searchd.push({
+                        bangumiId: it.bangumiId,
+                        title: it.animeTitle.split('【')[0],
+                        desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                        pic_url: it.imageUrl
+                    })
                 })
-            })
-            searchHtml = fetch(dmSource.url.split('comment')[0] + 'match', {
+            }
+            
+            let searchHtml2 = fetch(dmSource.url.split('comment')[0] + 'match', {
                 body : {"fileName": sskeyword},
                 headers: { "Content-Type": "application/json", "user-agent": PC_UA },
                 method: 'POST'
             })
-            searchList = JSON.parse(searchHtml).matches;
-            searchList.forEach(it=>{
+
+            let searchList2 = JSON.parse(searchHtml2).matches;
+            searchList2.forEach(it=>{
                 if(!searchd.some(v=>v.bangumiId==it.animeId)){
                     searchd.push({
                         bangumiId: it.animeId,
@@ -925,6 +927,7 @@ function danmuDownLoad(data) {
                     })
                 }
             })
+            
             searchd = searchd.map(it=>{
                 return {
                     title: it.title,

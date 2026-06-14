@@ -910,18 +910,13 @@ function erji() {
                 }
                 if(stype=="视频"){
                     expandBtn.push('解析管理设置');
-                    expandBtn.push("更多搜索🔍");
-                    $.extend({expandSearch: expandSearch(sskeyword)});
                     expandBtn.push("弹幕下载📥");
+                    expandBtn.push("更多搜索🔍");
+                    $.extend({sskeyword: sskeyword});
+                    
                 }else{
                     expandBtn.push("下载本地📥");
-                    $.extend({downloadLocal: $.toString((itype) => {
-                        if(itype){
-                            return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
-                        }else{
-                            return "toast://不支持下载的类型"
-                        }
-                    },itype)});
+                    $.extend({itype: itype});
 
                     let imgdecode = "";
                     if(parse["imgdec"]){
@@ -960,7 +955,8 @@ function erji() {
                     title: "扩展功能",
                     url: $(expandBtn, 1).select(()=>{
                         if(input=='更多搜索🔍'){
-                            return $.expandSearch;
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                            return expandSearch($.sskeyword);
                         }else if(input.includes('加入收藏')||input.includes('取消收藏')){
                             return '#noLoading#@lazyRule=.js:' + $.addCaseObj;
                         }else if(input.includes('查看收藏')){
@@ -975,7 +971,13 @@ function erji() {
                                 home();
                             })
                         }else if(input=='下载本地📥'){
-                            return '#noLoading#@lazyRule=.js:' + $.downloadLocal;
+                            return $('#noLoading#').lazyRule((itype) => {
+                                if(itype){
+                                    return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
+                                }else{
+                                    return "toast://不支持下载的类型"
+                                }
+                            },$.itype);
                         }
                     }),
                     pic_url: getIcon(erIcons[1].img, false, erIcons[1].color),

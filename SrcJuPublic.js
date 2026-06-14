@@ -824,14 +824,35 @@ function danmuDownLoad(data) {
     }
 
     return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
+        addListener("onClose", $.toString(() => {
+            clearMyVar('搜索关键词');
+        }));
         setPageTitle('下载弹幕');
         let Color = getItem('主题颜色','#3399cc');
-
+        let sskeyword = getMyVar('搜索关键词', data.keyword); 
         let d = [];
         d.push({
             title: '正在查找 “' + data.keyword + '” 的弹幕',
             col_type: 'rich_text'
         })
+        d.push({
+            title: '搜索',
+            url: $.toString(() => {
+                input = input.trim();
+                if(input == ''){
+                    return "hiker://empty"
+                }
+                putMyVar('搜索关键词', input);
+                refreshPage();
+                return 'hiker://empty';
+            }),
+            desc: '正在查找 “' + data.keyword + '” 的弹幕',
+            col_type: "input",
+            extra: {
+                defaultValue: sskeyword,
+                titleVisible: true
+            }
+        });
         let dmlist = data.dmlist;
         let selectdm = getMyVar("SrcJu_弹幕下载",dmlist[0].name);
         dmlist.forEach(it=>{
@@ -876,35 +897,56 @@ function danmuDownLoad(data) {
             let dmSource = dmlist.find(v => v.name === selectdm);
             
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
-            xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/match', {
-                body : {"fileName": data.keyword},
-                headers: { "Content-Type": "application/json", "user-agent": PC_UA },
-                method: 'POST'
-            }));
 
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
-            xlog(searchHtml);
-            
             let searchList = JSON.parse(searchHtml).animes;
             let searchd = [];
             searchList.forEach(it=>{
                 searchd.push({
+                    bangumiId: it.bangumiId,
                     title: it.animeTitle.split('【')[0],
-                    desc: it.typeDescription + ' from ' + it.source,
-                    pic_url: it.imageUrl,
+                    desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                    pic_url: it.imageUrl
+                })
+            })
+            searchHtml = fetch(dmSource.url.split('comment')[0] + 'match', {
+                body : {"fileName": data.keyword},
+                headers: { "Content-Type": "application/json", "user-agent": PC_UA },
+                method: 'POST'
+            })
+            searchList = JSON.parse(searchHtml).matches;
+            searchList.forEach(it=>{
+                if(!searchd.some(v=>v.bangumiId==it.animeId)){
+                    searchd.push({
+                        bangumiId: it.animeId,
+                        title: it.animeTitle.split('【')[0],
+                        desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                        pic_url: it.imageUrl
+                    })
+                }
+            })
+            searchd = searchd.map(it=>{
+                return {
+                    title: it.title,
+                    desc: it.desc,
+                    pic_url: it.pic_url,
                     url: $('#noLoading#').lazyRule((bangumiId) => {
                         
                         return 'hiker://empty';
                     }, it.bangumiId),
                     col_type: 'icon_1_left_pic'
-                })
+                }
             })
+                                
             addItemAfter("dmloading", searchd);
         }catch(e){
             addItemAfter("dmloading", {
-                title: '搜索获取弹幕失败',
+                title: '搜索获取弹幕失败，点击刷新',
                 desc: e.message,
-                url: 'hiker://empty',
+                url: $('#noLoading#').lazyRule(() => {
+                    refreshPage();
+                    return 'hiker://empty';
+                }),
                 col_type: 'text_1'
             });
         }

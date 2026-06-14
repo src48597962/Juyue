@@ -811,6 +811,9 @@ function expandSearch(keyword) {
 }
 // 视频类弹幕下载
 function danmuDownLoad(data) {
+    if($.type(data)!='object'){
+        return 'toast://未获取到对象，可刷新页面再试';
+    }
     let dmlist = [];
     let dmfilestr = fetch("hiker://files/rules/Src/Jiexi/danmu.json");
     if (dmfilestr != "") {
@@ -950,7 +953,7 @@ function danmuDownLoad(data) {
                         }
                         let listid = parseInt(getMyVar('listId', '0'));
                         let d = [];
-                        let listname = data.list.map(v=>v.title);
+                        let listname = data.listnames;
                         d.push({
                             title: '选择要下载弹幕的播放选集',
                             col_type: 'rich_text'
@@ -998,7 +1001,30 @@ function danmuDownLoad(data) {
                             }, listid, listname.length),
                             col_type: 'text_4'
                         })
-                        
+                        d.push({
+                            col_type: 'line_blank'
+                        })
+                        d.push({
+                            title: '点击下面对应的选集进行下载',
+                            col_type: 'rich_text'
+                        })
+                        let downid = data.name+'_'+data.pageid+'_'+listid;
+                        dmepisodes.forEach(it=>{
+                            d.push({
+                                title: it.episodeTitle,
+                                url: $('#noLoading#').lazyRule((dmurl, episodeId, downid) => {
+                                    let dmhtml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
+                                    if(dmhtml){
+                                        let dmfile = `hiker://files/_cache/Juyue/danmu/${downid}.xml`;
+                                        writeFile(dmfile, dmhtml);
+                                        return 'toast://下载成功';
+                                    }else{
+                                        return 'toast://下载失败';
+                                    }
+                                }, dmSource.url, it.episodeId, downid),
+                                col_type: 'text_2'
+                            })
+                        })
                         setResult(d);
                     }, dmSource, it.bangumiId, data),
                     col_type: 'icon_1_left_pic'

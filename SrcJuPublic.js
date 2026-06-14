@@ -1013,7 +1013,7 @@ function danmuDownLoad(data) {
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
-                                title: it.episodeTitle,
+                                title: episodeTitle,
                                 url: $("需下载:"+downname+"\n当前："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid)=>{
                                     showLoading('正在请求.');
                                     let dmxml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
@@ -1026,7 +1026,7 @@ function danmuDownLoad(data) {
                                         return 'toast://下载失败';
                                     }
                                 }, dmSource.url, it.episodeId, dmid),
-                                col_type: 'text_2'
+                                col_type: 'text_3'
                             })
                         })
                         setResult(d);

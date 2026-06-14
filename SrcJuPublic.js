@@ -824,7 +824,7 @@ function danmuDownLoad(data) {
     }
 
     return $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((data) => {
-        setPageTitle('下载“' + data.keyword + '”弹幕');
+        setPageTitle('下载弹幕');
         let Color = getItem('主题颜色','#3399cc');
 
         let d = [];
@@ -840,6 +840,10 @@ function danmuDownLoad(data) {
                 }, it.name),
                 col_type: 'scroll_button'
             })
+        })
+        d.push({
+            title: '正在查找“' + data.keyword + '”弹幕',
+            col_type: 'rich_text'
         })
         d.push({
             col_type: "line",
@@ -870,11 +874,13 @@ function danmuDownLoad(data) {
         setResult(d);
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
+            /*
             xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
             xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/match', {
                 body : {"fileName": data.keyword},
                 method: 'POST'
             }));
+            */
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
             
@@ -883,7 +889,7 @@ function danmuDownLoad(data) {
             searchList.forEach(it=>{
                 searchd.push({
                     title: it.animeTitle.split('【')[0],
-                    desc: it.typeDescription + ' from' + it.source,
+                    desc: it.typeDescription + ' from ' + it.source,
                     pic_url: it.imageUrl,
                     url: $('#noLoading#').lazyRule((bangumiId) => {
                         

@@ -870,7 +870,7 @@ function danmuDownLoad(data) {
         setResult(d);
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + encodeURIComponent(data.keyword), {timeout: 10000});
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + encodeURIComponent(data.keyword));
             xlog(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
             let searchList = JSON.parse(searchHtml).animes;
@@ -887,7 +887,7 @@ function danmuDownLoad(data) {
                     col_type: 'icon_1_left_pic'
                 })
             })
-
+            addItemAfter("dmloading", searchd);
         }catch(e){
             addItemAfter("dmloading", {
                 title: '搜索获取弹幕失败',

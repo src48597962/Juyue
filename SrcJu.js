@@ -992,72 +992,7 @@ function erji() {
                     col_type: 'icon_small_3',
                     extra: expandext
                 })
-                /*
-                if(stype=="视频"){
-                    d.push({
-                        title: "扩展搜索",
-                        url: expandSearch(sskeyword),
-                        pic_url: getIcon(erIcons[4].img, false, erIcons[4].color),
-                        col_type: 'icon_small_3',
-                        extra: {
-                            cls: "Juloadlist",
-                            longClick: addCaseObj
-                        }
-                    })
-                }else{
-                    let imgdecode = "";
-                    if(parse["imgdec"]){
-                        try{
-                            if($.type(parse["imgdec"])=="function"){
-                                imgdecode = parse["imgdec"]();
-                                if($.type(imgdecode)=="function"){
-                                    imgdecode = $.toString((imgdec)=>{
-                                        let imgDecrypt = imgdec;
-                                        return imgDecrypt();
-                                    }, imgdecode)
-                                }
-                            }else if($.type(parse["imgdec"])=="string"){
-                                imgdecode = parse["imgdec"];
-                            }
-                        }catch(e){
-                            xlog('获取图片解密imgdec出错，信息>' + e.message + " 错误行#" + e.lineNumber);
-                        }
-                    }
-                    d.push({
-                        title: "收藏书架",
-                        url: $("hiker://empty###noRecordHistory##noHistory##immersiveTheme#").rule(() => {
-                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcBookCase.js');
-                            bookCase();
-                        }),
-                        pic_url: getIcon(erIcons[1].img, false, erIcons[1].color),
-                        col_type: 'icon_small_3',
-                        extra: {
-                            cls: "Juloadlist",
-                            inheritTitle: false,
-                            longClick: [{
-                                title: "下载本地📥",
-                                js: $.toString((itype) => {
-                                    if(itype){
-                                        return "hiker://page/download.view#noRecordHistory##noRefresh##noHistory#?rule=本地资源管理"
-                                    }else{
-                                        return "toast://不支持下载的类型"
-                                    }
-                                },itype)
-                            }].concat(addCaseObj),
-                            chapterList: 列表,
-                            "defaultView": "1",
-                            "info": {
-                                "bookName": name,
-                                "bookTopPic": erTempData.img,
-                                "parseCode": download,
-                                "ruleName": sname + " (聚阅)",
-                                "type": itype,
-                                "decode": imgdecode
-                            }
-                        }
-                    })
-                }
-                */
+                
                 function processChineseText(input) {
                     // 1. 只保留汉字、字母、数字
                     let cleaned = input.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '');

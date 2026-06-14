@@ -912,8 +912,12 @@ function erji() {
                     expandBtn.push('解析管理设置');
                     expandBtn.push("弹幕下载📥");
                     expandBtn.push("更多搜索🔍");
+                    $.extend({danmudata: {
+                        keyword: sskeyword,
+                        lineid: lineid,
+                        list: 列表
+                    }});
                     $.extend({sskeyword: sskeyword});
-                    
                 }else{
                     expandBtn.push("下载本地📥");
                     $.extend({itype: itype});
@@ -954,7 +958,10 @@ function erji() {
                 d.push({
                     title: "扩展功能",
                     url: $(expandBtn, 1).select(()=>{
-                        if(input=='更多搜索🔍'){
+                        if(input=='弹幕下载📥'){
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                            return danmuDownLoad($.danmudata);
+                        }else if(input=='更多搜索🔍'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             return expandSearch($.sskeyword);
                         }else if(input.includes('加入收藏')||input.includes('取消收藏')){
@@ -1536,7 +1543,7 @@ function erji() {
                     try{
                         extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
                     }catch(e){}
-                    extra.id = name + "_选集_" + (pageid+"_") + i;
+                    extra.id = name + "_选集_" + ((pageid+1)+"_") + (i+1);
                     extra.cls = "Juloadlist playlist";
                     if(stype=="视频"||stype=="音频"||stype=="聚合"){
                         extra.jsLoadingInject = true;

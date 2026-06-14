@@ -870,7 +870,7 @@ function danmuDownLoad(data) {
         setResult(d);
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword, { timeout: 8000 });
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);
             let searchList = JSON.parse(searchHtml).animes;

@@ -829,7 +829,7 @@ function danmuDownLoad(data) {
 
         let d = [];
         d.push({
-            title: '正在查找“' + data.keyword + '”弹幕，可切换下方弹幕源',
+            title: '正在查找 “' + data.keyword + '” 的弹幕',
             col_type: 'rich_text'
         })
         let dmlist = data.dmlist;
@@ -874,13 +874,13 @@ function danmuDownLoad(data) {
         setResult(d);
         try{
             let dmSource = dmlist.find(v => v.name === selectdm);
-            /*
-            xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
+            
+            //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
             xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/match', {
                 body : {"fileName": data.keyword},
                 method: 'POST'
             }));
-            */
+            
             fetch(dmSource.url);
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + data.keyword);
             xlog(searchHtml);

@@ -878,6 +878,7 @@ function danmuDownLoad(data) {
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + data.keyword));
             xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/match', {
                 body : {"fileName": data.keyword},
+                headers: { "Content-Type": "application/json", "user-agent": PC_UA },
                 method: 'POST'
             }));
 

@@ -1473,7 +1473,7 @@ function erji() {
                         let parse = getObjCode(jkdata, 'jx');
                         if(parse['解析']){
                             eval("let 解析2 = " + parse['解析']);
-                            url = 解析2.call(parse, url);
+                            return 解析2.call(parse, url);
                         }
                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
                         if(fileExist(dmfile)){

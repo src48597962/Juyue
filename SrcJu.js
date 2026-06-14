@@ -913,6 +913,7 @@ function erji() {
                     expandBtn.push("弹幕下载📥");
                     expandBtn.push("更多搜索🔍");
                     $.extend({danmudata: {
+                        name: name,
                         keyword: sskeyword,
                         lineid: lineid,
                         list: 列表
@@ -1543,7 +1544,7 @@ function erji() {
                     try{
                         extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
                     }catch(e){}
-                    extra.id = name + "_选集_" + ((pageid+1)+"_") + (i+1);
+                    extra.id = name + "_选集_" + (pageid+1) + "_" + (i+1);
                     extra.cls = "Juloadlist playlist";
                     if(stype=="视频"||stype=="音频"||stype=="聚合"){
                         extra.jsLoadingInject = true;

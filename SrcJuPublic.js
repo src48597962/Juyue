@@ -936,7 +936,16 @@ function danmuDownLoad(data) {
                     }
                 })
             }
-            
+            if(searchd.length==0){
+                addItemAfter("dmloading", {
+                    title: '未获取弹幕数据，点击刷新',
+                    url: $('#noLoading#').lazyRule(() => {
+                        refreshPage();
+                        return 'hiker://empty';
+                    }),
+                    col_type: 'text_1'
+                });
+            }
             searchd = searchd.map(it=>{
                 return {
                     title: it.title,
@@ -1050,16 +1059,6 @@ function danmuDownLoad(data) {
             });
         }
         deleteItemByCls("loading_gif");
-        if(searchd.length==0){
-            addItemAfter("dmloading", {
-                title: '未获取弹幕数据，点击刷新',
-                url: $('#noLoading#').lazyRule(() => {
-                    refreshPage();
-                    return 'hiker://empty';
-                }),
-                col_type: 'text_1'
-            });
-        }
     }, data)
 }
 // 按拼音排序

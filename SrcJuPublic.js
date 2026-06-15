@@ -838,10 +838,6 @@ function danmuDownLoad(data) {
         let sskeyword = getMyVar('搜索关键词', data.keyword); 
         let d = [];
         d.push({
-            title: '下载 “' + data.keyword + '” 的弹幕',
-            col_type: 'rich_text'
-        })
-        d.push({
             title: '🔍',
             url: $.toString(() => {
                 input = input.trim();
@@ -1044,7 +1040,7 @@ function danmuDownLoad(data) {
             addItemAfter("dmloading", searchd);
         }catch(e){
             addItemAfter("dmloading", {
-                title: '获取弹幕失败，点击刷新',
+                title: '获取弹幕异常失败，点击刷新',
                 desc: e.message,
                 url: $('#noLoading#').lazyRule(() => {
                     refreshPage();
@@ -1054,6 +1050,16 @@ function danmuDownLoad(data) {
             });
         }
         deleteItemByCls("loading_gif");
+        if(searchd.length==0){
+            addItemAfter("dmloading", {
+                title: '未获取弹幕数据，点击刷新',
+                url: $('#noLoading#').lazyRule(() => {
+                    refreshPage();
+                    return 'hiker://empty';
+                }),
+                col_type: 'text_1'
+            });
+        }
     }, data)
 }
 // 按拼音排序

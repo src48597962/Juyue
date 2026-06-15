@@ -904,6 +904,7 @@ function danmuDownLoad(data) {
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
             let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 5000});
+            xlog(searchHtml);
             if(searchHtml){
                 let searchList = JSON.parse(searchHtml).animes;
                 searchList.forEach(it=>{
@@ -914,6 +915,8 @@ function danmuDownLoad(data) {
                         pic_url: it.imageUrl
                     })
                 })
+            }else{
+                refreshPage();
             }
             
             let searchHtml2 = fetch(dmSource.url.split('comment')[0] + 'match', {
@@ -922,7 +925,7 @@ function danmuDownLoad(data) {
                 method: 'POST',
                 timeout: 5000
             })
-
+            xlog(searchHtml2);
             let searchList2 = JSON.parse(searchHtml2).matches;
             searchList2.forEach(it=>{
                 if(!searchd.some(v=>v.bangumiId==it.animeId)){
@@ -1039,7 +1042,7 @@ function danmuDownLoad(data) {
         }catch(e){
             addItemAfter("dmloading", {
                 title: '获取弹幕失败，点击刷新',
-                desc: e.message  + ' 错误行#' + e.lineNumber,
+                desc: e.message,
                 url: $('#noLoading#').lazyRule(() => {
                     refreshPage();
                     return 'hiker://empty';

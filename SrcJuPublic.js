@@ -903,20 +903,22 @@ function danmuDownLoad(data) {
             let dmSource = dmlist.find(v => v.name === selectdm);
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 5000});
-            xlog(searchHtml);
-            if(searchHtml){
-                let searchList = JSON.parse(searchHtml).animes;
-                searchList.forEach(it=>{
-                    searchd.push({
-                        bangumiId: it.bangumiId,
-                        title: it.animeTitle.split('【')[0],
-                        desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
-                        pic_url: it.imageUrl
+            let i = 0;
+            while (i < 3) {
+                let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 3000});
+                if(searchHtml){
+                    let searchList = JSON.parse(searchHtml).animes;
+                    searchList.forEach(it=>{
+                        searchd.push({
+                            bangumiId: it.bangumiId,
+                            title: it.animeTitle.split('【')[0],
+                            desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                            pic_url: it.imageUrl
+                        })
                     })
-                })
-            }else{
-                refreshPage();
+                    break;
+                }
+                i++;            
             }
             
             let searchHtml2 = fetch(dmSource.url.split('comment')[0] + 'match', {
@@ -925,18 +927,19 @@ function danmuDownLoad(data) {
                 method: 'POST',
                 timeout: 5000
             })
-            xlog(searchHtml2);
-            let searchList2 = JSON.parse(searchHtml2).matches;
-            searchList2.forEach(it=>{
-                if(!searchd.some(v=>v.bangumiId==it.animeId)){
-                    searchd.push({
-                        bangumiId: it.animeId,
-                        title: it.animeTitle.split('【')[0],
-                        desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
-                        pic_url: it.imageUrl
-                    })
-                }
-            })
+            if(searchHtml2){
+                let searchList2 = JSON.parse(searchHtml2).matches;
+                searchList2.forEach(it=>{
+                    if(!searchd.some(v=>v.bangumiId==it.animeId)){
+                        searchd.push({
+                            bangumiId: it.animeId,
+                            title: it.animeTitle.split('【')[0],
+                            desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                            pic_url: it.imageUrl
+                        })
+                    }
+                })
+            }
             
             searchd = searchd.map(it=>{
                 return {

@@ -84,9 +84,16 @@ function danmu(input, dataObj) {
     return 弹幕(input, dataObj);
 }
 
+// 挂载弹幕
+function mountdanmu(playUrl, dmfile){
+    require(jxCodePath + 'SrcParse.js');
+    return 弹幕挂载(playUrl, dmfile);
+}
+
 $.exports = {
     设置: jxSet,
     解析: lazy,
     调用: call,
-    弹幕: danmu
+    获取弹幕: danmu,
+    挂载弹幕: mountdanmu
 }

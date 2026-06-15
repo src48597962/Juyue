@@ -603,7 +603,6 @@ function erji() {
             if(erdataCache){
                 erLoadData = erdataCache;
             }else{
-                xlog('开始获取二级数据');
                 let t1 = new Date().getTime();
                 if(parse['二级']){
                     eval("let 二级获取 = " + parse['二级'])

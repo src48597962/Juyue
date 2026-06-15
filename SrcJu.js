@@ -1461,7 +1461,7 @@ function erji() {
     
                 // 生成选集列表
                 for(let i=0; i<列表.length; i++) {
-                    let listId = name + "_选集_" + (pageid?pageid+"_":"") + i;
+                    let listId = name + "_选集_" + (pageid+1) + "_" + (i+1);
                     let dataObj = {
                         data: jkdata,
                         type: stype,
@@ -1476,7 +1476,9 @@ function erji() {
                             eval("let 解析2 = " + parse['解析']);
                             playUrl = 解析2.call(parse, url);
                         }
-                        playUrl = $.require("parseUrl").解析(url, dataObj);
+                        if(!playUrl){
+                            playUrl = $.require("parseUrl").解析(url, dataObj);
+                        }
                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
                         if(fileExist(dmfile)){
                             return $.require("parseUrl").挂载弹幕(playUrl, dmfile);

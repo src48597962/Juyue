@@ -1038,7 +1038,7 @@ function danmuDownLoad(data) {
             addItemAfter("dmloading", searchd);
         }catch(e){
             addItemAfter("dmloading", {
-                title: '搜索获取弹幕失败，点击刷新',
+                title: '获取弹幕失败，点击刷新',
                 desc: e.message  + ' 错误行#' + e.lineNumber,
                 url: $('#noLoading#').lazyRule(() => {
                     refreshPage();

@@ -903,7 +903,7 @@ function danmuDownLoad(data) {
             let dmSource = dmlist.find(v => v.name === selectdm);
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
-            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 6000});
+            let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 5000});
             if(searchHtml){
                 let searchList = JSON.parse(searchHtml).animes;
                 searchList.forEach(it=>{
@@ -920,7 +920,7 @@ function danmuDownLoad(data) {
                 body : {"fileName": sskeyword},
                 headers: { "Content-Type": "application/json", "user-agent": PC_UA },
                 method: 'POST',
-                timeout: 6000
+                timeout: 5000
             })
 
             let searchList2 = JSON.parse(searchHtml2).matches;
@@ -1009,7 +1009,7 @@ function danmuDownLoad(data) {
                             title: '点击下面对应的选集进行下载',
                             col_type: 'rich_text'
                         })
-                        let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
+                        let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
@@ -1039,7 +1039,7 @@ function danmuDownLoad(data) {
         }catch(e){
             addItemAfter("dmloading", {
                 title: '搜索获取弹幕失败，点击刷新',
-                desc: e.message,
+                desc: e.message  + ' 错误行#' + e.lineNumber,
                 url: $('#noLoading#').lazyRule(() => {
                     refreshPage();
                     return 'hiker://empty';

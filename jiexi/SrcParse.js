@@ -858,6 +858,34 @@ function 弹幕(vipUrl, dataObj) {
     }
     return dm;
 }
+function 弹幕挂载(playUrl, dmfile) {
+    if(playSet.danmu==1){
+        try{
+            if(contain.test(playUrl)){
+                if(playUrl.startsWith('{')){
+                    let playobj = JSON.parse(playUrl);
+                    if(!playobj.danmu){
+                        playobj['danmu'] = dmfile;
+                    }
+                    return JSON.stringify(playobj);
+                }else if(playUrl.startsWith('http')){
+                    let header;
+                    if(playUrl.includes(';{')){
+                        header = mulheader(playUrl);
+                    }
+                    return JSON.stringify({
+                        urls: [playUrl.split(';{')[0]],
+                        headers: header?[header]:undefined,
+                        danmu: dmfile
+                    }); 
+                }
+            }
+        }catch(e){
+            log("挂载弹幕异常>" + e.message);
+        }
+    }
+    return playUrl;
+}
 function 解析方法(obj) {
     function geturl(gethtml) {
         let rurl = "";

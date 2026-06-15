@@ -838,7 +838,7 @@ function danmuDownLoad(data) {
         let sskeyword = getMyVar('搜索关键词', data.keyword); 
         let d = [];
         d.push({
-            title: '正在查找并下载 “' + data.keyword + '” 的弹幕',
+            title: '下载 “' + data.keyword + '” 的弹幕',
             col_type: 'rich_text'
         })
         d.push({

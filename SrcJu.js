@@ -1471,15 +1471,17 @@ function erji() {
                         let url = input;
                         let jkdata = dataObj.data;
                         let parse = getObjCode(jkdata, 'jx');
+                        let playUrl;
                         if(parse['解析']){
                             eval("let 解析2 = " + parse['解析']);
-                            return 解析2.call(parse, url);
+                            playUrl = 解析2.call(parse, url);
                         }
+                        playUrl = $.require("parseUrl").解析(url, dataObj);
                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
                         if(fileExist(dmfile)){
-                            dataObj['dm'] = dmfile;
+                            return $.require("parseUrl").挂载弹幕(playUrl, dmfile);
                         }
-                        return $.require("parseUrl").解析(url, dataObj);
+                        return playUrl;
                     }, dataObj);
 
                     let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认

@@ -900,7 +900,7 @@ function danmuDownLoad(data) {
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
             let i = 0;
-            while (i < 3) {
+            while (i < 4) {
                 let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 3000});
                 if(searchHtml){
                     let searchList = JSON.parse(searchHtml).animes;
@@ -955,6 +955,7 @@ function danmuDownLoad(data) {
                         addListener("onClose", $.toString(() => {
                             clearMyVar('bangumiId');
                             clearMyVar('listId');
+                            clearMyVar('downdmlists');
                         }));
                         let dmepisodes = storage0.getMyVar('bangumiId'+bangumiId);
                         if(!dmepisodes){
@@ -966,6 +967,7 @@ function danmuDownLoad(data) {
                         let d = [];
                         let listnames = data.listnames;
                         let downname = listnames[listid];
+                        setPageTitle(data.name + '-' + downname);
                         d.push({
                             title: '选择要下载弹幕的播放选集',
                             col_type: 'rich_text'
@@ -987,8 +989,10 @@ function danmuDownLoad(data) {
                             title: downname,
                             url: $('#noLoading#').lazyRule((listid, listnames) => {
                                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-                                hikerPop.selectBottomMark({
+                                hikerPop.selectCenter({
                                     options: listnames,
+                                    columns: 3,
+                                    title: "请选择要下载弹幕的选集",
                                     position: listid,
                                     click(a) {
                                         putMyVar('listId', listnames.indexOf(a));
@@ -1020,23 +1024,35 @@ function danmuDownLoad(data) {
                             title: '点击下面对应的选集进行下载',
                             col_type: 'rich_text'
                         })
+                        let downdmlists = storage0.getMyVar('downdmlists') || [];
                         let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
-                                title: episodeTitle,
-                                url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid)=>{
+                                title: downdmlists.includes(it.episodeId)?`““””<span style="color: #339966">`+episodeTitle+`</span>`:episodeTitle,
+                                url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid, maxid)=>{
                                     showLoading('正在请求.');
                                     let dmxml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
                                     hideLoading();
                                     if(dmxml.startsWith('<?xml') && dmxml.includes('<d p="')){
                                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dmid}.xml`;
                                         writeFile(dmfile, dmxml);
-                                        return 'toast://下载成功';
+                                        let downdmlists = storage0.getMyVar('已下载弹幕选集列表') || [];
+                                        downdmlists.push(episodeId);
+                                        storage0.putMyVar('downdmlists', downdmlists);
+                                        let sm = '';
+                                        let listid = parseInt(getMyVar('listId', '0'));
+                                        if(listid<maxid){
+                                            sm = '，进入下一集待下载';
+                                            listid = listid + 1;
+                                            putMyVar('listId', listid);
+                                            refreshPage();
+                                        }
+                                        return 'toast://下载成功' + sm;
                                     }else{
-                                        return 'toast://下载失败';
+                                        return 'toast://下载失败，未包含弹幕内容';
                                     }
-                                }, dmSource.url, it.episodeId, dmid),
+                                }, dmSource.url, it.episodeId, dmid, listnames.length),
                                 col_type: 'text_4'
                             })
                         })

@@ -53,7 +53,7 @@ function dmhome(){
                 }
             })
             writeFile(jxdmfile, JSON.stringify(dmlist));
-            refreshPage();
+            refreshPage(false);
             return 'toast://已导入';
         }),
         img: getJxIcon(jxIcons[2].img, false, jxIcons[2].color),
@@ -118,7 +118,7 @@ function dmhome(){
                     }
                     dmlist = dmlist.filter(v => v.url != data.url);
                     writeFile(jxdmfile, JSON.stringify(dmlist));
-                    refreshPage();
+                    refreshPage(false);
                     return 'toast://已删除';
                 }
             }, it)
@@ -137,7 +137,7 @@ function dmapi(data) {
         clearMyVar('dmtype');
         clearMyVar('dmsearch');
         clearMyVar('isload');
-        refreshPage();
+        refreshPage(false);
     }));
     let d = [];
     if (!data) {
@@ -186,7 +186,7 @@ function dmapi(data) {
             }else{
                 putMyVar('dmsearch', '1');
             }
-            refreshPage();
+            refreshPage(false);
             return 'hiker://empty';
         })
     });

@@ -761,7 +761,7 @@ function expandSearch(keyword) {
                         })
                         Juconfig['expandSearch'] = lists;
                         writeFile(cfgfile, JSON.stringify(Juconfig));
-                        refreshPage();
+                        refreshPage(false);
                         return 'toast://已导入';
                     }),
                     col_type: "text_3"
@@ -845,7 +845,7 @@ function danmuDownLoad(data) {
                     return "hiker://empty"
                 }
                 putMyVar('搜索关键词', input);
-                refreshPage();
+                refreshPage(false);
                 return 'hiker://empty';
             }),
             desc: '输入要下载弹幕的影片名称',
@@ -940,7 +940,7 @@ function danmuDownLoad(data) {
                 addItemAfter("dmloading", {
                     title: '未获取弹幕数据，点击刷新',
                     url: $('#noLoading#').lazyRule(() => {
-                        refreshPage();
+                        refreshPage(false);
                         return 'hiker://empty';
                     }),
                     col_type: 'text_1'
@@ -1046,7 +1046,7 @@ function danmuDownLoad(data) {
                                             sm = '，进入下一集待下载';
                                             listid = listid + 1;
                                             putMyVar('listId', listid);
-                                            refreshPage();
+                                            refreshPage(false);
                                         }
                                         return 'toast://下载成功' + sm;
                                     }else{
@@ -1071,7 +1071,7 @@ function danmuDownLoad(data) {
                 title: '获取弹幕异常失败，点击刷新',
                 desc: e.message,
                 url: $('#noLoading#').lazyRule(() => {
-                    refreshPage();
+                    refreshPage(false);
                     return 'hiker://empty';
                 }),
                 col_type: 'text_1'

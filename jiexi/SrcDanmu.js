@@ -227,8 +227,9 @@ function dmapi(data) {
             let dmtype = getMyVar('dmtype');
             let dmsearch = getMyVar('dmsearch');
 
+            require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
-            let dmfilestr = fetch($.jxdmfile);
+            let dmfilestr = fetch(jxdmfile);
             if (dmfilestr != "") {
                 eval("dmlist=" + dmfilestr + ";");
             }
@@ -268,7 +269,7 @@ function dmapi(data) {
                         item['search'] = '1';
                     }
                     dmlist.push(item);
-                    writeFile($.jxdmfile, JSON.stringify(dmlist));
+                    writeFile(jxdmfile, JSON.stringify(dmlist));
                     toast('添加成功');
                 } else {
                     toast('未检测到有效弹幕格式');

@@ -1,9 +1,14 @@
 require(config.jxCodePath + 'SrcPublic.js');
 
 function dmhome(){
+    addListener("onClose", $.toString(() => {
+        clearMyVar("$:extend");//清除$扩展挂载
+    }));
     setPageTitle('弹幕库管理');
+
+    $.extend({jxdmfile: jxdmfile});
     let jxIcons = currentTheme['接口图标'];
-        let d = [];
+    let d = [];
     d.push({
         title: '增加',
         url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
@@ -18,11 +23,11 @@ function dmhome(){
         url: $(["清空所有"], 2).select(() => {
             require(config.jxCodePath + 'SrcPublic.js');
             if(input=="清空所有"){
-                return $("确定要删除本地所有的弹幕接口吗？").confirm((jxdmfile)=>{
-                    writeFile(jxdmfile, JSON.stringify([]));
+                return $("确定要删除本地所有的弹幕接口吗？").confirm(()=>{
+                    writeFile($.jxdmfile, JSON.stringify([]));
                     refreshPage(false);
                     return 'toast://已全部清空';
-                }, jxdmfile)
+                })
             }
         }),
         img: getJxIcon(jxIcons[1].img, false, jxIcons[1].color),//'http://123.56.105.145/tubiao/more/290.png',
@@ -41,9 +46,8 @@ function dmhome(){
             let sharetxt = base64Decode(text);
             let imports = JSON.parse(sharetxt); 
 
-            require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
-            let dmfilestr = fetch(jxdmfile);
+            let dmfilestr = fetch($.jxdmfile);
             if (dmfilestr != "") {
                 eval("dmlist=" + dmfilestr + ";");
             }
@@ -52,7 +56,7 @@ function dmhome(){
                     dmlist.push(it);
                 }
             })
-            writeFile(jxdmfile, JSON.stringify(dmlist));
+            writeFile($.jxdmfile, JSON.stringify(dmlist));
             refreshPage(false);
             return 'toast://已导入';
         }),
@@ -64,9 +68,8 @@ function dmhome(){
     d.push({
         title: '分享',
         url: $(pastes, 2).select(() => {
-            require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
-            let dmfilestr = fetch(jxdmfile);
+            let dmfilestr = fetch($.jxdmfile);
             if (dmfilestr != "") {
                 eval("dmlist=" + dmfilestr + ";");
             }
@@ -127,14 +130,13 @@ function dmhome(){
                         }
                     }, data)
                 }else if(input=='删除'){
-                    require(config.jxCodePath + 'SrcPublic.js');
                     let dmlist = [];
-                    let dmfilestr = fetch(jxdmfile);
+                    let dmfilestr = fetch($.jxdmfile);
                     if (dmfilestr != "") {
                         eval("dmlist=" + dmfilestr + ";");
                     }
                     dmlist = dmlist.filter(v => v.url != data.url);
-                    writeFile(jxdmfile, JSON.stringify(dmlist));
+                    writeFile($.jxdmfile, JSON.stringify(dmlist));
                     refreshPage(false);
                     return 'toast://已删除';
                 }
@@ -225,9 +227,8 @@ function dmapi(data) {
             let dmtype = getMyVar('dmtype');
             let dmsearch = getMyVar('dmsearch');
 
-            require(config.jxCodePath + 'SrcPublic.js');
             let dmlist = [];
-            let dmfilestr = fetch(jxdmfile);
+            let dmfilestr = fetch($.jxdmfile);
             if (dmfilestr != "") {
                 eval("dmlist=" + dmfilestr + ";");
             }
@@ -267,7 +268,7 @@ function dmapi(data) {
                         item['search'] = '1';
                     }
                     dmlist.push(item);
-                    writeFile(jxdmfile, JSON.stringify(dmlist));
+                    writeFile($.jxdmfile, JSON.stringify(dmlist));
                     toast('添加成功');
                 } else {
                     toast('未检测到有效弹幕格式');

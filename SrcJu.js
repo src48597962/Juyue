@@ -1474,13 +1474,12 @@ function erji() {
                         if(parse['解析']){
                             eval("let 解析2 = " + parse['解析']);
                             playUrl = 解析2.call(parse, url);
-                        }
-                        if(!playUrl){
+                        }else{
                             playUrl = $.require("parseUrl").解析(url, dataObj);
                         }
                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
                         if(fileExist(dmfile)){
-                            return $.require("parseUrl").挂载弹幕(playUrl, dmfile);
+                            return $.require("parseUrl").处理(playUrl, {dmfile:dmfile});
                         }
                         return playUrl;
                     }, dataObj);

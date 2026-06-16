@@ -114,7 +114,7 @@ function dmhome(){
                     }, data)
                 }else if(input=='分享'){
                     let pastes = getPastes();
-                    return $(pastes, 2).select(() => {
+                    return $(pastes, 2).select((data) => {
                         let dmlist = [data];
                         showLoading('分享生成中，请稍后...');
                         let sharetxt = base64Encode(JSON.stringify(dmlist));

@@ -810,23 +810,27 @@ function 弹幕(vipUrl, dataObj) {
                     let num = 0;
                     if(dmObj.danmuku){
                         dmObj.danmuku.slice(1).forEach((dmitem) => {
-                            let [time, type, color, size, text] = dmitem;
-                            if(isNumeric(time)){
-                                let decimalColor = convertColorToDecimal(color);
-                                let pAttribute = `${time},1,23,${decimalColor}`;
-                                xml += `<d p="${pAttribute}">${text}</d>\n`;
-                                num++;
-                            }
+                            try{
+                                let [time, type, color, size, text] = dmitem;
+                                if(isNumeric(time) && text){
+                                    let decimalColor = convertColorToDecimal(color);
+                                    let pAttribute = `${time},1,23,${decimalColor}`;
+                                    xml += `<d p="${pAttribute}">${text}</d>\n`;
+                                    num++;
+                                }
+                            }catch(e){}
                         });
                     }else if(dmObj.comments){
                         dmObj.comments.forEach((dmitem) => {
-                            let [time, type, color, site] = dmitem.p.split(',');
-                            if(isNumeric(time)){
-                                let decimalColor = convertColorToDecimal(color);
-                                let pAttribute = `${time},${type},23,${decimalColor}`;
-                                xml += `<d p="${pAttribute}">${dmitem.m}</d>\n`;
-                                num++;
-                            }
+                            try{
+                                let [time, type, color, site] = dmitem.p.split(',');
+                                if(isNumeric(time) && dmitem.m){
+                                    let decimalColor = convertColorToDecimal(color);
+                                    let pAttribute = `${time},${type},23,${decimalColor}`;
+                                    xml += `<d p="${pAttribute}">${dmitem.m}</d>\n`;
+                                    num++;
+                                }
+                            }catch(e){}
                         });
                     }else{
                         log('未能识别的json弹幕，请提交给作者');

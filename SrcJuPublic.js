@@ -1055,7 +1055,7 @@ function danmuDownLoad(data) {
                                 }, dmSource.url, it.episodeId, dmid, listnames.length),
                                 col_type: 'text_4',
                                 extra: {
-                                    backgroundColor: downdmlists.includes(it.episodeId)?"#20" + Color.replace('#',''):""
+                                    backgroundColor: downdmlists.includes(it.episodeId)?"#20339966":""
                                 }
                             })
                         })

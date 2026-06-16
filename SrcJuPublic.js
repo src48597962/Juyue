@@ -1037,7 +1037,7 @@ function danmuDownLoad(data) {
                                     if(dmxml.startsWith('<?xml') && dmxml.includes('<d p="')){
                                         let dmfile = `hiker://files/_cache/Juyue/danmu/${dmid}.xml`;
                                         writeFile(dmfile, dmxml);
-                                        let downdmlists = storage0.getMyVar('已下载弹幕选集列表') || [];
+                                        let downdmlists = storage0.getMyVar('downdmlists') || [];
                                         downdmlists.push(episodeId);
                                         storage0.putMyVar('downdmlists', downdmlists);
                                         let sm = '';
@@ -1053,7 +1053,10 @@ function danmuDownLoad(data) {
                                         return 'toast://下载失败，未包含弹幕内容';
                                     }
                                 }, dmSource.url, it.episodeId, dmid, listnames.length),
-                                col_type: 'text_4'
+                                col_type: 'text_4',
+                                extra: {
+                                    backgroundColor: downdmlists.includes(it.episodeId)?"#20" + Color.replace('#',''):""
+                                }
                             })
                         })
                         setResult(d);

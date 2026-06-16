@@ -227,7 +227,7 @@ function dmapi(data) {
                 if(!data){
                     showLoading('正在校验有效性');
                     let html = fetch(dmurl + 'https://v.qq.com/x/cover/mzc00200u2ay1kj/o4102s6qfdq.html', { timeout: 8000 });
-                    if (html.startsWith('{') && html.includes('comments')) {
+                    if (html.startsWith('{') && (html.includes('comments')||html.includes('danmuku'))) {
                         dmtype = 'json';
                     } else if (html.startsWith('<?xml') && html.includes('<d p="')) {
                         dmtype = 'xml';

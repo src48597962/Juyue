@@ -234,7 +234,6 @@ function dmapi(data) {
                     } else {
                         dmtype = '';
                     }
-                    dmsearch = '';
                     if(getMyVar('dmsearch') && !dmurl.includes('api/v2/comment')){
                         dmsearch = '';
                         toast('仅支持含api/v2/comment的弹幕源搜索');

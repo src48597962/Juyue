@@ -1029,7 +1029,7 @@ function danmuDownLoad(data) {
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
-                                title: downdmlists.includes(it.episodeId)?`““””<span style="color: #339966">`+episodeTitle+`</span>`:episodeTitle,
+                                title: downdmlists.includes(it.episodeId)?`““””<span style="color: #4EAF7C">`+episodeTitle+`</span>`:episodeTitle,
                                 url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid, maxid)=>{
                                     showLoading('正在请求.');
                                     let dmxml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});
@@ -1055,7 +1055,7 @@ function danmuDownLoad(data) {
                                 }, dmSource.url, it.episodeId, dmid, listnames.length),
                                 col_type: 'text_4',
                                 extra: {
-                                    backgroundColor: downdmlists.includes(it.episodeId)?"#20339966":""
+                                    backgroundColor: downdmlists.includes(it.episodeId)?"#204EAF7C":""
                                 }
                             })
                         })

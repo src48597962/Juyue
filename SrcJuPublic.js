@@ -833,7 +833,7 @@ function danmuDownLoad(data) {
         addListener("onClose", $.toString(() => {
             clearMyVar('搜索关键词');
         }));
-        setPageTitle('下载弹幕');
+        setPageTitle('下载弹幕-' + data.name);
         let Color = getItem('主题颜色','#3399cc');
         let sskeyword = getMyVar('搜索关键词', data.keyword); 
         let d = [];
@@ -1029,7 +1029,7 @@ function danmuDownLoad(data) {
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({
-                                title: downdmlists.includes(it.episodeId)?`““””<span style="color: #4EAF7C" bgcolor="red">`+episodeTitle+`</span>`:episodeTitle,
+                                title: downdmlists.includes(it.episodeId)?`““””<span style="color: #4EAF7C" background-color="red">`+episodeTitle+`</span>`:episodeTitle,
                                 url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid, maxid)=>{
                                     showLoading('正在请求.');
                                     let dmxml = fetch(dmurl.split('comment')[0] + 'comment/' + episodeId + '?format=xml', {timeout: 8000});

@@ -103,7 +103,7 @@ function dmhome(){
     dmlist.reverse();
     dmlist.forEach(it=>{
         d.push({
-            title: it.name + '  [' + it.type + (it.search?'|搜索':'') + ']',
+            title: it.name + '  [' + it.type + (it.search?'、搜索':'') + ']',
             desc: it.url,
             col_type: 'text_1',
             url: $(['编辑', '分享', '删除'], 2).select((data) => {

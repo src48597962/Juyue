@@ -100,14 +100,31 @@ function dmhome(){
     dmlist.reverse();
     dmlist.forEach(it=>{
         d.push({
-            title: it.name + '  [' + it.type + ']  ' + (it.search?'{搜索}':''),
+            title: it.name + '  [' + it.type + (it.search?'|搜索':'') + ']',
             desc: it.url,
             col_type: 'text_1',
-            url: $(['编辑', '删除'], 2).select((data) => {
+            url: $(['编辑', '分享', '删除'], 2).select((data) => {
                 if(input=='编辑'){
                     return $('hiker://empty#noRecordHistory##noHistory#').rule((data) => {
                         require(config.jxCodePath + 'SrcDanmu.js');
                         dmapi(data);
+                    }, data)
+                }else if(input=='分享'){
+                    let pastes = getPastes();
+                    return $(pastes, 2).select(() => {
+                        let dmlist = [data];
+                        showLoading('分享生成中，请稍后...');
+                        let sharetxt = base64Encode(JSON.stringify(dmlist));
+                        let pasteurl = sharePaste(sharetxt, input);
+                        hideLoading();
+                        if (/^http|^云/.test(pasteurl) && pasteurl.includes('/')) {
+                            log('剪贴板地址>' + pasteurl);
+                            copy('解析弹幕￥' + aesEncode('danmu', pasteurl) + '￥聚阅');
+                            return "toast://分享口令已生成";
+                        } else {
+                            log('分享失败>' + pasteurl);
+                            return "toast://分享失败，剪粘板或网络异常>" + pasteurl;
+                        }
                     }, data)
                 }else if(input=='删除'){
                     require(config.jxCodePath + 'SrcPublic.js');

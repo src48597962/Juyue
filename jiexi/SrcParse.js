@@ -861,14 +861,14 @@ function 弹幕(vipUrl, dataObj) {
 function 弹幕挂载(playUrl, dmfile) {
     if(playSet.danmu==1){
         try{
-            if(contain.test(playUrl)){
+            if(contain.test(playUrl) || playUrl.startsWith('video://')){
                 if(playUrl.startsWith('{')){
                     let playobj = JSON.parse(playUrl);
                     if(!playobj.danmu){
                         playobj['danmu'] = dmfile;
                     }
                     return JSON.stringify(playobj);
-                }else if(playUrl.startsWith('http')){
+                }else if(playUrl.startsWith('http') || playUrl.startsWith('video://')){
                     let header;
                     if(playUrl.includes(';{')){
                         header = mulheader(playUrl);
@@ -883,6 +883,13 @@ function 弹幕挂载(playUrl, dmfile) {
         }catch(e){
             log("挂载弹幕异常>" + e.message);
         }
+    }
+    return playUrl;
+}
+function 视频处理(playUrl, dataObj) {
+    dataObj = dataObj || {};
+    if(dataObj.dmfile){
+        return 弹幕挂载(playUrl, dmfile);
     }
     return playUrl;
 }

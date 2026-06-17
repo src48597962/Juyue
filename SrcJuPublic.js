@@ -1030,7 +1030,7 @@ function danmuDownLoad(data) {
                         let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
                         //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
                         dmepisodes.forEach(it=>{
-                            let episodeTitle = it.episodeTitle.split('】')[1].trim();
+                            let episodeTitle = it.episodeTitle.split('】')[1].replace(data.name, '').trim();
                             d.push({
                                 title: downdmlists.includes(it.episodeId)?`““””<span style="color: #4EAF7C">`+episodeTitle+`</span>`:episodeTitle,
                                 url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid, maxid)=>{

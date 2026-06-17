@@ -1028,6 +1028,7 @@ function danmuDownLoad(data) {
                         })
                         let downdmlists = storage0.getMyVar('downdmlists') || [];
                         let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
+                        //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
                         dmepisodes.forEach(it=>{
                             let episodeTitle = it.episodeTitle.split('】')[1].trim();
                             d.push({

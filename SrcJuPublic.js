@@ -909,7 +909,7 @@ function danmuDownLoad(data) {
                             searchd.push({
                                 bangumiId: it.bangumiId,
                                 title: it.animeTitle.split('【')[0],
-                                desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                                desc: it.typeDescription + ' ' + (it.animeTitle.includes('】')?it.animeTitle.split('】')[1]:it.animeTitle),
                                 pic_url: it.imageUrl
                             })
                         }
@@ -932,7 +932,7 @@ function danmuDownLoad(data) {
                         searchd.push({
                             bangumiId: it.animeId,
                             title: it.animeTitle.split('【')[0],
-                            desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                            desc: it.typeDescription + ' ' + (it.animeTitle.includes('】')?it.animeTitle.split('】')[1]:it.animeTitle),
                             pic_url: it.imageUrl
                         })
                     }
@@ -1030,7 +1030,7 @@ function danmuDownLoad(data) {
                         let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
                         //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
                         dmepisodes.forEach(it=>{
-                            let episodeTitle = it.episodeTitle.split('】')[1].replace(data.name, '').trim();
+                            let episodeTitle = (it.episodeTitle.includes('】')?it.episodeTitle.split('】')[1]:it.episodeTitle).replace(data.name, '').trim();
                             d.push({
                                 title: downdmlists.includes(it.episodeId)?`““””<span style="color: #4EAF7C">`+episodeTitle+`</span>`:episodeTitle,
                                 url: $("需要下载："+downname+"\n当前选择："+episodeTitle+"\n确认?").confirm((dmurl, episodeId, dmid, maxid)=>{

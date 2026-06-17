@@ -900,17 +900,19 @@ function danmuDownLoad(data) {
             let searchd = [];
             //xlog(fetch('http://120.5.233.188:8098/87654321/api/v2/search/episodes?anime=' + sskeyword));
             let i = 0;
-            while (i < 4) {
+            while (i < 3) {
                 let searchHtml = fetch(dmSource.url.split('comment')[0] + 'search/anime?keyword=' + sskeyword, {timeout: 3000});
                 if(searchHtml){
                     let searchList = JSON.parse(searchHtml).animes;
                     searchList.forEach(it=>{
-                        searchd.push({
-                            bangumiId: it.bangumiId,
-                            title: it.animeTitle.split('【')[0],
-                            desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
-                            pic_url: it.imageUrl
-                        })
+                        if(data.listnames.length==it.episodeCount || (it.episodeCount>1 && data.listnames.length>1)){
+                            searchd.push({
+                                bangumiId: it.bangumiId,
+                                title: it.animeTitle.split('【')[0],
+                                desc: it.typeDescription + ' ' + it.animeTitle.split('】')[1],
+                                pic_url: it.imageUrl
+                            })
+                        }
                     })
                     break;
                 }

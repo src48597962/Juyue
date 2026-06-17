@@ -143,23 +143,23 @@ function jxSetPage(dd) {
         d.push({
             col_type: "line"
         });
-
+        let dmSourceName = (playSet['danmuSource']||{}).name || '未选择';
         d.push({
-            title: '弹幕获取源：' + ((playSet['danmuSource']||{}).name || '未选择'),
-            url: $('#noLoading#').lazyRule(() => {
+            title: '弹幕获取源：' + dmSourceName,
+            url: $('#noLoading#').lazyRule((dmSourceName) => {
                 require(config.jxCodePath + 'SrcPublic.js');
                 let dmlist = [];
                 let dmfilestr = fetch(jxdmfile);
                 if (dmfilestr != "") {
                     eval("dmlist=" + dmfilestr + ";");
                 }
-
+                let dmnames = ['dm盒子'].concat(dmlist.map(v => v.name));
                 const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
                 hikerPop.selectBottom({
-                    options: ['dm盒子'].concat(dmlist.map(v => v.name)),
+                    options: dmnames,
                     columns: 3,
                     height: 0.6, //0-1
-                    position: 1,
+                    position: dmnames.indexOf(dmSourceName),
                     click(a) {
                         let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};
                         let playSet = jxSetCfg['playSet'] || {};
@@ -176,7 +176,7 @@ function jxSetPage(dd) {
                     */
                 });
                 return "hiker://empty";
-            }),
+            }, dmSourceName),
             pic_url: 箭头图标,
             col_type: "text_icon"
         })

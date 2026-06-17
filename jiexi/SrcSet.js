@@ -155,10 +155,10 @@ function jxSetPage(dd) {
                 }
                 let dmnames = ['dm盒子'].concat(dmlist.map(v => v.name));
                 const hikerPop = $.require(config.jxCodePath + "plugins/hikerPop.js");
-                hikerPop.selectBottom({
+                hikerPop.selectCenter({
                     options: dmnames,
                     columns: 3,
-                    height: 0.6, //0-1
+                    title: "请选择默认弹幕源",
                     position: dmnames.indexOf(dmSourceName),
                     click(a) {
                         let jxSetCfg = storage0.getMyVar('jxSetCfg') || {};

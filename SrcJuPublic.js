@@ -835,7 +835,7 @@ function danmuDownLoad(data) {
         }));
         setPageTitle('下载弹幕-' + data.name);
         let Color = getItem('主题颜色','#3399cc');
-        let sskeyword = getMyVar('搜索关键词', data.keyword); 
+        let sskeyword = getMyVar('搜索关键词', data.sskeyword); 
         let d = [];
         d.push({
             title: '🔍',

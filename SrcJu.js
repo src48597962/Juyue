@@ -882,7 +882,7 @@ function erji() {
                     }
                 })
 
-                let sskeyword = name.split('/')[0].trim();
+                let sskeyword = name.split('/')[0].split('|')[0].trim();
                 let expandBtn = [];
                 if(addCaseObj.length==1){
                     expandBtn.push(addCaseObj[0].title);

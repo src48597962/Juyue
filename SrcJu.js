@@ -541,7 +541,8 @@ function erji() {
     let oldMY_PARAMS = Object.assign({}, MY_PARAMS);//一级过来的附加信息先保留一份
     let erTempData = storage0.getMyVar('二级详情临时对象') || {};//二级海报等详情临时保存
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据
-    let name = (erjiextra.name||erjiextra.title||erjiextra.pageTitle||"").replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源关键字
+    let name = (erjiextra.name||erjiextra.title||erjiextra.pageTitle||"").trim();//二级换源取一级标题
+    let sskeyword = name.split('/')[0].split('|')[0].replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim(); //统一搜索关键词
     let jkdata = erjiextra.data;//接口数据
     let sname = jkdata.name;//二级源名称
     let stype = jkdata.type;
@@ -882,7 +883,6 @@ function erji() {
                     }
                 })
 
-                let sskeyword = name.split('/')[0].split('|')[0].trim();
                 let expandBtn = [];
                 if(addCaseObj.length==1){
                     expandBtn.push(addCaseObj[0].title);
@@ -898,7 +898,7 @@ function erji() {
                     expandBtn.push("更多搜索🔍");
                     $.extend({danmudata: {
                         name: name,
-                        keyword: sskeyword,
+                        sskeyword: sskeyword,
                         pageid: pageid,
                         listnames: 列表.map(v=>v.title)
                     }});
@@ -1014,7 +1014,7 @@ function erji() {
                 }
                 d.push({
                     title: sname?processChineseText(sname):"切换站源",
-                    url: $("#noLoading#").lazyRule((name,group) => {
+                    url: $("#noLoading#").lazyRule((sskeyword,group) => {
                         updateItem("erji_loading2", { 
                             extra: {
                                 id: "erji_loading",
@@ -1028,7 +1028,7 @@ function erji() {
                         putMyVar('二级切换站源', '1');
                         require(config.聚阅);
                         //showLoading('搜源中,请稍后.');
-                        erjisousuo(name, group);
+                        erjisousuo(sskeyword, group);
                         //hideLoading();
                         return  "hiker://empty";
                     }, sskeyword, juItem2.get('二级换源走分类')?stype:sgroup),
@@ -1449,7 +1449,7 @@ function erji() {
                         return '';
                     }
                     if(reviseLiTitle == "1"){
-                        return str.replace(name,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
+                        return str.replace(name,'').replace(sskeyword,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
                     }
                     return str.trim();
                 }
@@ -1677,23 +1677,23 @@ function erji() {
 
 //搜索页面
 function sousuo() {
-    let name = MY_URL.split('##')[1];
+    let sskeyword = MY_URL.split('##')[1];
     
     setResult([{
         title: "点我一下，视界聚搜",
-        url: "hiker://search?s=" + name.split('  ')[0].trim(),
+        url: "hiker://search?s=" + sskeyword.split('  ')[0].trim(),
         extra: {
             delegateOnlySearch: true,
-            rules: $.toString((name) => {
+            rules: $.toString((sskeyword) => {
                 let info = storage0.getMyVar('一级源接口信息') || {};
-                let keyword = name.split('  ')[0].trim();
+                let keyword = sskeyword.split('  ')[0].trim();
                 let keyword2;
-                if(name.indexOf('  ')>-1){
-                    if(name.split('  ')[1].trim()=='聚合搜索'){
+                if(sskeyword.indexOf('  ')>-1){
+                    if(sskeyword.split('  ')[1].trim()=='聚合搜索'){
                         let parse = getObjCode(info, 'ss');
                         return parse['聚合搜索'](keyword);
                     }
-                    keyword2 = name.split('  ')[1].trim() || info.name;
+                    keyword2 = sskeyword.split('  ')[1].trim() || info.name;
                 }
 
                 let ssdatalist = [];
@@ -1748,14 +1748,14 @@ function sousuo() {
                     });
                 })
                 return JSON.stringify(judata);
-            },name)
+            },sskeyword)
         }
     }])
 }
 //搜索逻辑代码
-function search(name, sstype, jkdata, blurMatch) {
+function search(sskeyword, sstype, jkdata, blurMatch) {
     if(sstype=="hkjusou"){
-        name = MY_URL.split('##')[1].split('  ')[0].trim();
+        sskeyword = MY_URL.split('##')[1].split('  ')[0].trim();
     }
     let page = (sstype=="erji" || sstype=="yiji") ? 1 : MY_PAGE;
     let ssdata = [];
@@ -1778,7 +1778,7 @@ function search(name, sstype, jkdata, blurMatch) {
     }
 
     let isnewVer = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305));
-    getSsData(name, jkdata, page).vodlists.forEach(it => {
+    getSsData(sskeyword, jkdata, page).vodlists.forEach(it => {
         if(sstype=='erji'){
             if(it.extra && it.extra.url){
                 it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {
@@ -1791,29 +1791,30 @@ function search(name, sstype, jkdata, blurMatch) {
                         return "toast://已切换源：" + extra.data.name;
                     }
                 }, it.extra);
+                let extraname = it.extra.name || it.extra.pageTitle;
                 it.title = it.extra.data.name;
-                it.desc = (isnewVer?it.extra.name+" ":"") + (it.extra.desc || it.desc || "源作者没写");
+                it.desc = (isnewVer?extraname+" ":"") + (it.extra.desc || it.desc || "源作者没写");
                 it.col_type = isnewVer?"icon_1_left_pic":"avatar";
                 
-                if((blurMatch&&isMatch(name, it.extra.name)) || (it.extra.name.toLowerCase()==name.toLowerCase())){
+                if((blurMatch&&isMatch(sskeyword, extraname)) || (extraname.toLowerCase()==sskeyword.toLowerCase())){
                     ssdata.push(it);
                 }
             }
         }else if(sstype=="yiji"){
-            if(isMatch(name, it.title) || it.retain){
+            if(isMatch(sskeyword, it.title) || it.retain){
                 delete it.retain;
                 it.extra = it.extra || {};
                 it.extra.cls = "homesousuolist";
                 ssdata.push(it);
             }
         }else if(sstype=="newSearch"){
-            if(isMatch(name, it.title)){
-                it.title = it.title.replace(name, '‘‘’’<font color=red>' + name + '</font>');
+            if(isMatch(sskeyword, it.title)){
+                it.title = it.title.replace(sskeyword, '‘‘’’<font color=red>' + sskeyword + '</font>');
                 it.col_type = "movie_1_vertical_pic";
                 it.desc = (it.desc||"") + '\n' + '‘‘’’<font color=#f13b66a>聚阅 · '+jkdata.name+'</font> ('+jkdata.type+')';
                 ssdata.push(it);
             }
-        }else if(isMatch(name, it.title) || !it.url.includes('erji();') || it.retain){
+        }else if(isMatch(sskeyword, it.title) || !it.url.includes('erji();') || it.retain){
             delete it.retain;
             ssdata.push(it);
         }
@@ -1822,16 +1823,16 @@ function search(name, sstype, jkdata, blurMatch) {
 }
 
 //二级切源搜索
-function erjisousuo(name,group,datas,sstype) {
+function erjisousuo(sskeyword,group,datas,sstype) {
     sstype = sstype || "erji";
     let updateItemid = sstype=="erji"?"erji_loading":group+"_newSearch_loading";
     let searchMark = storage0.getMyVar('SrcJu_searchMark') || {};//二级换源缓存
-    let markId = group+'_'+name;
+    let markId = group+'_'+sskeyword;
     if(!datas && searchMark[markId] && sstype=="erji"){
         addItemBefore(updateItemid, searchMark[markId]);
         updateItem(updateItemid, {
             title: "‘‘’’<small>当前搜索为缓存</small>",
-            url: $("确定删除“"+name+"”搜索缓存吗？").confirm((markId)=>{
+            url: $("确定删除“"+sskeyword+"”搜索缓存吗？").confirm((markId)=>{
                 let searchMark = storage0.getMyVar('SrcJu_searchMark') || {};
                 delete searchMark[markId];
                 storage0.putMyVar('SrcJu_searchMark', searchMark);
@@ -1865,7 +1866,7 @@ function erjisousuo(name,group,datas,sstype) {
         let task = function (obj) {
             return (function() {
                 try {
-                    let lists = obj.search(obj.name, obj.type, obj.data, obj.blurMatch);
+                    let lists = obj.search(obj.sskeyword, obj.type, obj.data, obj.blurMatch);
                     return {result:lists, success:1, type: obj.type, name: obj.data.name};
                 } catch (e) {
                     xlog(obj.data.name + '>搜索失败>' + e.message);
@@ -1876,7 +1877,7 @@ function erjisousuo(name,group,datas,sstype) {
         let list = ssdatalist.map((item) => {
             return {
                 func: task,
-                param: {"search":search,"name":name,"type":sstype,"data":item,"blurMatch":sstype=="erji"&&juItem2.get('二级换源模糊匹配')?1:0},
+                param: {"search":search,"sskeyword":sskeyword,"type":sstype,"data":item,"blurMatch":sstype=="erji"&&juItem2.get('二级换源模糊匹配')?1:0},
                 id: item.id
             }
         });
@@ -1915,12 +1916,12 @@ function erjisousuo(name,group,datas,sstype) {
                 let pdatalist = ssdatalist.filter(v=>beidlist.indexOf(v.id)==-1);
                 addItemBefore(updateItemid, {
                     title: "剩余"+(ssdatalist.length-beidlist.length)+"，点击继续",
-                    url: $("#noLoading#").lazyRule((updateItemid,name,group,datas,sstype) => {
+                    url: $("#noLoading#").lazyRule((updateItemid,sskeyword,group,datas,sstype) => {
                         deleteItem(updateItemid + "_start");
                         require(config.聚阅);
-                        erjisousuo(name, group, datas, sstype);
+                        erjisousuo(sskeyword, group, datas, sstype);
                         return "hiker://empty";
-                    }, updateItemid, name, group, pdatalist, sstype),
+                    }, updateItemid, sskeyword, group, pdatalist, sstype),
                     col_type: 'text_center_1',
                     extra: {
                         id: updateItemid + "_start",
@@ -2012,14 +2013,14 @@ function newSearchPage(keyword, searchtype) {
         clearVar('keyword');
     }));
     
-    let name = getMyVar('SrcJu_sousuoName', keyword||'');
+    let sskeyword = getMyVar('SrcJu_sousuoName', keyword||'');
     let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
     setPageTitle("聚合搜索 | 聚阅");
 
-    let keyword = name.split('  ')[0].trim();
+    let keyword = sskeyword.split('  ')[0].trim();
     let keyword2;
-    if(name.indexOf('  ')>-1){
-        keyword2 = name.split('  ')[1].trim();
+    if(sskeyword.indexOf('  ')>-1){
+        keyword2 = sskeyword.split('  ')[1].trim();
         group = keyword2;
     }
 
@@ -2061,7 +2062,7 @@ function newSearchPage(keyword, searchtype) {
             col_type: "input",
             extra: {
                 id: 'newSearchid',
-                defaultValue: name,
+                defaultValue: sskeyword,
                 titleVisible: true,
                 onChange: $.toString((searchurl) => {
                     if(input==""){

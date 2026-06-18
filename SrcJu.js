@@ -543,6 +543,8 @@ function erji() {
     let erjiextra = storage0.getMyVar('二级附加临时对象') || MY_PARAMS || {};//二级换源时临时extra数据
     let name = (erjiextra.name||erjiextra.title||erjiextra.pageTitle||"").replace(/‘|’|“|”|<[^>]+>|全集|国语|粤语/g,"").trim();//二级换源取一级标题
     let sskeyword = name.split('/')[0].split('|')[0].trim(); //统一搜索关键词
+    log(name);
+    log(sskeyword);
     let jkdata = erjiextra.data;//接口数据
     let sname = jkdata.name;//二级源名称
     let stype = jkdata.type;

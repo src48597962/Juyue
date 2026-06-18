@@ -903,7 +903,7 @@ function erji() {
                         listnames: 列表.map(v=>v.title)
                     }});
                     $.extend({sskeyword: sskeyword});
-                }else{
+                }else if(itype){
                     expandBtn.push("下载本地📥");
                     $.extend({itype: itype});
 

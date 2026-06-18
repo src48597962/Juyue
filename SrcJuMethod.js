@@ -999,7 +999,7 @@ function getCaseClick(caseData, refresh){
 function getCaseData() {
     let obj = {
         type: '二级列表',
-        title: MY_PARAMS.name,
+        title: MY_PARAMS.name||MY_PARAMS.pageTitle,
         picUrl: MY_PARAMS.img,
         params: {
             url: MY_RULE.url.split(';')[0],

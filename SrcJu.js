@@ -1537,12 +1537,21 @@ function erji() {
                             id: "extendlist"
                         }
                     })
+                    
                     extenditems.forEach(item => {
+                        let newcls = ["Juloadlist", "extendlist"];
                         if(item.url!=MY_URL){
                             item = toerji(item, jkdata);
                             item.extra = item.extra || {};
                             //item.extra['back'] = 1;
-                            item.extra['cls'] = "Juloadlist extendlist";
+                            if(item.extra['cls']){
+                                item.extra['cls'].split(" ").forEach(v=>{
+                                    if(newcls.indexOf(v)==-1){
+                                        newcls.push(v);
+                                    }
+                                });
+                            }
+                            item.extra['cls'] = newcls.join(" ");
                             d.push(item)
                         }
                     })

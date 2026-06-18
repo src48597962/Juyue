@@ -139,6 +139,7 @@ function SrcParse(vipUrl, dataObj) {
     vipUrl = decodeURI(vipUrl);
     vipUrl = vipUrl.startsWith('tvbox-xg:')?vipUrl.replace('tvbox-xg:',''):vipUrl.startsWith('push://')?vipUrl.replace('push://',''):vipUrl;
     vipUrl = vipUrl.replace('#isVideo=true#', '');
+    vipUrl = vipUrl.startsWith('video://')?vipUrl.replace('video://',''):vipUrl;
     dataObj = dataObj || {};
     let isVip = 0;
     log("请求地址："+vipUrl); 

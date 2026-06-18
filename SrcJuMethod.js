@@ -1283,11 +1283,11 @@ function x5toerji(MY_RULE, jkdata, extra) {
     MY_RULE = MY_RULE || JSON.parse(fetch("hiker://home@聚阅"));
     jkdata = jkdata || storage0.getMyVar('一级源接口信息');
     extra = extra || getVar('轮播数据') ||{};
-    extra.name = extra.title || extra.name || extra.pageTitle;
+    extra.pageTitle = extra.pageTitle || extra.title || extra.name;
     clearVar('轮播数据');
     return $.toString((MY_RULE, jkdata, extra) => {
         if(!extra.url && typeof window.item == 'object'){
-            extra.name = window.item.title;
+            extra.name = window.item.name;
             extra.pageTitle = window.item.title;
             extra.img = window.item.img;
             extra.url = window.item.url;
@@ -1301,7 +1301,7 @@ function x5toerji(MY_RULE, jkdata, extra) {
         }, extra);
         fba.open(JSON.stringify({
             rule: "聚阅",
-            title: extra.name || '详情',
+            title: extra.pageTitle || extra.name || '详情',
             url: "hiker://empty?type="+jkdata.type+"&page=fypage" + (jkdata.erjisign||"#immersiveTheme#"),
             group: MY_RULE.group,
             findRule: findRule, //"js:(\n() => {\n    require(config.聚阅);\n    erji();\n}\n)()",

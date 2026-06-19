@@ -993,8 +993,8 @@ function getCaseClick(caseData, refresh){
             if(refresh){
                 refreshPage(false);
             }
-            return addBookCase(JSON.parse(gzip.unzip(caseData)));
-        }, gzip.zip(JSON.stringify(caseData)), refresh)
+            return addBookCase(JSON.parse(base64Decode(caseData)));
+        }, base64Encode(JSON.stringify(caseData)), refresh)
     }
 }
 // 获取二级case书架数据

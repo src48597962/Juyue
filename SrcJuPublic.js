@@ -1016,7 +1016,7 @@ function danmuDownLoad(data) {
                                 putMyVar('listsid', sid);
                                 refreshPage(false);
                                 return 'hiker://empty';
-                            }, sid, listnames.length),
+                            }, sid, downlists.length),
                             col_type: 'text_4'
                         })
                         d.push({
@@ -1055,7 +1055,7 @@ function danmuDownLoad(data) {
                                     }else{
                                         return 'toast://下载失败，未包含弹幕内容';
                                     }
-                                }, dmSource.url, it.episodeId, dmid, listnames.length),
+                                }, dmSource.url, it.episodeId, dmid, downlists.length),
                                 col_type: 'text_3',
                                 extra: {
                                     //backgroundColor: downdmlists.includes(it.episodeId)?"#204EAF7C":""

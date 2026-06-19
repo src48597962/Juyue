@@ -298,7 +298,7 @@ function manageSet(){
                 }else if (parseFloat(newVersion.JYUpdateRecords[0].title.split('V')[1]) > parseFloat(nowVersion)) {
                     confirm({
                         title: '测试beta版本，是否更新？', 
-                        content: '本地V'+nowVersion+' => 云端'+newVersion.JYUpdateRecords[0].title, 
+                        content: '本地V'+nowVersion+' => 云端'+newVersion.JYUpdateRecords[0].title+ '\n' + newVersion.JYUpdateRecords[0].records.join('\n'), 
                         confirm: $.toString((nowtime) => {
                             setItem('VersionChecktime', nowtime+'time');
                             deleteCache();

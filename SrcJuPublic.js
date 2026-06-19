@@ -956,7 +956,7 @@ function danmuDownLoad(data) {
                     url: $('hiker://empty#noRecordHistory##noHistory##noRefresh#').rule((dmSource, bangumiId, data) => {
                         addListener("onClose", $.toString(() => {
                             clearMyVar('bangumiId');
-                            clearMyVar('listId');
+                            clearMyVar('listsid');
                             clearMyVar('downdmlists');
                         }));
                         let dmepisodes = storage0.getMyVar('bangumiId'+bangumiId);
@@ -965,10 +965,10 @@ function danmuDownLoad(data) {
                             dmepisodes = JSON.parse(dmhtml).bangumi.episodes;
                             storage0.putMyVar('bangumiId', dmepisodes);
                         }
-                        let listid = parseInt(getMyVar('listId', '0'));
+                        let sid = parseInt(getMyVar('listsid', '0'));
                         let d = [];
                         let listnames = data.listnames;
-                        let downname = listnames[listid];
+                        let downname = listnames[sid];
                         setPageTitle(data.name + '-' + downname);
                         d.push({
                             title: '选择要下载弹幕的播放选集',
@@ -976,47 +976,47 @@ function danmuDownLoad(data) {
                         })
                         d.push({
                             title: '上一集',
-                            url: $('#noLoading#').lazyRule((listid) => {
-                                if(listid==0){
+                            url: $('#noLoading#').lazyRule((sid) => {
+                                if(sid==0){
                                     return 'toast://第1集了';
                                 }
-                                listid = listid - 1;
-                                putMyVar('listId', listid);
+                                sid = sid - 1;
+                                putMyVar('listsid', sid);
                                 refreshPage(false);
                                 return 'hiker://empty';
-                            }, listid),
+                            }, sid),
                             col_type: 'text_4'
                         })
                         d.push({
                             title: downname,
-                            url: $('#noLoading#').lazyRule((listid, listnames) => {
+                            url: $('#noLoading#').lazyRule((sid, listnames) => {
                                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                                 hikerPop.selectCenter({
                                     options: listnames,
                                     columns: 3,
                                     title: "请选择要下载弹幕的选集",
-                                    position: listid,
+                                    position: sid,
                                     click(a) {
-                                        putMyVar('listId', listnames.indexOf(a));
+                                        putMyVar('listsid', listnames.indexOf(a));
                                         refreshPage(false);
                                         return 'hiker://empty';
                                     }
                                 });
                                 return 'hiker://empty';
-                            }, listid, listnames),
+                            }, sid, listnames),
                             col_type: 'text_2'
                         })
                         d.push({
                             title: '下一集',
-                            url: $('#noLoading#').lazyRule((listid, maxid) => {
-                                if(listid==maxid){
+                            url: $('#noLoading#').lazyRule((sid, maxid) => {
+                                if(sid==maxid){
                                     return 'toast://最后1集了';
                                 }
-                                listid = listid + 1;
-                                putMyVar('listId', listid);
+                                sid = sid + 1;
+                                putMyVar('listsid', sid);
                                 refreshPage(false);
                                 return 'hiker://empty';
-                            }, listid, listnames.length),
+                            }, sid, listnames.length),
                             col_type: 'text_4'
                         })
                         d.push({
@@ -1027,8 +1027,8 @@ function danmuDownLoad(data) {
                             col_type: 'rich_text'
                         })
                         let downdmlists = storage0.getMyVar('downdmlists') || [];
-                        let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (listid+1);
-                        //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + listid;
+                        let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (sid+1);
+                        //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + sid;
                         dmepisodes.forEach(it=>{
                             let episodeTitle = (it.episodeTitle.includes('】')?it.episodeTitle.split('】')[1]:it.episodeTitle).replace(data.name, '').trim();
                             d.push({
@@ -1044,11 +1044,11 @@ function danmuDownLoad(data) {
                                         downdmlists.push(episodeId);
                                         storage0.putMyVar('downdmlists', downdmlists);
                                         let sm = '';
-                                        let listid = parseInt(getMyVar('listId', '0'));
-                                        if(listid<maxid){
+                                        let sid = parseInt(getMyVar('listsid', '0'));
+                                        if(sid<maxid){
                                             sm = '，进入下一集待下载';
-                                            listid = listid + 1;
-                                            putMyVar('listId', listid);
+                                            sid = sid + 1;
+                                            putMyVar('listsid', sid);
                                             refreshPage(false);
                                         }
                                         return 'toast://下载成功' + sm;

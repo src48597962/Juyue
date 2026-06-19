@@ -817,7 +817,7 @@ function erji() {
                         列表.reverse();
                     }
                     // 增加选集id
-                    列表.forEach((it, i)=>{
+                    列表 = 列表.map(item=>item).forEach((it, i)=>{
                         it.listId = name + "_选集_" + ((分页偏移||0) + (i+1));
                     });
                 }

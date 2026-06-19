@@ -692,6 +692,7 @@ function erji() {
             let 列表 = [];
             let 自动页码; //当前线路是否自动下一页
             let 分页; //网站分页显示列表的
+            let 分页偏移; //用于计算分页选集id，分页偏移+当前索引值
 
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
@@ -723,17 +724,21 @@ function erji() {
                             }
 
                             if($.type(分页选集)=="array"){
+                                /*
                                 //计算并挂载索引id偏移量
                                 分页选集 = 分页选集.map(it=>{
                                     it.offset = (分页[0].num || (pageid<分页.length-1?分页选集.length:1000)) * pageid;
                                     return it;
                                 })
+                                */
+                                分页偏移 = (分页[0].num || (pageid<分页.length-1?分页选集.length:1000)) * pageid;
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
 
                                 pagelist[pageid] = 分页选集;
                             }
                         }else{//分页数组存在，则赋值给当前列表
+                            分页偏移 = (分页[0].num || (pageid<分页.length-1?pagelist[pageid].length:1000)) * pageid;
                             列表s[lineid] = pagelist[pageid];
                         }
                         erLoadData.pagelist = pagelist;//分页数组缓存本地
@@ -820,11 +825,10 @@ function erji() {
                         列表.reverse();
                     }
                     // 增加选集id
-                    列表 = Object.assign([], 列表.map((it, i)=>{
-                        it.listId = name + "_选集_" + ((it.offset||0) + (i+1));
-                        delete it.offset;
-                        return it;
-                    }));
+                    列表.forEach((it, i)=>{
+                        it.listId = name + "_选集_" + ((分页偏移||0) + (i+1));
+                        //delete it.offset;
+                    });
                 }
             }
             

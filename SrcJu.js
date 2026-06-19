@@ -692,6 +692,7 @@ function erji() {
             let 列表 = [];
             let 自动页码; //当前线路是否自动下一页
             let 分页; //网站分页显示列表的
+
             if(!noShow.选集){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
@@ -722,6 +723,9 @@ function erji() {
                             }
 
                             if($.type(分页选集)=="array"){
+                                分页选集 = 分页选集.map(it=>{
+                                    it.offset = (分页[0].num || (pageid<分页s.length?分页选集.length:30)) * pageid
+                                })
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
 
@@ -743,7 +747,7 @@ function erji() {
 
                 列表 = 列表s[lineid] || [];
 
-                //线路名除评论的线路选集修正排序
+                //线路名除评论的线路选集修正
                 if(列表.length>0 && 线路s[lineid]!='评论'){
                     function checkAndReverseArray(arr) {
                         try {
@@ -808,11 +812,15 @@ function erji() {
                         return arr;
                     }
 
-                    
+                    // 修正排序
                     列表 = checkAndReverseArray(列表);
                     if (getMyVar(sname + 'sort') == '1') {
                         列表.reverse();
                     }
+                    // 增加选集id
+                    列表.forEach((it, i)=>{
+                        it.listId = name + "_选集_" + ((it.offset||0) + (i+1));
+                    })
                 }
             }
             
@@ -1460,7 +1468,7 @@ function erji() {
     
                 // 生成选集列表
                 for(let i=0; i<列表.length; i++) {
-                    let listId = name + "_选集_" + (pageid+1) + "_" + (i+1);
+                    let listId = 列表[i].listId || (name + "_选集_" + (pageid+1) + "_" + (i+1));
                     let dataObj = {
                         data: jkdata,
                         type: stype,

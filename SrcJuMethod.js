@@ -981,7 +981,6 @@ function getCaseID(item) {
 }
 // 获取case书架长按按钮
 function getCaseClick(caseData, refresh){
-    let gzip = $.require(libspath + "plugins/gzip.js");
     let isCase = refresh?isBookCase(caseData.id):false;
     return {
         title: isCase?"取消收藏":"加入收藏🗄",
@@ -989,12 +988,11 @@ function getCaseClick(caseData, refresh){
             removeBookCase(caseid, refresh);
             refreshPage();
         }, caseData.id, refresh):$.toString((caseData, refresh) => {
-            let gzip = $.require(libspath + "plugins/gzip.js");
             if(refresh){
                 refreshPage(false);
             }
-            return addBookCase(JSON.parse(base64Decode(caseData)));
-        }, base64Encode(JSON.stringify(caseData)), refresh)
+            return addBookCase(caseData);
+        }, caseData, refresh)
     }
 }
 // 获取二级case书架数据

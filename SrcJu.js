@@ -724,17 +724,9 @@ function erji() {
                             }
 
                             if($.type(分页选集)=="array"){
-                                /*
-                                //计算并挂载索引id偏移量
-                                分页选集 = 分页选集.map(it=>{
-                                    it.offset = (分页[0].num || (pageid<分页.length-1?分页选集.length:1000)) * pageid;
-                                    return it;
-                                })
-                                */
                                 分页偏移 = (分页[0].num || (pageid<分页.length-1?分页选集.length:1000)) * pageid;
                                 列表s[lineid] = 分页选集;
                                 erLoadData.list = erLoadData.line?列表s:分页选集;
-
                                 pagelist[pageid] = 分页选集;
                             }
                         }else{//分页数组存在，则赋值给当前列表
@@ -827,7 +819,6 @@ function erji() {
                     // 增加选集id
                     列表.forEach((it, i)=>{
                         it.listId = name + "_选集_" + ((分页偏移||0) + (i+1));
-                        //delete it.offset;
                     });
                 }
             }

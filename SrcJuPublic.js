@@ -825,7 +825,7 @@ function danmuDownLoad(data) {
     if(dmlist.length==0){
         return 'toast://无支持弹幕下载源接口';
     }
-    if(data.listnames.length==0){
+    if(data.lists.length==0){
         return 'toast://播放选集为空';
     }
 
@@ -905,7 +905,7 @@ function danmuDownLoad(data) {
                 if(searchHtml){
                     let searchList = JSON.parse(searchHtml).animes;
                     searchList.forEach(it=>{
-                        if(data.listnames.length==it.episodeCount || (it.episodeCount>1 && data.listnames.length>1)){
+                        if(data.lists.length==it.episodeCount || (it.episodeCount>1 && data.lists.length>1)){
                             searchd.push({
                                 bangumiId: it.bangumiId,
                                 title: it.animeTitle.split('【')[0],
@@ -967,8 +967,8 @@ function danmuDownLoad(data) {
                         }
                         let sid = parseInt(getMyVar('listsid', '0'));
                         let d = [];
-                        let listnames = data.listnames;
-                        let downname = listnames[sid];
+                        let downlists = data.lists;
+                        let downname = downlists[sid].title;
                         setPageTitle(data.name + '-' + downname);
                         d.push({
                             title: '选择要下载弹幕的播放选集',
@@ -1003,7 +1003,7 @@ function danmuDownLoad(data) {
                                     }
                                 });
                                 return 'hiker://empty';
-                            }, sid, listnames),
+                            }, sid, downlists.map(v=>v.title)),
                             col_type: 'text_2'
                         })
                         d.push({
@@ -1027,7 +1027,7 @@ function danmuDownLoad(data) {
                             col_type: 'rich_text'
                         })
                         let downdmlists = storage0.getMyVar('downdmlists') || [];
-                        let dmid = data.name + "_选集_" + (data.pageid+1) + "_" + (sid+1);
+                        let dmid = downlists[sid].listId || (data.name + "_选集_" + (data.pageid+1) + "_" + (sid+1));
                         //let dmid = data.name + "_选集_" + (data.pageid?data.pageid+"_":"") + sid;
                         dmepisodes.forEach(it=>{
                             let episodeTitle = (it.episodeTitle.includes('】')?it.episodeTitle.split('】')[1]:it.episodeTitle).replace(data.name, '').trim();

@@ -903,8 +903,7 @@ function toerji(item, jkdata) {
                     caseData.id = caseid;
                     let longClick = extra.longClick || [];
                     longClick = longClick.filter(v => !v.title.includes("收藏"))
-                    let gzip = $.require(libspath + "plugins/gzip.js");
-                    longClick.push(getCaseClick(gzip.zip(JSON.stringify(caseData))))
+                    longClick.push(getCaseClick(caseData))
                     item.extra = item.extra || {};
                     item.extra.longClick = longClick;
                 }
@@ -983,19 +982,19 @@ function getCaseID(item) {
 // 获取case书架长按按钮
 function getCaseClick(caseData, refresh){
     let gzip = $.require(libspath + "plugins/gzip.js");
-    caseData = JSON.parse(gzip.unzip(caseData));
     let isCase = refresh?isBookCase(caseData.id):false;
     return {
         title: isCase?"取消收藏":"加入收藏🗄",
         js: isCase?$.toString((caseid, refresh) => {
-                removeBookCase(caseid, refresh);
-                refreshPage();
-            }, caseData.id, refresh):$.toString((caseData, refresh) => {
+            removeBookCase(caseid, refresh);
+            refreshPage();
+        }, caseData.id, refresh):$.toString((caseData, refresh) => {
+            let gzip = $.require(libspath + "plugins/gzip.js");
             if(refresh){
                 refreshPage(false);
             }
-            return addBookCase(caseData);
-        }, caseData, refresh)
+            return addBookCase(JSON.parse(gzip.unzip(caseData)));
+        }, gzip.zip(JSON.stringify(caseData)), refresh)
     }
 }
 // 获取二级case书架数据

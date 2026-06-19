@@ -910,7 +910,7 @@ function erji() {
                         name: name,
                         sskeyword: sskeyword,
                         pageid: pageid,
-                        listnames: 列表.map(v=>{
+                        lists: 列表.map(v=>{
                             return {title: v.title, listId: v.listId}
                         })
                     }});

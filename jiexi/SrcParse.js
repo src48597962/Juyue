@@ -869,9 +869,7 @@ function 弹幕挂载(playUrl, dmfile) {
             if(contain.test(playUrl) || playUrl.startsWith('video://')){
                 if(playUrl.startsWith('{')){
                     let playobj = JSON.parse(playUrl);
-                    if(!playobj.danmu){
-                        playobj['danmu'] = dmfile;
-                    }
+                    playobj['danmu'] = dmfile;
                     return JSON.stringify(playobj);
                 }else if(playUrl.startsWith('http') || playUrl.startsWith('video://')){
                     let header;

@@ -723,8 +723,9 @@ function erji() {
                             }
 
                             if($.type(分页选集)=="array"){
+                                //计算并挂载索引id偏移量
                                 分页选集 = 分页选集.map(it=>{
-                                    it.offset = (分页[0].num || (pageid<分页.length?分页选集.length:30)) * pageid;
+                                    it.offset = (分页[0].num || (pageid<分页.length-1?分页选集.length:1000)) * pageid;
                                     return it;
                                 })
                                 列表s[lineid] = 分页选集;
@@ -909,7 +910,9 @@ function erji() {
                         name: name,
                         sskeyword: sskeyword,
                         pageid: pageid,
-                        listnames: 列表.map(v=>v.title)
+                        listnames: 列表.map(v=>{
+                            return {title: v.title, listId: v.listId}
+                        })
                     }});
                     $.extend({sskeyword: sskeyword});
                 }else if(itype){

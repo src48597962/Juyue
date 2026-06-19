@@ -503,7 +503,8 @@ function yiji(testSource) {
     }else{
         setResult(d);
     }
-    
+    const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
+    hikerPop.scrollSmooth("homesousuoid", true, 20);
     // 一些自动检查调用在主页加载后，间隔24小时
     let nowtime = Date.now();
     let oldstartChecktime = parseInt(getItem('startChecktime','0').replace('time',''));
@@ -1575,7 +1576,7 @@ function erji() {
         d.push({
             title: "‘‘’’<small><small><font color=#bfbfbf>当前数据源：" + sname + (erLoadData.author?", 作者：" + erLoadData.author:"") + (parse['模板名']?"，模板："+parse['模板名']:"") + "</font></small></small>",
             url: stype=="小说"?'hiker://empty':$('#noLoading#').lazyRule(()=>{
-                const hikerPop = $.require("http://123.56.105.145/weisyr/js/hikerPop.js");
+                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 hikerPop.scrollSmooth("detailid", true, 20);
                 return 'toast://温馨提示：且用且珍惜！';
             }),

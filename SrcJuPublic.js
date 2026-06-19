@@ -549,7 +549,7 @@ function selectSource(selectGroup) {
                     click(s) {
                         selectGroup = s=='全部'?'':s;
                         inputBox.setTitle(s);
-                        inputBox.setDefaultValue("");
+                        //inputBox.setDefaultValue("");
                         
                         tmpList = getGroupLists(sourceList, s);
                         index_items = getitems(tmpList);

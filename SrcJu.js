@@ -822,6 +822,7 @@ function erji() {
                     // 增加选集id
                     列表.forEach((it, i)=>{
                         it.listId = name + "_选集_" + ((it.offset||0) + (i+1));
+                        delete it.offset;
                     })
                 }
             }

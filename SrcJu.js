@@ -724,7 +724,7 @@ function erji() {
 
                             if($.type(分页选集)=="array"){
                                 分页选集 = 分页选集.map(it=>{
-                                    it.offset = (分页[0].num || (pageid<分页s.length?分页选集.length:30)) * pageid;
+                                    it.offset = (分页[0].num || (pageid<分页.length?分页选集.length:30)) * pageid;
                                     return it;
                                 })
                                 列表s[lineid] = 分页选集;

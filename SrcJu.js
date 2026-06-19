@@ -2228,7 +2228,7 @@ function Version() {
             if (parseFloat(newVersion.SrcJu) > parseFloat(nowVersion)) {
                 confirm({
                     title: '发现新版本，是否更新？',
-                    content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.hint + '\n' + (newVersion.JYUpdateRecords || []).slice(0, 1)[0].records.join(''),
+                    content: nowVersion + '=>' + newVersion.SrcJu + '\n' + newVersion.hint,
                     confirm: $.toString((nowtime,newVersion,updateRecords) => {
                         downloadPlugins(true);//插件本地化文件更新
                         setItem('Version', newVersion);

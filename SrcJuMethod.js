@@ -903,7 +903,8 @@ function toerji(item, jkdata) {
                     caseData.id = caseid;
                     let longClick = extra.longClick || [];
                     longClick = longClick.filter(v => !v.title.includes("收藏"))
-                    longClick.push(getCaseClick(caseData))
+                    let gzip = $.require(libspath + "plugins/gzip.js");
+                    longClick.push(getCaseClick(gzip.zip(JSON.stringify(caseData))))
                     item.extra = item.extra || {};
                     item.extra.longClick = longClick;
                 }
@@ -981,6 +982,8 @@ function getCaseID(item) {
 }
 // 获取case书架长按按钮
 function getCaseClick(caseData, refresh){
+    let gzip = $.require(libspath + "plugins/gzip.js");
+    caseData = JSON.parse(gzip.unzip(caseData));
     let isCase = refresh?isBookCase(caseData.id):false;
     return {
         title: isCase?"取消收藏":"加入收藏🗄",

@@ -1428,6 +1428,9 @@ function outputNewData(data){
 function outputSearchList(jkdatalist, input){
     let PinyinMatch = $.require(libspath + "plugins/pinyin-match.js");
     jkdatalist = jkdatalist.filter(it=>{
+        if(input.startsWith('全局$')){
+            return fetch(it.url).includes(input.split('全局$')[1]);
+        }
         return it.name.toLowerCase().includes(input.toLowerCase()) || (it.author||"").includes(input) || it.id==input || (/^[a-zA-Z]+$/.test(input) && PinyinMatch.match(it.name, input));
     })
     storage0.putMyVar("seacrhDataList", jkdatalist);

@@ -503,8 +503,8 @@ function yiji(testSource) {
     }else{
         setResult(d);
     }
-    //const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-    hikerPop.scrollSmooth("homesousuoid", true, 20);
+    const hikerPop1 = $.require(libspath + 'plugins/hikerPop.js');
+    hikerPop1.scrollSmooth("homesousuoid", true, 20);
     // 一些自动检查调用在主页加载后，间隔24小时
     let nowtime = Date.now();
     let oldstartChecktime = parseInt(getItem('startChecktime','0').replace('time',''));

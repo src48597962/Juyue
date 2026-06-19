@@ -820,11 +820,11 @@ function erji() {
                         列表.reverse();
                     }
                     // 增加选集id
-                    列表 = 列表.map((it, i)=>{
+                    列表 = Object.assign({}, 列表.map((it, i)=>{
                         it.listId = name + "_选集_" + ((it.offset||0) + (i+1));
                         delete it.offset;
                         return it;
-                    })
+                    }));
                 }
             }
             

@@ -799,14 +799,11 @@ function getObjCode(jkdata, key) {
         parse['jkdata'] = jkdata;
         parse['页码'] = parse['页码'] || {};
         if((key=='yi'||key=='ss') && parse['二级'] && isJuDetail(jkdata.id)){//去除二级页面标识
-            let ercodestr = parse['二级'].toString();
-            if(ercodestr.includes('detail1') && ercodestr.includes('detailObj')){
-                delete parse['二级标识'];
-                let yijkdata = storage0.getMyVar('一级源接口信息') || {};
-                if(yijkdata.id==jkdata.id && yijkdata['erjisign']){
-                    delete yijkdata['erjisign'];
-                    storage0.putMyVar('一级源接口信息', yijkdata);
-                }
+            delete parse['二级标识'];
+            let yijkdata = storage0.getMyVar('一级源接口信息') || {};
+            if(yijkdata.id==jkdata.id && yijkdata['erjisign']){
+                delete yijkdata['erjisign'];
+                storage0.putMyVar('一级源接口信息', yijkdata);
             }
         }
         
@@ -1101,8 +1098,10 @@ function rely(data){
 }
 //二级是否强制聚阅封面的判断返回
 function isJuDetail(id){
-    let source = juItem.get('二级聚阅封面','',id);
-    let all = juItem2.get('二级聚阅封面');
+    let source = juItem.get('二级简单封面',false,id);
+    let all = juItem2.get('二级简单封面');
+
+    return source||all ? true : false;
     
     if(source !== ''){
         return source?true:false;

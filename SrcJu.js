@@ -1155,9 +1155,12 @@ function erji() {
                 let morecols = ["选集分页设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
+                /*
                 if(erLoadData.detail1 && erLoadData.detailObj){
                     morecols.push("自定义封面样式:"+(isJuDetail(jkdata.id)?"否":"是"))
                 }
+                */
+                morecols.push("二级简单封面:"+(isJuDetail(jkdata.id)?"是":"否"))
                 
                 d.push({
                     title: `““””<small>🎨</small>`,
@@ -1247,6 +1250,37 @@ function erji() {
                                 }else{
                                     juItem.clear('二级聚阅封面');
                                     juItem2.clear('二级聚阅封面');
+                                    sm = "已清除配置";
+                                }
+                                refreshPage(false);
+                                return "toast://"+sm;
+                            })
+                        }else if(input.includes('二级简单封面')){
+                            let list = [];
+                            list.push('所有源:'+(juItem2.get('二级简单封面')?"简单封面":"未配置"));
+                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":"未配置"));
+                            list.push('清除配置');
+                            return $(list, 2, '自定义封面开关，关代表不显示').select(()=>{
+                                let sm;
+                                if(input.includes('当前源')){
+                                    if(juItem.get('二级简单封面')){
+                                        juItem.clear('二级简单封面');
+                                        sm = "当前源优先自定义样式、其次顺佬X5样式";
+                                    }else{
+                                        juItem.set('二级简单封面', true);
+                                        sm = "当前源强制简单封面样式";
+                                    }
+                                }else if(input.includes('所有源')){
+                                    if(juItem2.get('二级简单封面')){
+                                        juItem2.clear('二级简单封面');
+                                        sm = "所有源优先自定义样式、其次顺佬X5样式";
+                                    }else{
+                                        juItem2.set('二级简单封面', true);
+                                        sm = "所有源强制简单封面样式";
+                                    }
+                                }else{
+                                    juItem.clear('二级简单封面');
+                                    juItem2.clear('二级简单封面');
                                     sm = "已清除配置";
                                 }
                                 refreshPage(false);

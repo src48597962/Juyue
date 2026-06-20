@@ -1101,7 +1101,7 @@ function isJuDetail(id){
     let source = juItem.get('二级简单封面','',id);
     let all = juItem2.get('二级简单封面');
 
-    return source||all ? true : false;
+    return source==false?false:source||all?true:false;
 }
 // 设置接口顺序
 function setJkSort(data, so) {

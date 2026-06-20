@@ -142,7 +142,7 @@ function SrcParse(vipUrl, dataObj) {
     vipUrl = vipUrl.startsWith('video://')?vipUrl.replace('video://',''):vipUrl;
     dataObj = dataObj || {};
     let isVip = 0;
-    log("请求地址："+vipUrl); 
+    log((dataObj.type?dataObj.type+" ":"") + "请求地址：" + vipUrl); 
 
     let callParseUrl = callParse(vipUrl);
     if(callParseUrl){
@@ -200,7 +200,7 @@ function SrcParse(vipUrl, dataObj) {
             vipUrl: vipUrl,
             isWeb: 1,
             videoplay: playSet.videoplay,
-            ismusic: dataObj.ismusic,
+            ismusic: dataObj.type=="音频"?true:false,
             js: dataObj.js
         }
         return 解析方法(obj);

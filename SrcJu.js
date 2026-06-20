@@ -575,6 +575,7 @@ function erji() {
     let noShow;//定义二级哪些项不显示
     let Color = getItem('主题颜色','#3399cc');
     let erLoadData,linename;
+    let juDetail = isJuDetail(jkdata.id);
     
     try{
         if (sid&&MY_URL) {
@@ -640,7 +641,7 @@ function erji() {
                 })[0];
             }
 
-            let detailObj = (isJuDetail(jkdata.id)&&erLoadData.detail1?{}:erLoadData.detailObj||detailObj2()) || {}; //二级是否有传封面对象，有传就优先使用
+            let detailObj = juDetail?{}:(erLoadData.detailObj||detailObj2()||{}); //除设置为简单封面外，优先传封面对象，其次为顺佬X5封面
             erjiextra.img = erLoadData.img || erjiextra.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;
@@ -1155,12 +1156,7 @@ function erji() {
                 let morecols = ["选集分页设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
-                /*
-                if(erLoadData.detail1 && erLoadData.detailObj){
-                    morecols.push("自定义封面样式:"+(isJuDetail(jkdata.id)?"否":"是"))
-                }
-                */
-                morecols.push("二级简单封面:"+(isJuDetail(jkdata.id)?"是":"否"))
+                morecols.push("二级简单封面:"+(juDetail?"是":"否"))
                 
                 d.push({
                     title: `““””<small>🎨</small>`,
@@ -1223,37 +1219,6 @@ function erji() {
                                 }
                                 refreshPage();
                                 return 'hiker://empty';
-                            })
-                        }else if(input.includes('自定义封面样式')){
-                            let list = [];
-                            list.push('所有源:'+(juItem2.get('二级聚阅封面')?"关":"开"));
-                            list.push('当前源:'+(juItem.get('二级聚阅封面')?"关":juItem.get('二级聚阅封面')===''?"未配置":"开"));
-                            list.push('清除配置');
-                            return $(list, 2, '自定义封面开关，关代表不显示').select(()=>{
-                                let sm;
-                                if(input.includes('当前源')){
-                                    if(juItem.get('二级聚阅封面')){
-                                        juItem.set('二级聚阅封面', false);
-                                        sm = "当前源优先自定义封面样式";
-                                    }else{
-                                        juItem.set('二级聚阅封面', true);
-                                        sm = "当前源强制聚阅原封面样式";
-                                    }
-                                }else if(input.includes('所有源')){
-                                    if(juItem2.get('二级聚阅封面')){
-                                        juItem2.clear('二级聚阅封面');
-                                        sm = "所有源优先自定义封面样式";
-                                    }else{
-                                        juItem2.set('二级聚阅封面', true);
-                                        sm = "所有源强制聚阅原封面样式";
-                                    }
-                                }else{
-                                    juItem.clear('二级聚阅封面');
-                                    juItem2.clear('二级聚阅封面');
-                                    sm = "已清除配置";
-                                }
-                                refreshPage(false);
-                                return "toast://"+sm;
                             })
                         }else if(input.includes('二级简单封面')){
                             let list = [];

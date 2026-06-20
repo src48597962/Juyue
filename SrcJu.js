@@ -1223,7 +1223,7 @@ function erji() {
                         }else if(input.includes('二级简单封面')){
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级简单封面')?"简单封面":"未配置"));
-                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":juItem.get('二级简单封面')==false?"高级封面":"未配置"));
+                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":juItem.get('二级简单封面')===false?"高级封面":"未配置"));
                             list.push('清除配置');
                             return $(list, 1, '优先执行当前源配置').select(()=>{
                                 let sm;

@@ -2,6 +2,11 @@ var newVersion = {
     "SrcJu": "2.6",
     "hint": "升级后需要重进升级小程序",
     "JYUpdateRecords": [{
+        title: "beta V2.7",
+        records: [
+            "优化：聚阅解析支持音频网页自动嗅探"
+        ]
+    },{
         title: "2026/06/19 V2.6",
         records: [
             "修复：源小分组长按切换弹窗类型，解决FlexMenuBottom和绿厂系统兼容问题",

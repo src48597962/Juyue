@@ -629,14 +629,16 @@ function erji() {
 
     if(MY_PAGE==1){
         try {
-            requireCache('http://123.56.105.145/weisyr/二级新样式.js', 24);
-            let detailObj2 = header(false, {
-                片名: name,
-                图片: erjiextra.img || erTempData.img || '',
-                类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, ''),
-                状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, ''),
-                年份: ''
-            })[0];
+            function detailObj2(){
+                requireCache('http://123.56.105.145/weisyr/二级新样式.js', 24);
+                return header(false, {
+                    片名: name,
+                    图片: erjiextra.img || erTempData.img || '',
+                    类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, ''),
+                    状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, ''),
+                    年份: ''
+                })[0];
+            }
 
             let detailObj = (isJuDetail(jkdata.id)&&erLoadData.detail1?{}:erLoadData.detailObj||detailObj2) || {}; //二级是否有传封面对象，有传就优先使用
             erjiextra.img = erLoadData.img || erjiextra.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";

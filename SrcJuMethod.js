@@ -1098,16 +1098,10 @@ function rely(data){
 }
 //二级是否强制聚阅封面的判断返回
 function isJuDetail(id){
-    let source = juItem.get('二级简单封面',false,id);
+    let source = juItem.get('二级简单封面','',id);
     let all = juItem2.get('二级简单封面');
 
     return source||all ? true : false;
-    
-    if(source !== ''){
-        return source?true:false;
-    }else{
-        return all?true:false;
-    }
 }
 // 设置接口顺序
 function setJkSort(data, so) {

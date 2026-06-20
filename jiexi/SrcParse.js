@@ -688,7 +688,7 @@ function formatUrl(url, i) {
         } else if(/^{/.test(url)){
             return url;
         }else {
-            if (url[0] == '/') { url = 'https:' + url }
+            if (url.startsWith('//')) { url = 'https:' + url }
             if (i == undefined) {
                 if (playSet.cachem3u8 && url.indexOf('.m3u8')>-1) {
                     url = cacheM3u8(url, {timeout: 2000});

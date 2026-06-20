@@ -1265,7 +1265,7 @@ function erji() {
                                 if(input.includes('当前源')){
                                     if(juItem.get('二级简单封面')){
                                         juItem.clear('二级简单封面');
-                                        sm = "当前源优先自定义样式、其次顺佬X5样式";
+                                        sm = "当前源使用自定义样式>顺佬X5样式";
                                     }else{
                                         juItem.set('二级简单封面', true);
                                         sm = "当前源强制简单封面样式";
@@ -1273,7 +1273,7 @@ function erji() {
                                 }else if(input.includes('所有源')){
                                     if(juItem2.get('二级简单封面')){
                                         juItem2.clear('二级简单封面');
-                                        sm = "所有源优先自定义样式、其次顺佬X5样式";
+                                        sm = "所有源使用自定义样式>顺佬X5样式";
                                     }else{
                                         juItem2.set('二级简单封面', true);
                                         sm = "所有源强制简单封面样式";

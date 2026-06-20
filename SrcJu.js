@@ -633,8 +633,8 @@ function erji() {
             let detailObj2 = header(false, {
                 片名: name,
                 图片: erjiextra.img || erTempData.img || '',
-                类型: erLoadData.detail1 || erTempData.detail1 || '',
-                状态: erLoadData.detail2 || erTempData.detail2 || '',
+                类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, ''),
+                状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, ''),
                 年份: ''
             })[0];
 

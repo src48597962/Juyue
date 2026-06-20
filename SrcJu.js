@@ -1223,13 +1223,13 @@ function erji() {
                         }else if(input.includes('二级简单封面')){
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级简单封面')?"简单封面":"未配置"));
-                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":"未配置"));
+                            list.push('当前源:'+(juItem.get('二级简单封面')==''?"简单封面":juItem.get('二级简单封面')==false?"高级封面":"未配置"));
                             list.push('清除配置');
-                            return $(list, 2, '自定义封面开关，关代表不显示').select(()=>{
+                            return $(list, 1, '优先执行当前源配置').select(()=>{
                                 let sm;
                                 if(input.includes('当前源')){
                                     if(juItem.get('二级简单封面')){
-                                        juItem.clear('二级简单封面');
+                                        juItem.set('二级简单封面', false);
                                         sm = "当前源使用自定义样式>顺佬X5样式";
                                     }else{
                                         juItem.set('二级简单封面', true);

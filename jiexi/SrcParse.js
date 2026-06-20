@@ -384,7 +384,7 @@ function SrcParse(vipUrl, dataObj) {
             headers.push((item.ext||{}).header || mulheader(vipUrl));
         })
         let dm;
-        if(isVip && playSet.danmu==1){
+        if(isVip && playSet.danmu==1 && !isTest){
             dm = 弹幕(vipUrl);
         }
         return JSON.stringify({
@@ -395,7 +395,7 @@ function SrcParse(vipUrl, dataObj) {
         });
     }else if(parsemode==2){//模式2，强制嗅探，手工选择，走video没法指定header
         let dm;
-        if(isVip && playSet.danmu==1){
+        if(isVip && playSet.danmu==1 && !isTest){
             dm = 弹幕(vipUrl);
         }
         let list = parselist.filter(v => v.type=='0');
@@ -590,7 +590,7 @@ function SrcParse(vipUrl, dataObj) {
     //播放
     if(playurl){
         let dm;
-        if(isVip && playSet.danmu==1){
+        if(isVip && playSet.danmu==1 && !isTest){
             dm = danmu || 弹幕(vipUrl);
         }
         if(urls.length>1 || dm){

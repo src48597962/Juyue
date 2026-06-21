@@ -212,7 +212,15 @@ function yiji(testSource) {
                 bookCase();
             }),
             pic_url: getIcon(homeIcons[3].img, false, homeIcons[3].color),
-            col_type: icon5_col
+            col_type: icon5_col,
+            extra: {
+                longClick: [{
+                    title: "历史",
+                    js: $.toString(()=>{
+                        return "hiker://history?rule="+MY_RULE.title;
+                    })
+                }]
+            }
         })
         d.push({
             title: "管理",

@@ -637,7 +637,7 @@ function erji() {
                     图片: erjiextra.img || erTempData.img || '',
                     类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, '').replace(name, '').trim(),
                     状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, '').replace(name, '').trim(),
-                    年份: ''
+                    年份: (erLoadData.detail3 || erTempData.detail3 || '').replace(/“|”|‘|’/g, '').replace(name, '').trim()
                 })[0];
             }
 

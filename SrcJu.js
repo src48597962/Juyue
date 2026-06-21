@@ -635,8 +635,8 @@ function erji() {
                 return header(false, {
                     片名: name,
                     图片: erjiextra.img || erTempData.img || '',
-                    类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, ''),
-                    状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, ''),
+                    类型: (erLoadData.detail1 || erTempData.detail1 || '').replace(/“|”|‘|’/g, '').replace(name, '').trim(),
+                    状态: (erLoadData.detail2 || erTempData.detail2 || '').replace(/“|”|‘|’/g, '').replace(name, '').trim(),
                     年份: ''
                 })[0];
             }
@@ -649,7 +649,7 @@ function erji() {
             erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;
             erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
             erTempData.url =  detailObj.url || erLoadData.detailurl || erTempData.url;
-            erTempData.col_type =  detailObj.col_type || erTempData.col_type;
+            erTempData.col_type =  detailObj.col_type;
             erTempData.extra =  detailObj.extra || erTempData.detailextra;
             let detailextra = erTempData.extra || {};
             detailextra.id = "detailid";
@@ -1156,7 +1156,7 @@ function erji() {
                 let morecols = ["选集分页设置", "修整选集标题:"+(reviseLiTitle=="1"?"是":"否")];
                 morecols.push("线路样式:"+getItem('SrcJuLine_col_type', 'scroll_button'))
                 morecols.push("选集样式:"+getItem('SrcJuList_col_type', '自动'))
-                morecols.push("二级简单封面:"+(juDetail?"是":"否"))
+                morecols.push("显示封面设置:"+(juDetail?"简单":"自动"))
                 
                 d.push({
                     title: `““””<small>🎨</small>`,
@@ -1220,10 +1220,10 @@ function erji() {
                                 refreshPage();
                                 return 'hiker://empty';
                             })
-                        }else if(input.includes('二级简单封面')){
+                        }else if(input.includes('显示封面设置')){
                             let list = [];
                             list.push('所有源:'+(juItem2.get('二级简单封面')?"简单封面":"未配置"));
-                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":juItem.get('二级简单封面')===false?"高级封面":"未配置"));
+                            list.push('当前源:'+(juItem.get('二级简单封面')?"简单封面":juItem.get('二级简单封面')===false?"自动封面":"未配置"));
                             list.push('清除配置');
                             return $(list, 1, '优先执行当前源配置').select(()=>{
                                 let sm;
@@ -1241,7 +1241,7 @@ function erji() {
                                         sm = "所有源使用自定义样式>顺佬X5样式";
                                     }else{
                                         juItem2.set('二级简单封面', true);
-                                        sm = "所有源强制简单封面样式";
+                                        sm = "所有源强制简单封面样式" + (juItem.get('二级简单封面')===false?"，当前源除外":"");
                                     }
                                 }else{
                                     juItem.clear('二级简单封面');

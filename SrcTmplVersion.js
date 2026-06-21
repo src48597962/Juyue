@@ -4,7 +4,8 @@ var newVersion = {
     "JYUpdateRecords": [{
         title: "beta V2.7",
         records: [
-            "优化：聚阅解析支持音频网页自动嗅探"
+            "优化：聚阅解析支持音频网页自动嗅探",
+            "调整：二级封面设置升级，默认使用顺佬X5封面"
         ]
     },{
         title: "2026/06/19 V2.6",

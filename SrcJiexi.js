@@ -642,9 +642,14 @@ let parse = {
             let item_data = it.module_datas[0].item_data_lists.item_datas[0];
             let complex_json = JSON.parse(item_data.complex_json);
             let user = complex_json.user.base;
+            let date = new Date(parseInt(complex_json.base.time));
+            log(Number(complex_json.base.time));
+            log(++complex_json.base.time);
+            log(complex_json.base.time+0);
+            log(date.toLocaleString());
             d.push({
                 title: base64Decode(user.name),
-                desc: $.dateFormat(parseInt(complex_json.base.time), "yyyy-MM-dd") + '·' + complex_json.area.city.replace('市',''),
+                desc: $.dateFormat(Number(complex_json.base.time), "yyyy-MM-dd") + '·' + complex_json.area.city.replace('市',''),
                 pic_url: base64Decode(user.image),
                 url: 'hiker://empty',
                 col_type: 'avatar'

@@ -715,7 +715,7 @@ function erji() {
             let 分页偏移; //用于计算分页选集id，分页偏移+当前索引值
 
             if(!noShow.选集){
-                let 分页s = $.type(erLoadData.page)=='array' && erLoadData.pageparse ? erLoadData.page.length>0&&$.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
+                let 分页s = $.type(erLoadData.page)=='array' && erLoadData.page.length>0 && erLoadData.pageparse ? $.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
                     if(分页s.length==线路s.length){
                         分页 = 分页s[lineid];

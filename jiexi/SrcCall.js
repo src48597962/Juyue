@@ -138,7 +138,7 @@ function duoselect(data, i){
             updateItem(data.name, {title:data.stop?colorTitle(getDataTitle(data, '', i), 'red'):getDataTitle(data, '', i)});
         }
     })
-    storage0.putMyVar('duodatalist',selectlist);
+    storage0.putMyVar('duodatalist2',selectlist);
 }
 // 获取调用列表
 function dyItemList(datalist) {
@@ -371,7 +371,7 @@ function callapi(data) {
     }, data);
 }
 //资源分享
-function JYshare(input,data) {
+function JYshare(input, data) {
     let sharelist, sm, sm2;
     if(data){
         sharelist = [];

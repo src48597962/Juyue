@@ -701,7 +701,7 @@ function erji() {
             }catch(e){
                 xlog(sname+">线路或列表返回数据有误>"+e.message);
             }
-            if(erLoadData.listparse){//选集列表需要动态解析获取
+            if(erLoadData.listparse && !erLoadData.pagelist && !getMyVar('线路显示翻页内容')){//选集列表需要动态解析获取，且没有本地缓存
                 eval("let 列表动态解析 = " + erLoadData.listparse.toString())
                 let 线路选集 = 列表动态解析.call(parse, lineid, 线路s[lineid]) || [];
                 if(线路选集.length>0){
@@ -714,7 +714,7 @@ function erji() {
             let 分页; //网站分页显示列表的
             let 分页偏移; //用于计算分页选集id，分页偏移+当前索引值
 
-            if(!noShow.选集){
+            if(!noShow.选集 && !getMyVar('线路显示翻页内容')){
                 let 分页s = $.type(erLoadData.page)=='array' && erLoadData.page.length>0 && erLoadData.pageparse ? $.type(erLoadData.page[0])=='object' ? [erLoadData.page] : erLoadData.page : undefined;
                 if(分页s){
                     if(分页s.length==线路s.length){
@@ -1103,7 +1103,7 @@ function erji() {
             let line_col_type = getItem('SrcJuLine_col_type', 'scroll_button');
 
             let addmoreitems = 0;
-            if(getItem('extenditems','1')=="1" && erLoadData.moreitems && $.type(erLoadData.moreitems)=='array'){
+            if(!getMyVar('线路显示翻页内容') && getItem('extenditems','1')=="1" && erLoadData.moreitems && $.type(erLoadData.moreitems)=='array'){
                 let moreitems = erLoadData.moreitems;
                 if(moreitems.length>0){
                     moreitems.forEach(item => {
@@ -1324,104 +1324,18 @@ function erji() {
                     })
                 })
             }
-            
-            if(!noShow.选集 && !getMyVar('线路显示翻页内容')){
-                //分页定义
-                let partpage = storage0.getItem('partpage') || {};
-                if(分页){//原网站有分页，不执行自定义分页
-                    let 分页链接 = [];
-                    let 分页名 = [];
-                    if(自动页码){
-                        分页 = erLoadData.pagelist.map((it,i)=>{
-                            return {title: (i+1).toString()}
-                        });
-                    }
-                    分页.forEach((it,i)=>{
-                        分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
-                                if(nowid != newid){
-                                    putMyVar(pageurl, newid);
-                                    refreshPage(false);
-                                }
-                                return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_page", pageid, i)
-                        )
-                        分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+it.title:it.title);
-                    })
-                    if(分页名.length>0){
-                        d.push({
-                            col_type: "blank_block",
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        });
-                        d.push({
-                            title: !自动页码&&pageid==0?"尾页":"上页",
-                            url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
-                                if(nowid==0){
-                                    return 'toast://已经到顶了';
-                                }
-                                if(nowid != newid){
-                                    putMyVar(pageurl, newid);
-                                    refreshPage(false);
-                                }
-                                return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_page", pageid, pageid-1):pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                        d.push({
-                            title: 自动页码?('““””<span style="color: '+Color+'">'+"第"+(pageid+1)+"页"):分页名[pageid],
-                            url: $(分页名, 自动页码&&分页名.length>10?3:2).select((分页名,分页链接) => {
-                                return 分页链接[分页名.indexOf(input)];
-                            },分页名,分页链接),
-                            col_type: 'text_2',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                        d.push({
-                            title: 自动页码?"下页":pageid==分页名.length-1?"首页":"下页",
-                            url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid,listlength) => {
-                                if(nowid>0 && listlength==0){
-                                    return 'toast://到底了'
-                                }
-                                if(nowid != newid){
-                                    putMyVar(pageurl, newid);
-                                    refreshPage(false);
-                                }
-                                return 'hiker://empty'
-                            }, "SrcJu_"+MY_URL+"_page", pageid, pageid+1, 列表.length):pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                    }
-                }else if(partpage.ispage){//启用分页
-                    let 每页数量 = partpage.pagenum || 40; // 分页的每页数量       
-                    let 翻页阀值 = partpage.partnum || 100; // 分页的翻页阀值，超过多少才显示翻页
-                    
-                    if (列表.length > 翻页阀值) { 
-                        let 最大页数 = Math.ceil(列表.length / 每页数量);  
-                        let 分页页码 = pageid + 1; //当前页数
-                        if (分页页码 > 最大页数) { //防止切换线路导致页数数组越界
-                            分页页码 = 最大页数;
-                            pageid = 最大页数-1;
-                        }
+            if(!getMyVar('线路显示翻页内容')){
+                if(!noShow.选集){
+                    //分页定义
+                    let partpage = storage0.getItem('partpage') || {};
+                    if(分页){//原网站有分页，不执行自定义分页
                         let 分页链接 = [];
                         let 分页名 = [];
-                        function getNewArray(array, subGroupLength) {
-                            let index = 0;
-                            let newArray = [];
-                            while(index < array.length) {
-                                newArray.push(array.slice(index, index += subGroupLength));
-                            }
-                            return newArray;
+                        if(自动页码){
+                            分页 = erLoadData.pagelist.map((it,i)=>{
+                                return {title: (i+1).toString()}
+                            });
                         }
-                        分页 = getNewArray(列表, 每页数量);//按每页数据切割成小数组
-
                         分页.forEach((it,i)=>{
                             分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
                                     if(nowid != newid){
@@ -1431,160 +1345,247 @@ function erji() {
                                     return 'hiker://empty'
                                 }, "SrcJu_"+MY_URL+"_page", pageid, i)
                             )
-                            let start = i * 每页数量 + 1;
-                            let end = i * 每页数量 + it.length;
-                            let title = start + ' - ' + end;
-                            分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+title:title)
+                            分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+it.title:it.title);
                         })
+                        if(分页名.length>0){
+                            d.push({
+                                col_type: "blank_block",
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            });
+                            d.push({
+                                title: !自动页码&&pageid==0?"尾页":"上页",
+                                url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                                    if(nowid==0){
+                                        return 'toast://已经到顶了';
+                                    }
+                                    if(nowid != newid){
+                                        putMyVar(pageurl, newid);
+                                        refreshPage(false);
+                                    }
+                                    return 'hiker://empty'
+                                }, "SrcJu_"+MY_URL+"_page", pageid, pageid-1):pageid==0?分页链接[分页名.length-1]:分页链接[pageid-1],
+                                col_type: 'text_4',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                            d.push({
+                                title: 自动页码?('““””<span style="color: '+Color+'">'+"第"+(pageid+1)+"页"):分页名[pageid],
+                                url: $(分页名, 自动页码&&分页名.length>10?3:2).select((分页名,分页链接) => {
+                                    return 分页链接[分页名.indexOf(input)];
+                                },分页名,分页链接),
+                                col_type: 'text_2',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                            d.push({
+                                title: 自动页码?"下页":pageid==分页名.length-1?"首页":"下页",
+                                url: 自动页码?$("#noLoading#").lazyRule((pageurl,nowid,newid,listlength) => {
+                                    if(nowid>0 && listlength==0){
+                                        return 'toast://到底了'
+                                    }
+                                    if(nowid != newid){
+                                        putMyVar(pageurl, newid);
+                                        refreshPage(false);
+                                    }
+                                    return 'hiker://empty'
+                                }, "SrcJu_"+MY_URL+"_page", pageid, pageid+1, 列表.length):pageid==分页名.length-1?分页链接[0]:分页链接[pageid+1],
+                                col_type: 'text_4',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                        }
+                    }else if(partpage.ispage){//启用分页
+                        let 每页数量 = partpage.pagenum || 40; // 分页的每页数量       
+                        let 翻页阀值 = partpage.partnum || 100; // 分页的翻页阀值，超过多少才显示翻页
+                        
+                        if (列表.length > 翻页阀值) { 
+                            let 最大页数 = Math.ceil(列表.length / 每页数量);  
+                            let 分页页码 = pageid + 1; //当前页数
+                            if (分页页码 > 最大页数) { //防止切换线路导致页数数组越界
+                                分页页码 = 最大页数;
+                                pageid = 最大页数-1;
+                            }
+                            let 分页链接 = [];
+                            let 分页名 = [];
+                            function getNewArray(array, subGroupLength) {
+                                let index = 0;
+                                let newArray = [];
+                                while(index < array.length) {
+                                    newArray.push(array.slice(index, index += subGroupLength));
+                                }
+                                return newArray;
+                            }
+                            分页 = getNewArray(列表, 每页数量);//按每页数据切割成小数组
+
+                            分页.forEach((it,i)=>{
+                                分页链接.push($("#noLoading#").lazyRule((pageurl,nowid,newid) => {
+                                        if(nowid != newid){
+                                            putMyVar(pageurl, newid);
+                                            refreshPage(false);
+                                        }
+                                        return 'hiker://empty'
+                                    }, "SrcJu_"+MY_URL+"_page", pageid, i)
+                                )
+                                let start = i * 每页数量 + 1;
+                                let end = i * 每页数量 + it.length;
+                                let title = start + ' - ' + end;
+                                分页名.push(pageid==i?'““””<span style="color: '+Color+'">'+title:title)
+                            })
+                            d.push({
+                                col_type: "blank_block",
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            });
+                            d.push({
+                                title: 分页页码==1?"尾页":"上页",
+                                url: 分页页码==1?分页链接[分页名.length-1]:分页链接[pageid-1],
+                                col_type: 'text_4',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                            d.push({
+                                title: 分页名[pageid],
+                                url: $(分页名, 2).select((分页名,分页链接) => {
+                                    return 分页链接[分页名.indexOf(input)];
+                                },分页名,分页链接),
+                                col_type: 'text_2',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                            d.push({
+                                title: 分页页码==分页名.length?"首页":"下页",
+                                url: 分页页码==分页名.length?分页链接[0]:分页链接[pageid+1],
+                                col_type: 'text_4',
+                                extra: {
+                                    cls: "Juloadlist"
+                                }
+                            })
+                            列表 = 分页[pageid];//取当前分页的选集列表
+                        }
+                    }
+                    // 修正列表选集标题
+                    function reviseTitle(str){
+                        if(!str){
+                            return '';
+                        }
+                        if(reviseLiTitle == "1"){
+                            return str.replace(name,'').replace(sskeyword,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
+                        }
+                        return str.trim();
+                    }
+                    // 列表默认样式
+                    let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
+                    let list_col_type_auto = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2';
+                    let list_col_type_set = getItem('SrcJuList_col_type', '自动');
+        
+                    // 生成选集列表
+                    for(let i=0; i<列表.length; i++) {
+                        let listId = 列表[i].listId || (name + "_选集_" + (pageid+1) + "_" + (i+1));
+                        let dataObj = {
+                            data: jkdata,
+                            type: stype,
+                            id: listId
+                        }
+                        let lazy = $("").lazyRule((dataObj) => {
+                            let url = input;
+                            let jkdata = dataObj.data;
+                            let parse = getObjCode(jkdata, 'jx');
+                            let playUrl;
+                            if(parse['解析']){
+                                eval("let 解析2 = " + parse['解析']);
+                                playUrl = 解析2.call(parse, url);
+                            }else{
+                                playUrl = $.require("parseUrl").解析(url, dataObj);
+                            }
+                            let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
+                            if(fileExist(dmfile)){
+                                return $.require("parseUrl").处理(playUrl, {dmfile:dmfile});
+                            }
+                            return playUrl;
+                        }, dataObj);
+
+                        let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
+                        try{
+                            extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
+                        }catch(e){}
+                        extra.id = listId;
+                        extra.cls = "Juloadlist playlist";
+                        if(stype=="视频"||stype=="音频"||stype=="聚合"){
+                            extra.jsLoadingInject = true;
+                            extra.blockRules = extra.blockRules || ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com'];
+                            extra.videoExcludeRules = extra.videoExcludeRules || ['m3u8.js','?url='];
+                        }
+
+                        let isrule;
+                        if (stype=="小说" || erLoadData.rule || erLoadData.novel || 列表[i].rule) {
+                            isrule = 1;
+                            extra.url = 列表[i].url;
+                            lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
+                        }
+
+                        d.push({
+                            title: reviseTitle(列表[i].title),
+                            url: !列表[i].url?'toast://链接为空':(列表[i].url.includes('@lazyRule=')||列表[i].url.includes('@rule='))?列表[i].url:列表[i].url!="hiker://empty"?((isrule?"hiker://empty##":"") + 列表[i].url + lazy):列表[i].url,
+                            desc: 列表[i].desc,
+                            img: 列表[i].img,
+                            col_type: list_col_type_set=='自动'?(列表[i].col_type || list_col_type_auto):list_col_type_set,
+                            extra: extra
+                        });
+                    }
+
+                    if(列表.length>0){
+                        isload = 1;
+                    }else if(列表.length==0){
+                        d.push({
+                            title: "‘‘’’<font color=grey><small>"+(pageid==0?"线路列表为空":"分页到底了")+"</small></font>",
+                            url: 'hiker://empty',
+                            col_type: 'text_center_1',
+                            extra: {
+                                cls: 'Juloadlist',
+                                lineVisible: false
+                            }
+                        });
+                    }
+                }
+                if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array'){
+                    let extenditems = erLoadData.extenditems;
+                    if(extenditems.length>0){
                         d.push({
                             col_type: "blank_block",
                             extra: {
-                                cls: "Juloadlist"
-                            }
-                        });
-                        d.push({
-                            title: 分页页码==1?"尾页":"上页",
-                            url: 分页页码==1?分页链接[分页名.length-1]:分页链接[pageid-1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
+                                cls: "Juloadlist extendlist",
+                                id: "extendlist"
                             }
                         })
-                        d.push({
-                            title: 分页名[pageid],
-                            url: $(分页名, 2).select((分页名,分页链接) => {
-                                return 分页链接[分页名.indexOf(input)];
-                            },分页名,分页链接),
-                            col_type: 'text_2',
-                            extra: {
-                                cls: "Juloadlist"
+                        
+                        extenditems.forEach(item => {
+                            let newcls = ["Juloadlist", "extendlist"];
+                            if(item.url!=MY_URL){
+                                item = toerji(item, jkdata);
+                                item.extra = item.extra || {};
+                                //item.extra['back'] = 1;
+                                if(item.extra['cls']){
+                                    item.extra['cls'].split(" ").forEach(v=>{
+                                        if(newcls.indexOf(v)==-1){
+                                            newcls.push(v);
+                                        }
+                                    });
+                                }
+                                item.extra['cls'] = newcls.join(" ");
+                                d.push(item)
                             }
                         })
-                        d.push({
-                            title: 分页页码==分页名.length?"首页":"下页",
-                            url: 分页页码==分页名.length?分页链接[0]:分页链接[pageid+1],
-                            col_type: 'text_4',
-                            extra: {
-                                cls: "Juloadlist"
-                            }
-                        })
-                        列表 = 分页[pageid];//取当前分页的选集列表
                     }
+                    putMyVar('二级加载扩展列表','1');
                 }
-                // 修正列表选集标题
-                function reviseTitle(str){
-                    if(!str){
-                        return '';
-                    }
-                    if(reviseLiTitle == "1"){
-                        return str.replace(name,'').replace(sskeyword,'').replace(/‘|’|“|”|<[^>]+>| |-|_|第|集|话|章|\</g,'').replace('（','(').replace('）',')').trim();
-                    }
-                    return str.trim();
-                }
-                // 列表默认样式
-                let titlelen = 列表.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.title).length), 0);
-                let list_col_type_auto = 列表.length > 4 && titlelen < 5 ? 'text_4' : titlelen > 10 ? 'text_1' : titlelen>4&&titlelen<7 ? 'text_3' :'text_2';
-                let list_col_type_set = getItem('SrcJuList_col_type', '自动');
-    
-                // 生成选集列表
-                for(let i=0; i<列表.length; i++) {
-                    let listId = 列表[i].listId || (name + "_选集_" + (pageid+1) + "_" + (i+1));
-                    let dataObj = {
-                        data: jkdata,
-                        type: stype,
-                        id: listId
-                    }
-                    let lazy = $("").lazyRule((dataObj) => {
-                        let url = input;
-                        let jkdata = dataObj.data;
-                        let parse = getObjCode(jkdata, 'jx');
-                        let playUrl;
-                        if(parse['解析']){
-                            eval("let 解析2 = " + parse['解析']);
-                            playUrl = 解析2.call(parse, url);
-                        }else{
-                            playUrl = $.require("parseUrl").解析(url, dataObj);
-                        }
-                        let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
-                        if(fileExist(dmfile)){
-                            return $.require("parseUrl").处理(playUrl, {dmfile:dmfile});
-                        }
-                        return playUrl;
-                    }, dataObj);
-
-                    let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认
-                    try{
-                        extra = Object.assign(extra, 列表[i].extra || {});//优先用选集的extra
-                    }catch(e){}
-                    extra.id = listId;
-                    extra.cls = "Juloadlist playlist";
-                    if(stype=="视频"||stype=="音频"||stype=="聚合"){
-                        extra.jsLoadingInject = true;
-                        extra.blockRules = extra.blockRules || ['.m4a', '.mp3', '.gif', '.jpeg', '.jpg', '.ico', '.png', 'hm.baidu.com', '/ads/*.js', 'cnzz.com'];
-                        extra.videoExcludeRules = extra.videoExcludeRules || ['m3u8.js','?url='];
-                    }
-
-                    let isrule;
-                    if (stype=="小说" || erLoadData.rule || erLoadData.novel || 列表[i].rule) {
-                        isrule = 1;
-                        extra.url = 列表[i].url;
-                        lazy = lazy.replace("@lazyRule=.",((stype=="小说"||erLoadData.novel)?"#readTheme##autoPage#":"#noRecordHistory#")+"@rule=").replace(`input`,`MY_PARAMS.url || ""`);
-                    }
-
-                    d.push({
-                        title: reviseTitle(列表[i].title),
-                        url: !列表[i].url?'toast://链接为空':(列表[i].url.includes('@lazyRule=')||列表[i].url.includes('@rule='))?列表[i].url:列表[i].url!="hiker://empty"?((isrule?"hiker://empty##":"") + 列表[i].url + lazy):列表[i].url,
-                        desc: 列表[i].desc,
-                        img: 列表[i].img,
-                        col_type: list_col_type_set=='自动'?(列表[i].col_type || list_col_type_auto):list_col_type_set,
-                        extra: extra
-                    });
-                }
-
-                if(列表.length>0){
-                    isload = 1;
-                }else if(列表.length==0){
-                    d.push({
-                        title: "‘‘’’<font color=grey><small>"+(pageid==0?"线路列表为空":"分页到底了")+"</small></font>",
-                        url: 'hiker://empty',
-                        col_type: 'text_center_1',
-                        extra: {
-                            cls: 'Juloadlist',
-                            lineVisible: false
-                        }
-                    });
-                }
-            }
-            if(getItem('extenditems','1')=="1" && erLoadData.extenditems && $.type(erLoadData.extenditems)=='array' && !getMyVar('线路显示翻页内容')){
-                let extenditems = erLoadData.extenditems;
-                if(extenditems.length>0){
-                    d.push({
-                        col_type: "blank_block",
-                        extra: {
-                            cls: "Juloadlist extendlist",
-                            id: "extendlist"
-                        }
-                    })
-                    
-                    extenditems.forEach(item => {
-                        let newcls = ["Juloadlist", "extendlist"];
-                        if(item.url!=MY_URL){
-                            item = toerji(item, jkdata);
-                            item.extra = item.extra || {};
-                            //item.extra['back'] = 1;
-                            if(item.extra['cls']){
-                                item.extra['cls'].split(" ").forEach(v=>{
-                                    if(newcls.indexOf(v)==-1){
-                                        newcls.push(v);
-                                    }
-                                });
-                            }
-                            item.extra['cls'] = newcls.join(" ");
-                            d.push(item)
-                        }
-                    })
-                }
-                putMyVar('二级加载扩展列表','1');
             }
         } catch (e) {
             toast('有异常，看日志');
@@ -1611,8 +1612,7 @@ function erji() {
                 col_type: "pic_1_center",
                 url: "hiker://empty",
                 extra: {
-                    cls: 'Juloadlist',
-                    cls: "loading_gif"
+                    cls: 'Juloadlist loading_gif'
                 }
             })
             setPreResult(d);

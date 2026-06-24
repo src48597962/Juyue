@@ -1756,3 +1756,66 @@ function similarTitles(items, similarityThreshold) {
 
     return result;
 }
+// 列表自动修正顺序
+function checkAndReverseArray(arr) {
+    try {
+        let numbers = [];
+        arr.slice(0, 50).forEach(it => {
+            let digits = it.title.match(/\d+/g);
+            if (digits) {
+                numbers.push(digits.map(numStr => parseInt(numStr, 10)));
+            }
+        });
+
+        // 至少需要5个有效数字序列
+        if (numbers.length < 5) {
+            return arr;
+        }
+
+        let decreasingCount = 0;
+        let totalComparisons = 0; // 记录有效比较的总数
+
+        for (let i = 1; i < numbers.length; i++) {
+            let prev = numbers[i - 1];
+            let curr = numbers[i];
+            let comparison = 0;
+            let minLen = Math.min(prev.length, curr.length);
+
+            // 逐位比较数字
+            for (let j = 0; j < minLen; j++) {
+                if (curr[j] > prev[j]) {
+                    comparison = 1;
+                    break;
+                } else if (curr[j] < prev[j]) {
+                    comparison = -1;
+                    break;
+                }
+            }
+
+            // 只统计有明确增减关系的递减数量和总数
+            if (comparison !== 0) {
+                if (comparison < 0) {
+                    decreasingCount++;
+                }
+                totalComparisons++;
+            }
+        }
+
+        // 如果没有足够的有效比较，不进行反转
+        if (totalComparisons < 3) {
+            return arr;
+        }
+
+        // 计算递减的比例
+        let decreasingRatio = decreasingCount / totalComparisons;
+        // 当递减比例超过60%时才反转，避免因个别大数字导致误判
+        if (decreasingRatio > 0.6) {
+            return arr.reverse();
+        } else {
+            return arr;
+        }
+    } catch (e) {
+        //xlog('强制修正顺序失败>'+e.message)
+    }
+    return arr;
+    }

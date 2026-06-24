@@ -838,7 +838,7 @@ function erji() {
                     }
                     // 增加选集id
                     列表 = JSON.parse(JSON.stringify(列表)).map((it, i)=>{
-                        it.listId = name + stype + ((分页偏移||0) + (i+1));
+                        it.listId = name + '_' + stype + '_' + ((分页偏移||0) + (i+1));
                         return it;
                     });
                 }

@@ -442,8 +442,243 @@ function SRCSet() {
                 }
                 storage0.putMyVar('批量检测_待检列表', duoselect);//写入待检测源
                 
-                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
-                return batchTestSource();
+                //require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                //return batchTestSource();
+                let oldtime = getItem('checkSourcetime', '0');
+                let nowtime = new Date().getDate().toString();
+                if (nowtime == oldtime) {
+                    return "toast://今日机会已用完";
+                }
+                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                    addListener("onClose", $.toString(() => {
+                        clearMyVar("批量检测_待检列表");
+                        clearMyVar('duodatalist');
+                        setItem('checkSourcetime', new Date().getDate().toString());
+                        refreshPage(true);
+                    }));
+                    
+                    let checkSourceList = storage0.getMyVar("批量检测_待检列表") || [];
+                    let d = [];
+                    d.push({
+                        title: '批量检测中',
+                        desc: '待检测源：' + checkSourceList.length,
+                        col_type: 'text_center_1',
+                        url: 'hiker://empty',
+                        extra: {
+                            id: 'checkLoading'
+                        }
+                    });
+
+                    setResult(d);
+
+                    // 测试
+                    function getTestData(jkdata) {
+                        let testType = 'yi';
+                        let parse = getObjCode(jkdata, testType);
+                        let message = '';
+
+                        if(testType=="yi"){
+                                if (typeof MY_PAGE == "undefined") {
+                                var MY_PAGE = 1;
+                            }
+                            let page = MY_PAGE;
+                            let datatype = '主页';
+                            try {
+                                if(parse['host']){
+                                    MY_URL = parse['host'];
+                                }
+                                if(parse[datatype]){
+                                    let 执行str = parse[datatype].toString();
+                                    let obj = parse['静态分类'] || {};
+                                    if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
+                                        createClass([], obj);
+                                    }
+
+                                    执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+                                    //全局变量劫持
+                                    const setResult2 = setResult;
+                                    const setPreResult2 = setPreResult;
+                                    try {
+                                        let sourcename = jkdata.name;
+                                        let getData = [];
+                                        eval(evalPublicStr);
+                                        let resultd,resultd2;
+                                        setResult = function(rd) { resultd = rd; };
+                                        setPreResult = function(prd) { resultd2 = prd; };
+
+                                        eval("let 数据 = " + 执行str);
+                                        getData = 数据.call(parse) || [];
+                                        if(resultd){
+                                            getData = resultd;
+                                        }
+                                        if(resultd2){
+                                            getData = resultd2.concat(getData);
+                                        }
+                                        if (getData.length > 1) {
+                                            return {
+                                                error: 0,
+                                                vodlists: getData
+                                            };//测试，返回成功
+                                        }
+                                    } catch (e) {
+                                        message = e.message + " #" + e.lineNumber;
+                                    }
+                                    //恢复全局变量
+                                    setResult = setResult2;
+                                    setPreResult = setPreResult2;
+                                }
+                            } catch (e) {
+                                message = e.message;
+                            }
+                        }
+                        return {
+                            error: 1,
+                            message: message
+                        };//最后返回失败
+                    }
+
+                    function dataItem(it){
+                        let selectmenu = ["删除", "禁用", "跳过", "测试"];
+                        let itimg = it.img || "http://123.56.105.145/tubiao/ke/31.png";
+
+                        return {
+                            title: it.name + '  ‘‘’’<small><font color=grey>'+(it.author?'  ['+it.author+']':'') + '\n' + (it.group||it.type) + '</font></small>',
+                            url: $(selectmenu, 2).select((data) => {
+                                data = JSON.parse(base64Decode(data));
+                                if (input == "删除") {
+                                    return $("确定删除："+data.name).confirm((data)=>{
+                                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                        deleteData(data);
+                                        deleteItem('test-' + data.id);
+                                        let checkList = storage0.getMyVar("批量检测_待检列表");
+                                        checkList = checkList.filter(v=>v.id != data.id);
+                                        storage0.putMyVar("批量检测_待检列表", checkList);
+                                        return 'toast://已删除:'+data.name;
+                                    }, data)
+                                } else if (input == "测试") {
+                                    return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
+                                        setPageTitle(data.name+"-接口测试");
+                                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJu.js');
+                                        yiji(data);
+                                    }, data);
+                                } else if (input == "跳过") {
+                                    deleteItem('test-' + data.id);
+                                    let checkList = storage0.getMyVar("批量检测_待检列表");
+                                    checkList = checkList.filter(v=>v.id != data.id);
+                                    storage0.putMyVar("批量检测_待检列表", checkList);
+                                    return 'toast://已跳过';
+                                } else if (input == "禁用") {
+                                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                    let sm = dataHandle(data, input);
+                                    deleteItem('test-' + data.id);
+                                    let checkList = storage0.getMyVar("批量检测_待检列表");
+                                    checkList = checkList.filter(v=>v.id != data.id);
+                                    storage0.putMyVar("批量检测_待检列表", checkList);
+                                    return 'toast://' + sm;
+                                }
+                            }, base64Encode(JSON.stringify(it))),
+                            desc: '',
+                            img: it.stop?itimg+'?t=stop' + $().image(() => $.require("jiekou?rule=" + MY_TITLE).toGrayscale()):itimg,
+                            col_type: ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305))?"icon_1_left_pic":"avatar",
+                            extra: {
+                                id: 'test-' + it.id
+                            }
+                        };
+                    }
+                    let task = function (jkdata) {
+                        return (function() {
+                            let msg;
+                            try{
+                                let result = getTestData(jkdata);
+                                if(result.error){
+                                    msg = result.message;
+                                }
+                            }catch(e){}
+                            return {item:jkdata, msg:msg};
+                        })();
+                    }
+
+                    let list = checkSourceList.map((item) => {
+                        return {
+                            func: task,
+                            param: item,
+                            id: item.id
+                        }
+                    });
+
+                    if (list.length > 0) {
+                        showLoading('检测中，不要息屏，不要退出');
+                        let checks = 0;
+                        let errors = [];
+                        be(list, {
+                            func: function (obj, id, error, taskResult) {
+                                checks++;
+                                if(taskResult.msg){
+                                    errors.push(taskResult.item);
+                                    let item = dataItem(taskResult.item);
+                                    item.desc = taskResult.msg;
+                                    addItemAfter('checkLoading', item);
+                                    updateItem('checkLoading', {
+                                        title: '批量检测中，点击可中止',
+                                        desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                        url: $("#noLoading#").lazyRule(()=>{
+                                            showLoading('拦截中');
+                                            putMyVar('批量检测中止', '1');
+                                            return "hiker://emtpy";
+                                        })
+                                    });
+                                }
+                                if(getMyVar('批量检测中止', '0') == '1'){
+                                    return "break";
+                                }
+                            },
+                            param: {
+                            }
+                        });
+                        updateItem('checkLoading', {
+                            title: '点击复检，'+errors.length+'个疑似失效',
+                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                            url: $("#noLoading#").lazyRule((error)=>{
+                                if(error==0){
+                                    return 'toast://没有失效源';
+                                }
+                                refreshPage(true);
+                                return 'hiker://empty';
+                            },errors.length),
+                            extra: {
+                                longClick: [{
+                                    title: "全部禁用",
+                                    js: $.toString(() => {
+                                        return $("确定全部禁用？").confirm(()=>{
+                                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                            let checkList = storage0.getMyVar("批量检测_待检列表");
+                                            dataHandle(checkList, input);
+                                            storage0.putMyVar("批量检测_待检列表", []);
+                                            back(true);
+                                            return 'toast://已全部禁用';
+                                        })
+                                    })
+                                },{
+                                    title: "全部删除",
+                                    js: $.toString(() => {
+                                        return $("确定全部删除？").confirm(()=>{
+                                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                            let checkList = storage0.getMyVar("批量检测_待检列表");
+                                            deleteData(checkList);
+                                            storage0.putMyVar("批量检测_待检列表", []);
+                                            back(true);
+                                            return 'toast://已全部删除';
+                                        })
+                                    })
+                                }]
+                            }
+                        });
+                        hideLoading();
+                        clearMyVar('批量检测中止');
+                        storage0.putMyVar("批量检测_待检列表", errors);
+                    }
+                })
+
             }),
             col_type: 'scroll_button',
             extra: {

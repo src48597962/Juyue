@@ -922,6 +922,8 @@ function 解析方法(obj) {
         let head = webObj.head || {};
         let webUrl = webObj.webUrl;
         let js = webObj.js;
+        clearVar('getParse');
+        clearVar('outerHTML');
 
         return executeWebRule(webUrl, $.toString((music,webUrl) => {
             try{
@@ -951,7 +953,7 @@ function 解析方法(obj) {
                 }
 
                 let urls = _getUrls();
-                //fba.log(fy_bridge_app.getUrls());
+                fba.log(fy_bridge_app.getUrls());
                 for (let i in urls) {
                     if(!fba.getVar("getParse") && !webUrl.includes("=http") && /url=h|v=h|youku|mgtv|ixigua|qq\.com|iqiyi|migu|bilibili|sohu|pptv|\.le\.|\.1905|cctv/.test(urls[i])&&!/\/bid\?|\.gif\?|ads\?|img\.php|index\/\?|cityjson|\.m3u8/.test(urls[i])){
                         try{
@@ -964,8 +966,6 @@ function 解析方法(obj) {
                             return fy_bridge_app.getHeaderUrl(urls[i] + '#isMusic=true##checkMetadata=false#');
                         }
                     }else if (contain.test(urls[i])&&!exclude.test(urls[i])) {
-                        fba.clearVar('getParse');
-                        fba.clearVar('outerHTML');
                         fba.log("exeWebRule捕获视频>"+urls[i]);
                         return fy_bridge_app.getHeaderUrl(urls[i] + '#isVideo=true#');
                     }

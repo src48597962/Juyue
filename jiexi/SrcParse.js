@@ -953,8 +953,9 @@ function 解析方法(obj) {
                 }
 
                 let urls = _getUrls();
-                fba.log(fy_bridge_app.getUrls());
+                //fba.log(fy_bridge_app.getUrls());
                 for (let i in urls) {
+                    fba.log(urls[i]);
                     if(!fba.getVar("getParse") && !webUrl.includes("=http") && /url=h|v=h|youku|mgtv|ixigua|qq\.com|iqiyi|migu|bilibili|sohu|pptv|\.le\.|\.1905|cctv/.test(urls[i])&&!/\/bid\?|\.gif\?|ads\?|img\.php|index\/\?|cityjson|\.m3u8/.test(urls[i])){
                         try{
                             fba.log("获取解析>"+urls[i].match(/http.*?=/)[0]);

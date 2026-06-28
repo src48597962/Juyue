@@ -825,7 +825,7 @@ function jiekouapi(data, look) {
                             pop.dismiss();
                         }
                     })),
-                    sections: [new FlexSection("", groupNames)], 
+                    sections: [new FlexSection("红字为已选择", groupNames)], 
                     title: "选择分组标签", 
                     click(button, sectionIndex, i) {
                         if(button.title.includes('‘‘’’')){

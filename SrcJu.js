@@ -158,9 +158,8 @@ function yiji(testSource) {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 let pop = hikerPop.selectBottom({
                     options: ["搜索框搜索方式", "搜索框显示建议词", "显示搜索历史数量"],
-                    columns: 1,
-                    height: 0.4,
-                    position: 1,
+                    columns: 2,
+                    height: 0.5,
                     noAutoDismiss: true,
                     click(a) {
                         if(a=='搜索框搜索方式'){

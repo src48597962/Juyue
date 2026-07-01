@@ -163,9 +163,12 @@ function yiji(testSource) {
                     position: 1,
                     click(a) {
                         if(a=='搜索框功能'){
-                             hikerPop.selectBottomMark({
+                             hikerPop.selectCenterMark({
                                 options: ["主页界面", "当前接口", "分组接口", "页面聚合"],
+                                title: "请选择",
                                 position: 1,
+                                icons: new Array(3).fill(hikerPop.icon.main_menu_home),
+                                noAutoDismiss: true,
                                 click(b) {
                                     return "toast://\u4f60\u9009\u4e86" + b;
                                 }

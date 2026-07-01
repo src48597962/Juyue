@@ -154,7 +154,31 @@ function yiji(testSource) {
 
         d.push({
             title: getItem('切换搜索按钮','搜索'),
-            url: getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
+            url: $("#noLoading#").lazyRule(() => {
+                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
+                hikerPop.selectBottom({
+                    options: ["搜索框功能", "搜索建议词", "显示搜索数"],
+                    columns: 3,
+                    height: 0.4,
+                    position: 1,
+                    click(a) {
+                        if(a=='搜索框功能'){
+                             hikerPop.selectBottomMark({
+                                options: ["主页界面", "当前接口", "分组接口", "页面聚合"],
+                                position: 1,
+                                click(b) {
+                                    return "toast://\u4f60\u9009\u4e86" + b;
+                                }
+                            });
+                            return "hiker://empty";
+                        }
+                        return "hiker://page/test";
+                    }, longClick(a) {
+                        return "toast://\u957f\u6309\u4e86" + a;
+                    }
+                });
+                return "hiker://empty";
+            }),/*getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -181,7 +205,7 @@ function yiji(testSource) {
             }) : $("#noLoading#").lazyRule(() => {
                 toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-            }),
+            }),*/
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {

@@ -157,21 +157,23 @@ function yiji(testSource) {
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 let pop = hikerPop.selectBottom({
-                    options: ["搜索框功能", "搜索建议词", "显示搜索数"],
-                    columns: 3,
+                    options: ["搜索框搜索方式", "搜索框显示建议词", "显示搜索历史数量"],
+                    columns: 1,
                     height: 0.4,
                     position: 1,
                     noAutoDismiss: true,
                     click(a) {
-                        if(a=='搜索框功能'){
+                        if(a=='搜索框搜索方式'){
+                            let searchModeS = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
                              hikerPop.selectCenterMark({
-                                options: ["主页界面", "当前接口", "分组接口", "页面聚合"],
+                                options: searchModeS,
                                 title: "请选择",
-                                position: 1,
-                                icons: new Array(4).fill(hikerPop.icon.main_menu_home),
+                                position: searchModeS.indexOf(juItem2.get('接口搜索方式','主页界面')),
+                                icons: new Array(searchModeS.length).fill(hikerPop.icon.main_menu_home),
                                 noAutoDismiss: false,
                                 click(b) {
-                                    return "toast://\u4f60\u9009\u4e86" + b;
+                                    juItem2.set('接口搜索方式', b);
+                                    return "toast://搜索框搜索方式设为：" + b;
                                 }
                             });
                             return "hiker://empty";

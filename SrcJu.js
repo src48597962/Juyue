@@ -157,7 +157,7 @@ function yiji(testSource) {
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 let pop = hikerPop.selectBottom({
-                    options: ["搜索框搜索方式", "搜索框显示建议词", "显示搜索历史数量"],
+                    options: ["搜索框搜索方式", "搜索框显示建议词", "显示搜索历史数量","","","","短剧","直播"],
                     columns: 2,
                     height: 0.5,
                     noAutoDismiss: true,

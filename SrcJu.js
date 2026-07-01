@@ -156,7 +156,7 @@ function yiji(testSource) {
             title: getItem('切换搜索按钮','搜索'),
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                hikerPop.selectBottom({
+                let pop = hikerPop.selectBottom({
                     options: ["搜索框功能", "搜索建议词", "显示搜索数"],
                     columns: 3,
                     height: 0.4,
@@ -169,14 +169,16 @@ function yiji(testSource) {
                                 title: "请选择",
                                 position: 1,
                                 icons: new Array(4).fill(hikerPop.icon.main_menu_home),
-                                noAutoDismiss: true,
+                                noAutoDismiss: false,
                                 click(b) {
-                                    dismiss();
                                     return "toast://\u4f60\u9009\u4e86" + b;
                                 }
                             });
                             return "hiker://empty";
+                        }else{
+                            pop.dismiss();
                         }
+
                         return "hiker://page/test";
                     }, longClick(a) {
                         return "toast://\u957f\u6309\u4e86" + a;

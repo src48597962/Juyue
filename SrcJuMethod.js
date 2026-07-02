@@ -1337,7 +1337,7 @@ function getHtmlCode(ssurl, headers, timeout) {
         }
         
         else if (/身份验证|smart-verify-btn/.test(html)) {
-            log2('按钮验证');
+            log2('按钮验证'+ssurl);
             html = executeWebRule(ssurl, $.toString(() => {
                 try{
                     let outerHTML = document.documentElement.outerHTML;

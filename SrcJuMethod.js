@@ -1341,7 +1341,7 @@ function getHtmlCode(ssurl, headers, timeout) {
             html = executeWebRule(ssurl, $.toString(() => {
                 try{
                     let outerHTML = document.documentElement.outerHTML;
-                    if(!outerHTML.includes('身份验证')){
+                    if(outerHTML.includes('搜索结果') && outerHTML.includes('detail')){
                         return outerHTML;
                     }
                 }catch(e){

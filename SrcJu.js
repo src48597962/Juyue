@@ -172,6 +172,7 @@ function yiji(testSource) {
                                 noAutoDismiss: false,
                                 click(b) {
                                     juItem2.set('接口搜索方式', b);
+                                    pop.dismiss();
                                     return "toast://搜索框搜索方式设为：" + b;
                                 }
                             });

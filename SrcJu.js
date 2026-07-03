@@ -149,45 +149,13 @@ function yiji(testSource) {
             return v==juItem2.get('接口搜索方式','主页界面')?modeSelect(v):v+'  ';
         });
         searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
-        //searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
+        searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
         searchModeS.push('显示搜索数');
+        searchModeS.push('聚合搜索页');
 
         d.push({
             title: getItem('切换搜索按钮','搜索'),
-            url: $("#noLoading#").lazyRule(() => {
-                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                let pop = hikerPop.selectBottom({
-                    options: ["搜索框搜索方式", "搜索框显示建议词", "显示搜索历史数量","--------","三针短剧","聚影直播"],
-                    columns: 3,
-                    height: 0.5,
-                    noAutoDismiss: true,
-                    click(a) {
-                        if(a=='搜索框搜索方式'){
-                            let searchModeS = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
-                             hikerPop.selectCenterMark({
-                                options: searchModeS,
-                                title: "请选择",
-                                position: searchModeS.indexOf(juItem2.get('接口搜索方式','主页界面')),
-                                icons: new Array(searchModeS.length).fill(hikerPop.icon.main_menu_home),
-                                noAutoDismiss: false,
-                                click(b) {
-                                    juItem2.set('接口搜索方式', b);
-                                    pop.dismiss();
-                                    return "toast://搜索框搜索方式设为：" + b;
-                                }
-                            });
-                            return "hiker://empty";
-                        }else{
-                            pop.dismiss();
-                        }
-
-                        return "hiker://page/test";
-                    }, longClick(a) {
-                        return "toast://\u957f\u6309\u4e86" + a;
-                    }
-                });
-                return "hiker://empty";
-            }),/*getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
+            url: getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -206,6 +174,8 @@ function yiji(testSource) {
                         setItem("显示搜索历史数量", input);
                         return "hiker://empty";
                     })
+                }else if(input=='聚合搜索页'){
+                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
                 }else{
                     juItem2.set("接口搜索方式",input);
                     refreshPage();
@@ -214,17 +184,12 @@ function yiji(testSource) {
             }) : $("#noLoading#").lazyRule(() => {
                 toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-            }),*/
+            }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {
                 id: 'ssbtnid',
                 longClick: [{
-                    title: '新搜索页',
-                    js: $.toString(()=>{
-                        return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
-                    })
-                },{
                     title: '切换为'+(getItem('切换搜索按钮','搜索')==='搜索'?'短剧':'搜索'),
                     js: $.toString(()=>{
                         if(getItem('切换搜索按钮')=='短剧'){

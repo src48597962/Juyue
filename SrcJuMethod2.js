@@ -88,11 +88,15 @@ function toGrayscale(bmpOriginal, inSampleSize) {
 }
 // 压缩图片
 function compress(bmpOriginal, inSampleSize, quality) {
-    const bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
-        return bitmapToInputStream(bitmap, quality);
-    } finally {
-        bitmap.recycle();
+        let bitmap = decodeBitmap(bmpOriginal, inSampleSize);
+        try {
+            return bitmapToInputStream(bitmap, quality);
+        } finally {
+            bitmap.recycle();
+        }
+    } catch (e) {
+        return bmpOriginal; // 返回原始数据
     }
 }
 

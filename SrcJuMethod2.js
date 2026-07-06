@@ -70,20 +70,24 @@ function toGrayscale(bmpOriginal, inSampleSize) {
     let ColorMatrix = android.graphics.ColorMatrix;
     let ColorMatrixColorFilter = android.graphics.ColorMatrixColorFilter;
     let Paint = android.graphics.Paint;
-    let bitmap = decodeBitmap(bmpOriginal, inSampleSize);
     try {
-        let width = bitmap.getWidth();
-        let height = bitmap.getHeight();
-        let bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        let canvas = new Canvas(bmpGrayscale);
-        let paint = new Paint();
-        let cm = new ColorMatrix();
-        cm.setSaturation(0);
-        paint.setColorFilter(new ColorMatrixColorFilter(cm));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        return bitmapToInputStream(bmpGrayscale);
-    } finally {
-        bitmap.recycle();
+        let bitmap = decodeBitmap(bmpOriginal, inSampleSize);
+        try {
+            let width = bitmap.getWidth();
+            let height = bitmap.getHeight();
+            let bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            let canvas = new Canvas(bmpGrayscale);
+            let paint = new Paint();
+            let cm = new ColorMatrix();
+            cm.setSaturation(0);
+            paint.setColorFilter(new ColorMatrixColorFilter(cm));
+            canvas.drawBitmap(bitmap, 0, 0, paint);
+            return bitmapToInputStream(bmpGrayscale);
+        } finally {
+            bitmap.recycle();
+        }
+    } catch (e) {
+        return bmpOriginal; // 返回原始数据
     }
 }
 // 压缩图片

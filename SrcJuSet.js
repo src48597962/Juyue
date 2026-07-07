@@ -148,7 +148,7 @@ function SRCSet() {
     });
     d.push({
         title: '导入',
-        url: $("","聚阅口令").input(()=>{
+        url: $("{{clipboard}}","聚阅口令").input(()=>{
             if(input==""){
                 return 'toast://不能为空';
             }

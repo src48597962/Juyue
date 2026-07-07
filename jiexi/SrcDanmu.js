@@ -35,7 +35,7 @@ function dmhome(){
     });
     d.push({
         title: '导入',
-        url: $("").input(() => {
+        url: $("{{clipboard}}").input(() => {
             input = input.trim();
             if (input == "") {
                 return 'toast://不能为空';

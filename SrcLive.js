@@ -135,7 +135,7 @@ function Live() {
         groupNames.forEach((groupname)=>{
             loadingList.push({
                 title: getMyVar('selectgroup', firstgroup)==groupname ? `‘‘’’<b><span style="color:`+color+`">` + groupname : groupname,
-                url: $('#noLoading#').lazyRule((currentSource,groupname) => {
+                url: $('#noLoading#').lazyRule((groupname) => {
                     if (getMyVar('selectgroup') != groupname) {
                         let lastgroup = getMyVar('selectgroup', getMyVar('firstgroup'));
                         putMyVar('selectgroup', groupname);
@@ -144,13 +144,14 @@ function Live() {
                         updateItem(lastgroup, { title: lastgroup });//取消上次分组颜色
                         updateItem(groupname, { title: `‘‘’’<b><span style="color:`+color+`">` + groupname });//更新当前分组颜色
                         
+                        let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
                         let datalist = getLiveList(currentSource, groupname);
                         let loadingList = getLiveName(datalist); 
                         deleteItemByCls('livelist');
                         addItemBefore('liveloading', loadingList);
                     }
                     return "hiker://empty";
-                }, currentSource, groupname),
+                }, groupname),
                 col_type: "scroll_button",
                 extra: {
                     id: groupname
@@ -274,6 +275,22 @@ function getLiveName(datalist) {
             }
         }
     })
+}
+// 播放输出
+function LivePlay(name) {
+    let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
+    let datalist = getLiveList(currentSource);
+    
+    let urls = datalist.filter(v=>v.name==name).map(v=>v.url);
+    if (urls.length == 0) {
+        return "toast://无播放地址";
+    } else if (urls.length == 1) {
+        return urls[0];
+    } else {
+        return JSON.stringify({
+            urls: urls
+        });
+    }
 }
 // 管理设置页
 function LiveSet() {

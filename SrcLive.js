@@ -686,12 +686,12 @@ function getLiveIcon(icon, icon2) {
         icon2 = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon2;
     }
     
-    return icon + (icon2?'':'?s='+color) + '@js=' + $.toString((color,icon2) => {
+    return icon + (icon2?'':'?s='+color) + '@js=' + $.toString((color,icon2, icon) => {
         if(icon2){
             if(input == null){
-                log('1');
+                log(icon+'>1');
                 input = fetch(icon2, {inputStream: true});
-                log('2');
+                log(icon+'>2');
             }else{
                 return input;
             }
@@ -704,8 +704,8 @@ function getLiveIcon(icon, icon2) {
             let str = new java.lang.String(bytes, "UTF-8") + "";
             str = str.replace(/#19b89d/gi, color);
             bytes = new java.lang.String(str).getBytes();
-            log('3');
+            log(icon+'>3');
             return FileUtil.toInputStream(bytes);
         }
-    }, color, icon2)
+    }, color, icon2, icon)
 }

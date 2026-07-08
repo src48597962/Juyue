@@ -185,6 +185,7 @@ function getLiveList(source, selectgroup) {
         if(fileExist(_livejson)){
             datalist = JSON.parse(fetch(_livejson));
         }else{
+            showLoading('正在初始化获取中.');
             try {
                 let YChtml = fetchCache(source.url, 48, { timeout: 3000 }).replace(/TV-/g, 'TV').replace(/\[.*\]/g, '');
                 let shstr = YChtml.substr(0, YChtml.indexOf('\n'));
@@ -196,7 +197,7 @@ function getLiveList(source, selectgroup) {
                     let JYlives = [];
                     if (YChtml.indexOf('#genre#') > -1) {
                         JYlives = YChtml.split('\n');
-                    } else if (JYlive.indexOf('#EXTINF:-1') > -1) {
+                    } else if (YChtml.indexOf('#EXTINF:-1') > -1) {
                         JYlives = YChtml.split('#EXTINF:-1');
                     }
 
@@ -232,6 +233,7 @@ function getLiveList(source, selectgroup) {
             } catch (e) {
                 log(source.name +'>'+ e.message);
             }
+            hideLoading();
         }
     }
     if(selectgroup){
@@ -698,10 +700,6 @@ function getLiveIcon(icon, icon2) {
             let bytes = FileUtil.toBytes(input);
             let str = new java.lang.String(bytes, "UTF-8") + "";
             str = str.replace(/#19b89d/gi, color);
-            if(color2){
-                const regex = new RegExp(color2, 'gi');
-                str = str.replace(regex, color);
-            }
             bytes = new java.lang.String(str).getBytes();
             return FileUtil.toInputStream(bytes);
         }

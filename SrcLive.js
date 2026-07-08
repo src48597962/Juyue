@@ -103,7 +103,7 @@ function Live() {
         }
     });
     d.push({
-        pic_url: getLiveIcon("Loading.gif"),
+        pic_url: config.SrcLiveRely.replace(/[^/]*$/,'') + "Loading.gif",
         col_type: "pic_1_center",
         url: "hiker://empty",
         extra: {
@@ -685,7 +685,9 @@ function getLiveIcon(icon, islogo) {
 
     let tvlogoStreamFile = "hiker://files/_cache/JYlive/tvlogo.txt";
     if(islogo && !fileExist(tvlogoStreamFile)){
-        writeFile(tvlogoStreamFile, fetch(config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/直播-tv.svg', {inputStream: true}));
+        let stream = fetch(config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/直播-tv.svg', {inputStream: true});
+        writeFile(tvlogoStreamFile, stream);
+        closeMe(stream);
     }
     
     return icon + (islogo?'':'?s='+color) + '@js=' + $.toString((color,islogo, icon) => {

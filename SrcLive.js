@@ -682,13 +682,13 @@ function getLiveIcon(icon, icon2) {
     }else if(!icon.includes('/')){
         icon = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon;
     }
+    if(icon2 && !icon2.includes('/')){
+        icon2 = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon2;
+    }
     
     return icon + (icon2?'':'?s='+color) + '@js=' + $.toString((color,icon2) => {
         if(icon2){
             if(input == null){
-                if(!icon2.includes('/')){
-                    icon2 = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon2;
-                }
                 log('1');
                 input = fetch(icon2, {inputStream: true});
                 log('2');

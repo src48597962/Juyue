@@ -219,7 +219,6 @@ function getLiveList(source, selectgroup) {
                                     datalist.push({
                                         group: JYlives[i].match(/group-title="(.*?)"/)[1],
                                         name: JYlives[i].match(/",(.*?)\n/)[1].trim(),
-                                        logo: JYlives[i].includes('tvg-logo=')?JYlives[i].match(/tvg-logo="(.*?)"/)[1]:undefined,
                                         url: JYlives[i].split('\n')[1].trim()
                                     });
                                 }
@@ -265,7 +264,7 @@ function getLiveName(datalist) {
     return list.map((it)=>{
         return {
             title: it.name,
-            img: getLiveIcon(it.logo||'直播-tv.svg', it.logo?true:false),
+            img: getLiveIcon('直播-tv.svg'),
             col_type: 'icon_2_round',
             url: $('#noLoading#').lazyRule((name) => {
                 require(config.SrcLiveRely);
@@ -676,44 +675,25 @@ if(!config.SrcLiveRely){
     });
 }
 // 获取图标地址
-function getLiveIcon(icon, islogo) {
+function getLiveIcon(icon) {
     if(!icon){
         return '';
     }else if(!icon.includes('/')){
         icon = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon;
     }
-
-    let tvlogoStreamFile = "hiker://files/_cache/JYlive/tvlogo.txt";
-    if(islogo && !fileExist(tvlogoStreamFile)){
-        let stream = fetch(config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/直播-tv.svg', {inputStream: true});
-        let javaImport = new JavaImporter();
-        javaImport.importPackage(Packages.com.example.hikerview.utils);
-        let bytes = javaImport.FileUtil.toBytes(stream);
-        writeFile(tvlogoStreamFile, new java.lang.String(bytes, "UTF-8") + "");
-        closeMe(stream);
+    if(!icon.includes('.svg')){
+        return icon;
     }
-    
-    return icon + (islogo?'':'?s='+color) + '@js=' + $.toString((color,islogo, icon) => {
-        let stream;
-        if(islogo){
-            if(input == null){
-                log(icon+'>1');
-                stream = new java.lang.String(fetch("hiker://files/_cache/JYlive/tvlogo.txt")).getBytes();
-                log(icon+'>2');
-            }else{
-                return input;
-            }
-        }
-
+    return icon + '?s='+color + '@js=' + $.toString((color) => {
         let javaImport = new JavaImporter();
         javaImport.importPackage(Packages.com.example.hikerview.utils);
         with(javaImport) {
-            let bytes = stream || FileUtil.toBytes(input);
+            let bytes = FileUtil.toBytes(input);
             let str = new java.lang.String(bytes, "UTF-8") + "";
             str = str.replace(/#19b89d/gi, color);
             bytes = new java.lang.String(str).getBytes();
             log(icon+'>3');
             return FileUtil.toInputStream(bytes);
         }
-    }, color, islogo, icon)
+    }, color)
 }

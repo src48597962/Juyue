@@ -157,23 +157,12 @@ function yiji(testSource) {
             title: getItem('切换搜索按钮','搜索'),
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                let spen = 3;
-                let playList = [{
-                    title: "繁花1",
-                    url: "https://v.cdnlz2.com/20231227/27673_b15e637e/index.m3u8",
-                }, {
-                    title: "繁花2",
-                    url: "https://v.cdnlz2.com/20231227/27672_28ffef2b/index.m3u8",
-                }, {
-                    title: "繁花3",
-                    url: "https://v.cdnlz2.com/20231227/27678_8bb00839/index.m3u8",
-                }];
-                let names = playList.map(v => v.title);
+                let names = ['搜索栏设置','搜索建议词','记忆搜索词','历史搜索数','聚合搜索页'];
                 let pop = hikerPop.setNextThrottle(200).selectBottomRes({
                     options: names,
-                    columns: spen,
-                    height: 0.4,
-                    title: "电视剧-繁花",
+                    columns: 3,
+                    height: 0.5,
+                    title: "更多发现",
                     noAutoDismiss: false,
                     beforeShow() {
                         //log("显示")
@@ -186,15 +175,12 @@ function yiji(testSource) {
                     },
                     menuClick(manage) {
                         hikerPop.selectCenter({
-                            options: ["改变样式", "添加一个项目", "删除一个项目", "倒序", "滑动到最后", "滑动到顶部", "修改标题"],
+                            options: ["添加一个项目", "删除一个项目", "倒序", "滑动到最后", "滑动到顶部", "修改标题"],
                             columns: 3,
                             title: "请选择",
                             click(s, i) {
 
                                 if (i === 0) {
-                                    spen = spen == 3 ? 1 : 3;
-                                    manage.changeColumns(spen);
-                                } else if (i === 1) {
                                     manage.list.push("繁花4");
                                     names.push("繁花4");
                                     playList.push({

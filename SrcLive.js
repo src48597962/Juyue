@@ -674,16 +674,24 @@ if(!config.SrcLiveRely){
     });
 }
 // 获取图标地址
-function getLiveIcon(icon, nochange, color2) {
+function getLiveIcon(icon, icon2) {
     if(!icon){
         return '';
     }else if(!icon.includes('/')){
         icon = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon;
     }
-    if(!icon.includes('.svg')){
-        return icon;
+    if(icon2 && !icon2.includes('/')){
+        icon2 = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon2;
     }
-    return icon + ((!color||nochange)?'':'?s='+color+'@js=' + $.toString((color,color2) => {
+    return icon + (icon2?'':'?s='+color) + '@js=' + $.toString((color,icon2) => {
+        if(icon2){
+            if(input == null){
+                input = fetch(icon2, {inputStream: true});
+            }else{
+                return input;
+            }
+        }
+
         let javaImport = new JavaImporter();
         javaImport.importPackage(Packages.com.example.hikerview.utils);
         with(javaImport) {
@@ -697,5 +705,5 @@ function getLiveIcon(icon, nochange, color2) {
             bytes = new java.lang.String(str).getBytes();
             return FileUtil.toInputStream(bytes);
         }
-    },color, color2))
+    }, color, icon2)
 }

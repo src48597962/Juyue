@@ -263,7 +263,7 @@ function getLiveName(datalist) {
     return list.map((it)=>{
         return {
             title: it.name,
-            img: getLiveIcon('直播-tv.svg'),
+            img: getLiveIcon(it.logo||'直播-tv.svg', it.logo?'直播-tv.svg':''),
             col_type: 'icon_2_round',
             url: $('#noLoading#').lazyRule((name) => {
                 require(config.SrcLiveRely);

@@ -688,7 +688,8 @@ function getLiveIcon(icon, islogo) {
         let stream = fetch(config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/直播-tv.svg', {inputStream: true});
         let javaImport = new JavaImporter();
         javaImport.importPackage(Packages.com.example.hikerview.utils);
-        writeFile(tvlogoStreamFile, javaImport.FileUtil.toBytes(stream));
+        let bytes = javaImport.FileUtil.toBytes(stream);
+        writeFile(tvlogoStreamFile, new java.lang.String(bytes, "UTF-8") + "");
         closeMe(stream);
     }
     
@@ -697,7 +698,7 @@ function getLiveIcon(icon, islogo) {
         if(islogo){
             if(input == null){
                 log(icon+'>1');
-                stream = fetch("hiker://files/_cache/JYlive/tvlogo.txt");
+                stream = new java.lang.String(fetch("hiker://files/_cache/JYlive/tvlogo.txt")).getBytes();
                 log(icon+'>2');
             }else{
                 return input;

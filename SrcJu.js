@@ -155,7 +155,77 @@ function yiji(testSource) {
 
         d.push({
             title: getItem('切换搜索按钮','搜索'),
-            url: getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
+            url: $("#noLoading#").lazyRule(() => {
+                const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
+                let spen = 3;
+                let playList = [{
+                    title: "繁花1",
+                    url: "https://v.cdnlz2.com/20231227/27673_b15e637e/index.m3u8",
+                }, {
+                    title: "繁花2",
+                    url: "https://v.cdnlz2.com/20231227/27672_28ffef2b/index.m3u8",
+                }, {
+                    title: "繁花3",
+                    url: "https://v.cdnlz2.com/20231227/27678_8bb00839/index.m3u8",
+                }];
+                let names = playList.map(v => v.title);
+                let pop = hikerPop.setNextThrottle(200).selectBottomRes({
+                    options: names,
+                    columns: spen,
+                    height: 0.4,
+                    title: "电视剧-繁花",
+                    noAutoDismiss: false,
+                    beforeShow() {
+                        //log("显示")
+                    },
+                    click(s, i, manage) {
+                        manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
+                        manage.change();
+                        hikerPop.playVideos(playList, i);
+                        return "toast://xx";
+                    },
+                    menuClick(manage) {
+                        hikerPop.selectCenter({
+                            options: ["改变样式", "添加一个项目", "删除一个项目", "倒序", "滑动到最后", "滑动到顶部", "修改标题"],
+                            columns: 3,
+                            title: "请选择",
+                            click(s, i) {
+
+                                if (i === 0) {
+                                    spen = spen == 3 ? 1 : 3;
+                                    manage.changeColumns(spen);
+                                } else if (i === 1) {
+                                    manage.list.push("繁花4");
+                                    names.push("繁花4");
+                                    playList.push({
+                                        title: "繁花4",
+                                        url: "https://v.cdnlz2.com/20231227/27673_b15e637e/index.m3u8"
+                                    });
+                                    manage.change();
+                                } else if (i === 2) {
+                                    manage.list.splice(manage.list.length - 1, 1);
+                                    manage.change();
+                                } else if (i === 3) {
+                                    manage.list.reverse();
+                                    manage.change();
+                                } else if (i === 4) {
+
+                                    manage.scrollToPosition(manage.list.length - 1, true);
+
+                                } else if (i === 5) {
+
+                                    manage.scrollToPosition(0, true);
+
+                                } else if (i === 6) {
+                                    manage.setTitle("标题修改");
+                                }
+                            },
+                        });
+
+                    }
+                });
+                return "hiker://empty";
+            }),/*getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -184,7 +254,7 @@ function yiji(testSource) {
             }) : $("#noLoading#").lazyRule(() => {
                 toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-            }),
+            }),*/
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {

@@ -265,7 +265,7 @@ function getLiveName(datalist) {
     return list.map((it)=>{
         return {
             title: it.name,
-            img: getLiveIcon(it.logo||'直播-tv.svg', it.logo?'直播-tv.svg':''),
+            img: getLiveIcon(it.logo||'直播-tv.svg', it.logo?true:false),
             col_type: 'icon_2_round',
             url: $('#noLoading#').lazyRule((name) => {
                 require(config.SrcLiveRely);
@@ -676,21 +676,23 @@ if(!config.SrcLiveRely){
     });
 }
 // 获取图标地址
-function getLiveIcon(icon, icon2) {
+function getLiveIcon(icon, islogo) {
     if(!icon){
         return '';
     }else if(!icon.includes('/')){
         icon = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon;
     }
-    if(icon2 && !icon2.includes('/')){
-        icon2 = config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/' + icon2;
+
+    let tvlogoStreamFile = "hiker://files/_cache/JYlive/tvlogo.txt";
+    if(islogo && !fileExist(tvlogoStreamFile)){
+        writeFile(tvlogoStreamFile, fetch(config.SrcLiveRely.replace(/[^/]*$/,'') + 'img/直播-tv.svg', {inputStream: true}));
     }
     
-    return icon + (icon2?'':'?s='+color) + '@js=' + $.toString((color,icon2, icon) => {
-        if(icon2){
+    return icon + (islogo?'':'?s='+color) + '@js=' + $.toString((color,islogo, icon) => {
+        if(islogo){
             if(input == null){
                 log(icon+'>1');
-                input = fetch(icon2, {inputStream: true});
+                input = fetch("hiker://files/_cache/JYlive/tvlogo.txt");
                 log(icon+'>2');
             }else{
                 return input;
@@ -707,5 +709,5 @@ function getLiveIcon(icon, icon2) {
             log(icon+'>3');
             return FileUtil.toInputStream(bytes);
         }
-    }, color, icon2, icon)
+    }, color, islogo, icon)
 }

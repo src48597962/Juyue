@@ -165,7 +165,7 @@ function yiji(testSource) {
                     title: "更多发现",
                     noAutoDismiss: false,
                     beforeShow() {
-                        //log("显示")
+                        log("显示")
                     },
                     click(s, i, manage) {
                         manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));

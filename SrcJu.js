@@ -190,7 +190,7 @@ function yiji(testSource) {
                                 return "hiker://empty";
                             })
                         }else if(/搜索建议词|记忆搜索词/.test(s)){
-                            manage.list.forEach((v,ii)=> (v = i === ii ? (getItem(s, "")=='1'?names[ii]:"‘‘" + names[ii] + "’’") : v));
+                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (getItem(s, "")=='1'?names[ii]:"‘‘" + names[ii] + "’’") : v));
                             manage.change();
                             s = s.replace(/‘‘|’’/g, '');
                             if(getItem(s, "")=='1'){

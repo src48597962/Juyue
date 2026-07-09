@@ -177,7 +177,8 @@ function yiji(testSource) {
                                 options: searchMode,
                                 position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
                                 click(a) {
-                                    return "toast://你选了" + a;
+                                    juItem2.set("接口搜索方式", a);
+                                    return "toast://搜索方式设置为：" + a;
                                 }
                             });
                         }

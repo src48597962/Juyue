@@ -111,6 +111,13 @@ function Live() {
             cls: "loading_gif"
         }
     })
+    d.push({
+        title: '<br>',
+        col_type: 'rich_text',
+        extra: {
+            id: "liveloading"
+        }
+    })
     setResult(d);
 
     // 构建分组和列表

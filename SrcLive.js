@@ -104,7 +104,7 @@ function Live() {
         }
     });
     d.push({
-        pic_url: config.SrcLiveRely.replace(/[^/]*$/,'') + "Loading.gif",
+        pic_url: config.SrcLiveRely.replace(/[^/]*$/,'') + "img/Loading.gif",
         col_type: "pic_1_center",
         url: "hiker://empty",
         extra: {

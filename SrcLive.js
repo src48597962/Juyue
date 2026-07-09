@@ -283,7 +283,7 @@ function LivePlay(name) {
     let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
     let datalist = getLiveList(currentSource);
     
-    let urls = datalist.filter(v=>v.name==name).map(v=>v.url);
+    let urls = datalist.filter(v=>v.name==name).map(v=>v.url+'#isVideo=true#');
     if (urls.length == 0) {
         return "toast://无播放地址";
     } else if (urls.length == 1) {

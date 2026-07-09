@@ -190,6 +190,8 @@ function yiji(testSource) {
                                 return "hiker://empty";
                             })
                         }else if(s=='搜索建议词'||s=='记忆搜索词'){
+                            manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
+                            manage.change();
                             if(getItem(s,"")=='1'){
                                 clearItem(s);
                                 return "toast://已取消" + s;
@@ -198,7 +200,8 @@ function yiji(testSource) {
                                 return "toast://已设置" + s;
                             }
                         }else if(s=='聚合搜索页'){
-                             return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                            pop.dismiss();
+                            return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
                         }
                         //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
                         //manage.change();

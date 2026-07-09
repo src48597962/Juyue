@@ -161,7 +161,7 @@ function yiji(testSource) {
                 let pop = hikerPop.setNextThrottle(200).selectBottomRes({
                     options: names,
                     columns: 3,
-                    height: 0.5,
+                    height: 0.6,
                     title: "更多发现",
                     noAutoDismiss: false,
                     beforeShow() {

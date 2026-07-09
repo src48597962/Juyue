@@ -68,6 +68,7 @@ function Live() {
             title: currentSource.url == dyurl ? `‘‘’’<b><span style="color:`+color+`">` + dyname : dyname,
             url: $("#noLoading#").lazyRule((source) => {
                 storage0.putMyVar('currentSource', source);
+                clearMyVar('selectgroup');
                 refreshPage(false);
                 return "toast://已切换远程订阅：" + source.name;
             }, livedata[i]),
@@ -108,13 +109,6 @@ function Live() {
         url: "hiker://empty",
         extra: {
             cls: "loading_gif"
-        }
-    })
-    d.push({
-        title: '<br>',
-        col_type: 'rich_text',
-        extra: {
-            id: "liveloading"
         }
     })
     setResult(d);

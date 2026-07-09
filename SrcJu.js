@@ -181,11 +181,29 @@ function yiji(testSource) {
                                     return "toast://搜索方式设置为：" + a;
                                 }
                             });
+                        }else if(s=='搜索历史数'){
+                             return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
+                                if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
+                                    return 'toast://输入有误，请输入1-100数字';
+                                }
+                                setItem("显示搜索历史数量", input);
+                                return "hiker://empty";
+                            })
+                        }else if(s=='搜索建议词'||s=='记忆搜索词'){
+                            if(getItem(s,"")=='1'){
+                                clearItem(s);
+                                return "toast://已取消" + s;
+                            }else{
+                                setItem(s, "1");
+                                return "toast://已设置" + s;
+                            }
+                        }else if(s=='聚合搜索页'){
+                             return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
                         }
                         //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
                         //manage.change();
                         //hikerPop.playVideos(playList, i);
-                        return "toast://xx";
+                        return "hiker://emtpy";
                     },
                     menuClick(manage) {
                         hikerPop.selectCenter({

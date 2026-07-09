@@ -157,7 +157,7 @@ function yiji(testSource) {
             title: getItem('切换搜索按钮','搜索'),
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                let original = ['搜索栏设置','搜索历史数','搜索建议词','记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
+                let original = ['搜索栏设置','搜索历史数',getItem('搜索建议词', "")=='1'?'‘‘搜索建议词’’':'搜索建议词',getItem('记忆搜索词', "")=='1'?'‘‘记忆搜索词’’':'记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
                 let discoverlist = original.map(v=>{return {'name': v}});
 
                 let names = discoverlist.map(v=>v.name);
@@ -190,10 +190,13 @@ function yiji(testSource) {
                                 return "hiker://empty";
                             })
                         }else if(/搜索建议词|记忆搜索词/.test(s)){
-                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (getItem(s, "")=='1'?names[ii]:"‘‘" + names[ii] + "’’") : v));
-                            manage.change();
                             s = s.replace(/‘‘|’’/g, '');
-                            if(getItem(s, "")=='1'){
+                            let isEnable = getItem(s, "")=='1';
+
+                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?names[ii]:"‘‘" + names[ii] + "’’") : v));
+                            manage.change();
+                            
+                            if(isEnable){
                                 clearItem(s);
                                 return "toast://已取消" + s;
                             }else{

@@ -177,6 +177,7 @@ function yiji(testSource) {
                                 options: searchMode,
                                 position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
                                 click(a) {
+                                    pop.dismiss();
                                     juItem2.set("接口搜索方式", a);
                                     return "toast://搜索方式设置为：" + a;
                                 }
@@ -193,7 +194,7 @@ function yiji(testSource) {
                             s = s.replace(/‘‘|’’/g, '');
                             let isEnable = getItem(s, "")=='1';
 
-                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘" + s + "’’") : v));
+                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘"+s+"’’") : v));
                             manage.change();
                             
                             if(isEnable){
@@ -203,13 +204,20 @@ function yiji(testSource) {
                                 setItem(s, "1");
                                 return "toast://已设置" + s;
                             }
-                        }else if(s=='聚合搜索页'){
+                        }else{
                             pop.dismiss();
-                            return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
-                        }else if(s=='三针短剧'){
-                            pop.dismiss();
-                            toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
-                            return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
+                            if(s=='聚合搜索页'){
+                                return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                            }else if(s=='三针短剧'){
+                                toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
+                                return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
+                            }else if(s=='聚影直播'){
+                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                    setPageTitle('聚影直播');
+                                    require(config.聚阅.replace(/[^/]*$/,'') + 'SrcLive.js');
+                                    Live();
+                                })
+                            }
                         }
                         
                         //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));

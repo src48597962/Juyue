@@ -113,7 +113,7 @@ function Live() {
     })
 
     d.push({
-        col_type: 'line_blank',
+        col_type: 'blank_block',
         extra: {
             id: "liveloading"
         }

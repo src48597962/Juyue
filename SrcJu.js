@@ -166,7 +166,7 @@ function yiji(testSource) {
                     columns: 3,
                     height: 0.6,
                     title: "更多发现",
-                    noAutoDismiss: false,
+                    noAutoDismiss: true,
                     beforeShow() {
                         //log("显示")
                     },

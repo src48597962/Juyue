@@ -157,7 +157,7 @@ function yiji(testSource) {
             title: getItem('切换搜索按钮','搜索'),
             url: $("#noLoading#").lazyRule(() => {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-                let names = ['搜索栏设置','搜索建议词','记忆搜索词','历史搜索数','聚合搜索页'];
+                let names = ['搜索栏设置','搜索历史数','搜索建议词','记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
                 let pop = hikerPop.setNextThrottle(200).selectBottomRes({
                     options: names,
                     columns: 3,
@@ -165,7 +165,7 @@ function yiji(testSource) {
                     title: "更多发现",
                     noAutoDismiss: false,
                     beforeShow() {
-                        log("显示")
+                        //log("显示")
                     },
                     click(s, i, manage) {
                         manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));

@@ -171,9 +171,18 @@ function yiji(testSource) {
                         //log("显示")
                     },
                     click(s, i, manage) {
-
-                        manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
-                        manage.change();
+                        if(s=='搜索栏设置'){
+                            let searchMode = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
+                            hikerPop.selectBottomMark({
+                                options: searchMode,
+                                position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
+                                click(a) {
+                                    return "toast://你选了" + a;
+                                }
+                            });
+                        }
+                        //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
+                        //manage.change();
                         //hikerPop.playVideos(playList, i);
                         return "toast://xx";
                     },

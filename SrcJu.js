@@ -193,7 +193,7 @@ function yiji(testSource) {
                             s = s.replace(/‘‘|’’/g, '');
                             let isEnable = getItem(s, "")=='1';
 
-                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?names[ii]:"‘‘" + names[ii] + "’’") : v));
+                            manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘" + s + "’’") : v));
                             manage.change();
                             
                             if(isEnable){

@@ -206,7 +206,12 @@ function yiji(testSource) {
                         }else if(s=='聚合搜索页'){
                             pop.dismiss();
                             return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                        }else if(s=='三针短剧'){
+                            pop.dismiss();
+                            toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
+                            return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
                         }
+                        
                         //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
                         //manage.change();
                         //hikerPop.playVideos(playList, i);

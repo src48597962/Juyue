@@ -692,7 +692,6 @@ function getLiveIcon(icon) {
             let str = new java.lang.String(bytes, "UTF-8") + "";
             str = str.replace(/#19b89d/gi, color);
             bytes = new java.lang.String(str).getBytes();
-            log(icon+'>3');
             return FileUtil.toInputStream(bytes);
         }
     }, color)

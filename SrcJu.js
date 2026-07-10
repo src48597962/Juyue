@@ -219,43 +219,44 @@ function yiji(testSource) {
                                 })
                             }
                         }
-                        
-                        //manage.list.forEach((v, ii) => (manage.list[ii] = i === ii ? "‘‘" + names[ii] + "’’" : names[ii]));
-                        //manage.change();
-                        //hikerPop.playVideos(playList, i);
                         return "hiker://emtpy";
                     },
                     menuClick(manage) {
                         hikerPop.selectCenter({
-                            options: ["添加一个项目", "删除一个项目", "倒序", "滑动到最后", "滑动到顶部", "修改标题"],
+                            options: ["添加一个发现", "停用删除发现", "滑动到最后", "滑动到顶部"],
                             columns: 3,
                             title: "请选择",
                             click(s, i) {
-
                                 if (i === 0) {
-                                    manage.list.push("繁花4");
-                                    names.push("繁花4");
-                                    playList.push({
-                                        title: "繁花4",
-                                        url: "https://v.cdnlz2.com/20231227/27673_b15e637e/index.m3u8"
+                                    let Juconfig = getJuconfig();
+                                    hikerPop.inputTwoRow({
+                                        titleHint: "名称",
+                                        titleDefault: "",
+                                        urlHint: "链接",
+                                        urlDefault: "",
+                                        noAutoSoft: true,
+                                        title: "添加发现",
+                                        //hideCancel: true,
+                                        confirm(s1, s2) {
+                                            let findItems = Juconfig['findItems'] || [];
+                                            findItems.push({name: s1, url: s2});
+                                            Juconfig['findItems'] = findItems;
+                                            writeFile(cfgfile, JSON.stringify(Juconfig));
+                                            manage.list.push(s1);
+                                            names.push(s1);
+                                            discoverlist.push({name: s1, url: s2});
+                                            manage.change();
+                                            return "toast://添加了:" + s2;
+                                        }
                                     });
-                                    manage.change();
-                                } else if (i === 2) {
+                                    return "hiker://empty";
+                                } else if (i === 1) {
                                     manage.list.splice(manage.list.length - 1, 1);
                                     manage.change();
-                                } else if (i === 3) {
-                                    manage.list.reverse();
-                                    manage.change();
-                                } else if (i === 4) {
-
+                                } else if (i === 2) {
                                     manage.scrollToPosition(manage.list.length - 1, true);
-
-                                } else if (i === 5) {
-
+                                } else if (i === 3) {
                                     manage.scrollToPosition(0, true);
-
-                                } else if (i === 6) {
-                                    manage.setTitle("标题修改");
                                 }
                             },
                         });

@@ -217,6 +217,8 @@ function yiji(testSource) {
                                     require(config.聚阅.replace(/[^/]*$/,'') + 'SrcLive.js');
                                     Live();
                                 })
+                            }else{
+                                return discoverlist[i].url;
                             }
                         }
                         return "hiker://emtpy";
@@ -239,6 +241,9 @@ function yiji(testSource) {
                                         //hideCancel: true,
                                         confirm(s1, s2) {
                                             let findItems = Juconfig['findItems'] || [];
+                                            if(findItems.some(v=>v.name==s1 || v.url==s2)){
+                                                return 'toast://已存在';
+                                            }
                                             findItems.push({name: s1, url: s2});
                                             Juconfig['findItems'] = findItems;
                                             writeFile(cfgfile, JSON.stringify(Juconfig));
@@ -246,7 +251,7 @@ function yiji(testSource) {
                                             names.push(s1);
                                             discoverlist.push({name: s1, url: s2});
                                             manage.change();
-                                            return "toast://添加了:" + s2;
+                                            return "toast://添加了:" + s1;
                                         }
                                     });
                                     return "hiker://empty";

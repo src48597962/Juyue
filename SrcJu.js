@@ -159,6 +159,9 @@ function yiji(testSource) {
                 const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
                 let original = ['搜索栏设置','搜索历史数',getItem('搜索建议词', "")=='1'?'‘‘搜索建议词’’':'搜索建议词',getItem('记忆搜索词', "")=='1'?'‘‘记忆搜索词’’':'记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
                 let discoverlist = original.map(v=>{return {'name': v}});
+                let Juconfig = getJuconfig();
+                let findItems = Juconfig['findItems'] || [];
+                discoverlist = discoverlist.concat(findItems.filter(v=>!v.stop))
 
                 let names = discoverlist.map(v=>v.name);
                 let pop = hikerPop.setNextThrottle(200).selectBottomRes({
@@ -230,7 +233,7 @@ function yiji(testSource) {
                             title: "请选择",
                             click(s, i) {
                                 if (i === 0) {
-                                    let Juconfig = getJuconfig();
+                                    
                                     hikerPop.inputTwoRow({
                                         titleHint: "名称",
                                         titleDefault: "",
@@ -240,7 +243,7 @@ function yiji(testSource) {
                                         title: "添加发现",
                                         //hideCancel: true,
                                         confirm(s1, s2) {
-                                            let findItems = Juconfig['findItems'] || [];
+                                            
                                             if(findItems.some(v=>v.name==s1 || v.url==s2)){
                                                 return 'toast://已存在';
                                             }

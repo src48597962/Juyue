@@ -225,8 +225,8 @@ function yiji(testSource) {
                     },
                     menuClick(manage) {
                         hikerPop.selectCenter({
-                            options: ["添加一个发现", "停用删除发现", "滑动到最后", "滑动到顶部"],
-                            columns: 3,
+                            options: ["添加", "删除", "停用", "显示", "置顶", "置底", "最后", "顶部"],
+                            columns: 2,
                             title: "请选择",
                             click(s, i) {
                                 if (i === 0) {

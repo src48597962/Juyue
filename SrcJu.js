@@ -156,7 +156,7 @@ function yiji(testSource) {
         d.push({
             title: getItem('切换搜索按钮','搜索'),
             url: $("#noLoading#").lazyRule(() => {
-                return $.require('jiekou').findBtnF;
+                return $.require('jiekou').findBtnF();
             }),/*getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 

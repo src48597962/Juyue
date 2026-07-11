@@ -185,17 +185,21 @@ function findBtn() {
                 }
             }else{
                 if(menuEvent['event']){
-                    xlog(findItem);
                     if(menuEvent['event']=='del'){
                         delete findItem[s];
                     }else if(menuEvent['event']=='stop'){
-                        findItem[s].stop = 1;
+                        if(findItem[s].stop){
+                            delete findItem[s].stop;
+                        }else{
+                            findItem[s].stop = 1;
+                        }
                     }
-                    xlog(findItem);
                     Juconfig['findItem'] = findItem;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
-                    xlog(findNames());
-                    manage.list = findNames();
+                    manage.list.clear;
+                    findNames().forEach(it=>{
+                        manage.list.push(it);
+                    })
                     manage.change();
                     return 'hiker://empty';
                 }
@@ -243,11 +247,9 @@ function findBtn() {
                         if(stopname.length==0){
                             return "toast://无停用的";
                         }
-                        xlog(stopname);
                         stopname.map(v=>"““"+v+"””").forEach(it=>{
                             manage.list.push(it);
                         })
-                        xlog(manage.list);
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
                         return "toast://已显示"+stopname.length+"个停用";

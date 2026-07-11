@@ -200,7 +200,7 @@ function findBtn() {
                     return 'hiker://empty';
                 }
                 
-                return findlist[i].url;
+                return findItem[s].url;
             }
             return "hiker://emtpy";
         },

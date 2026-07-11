@@ -107,17 +107,21 @@ function compress(bmpOriginal, inSampleSize, quality) {
 function findBtn() {
     const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
     let original = ['搜索栏设置','搜索历史数',getItem('搜索建议词', "")=='1'?'‘‘搜索建议词’’':'搜索建议词',getItem('记忆搜索词', "")=='1'?'‘‘记忆搜索词’’':'记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
-    let findlist = original.map(v=>{return {'name': v}});
     let Juconfig = getJuconfig();
-    let findItems = Juconfig['findItems'] || [];
-    findlist = findlist.concat(findItems.filter(v=>!v.stop))
-    let names = computed(()=>{
-        return findlist.value.map(v=>v.name)
-    });//findlist.map(v=>v.name);
     let menuEvent = {};
+    let findItem = Juconfig['findItem'] || {};
+
+    function findNames() {
+        original.forEach(it=>{
+            if(it=='搜索建议词' || it=='记忆搜索词'){
+                it = getItem(it, "")=='1'?'‘‘'+it+'’’':it;
+            }
+        })
+        return original.concat(Object.keys(findItem));
+    }
 
     let pop = hikerPop.setNextThrottle(200).selectBottomRes({
-        options: names,
+        options: findNames(),
         columns: 3,
         height: 0.6,
         title: "更多发现",
@@ -181,18 +185,17 @@ function findBtn() {
                 }
             }else{
                 if(menuEvent['event']){
-                    xlog(Juconfig['findItems']);
+                    xlog(findItem);
                     if(menuEvent['event']=='del'){
-                        findItems = findItems.filter(v=>v.name!=s);
+                        delete findItem[s];
                     }else if(menuEvent['event']=='stop'){
-                        findItems.forEach(v=>(v.stop=1));
+                        findItem[s].stop = 1;
                     }
-                    xlog(findItems);
-                    findlist = findlist.splice(i, 1);
-                    Juconfig['findItems'] = findItems;
+                    xlog(findItem);
+                    Juconfig['findItem'] = findItem;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
-                    xlog(names);
-                    manage.list = names;
+                    xlog(findNames());
+                    manage.list = findNames();
                     manage.change();
                     return 'hiker://empty';
                 }
@@ -217,14 +220,13 @@ function findBtn() {
                             title: "添加发现",
                             //hideCancel: true,
                             confirm(s1, s2) {
-                                if(findItems.some(v=>v.name==s1 || v.url==s2)){
+                                if(findItem[s1]){
                                     return 'toast://已存在';
                                 }
-                                findItems.push({name: s1, url: s2});
-                                Juconfig['findItems'] = findItems;
+                                findItem[s1] = {url: s2};
+                                Juconfig['findItem'] = findItem;
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
                                 manage.list.push(s1);
-                                findlist.push({name: s1, url: s2});
                                 manage.change();
                                 return "toast://添加了:" + s1;
                             }
@@ -237,12 +239,14 @@ function findBtn() {
                         menuEvent['event'] = 'stop';
                         manage.setTitle("更多发现-停用");
                     } else if (i === 3) {
+                        /*
                         Juconfig = getJuconfig();
                         findItems = Juconfig['findItems'] || [];
                         names = names.concat(findItems.filter(v=>v.stop).map(v=>"““"+v.name+"””"));
                         manage.list = names;
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
+                        */
                     } else if (i === 4) {
                         xlog(names);
                     }

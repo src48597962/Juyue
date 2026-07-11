@@ -104,11 +104,11 @@ function compress(bmpOriginal, inSampleSize, quality) {
     }
 }
 // 主页发现按钮事件
-function findBtn() {
+function findBtnF() {
     const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
     let original = ['搜索栏设置','搜索历史数','搜索建议词','记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
     let Juconfig = getJuconfig();
-    let findItem = Juconfig['findItem'] || {};
+    let findItems = Juconfig['findItems'] || [];
 
     function findNames() {
         original.forEach(it=>{
@@ -116,7 +116,7 @@ function findBtn() {
                 it = getItem(it, "")=='1'?'‘‘'+it+'’’':it;
             }
         })
-        return original.concat(Object.keys(findItem).filter(v=>!findItem[v].stop));
+        return original.concat(findItems.filter(v=>!v.stop).map(v=>v.name));
     }
 
     let pop = hikerPop.setNextThrottle(200).selectBottomRes({
@@ -180,7 +180,7 @@ function findBtn() {
                     }
                 }
             }else{
-                return findItem[s].url;
+                return findItems[i-original.length].url;
             }
             return "hiker://emtpy";
         },
@@ -189,25 +189,30 @@ function findBtn() {
             if(original.includes(s)){
                 return 'toast://自带菜单无法操作';
             }
+            let index = i-original.length;
             hikerPop.selectCenter({
-                options: ["删除", findItem[s].stop?"启用":"停用", "置顶", "置底"],
+                options: ["删除", findItems[index].stop?"启用":"停用", "置顶", "置底"],
                 columns: 2,
                 title: "操作>"+s,
                 click(ss, i) {
                     if (i === 0) {
-                        delete findItem[s];
+                        findItems.splice(index, 1);
                     } else if (i === 1) {
-                        if(findItem[s].stop){
-                            delete findItem[s].stop;
+                        if(findItems[index].stop){
+                            delete findItems[index].stop;
                         }else{
-                            findItem[s].stop = 1;
+                            findItems[index].stop = 1;
                         }
                     } else if (i === 2) {
-                        findItem = moveToFirst(findItem, s);
+                        let item = findItems[index];
+                        findItems.splice(index, 1);
+                        findItems.unshift(item);
                     } else if (i === 3) {
-                        findItem = moveToLast(findItem, s);
+                        let item = findItems[index];
+                        findItems.splice(index, 1);
+                        findItems.push(item);
                     }
-                    Juconfig['findItem'] = findItem;
+                    Juconfig['findItems'] = findItems;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     manage.list.length = 0;
                     findNames().forEach(it=>{
@@ -220,7 +225,7 @@ function findBtn() {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["添加发现", "显示停用"],
+                options: ["添加发现", "显示停用", "分享添加", "导入发现"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -234,11 +239,11 @@ function findBtn() {
                             title: "添加发现",
                             //hideCancel: true,
                             confirm(s1, s2) {
-                                if(findItem[s1]){
+                                if(findItems.some(v=>v.name==s1)){
                                     return 'toast://已存在';
                                 }
-                                findItem[s1] = {url: s2};
-                                Juconfig['findItem'] = findItem;
+                                findItems.push({name: s1, url: s2});
+                                Juconfig['findItems'] = findItems;
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
                                 manage.list.push(s1);
                                 manage.change();
@@ -247,7 +252,7 @@ function findBtn() {
                         });
                         return "hiker://empty";
                     } else if (i === 1) {
-                        let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
+                        let stopname = findItems.filter(v=>v.stop).map(v=>v.name);
                         if(stopname.length==0){
                             return "toast://无停用的";
                         }
@@ -255,10 +260,27 @@ function findBtn() {
                             manage.list.push(it);
                         })
                         manage.change();
-                        manage.setTitle("更多发现-显示停用");
                         return "toast://已显示"+stopname.length+"个停用";
-                    } else if (i === 4) {
-                        //xlog(names);
+                    } else if (i === 2) {
+                        let pastes = getPastes();
+                        return $(pastes, 2).select(() => {
+                            showLoading('分享生成中，请稍后...');
+                            let Juconfig = getJuconfig();
+                            let lists = Juconfig['findItems'] || [];
+                            let sharetxt = base64Encode(JSON.stringify(lists));
+                            let pasteurl = sharePaste(sharetxt, input);
+                            hideLoading();
+                            if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+                                log('剪贴板地址>'+pasteurl);
+                                copy('发现￥'+aesEncode('findItems', pasteurl)+'￥聚阅');
+                                return "toast://分享口令已生成";
+                            }else{
+                                log('分享失败>'+pasteurl);
+                                return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+                            }
+                        })
+                    } else if (i === 3) {
+                        
                     }
                     return "hiker://empty";
                 },
@@ -273,7 +295,7 @@ let exports = {
     "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
     "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
     "toGrayscale": (inSampleSize) => toGrayscale(input, inSampleSize),
-    "findBtnF": findBtn
+    "findBtnF": findBtnF
 }
 /*
 try{

@@ -184,26 +184,6 @@ function findBtn() {
                     }
                 }
             }else{
-                if(menuEvent){
-                    if(menuEvent=='del'){
-                        delete findItem[s];
-                    }else if(menuEvent=='stop'){
-                        if(findItem[s].stop){
-                            delete findItem[s].stop;
-                        }else{
-                            findItem[s].stop = 1;
-                        }
-                    }
-                    Juconfig['findItem'] = findItem;
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                    manage.list.length = 0;
-                    findNames().forEach(it=>{
-                        manage.list.push(it);
-                    })
-                    manage.change();
-                    return 'hiker://empty';
-                }
-                
                 return findItem[s].url;
             }
             return "hiker://emtpy";
@@ -216,7 +196,6 @@ function findBtn() {
                 columns: 2,
                 title: "操作>"+s,
                 click(ss, i) {
-                    
                     if (i === 0) {
                         delete findItem[s];
                     } else if (i === 1) {
@@ -226,14 +205,9 @@ function findBtn() {
                             findItem[s].stop = 1;
                         }
                     } else if (i === 2) {
-                        groupNames.splice(i, 1);
-                                        if (input == "置顶") {
-                                            groupNames.unshift(s);
-                                        } else {
-                                            groupNames.push(s);
-                                        }
+                        findItem = moveToFirst(findItem, s);
                     } else if (i === 3) {
-                        
+                        findItem = moveToLast(findItem, s);
                     }
                     Juconfig['findItem'] = findItem;
                     writeFile(cfgfile, JSON.stringify(Juconfig));

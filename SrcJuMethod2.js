@@ -240,7 +240,9 @@ function findBtn() {
                         manage.setTitle("更多发现-停用");
                     } else if (i === 3) {
                         let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
+                        xlog(stopname);
                         manage.list = manage.list.concat(stopname.map(v=>"““"+v.name+"””"));
+                        xlog(manage.list);
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
                     } else if (i === 4) {

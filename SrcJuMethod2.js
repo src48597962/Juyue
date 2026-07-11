@@ -240,11 +240,17 @@ function findBtn() {
                         manage.setTitle("更多发现-停用");
                     } else if (i === 3) {
                         let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
+                        if(stopname.length==0){
+                            return "toast://无停用的";
+                        }
                         xlog(stopname);
-                        manage.list = manage.list.concat(stopname.map(v=>"““"+v+"””"));
+                        stopname.map(v=>"““"+v+"””").forEach(it=>{
+                            manage.list.push(it);
+                        })
                         xlog(manage.list);
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
+                        return "toast://已显示"+stopname.length+"个停用";
                     } else if (i === 4) {
                         //xlog(names);
                     }

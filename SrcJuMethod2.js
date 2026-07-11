@@ -117,7 +117,7 @@ function findBtn() {
                 it = getItem(it, "")=='1'?'‘‘'+it+'’’':it;
             }
         })
-        return original.concat(Object.keys(findItem));
+        return original.concat(Object.keys(findItem.filter(v=>!v.stop)));
     }
 
     let pop = hikerPop.setNextThrottle(200).selectBottomRes({

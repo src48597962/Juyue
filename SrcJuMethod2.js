@@ -188,7 +188,7 @@ function findBtn() {
             }
             return "hiker://emtpy";
         },
-        longClick(s, manage) {
+        longClick(s, i, manage) {
             s = s.replace(/‘‘|’’|“|”/g, '');
             toast("长按" + s);
             hikerPop.selectCenter({

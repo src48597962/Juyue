@@ -111,8 +111,9 @@ function findBtn() {
     let Juconfig = getJuconfig();
     let findItems = Juconfig['findItems'] || [];
     findlist = findlist.concat(findItems.filter(v=>!v.stop))
-
     let names = findlist.map(v=>v.name);
+    let menuEvent = {};
+
     let pop = hikerPop.setNextThrottle(200).selectBottomRes({
         options: names,
         columns: 3,
@@ -122,56 +123,64 @@ function findBtn() {
         beforeShow() {
             //log("显示")
         },
+        onDismiss() {
+            
+        },
         click(s, i, manage) {
-            if(s=='搜索栏设置'){
-                let searchMode = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
-                hikerPop.selectBottomMark({
-                    options: searchMode,
-                    position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
-                    click(a) {
-                        pop.dismiss();
-                        juItem2.set("接口搜索方式", a);
-                        return "toast://搜索方式设置为：" + a;
-                    }
-                });
-            }else if(s=='搜索历史数'){
-                    return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
-                    if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
-                        return 'toast://输入有误，请输入1-100数字';
-                    }
-                    setItem("显示搜索历史数量", input);
-                    return "hiker://empty";
-                })
-            }else if(/搜索建议词|记忆搜索词/.test(s)){
-                s = s.replace(/‘‘|’’/g, '');
-                let isEnable = getItem(s, "")=='1';
+            if(original.includes(s)){
+                if(menuEvent['event']){
+                    return 'toast://自带发现无法操作';
+                }
+                if(s=='搜索栏设置'){
+                    let searchMode = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
+                    hikerPop.selectBottomMark({
+                        options: searchMode,
+                        position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
+                        click(a) {
+                            pop.dismiss();
+                            juItem2.set("接口搜索方式", a);
+                            return "toast://搜索方式设置为：" + a;
+                        }
+                    });
+                }else if(s=='搜索历史数'){
+                        return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
+                        if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
+                            return 'toast://输入有误，请输入1-100数字';
+                        }
+                        setItem("显示搜索历史数量", input);
+                        return "hiker://empty";
+                    })
+                }else if(/搜索建议词|记忆搜索词/.test(s)){
+                    s = s.replace(/‘‘|’’/g, '');
+                    let isEnable = getItem(s, "")=='1';
 
-                manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘"+s+"’’") : v));
-                manage.change();
-                
-                if(isEnable){
-                    clearItem(s);
-                    return "toast://已取消" + s;
+                    manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘"+s+"’’") : v));
+                    manage.change();
+                    
+                    if(isEnable){
+                        clearItem(s);
+                        return "toast://已取消" + s;
+                    }else{
+                        setItem(s, "1");
+                        return "toast://已设置" + s;
+                    }
                 }else{
-                    setItem(s, "1");
-                    return "toast://已设置" + s;
+                    pop.dismiss();
+                    if(s=='聚合搜索页'){
+                        return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                    }else if(s=='三针短剧'){
+                        toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
+                        return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
+                    }else if(s=='聚影直播'){
+                        return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                            setPageTitle('聚影直播');
+                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcLive.js');
+                            Live();
+                        })
+                    }
                 }
             }else{
-                pop.dismiss();
-                if(s=='聚合搜索页'){
-                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
-                }else if(s=='三针短剧'){
-                    toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
-                    return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-                }else if(s=='聚影直播'){
-                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                        setPageTitle('聚影直播');
-                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcLive.js');
-                        Live();
-                    })
-                }else{
-                    return findlist[i].url;
-                }
+                return findlist[i].url;
             }
             return "hiker://emtpy";
         },
@@ -206,16 +215,16 @@ function findBtn() {
                         });
                         return "hiker://empty";
                     } else if (i === 1) {
-                        manage.list.splice(manage.list.length - 1, 1);
-                        manage.change();
+                        menuEvent['event'] = 'del';
                     } else if (i === 2) {
-                        manage.scrollToPosition(manage.list.length - 1, true);
+                        menuEvent['event'] = 'stop';
                     } else if (i === 3) {
-                        manage.scrollToPosition(0, true);
+                        manage.list = manage.list.concat(findItems.map(v=>"““"+v.name+"””"));
+                        manage.change();
                     }
+                    return "hiker://empty";
                 },
             });
-
         }
     });
     return "hiker://empty";

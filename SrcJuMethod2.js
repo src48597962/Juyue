@@ -111,7 +111,9 @@ function findBtn() {
     let Juconfig = getJuconfig();
     let findItems = Juconfig['findItems'] || [];
     findlist = findlist.concat(findItems.filter(v=>!v.stop))
-    let names = findlist.map(v=>v.name);
+    let names = computed(()=>{
+        return findlist.value.map(v=>v.name)
+    });//findlist.map(v=>v.name);
     let menuEvent = {};
 
     let pop = hikerPop.setNextThrottle(200).selectBottomRes({
@@ -186,11 +188,10 @@ function findBtn() {
                         findItems.forEach(v=>(v.stop=1));
                     }
                     xlog(findItems);
-                    delete names[i];
+                    findlist = findlist.splice(i, 1);
                     Juconfig['findItems'] = findItems;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     xlog(names);
-                    xlog(manage.list);
                     manage.list = names;
                     manage.change();
                     return 'hiker://empty';
@@ -223,7 +224,6 @@ function findBtn() {
                                 Juconfig['findItems'] = findItems;
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
                                 manage.list.push(s1);
-                                names.push(s1);
                                 findlist.push({name: s1, url: s2});
                                 manage.change();
                                 return "toast://添加了:" + s1;

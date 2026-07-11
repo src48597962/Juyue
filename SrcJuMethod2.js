@@ -179,13 +179,15 @@ function findBtn() {
                 }
             }else{
                 if(menuEvent['event']){
-                    if(menuEvent['event']=='del'){
-                        Juconfig['findItems'] = findItems.filter(v=>v.name!=s);
-                    }else if(menuEvent['event']=='stop'){
-                        Juconfig['findItems'] = findItems.forEach(v=>(v.stop=1));
-                    }
                     xlog(Juconfig['findItems']);
+                    if(menuEvent['event']=='del'){
+                        findItems = findItems.filter(v=>v.name!=s);
+                    }else if(menuEvent['event']=='stop'){
+                        findItems = findItems.forEach(v=>(v.stop=1));
+                    }
+                    xlog(findItems);
                     delete names[i];
+                    Juconfig['findItems'] = findItems;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     manage.list = names;
                     manage.change();

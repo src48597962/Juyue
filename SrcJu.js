@@ -192,7 +192,7 @@ function yiji(testSource) {
             extra: {
                 id: 'ssbtnid',
                 longClick: [{
-                    title: '切换按钮',
+                    title: '切换按钮：' + searchBtn,
                     js: $.toString(()=>{
                         let btns = ['搜索', '短剧', '发现'];
                         return $(btns, 1).select(() => {

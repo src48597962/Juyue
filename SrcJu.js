@@ -152,12 +152,10 @@ function yiji(testSource) {
         searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
         searchModeS.push('显示搜索数');
         searchModeS.push('聚合搜索页');
-
+        let searchBtn = getItem('切换搜索按钮','搜索');
         d.push({
-            title: getItem('切换搜索按钮','搜索'),
-            url: $("#noLoading#").lazyRule(() => {
-                return $.require('jiekou').findBtnF();
-            }),/*getItem('切换搜索按钮','搜索')==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
+            title: searchBtn,
+            url: searchBtn==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
                 input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
 
                 if(input=='搜索建议词'||input=='记忆搜索词'){
@@ -183,24 +181,29 @@ function yiji(testSource) {
                     refreshPage();
                     return "toast://搜索方式设置为："+input;
                 }
-            }) : $("#noLoading#").lazyRule(() => {
+            }) : searchBtn=='短剧' ? $("#noLoading#").lazyRule(() => {
                 toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-            }),*/
+            }) : $("#noLoading#").lazyRule(() => {
+                return $.require('jiekou').findBtnF();
+            }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,
             extra: {
                 id: 'ssbtnid',
                 longClick: [{
-                    title: '切换为'+(getItem('切换搜索按钮','搜索')==='搜索'?'短剧':'搜索'),
+                    title: '切换按钮',
                     js: $.toString(()=>{
-                        if(getItem('切换搜索按钮')=='短剧'){
-                            clearItem('切换搜索按钮');
-                        }else{
-                            setItem('切换搜索按钮', '短剧');
-                        }
-                        refreshPage();
-                        return `toast://已切换为` + getItem('切换搜索按钮','搜索');
+                        let btns = ['搜索', '短剧', '发现'];
+                        return $(btns, 1).select(() => {
+                            if(input=='搜索'){
+                                clearItem('切换搜索按钮');
+                            }else{
+                                setItem('切换搜索按钮', input);
+                            }
+                            refreshPage();
+                            return `toast://已切换为` + getItem('切换搜索按钮','搜索');
+                        })
                     })
                 }]
             }

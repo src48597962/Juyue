@@ -189,6 +189,7 @@ function findBtn() {
                     delete names[i];
                     Juconfig['findItems'] = findItems;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
+                    xlog(manage.list);
                     manage.list = names;
                     manage.change();
                     return 'hiker://empty';

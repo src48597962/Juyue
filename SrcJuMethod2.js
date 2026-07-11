@@ -196,7 +196,7 @@ function findBtn() {
                     }
                     Juconfig['findItem'] = findItem;
                     writeFile(cfgfile, JSON.stringify(Juconfig));
-                    manage.list.clear;
+                    manage.list.length = 0;
                     findNames().forEach(it=>{
                         manage.list.push(it);
                     })

@@ -233,7 +233,6 @@ function yiji(testSource) {
                             title: "请选择",
                             click(s, i) {
                                 if (i === 0) {
-                                    
                                     hikerPop.inputTwoRow({
                                         titleHint: "名称",
                                         titleDefault: "",
@@ -243,7 +242,6 @@ function yiji(testSource) {
                                         title: "添加发现",
                                         //hideCancel: true,
                                         confirm(s1, s2) {
-                                            
                                             if(findItems.some(v=>v.name==s1 || v.url==s2)){
                                                 return 'toast://已存在';
                                             }

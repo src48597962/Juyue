@@ -209,8 +209,42 @@ function findBtn() {
             return "hiker://emtpy";
         },
         longClick(s, manage) {
+            s = s.replace(/‘‘|’’|“|”/g, '');
             toast("长按" + s);
-            //log(manage.list);
+            hikerPop.selectCenter({
+                options: ["删除", findItem[s].stop?"显示":"停用", "置顶", "置底"],
+                columns: 2,
+                title: "操作>"+s,
+                click(ss, i) {
+                    
+                    if (i === 0) {
+                        delete findItem[s];
+                    } else if (i === 1) {
+                        if(findItem[s].stop){
+                            delete findItem[s].stop;
+                        }else{
+                            findItem[s].stop = 1;
+                        }
+                    } else if (i === 2) {
+                        groupNames.splice(i, 1);
+                                        if (input == "置顶") {
+                                            groupNames.unshift(s);
+                                        } else {
+                                            groupNames.push(s);
+                                        }
+                    } else if (i === 3) {
+                        
+                    }
+                    Juconfig['findItem'] = findItem;
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    manage.list.length = 0;
+                    findNames().forEach(it=>{
+                        manage.list.push(it);
+                    })
+                    manage.change();
+                    return "hiker://empty";
+                },
+            });
         },
         menuClick(manage) {
             hikerPop.selectCenter({

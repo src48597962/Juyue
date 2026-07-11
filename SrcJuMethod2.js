@@ -127,6 +127,7 @@ function findBtn() {
             
         },
         click(s, i, manage) {
+            s = s.replace(/‘‘|’’|“|”/g, '');
             if(original.includes(s)){
                 if(menuEvent['event']){
                     return 'toast://自带发现无法操作';
@@ -150,13 +151,10 @@ function findBtn() {
                         setItem("显示搜索历史数量", input);
                         return "hiker://empty";
                     })
-                }else if(/搜索建议词|记忆搜索词/.test(s)){
-                    s = s.replace(/‘‘|’’/g, '');
+                }else if(s=='搜索建议词' || s=='记忆搜索词'){
                     let isEnable = getItem(s, "")=='1';
-
                     manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘"+s+"’’") : v));
                     manage.change();
-                    
                     if(isEnable){
                         clearItem(s);
                         return "toast://已取消" + s;
@@ -180,6 +178,19 @@ function findBtn() {
                     }
                 }
             }else{
+                if(menuEvent['event']=='del'){
+                    delete names[i];
+                    Juconfig['findItems'] = findItems.filter(v=>v.name!=s);
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    manage.list = names;
+                    manage.change();
+                }else if(menuEvent['event']=='stop'){
+                    delete names[i];
+                    Juconfig['findItems'] = findItems.forEach(v=>{v.stop=1});
+                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                    manage.list = names;
+                    manage.change();
+                }
                 return findlist[i].url;
             }
             return "hiker://emtpy";
@@ -216,11 +227,14 @@ function findBtn() {
                         return "hiker://empty";
                     } else if (i === 1) {
                         menuEvent['event'] = 'del';
+                        manage.setTitle("更多发现-删除");
                     } else if (i === 2) {
                         menuEvent['event'] = 'stop';
+                        manage.setTitle("更多发现-停用");
                     } else if (i === 3) {
                         manage.list = manage.list.concat(findItems.map(v=>"““"+v.name+"””"));
                         manage.change();
+                        manage.setTitle("更多发现-显示停用");
                     }
                     return "hiker://empty";
                 },

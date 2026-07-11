@@ -106,9 +106,8 @@ function compress(bmpOriginal, inSampleSize, quality) {
 // 主页发现按钮事件
 function findBtn() {
     const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
-    let original = ['搜索栏设置','搜索历史数',getItem('搜索建议词', "")=='1'?'‘‘搜索建议词’’':'搜索建议词',getItem('记忆搜索词', "")=='1'?'‘‘记忆搜索词’’':'记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
+    let original = ['搜索栏设置','搜索历史数','搜索建议词','记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
     let Juconfig = getJuconfig();
-    let menuEvent;
     let findItem = Juconfig['findItem'] || {};
 
     function findNames() {
@@ -135,9 +134,6 @@ function findBtn() {
         click(s, i, manage) {
             s = s.replace(/‘‘|’’|“|”/g, '');
             if(original.includes(s)){
-                if(menuEvent){
-                    return 'toast://自带发现无法操作';
-                }
                 if(s=='搜索栏设置'){
                     let searchMode = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
                     hikerPop.selectBottomMark({
@@ -190,9 +186,11 @@ function findBtn() {
         },
         longClick(s, i, manage) {
             s = s.replace(/‘‘|’’|“|”/g, '');
-            toast("长按" + s);
+            if(original.includes(s)){
+                return 'toast://自带菜单无法操作';
+            }
             hikerPop.selectCenter({
-                options: ["删除", findItem[s].stop?"显示":"停用", "置顶", "置底"],
+                options: ["删除", findItem[s].stop?"启用":"停用", "置顶", "置底"],
                 columns: 2,
                 title: "操作>"+s,
                 click(ss, i) {
@@ -222,7 +220,7 @@ function findBtn() {
         },
         menuClick(manage) {
             hikerPop.selectCenter({
-                options: ["添加", "删除", "停用", "显示", "置顶", "置底"],
+                options: ["添加发现", "显示停用"],
                 columns: 2,
                 title: "请选择",
                 click(s, i) {
@@ -249,12 +247,6 @@ function findBtn() {
                         });
                         return "hiker://empty";
                     } else if (i === 1) {
-                        menuEvent = 'del';
-                        manage.setTitle("更多发现-删除");
-                    } else if (i === 2) {
-                        menuEvent = 'stop';
-                        manage.setTitle("更多发现-停用");
-                    } else if (i === 3) {
                         let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
                         if(stopname.length==0){
                             return "toast://无停用的";
@@ -264,7 +256,6 @@ function findBtn() {
                         })
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
-                        menuEvent = '';
                         return "toast://已显示"+stopname.length+"个停用";
                     } else if (i === 4) {
                         //xlog(names);

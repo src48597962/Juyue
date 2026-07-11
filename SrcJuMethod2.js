@@ -239,16 +239,12 @@ function findBtn() {
                         menuEvent['event'] = 'stop';
                         manage.setTitle("更多发现-停用");
                     } else if (i === 3) {
-                        /*
-                        Juconfig = getJuconfig();
-                        findItems = Juconfig['findItems'] || [];
-                        names = names.concat(findItems.filter(v=>v.stop).map(v=>"““"+v.name+"””"));
-                        manage.list = names;
+                        let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
+                        manage.list = manage.list.concat(stopname.map(v=>"““"+v.name+"””"));
                         manage.change();
                         manage.setTitle("更多发现-显示停用");
-                        */
                     } else if (i === 4) {
-                        xlog(names);
+                        //xlog(names);
                     }
                     return "hiker://empty";
                 },

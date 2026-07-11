@@ -1443,3 +1443,30 @@ function importParse(obj){
         log('存入解析异常>' + e.message + ' 错误行#' + e.lineNumber);
     }
 }
+// 将指定key放到对象最前面，其余属性顺序保持原样
+function moveToFirst(obj, targetKey) {
+    var newObj = {};
+    // 优先放入目标key
+    newObj[targetKey] = obj[targetKey];
+    // 剩下属性依次放进对象
+    for (var k in obj) {
+        if (obj.hasOwnProperty(k) && k !== targetKey) {
+            newObj[k] = obj[k];
+        }
+    }
+    return newObj;
+}
+
+// 将指定key放到对象最后面
+function moveToLast(obj, targetKey) {
+    var newObj = {};
+    //先放其余字段
+    for (var k in obj) {
+        if (obj.hasOwnProperty(k) && k !== targetKey) {
+            newObj[k] = obj[k];
+        }
+    }
+    //最后追加目标key
+    newObj[targetKey] = obj[targetKey];
+    return newObj;
+}

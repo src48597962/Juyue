@@ -187,7 +187,7 @@ function findBtnF() {
         longClick(s, i, manage) {
             s = s.replace(/‘‘|’’|“|”/g, '');
             if(original.includes(s)){
-                return 'toast://自带菜单无法操作';
+                return 'toast://自带菜单项无法操作';
             }
             let index = i-original.length;
             hikerPop.selectCenter({
@@ -264,9 +264,12 @@ function findBtnF() {
                     } else if (i === 2) {
                         let pastes = getPastes();
                         return $(pastes, 2).select(() => {
-                            showLoading('分享生成中，请稍后...');
                             let Juconfig = getJuconfig();
                             let lists = Juconfig['findItems'] || [];
+                            if(lists.length==0){
+                                return 'toast://无添加的项';
+                            }
+                            showLoading('分享生成中，请稍后...');
                             let sharetxt = base64Encode(JSON.stringify(lists));
                             let pasteurl = sharePaste(sharetxt, input);
                             hideLoading();

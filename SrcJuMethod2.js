@@ -241,7 +241,7 @@ function findBtn() {
                     } else if (i === 3) {
                         let stopname = Object.keys(findItem).filter(v=>findItem[v].stop);
                         xlog(stopname);
-                        manage.list = manage.list.concat(stopname.map(v=>"““"+v.name+"””"));
+                        manage.list = manage.list.concat(stopname.map(v=>"““"+v+"””"));
                         xlog(manage.list);
                         manage.change();
                         manage.setTitle("更多发现-显示停用");

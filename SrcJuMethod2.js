@@ -178,19 +178,20 @@ function findBtn() {
                     }
                 }
             }else{
-                if(menuEvent['event']=='del'){
+                if(menuEvent['event']){
+                    if(menuEvent['event']=='del'){
+                        Juconfig['findItems'] = findItems.filter(v=>v.name!=s);
+                    }else if(menuEvent['event']=='stop'){
+                        Juconfig['findItems'] = findItems.forEach(v=>(v.stop=1));
+                    }
+                    xlog(Juconfig['findItems']);
                     delete names[i];
-                    Juconfig['findItems'] = findItems.filter(v=>v.name!=s);
                     writeFile(cfgfile, JSON.stringify(Juconfig));
                     manage.list = names;
                     manage.change();
-                }else if(menuEvent['event']=='stop'){
-                    delete names[i];
-                    Juconfig['findItems'] = findItems.forEach(v=>{v.stop=1});
-                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                    manage.list = names;
-                    manage.change();
+                    return 'hiker://empty';
                 }
+                
                 return findlist[i].url;
             }
             return "hiker://emtpy";

@@ -103,12 +103,130 @@ function compress(bmpOriginal, inSampleSize, quality) {
         return bmpOriginal; // 返回原始数据
     }
 }
+// 主页发现按钮事件
+function findBtn() {
+    const hikerPop = $.require(libspath + 'plugins/hikerPop.js');
+    let original = ['搜索栏设置','搜索历史数',getItem('搜索建议词', "")=='1'?'‘‘搜索建议词’’':'搜索建议词',getItem('记忆搜索词', "")=='1'?'‘‘记忆搜索词’’':'记忆搜索词','聚合搜索页','三针短剧','聚影直播'];
+    let findlist = original.map(v=>{return {'name': v}});
+    let Juconfig = getJuconfig();
+    let findItems = Juconfig['findItems'] || [];
+    findlist = findlist.concat(findItems.filter(v=>!v.stop))
+
+    let names = findlist.map(v=>v.name);
+    let pop = hikerPop.setNextThrottle(200).selectBottomRes({
+        options: names,
+        columns: 3,
+        height: 0.6,
+        title: "更多发现",
+        noAutoDismiss: true,
+        beforeShow() {
+            //log("显示")
+        },
+        click(s, i, manage) {
+            if(s=='搜索栏设置'){
+                let searchMode = MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"];
+                hikerPop.selectBottomMark({
+                    options: searchMode,
+                    position: searchMode.indexOf(juItem2.get('接口搜索方式','主页界面')),
+                    click(a) {
+                        pop.dismiss();
+                        juItem2.set("接口搜索方式", a);
+                        return "toast://搜索方式设置为：" + a;
+                    }
+                });
+            }else if(s=='搜索历史数'){
+                    return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
+                    if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
+                        return 'toast://输入有误，请输入1-100数字';
+                    }
+                    setItem("显示搜索历史数量", input);
+                    return "hiker://empty";
+                })
+            }else if(/搜索建议词|记忆搜索词/.test(s)){
+                s = s.replace(/‘‘|’’/g, '');
+                let isEnable = getItem(s, "")=='1';
+
+                manage.list.forEach((v,ii)=> (manage.list[ii] = i === ii ? (isEnable?s:"‘‘"+s+"’’") : v));
+                manage.change();
+                
+                if(isEnable){
+                    clearItem(s);
+                    return "toast://已取消" + s;
+                }else{
+                    setItem(s, "1");
+                    return "toast://已设置" + s;
+                }
+            }else{
+                pop.dismiss();
+                if(s=='聚合搜索页'){
+                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
+                }else if(s=='三针短剧'){
+                    toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
+                    return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
+                }else if(s=='聚影直播'){
+                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                        setPageTitle('聚影直播');
+                        require(config.聚阅.replace(/[^/]*$/,'') + 'SrcLive.js');
+                        Live();
+                    })
+                }else{
+                    return findlist[i].url;
+                }
+            }
+            return "hiker://emtpy";
+        },
+        menuClick(manage) {
+            hikerPop.selectCenter({
+                options: ["添加", "删除", "停用", "显示", "置顶", "置底", "最后", "顶部"],
+                columns: 2,
+                title: "请选择",
+                click(s, i) {
+                    if (i === 0) {
+                        hikerPop.inputTwoRow({
+                            titleHint: "名称",
+                            titleDefault: "",
+                            urlHint: "链接",
+                            urlDefault: "",
+                            noAutoSoft: true,
+                            title: "添加发现",
+                            //hideCancel: true,
+                            confirm(s1, s2) {
+                                if(findItems.some(v=>v.name==s1 || v.url==s2)){
+                                    return 'toast://已存在';
+                                }
+                                findItems.push({name: s1, url: s2});
+                                Juconfig['findItems'] = findItems;
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                manage.list.push(s1);
+                                names.push(s1);
+                                findlist.push({name: s1, url: s2});
+                                manage.change();
+                                return "toast://添加了:" + s1;
+                            }
+                        });
+                        return "hiker://empty";
+                    } else if (i === 1) {
+                        manage.list.splice(manage.list.length - 1, 1);
+                        manage.change();
+                    } else if (i === 2) {
+                        manage.scrollToPosition(manage.list.length - 1, true);
+                    } else if (i === 3) {
+                        manage.scrollToPosition(0, true);
+                    }
+                },
+            });
+
+        }
+    });
+    return "hiker://empty";
+}
 
 let exports = {
     "parse": parse,
     "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
     "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
-    "toGrayscale": (inSampleSize) => toGrayscale(input, inSampleSize)
+    "toGrayscale": (inSampleSize) => toGrayscale(input, inSampleSize),
+    "findBtnF": findBtn
 }
 /*
 try{

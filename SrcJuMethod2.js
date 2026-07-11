@@ -183,7 +183,7 @@ function findBtn() {
                     if(menuEvent['event']=='del'){
                         findItems = findItems.filter(v=>v.name!=s);
                     }else if(menuEvent['event']=='stop'){
-                        findItems = findItems.forEach(v=>(v.stop=1));
+                        findItems.forEach(v=>(v.stop=1));
                     }
                     xlog(findItems);
                     delete names[i];

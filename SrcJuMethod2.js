@@ -280,20 +280,29 @@ function findBtnF() {
                             }
                         })
                     } else if (i === 3) {
-                        let code = aesDecode('findItems', input.split('￥')[1]);
-                        let text = parsePaste(code);
-                        let sharetxt = base64Decode(text);
-                        let imports = JSON.parse(sharetxt); 
-                        imports.forEach(it=>{
-                            if(!findItems.some(v=>v.name==it.name)){
-                                findItems.push(it);
-                                manage.list.push(it.name);
+                        hikerPop.inputConfirm({
+                            title: "输入聚阅发现云口令",
+                            defaultValue: hikerPop.getClipTopData(),
+                            textarea: true, //多行模式
+                            maxTextarea: true,
+                            noAutoSoft: false,
+                            confirm(input) {
+                                let code = aesDecode('findItems', input.split('￥')[1]);
+                                let text = parsePaste(code);
+                                let sharetxt = base64Decode(text);
+                                let imports = JSON.parse(sharetxt); 
+                                imports.forEach(it=>{
+                                    if(!findItems.some(v=>v.name==it.name)){
+                                        findItems.push(it);
+                                        manage.list.push(it.name);
+                                    }
+                                })
+                                manage.change();
+                                Juconfig['findItems'] = findItems;
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                return 'toast://已导入';
                             }
-                        })
-                        manage.change();
-                        Juconfig['findItems'] = findItems;
-                        writeFile(cfgfile, JSON.stringify(Juconfig));
-                        return 'toast://已导入';
+                        });
                     }
                     return "hiker://empty";
                 },

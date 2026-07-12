@@ -294,11 +294,13 @@ function getLiveName(datalist) {
             return map;
         }, {})
     );
+    let titlelen = list.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.name).length), 0);
+    let list_col_type = titlelen > 6 ? 'avatar' : 'icon_2_round';
     return list.map((it)=>{
         return {
             title: it.name,
             img: getLiveIcon('直播-tv.svg'),
-            col_type: it.name.length<7?'icon_2_round':'avatar',
+            col_type: list_col_type,
             url: $('#noLoading#').lazyRule((name) => {
                 require(config.SrcLiveRely);
                 return LivePlay(name);

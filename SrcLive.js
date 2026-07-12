@@ -368,6 +368,7 @@ function addCollection(group, live){
         sm = num + '个地址加入收藏';
     }else{
         if(group){
+            clearMyVar('selectgroup');
             datalist = datalist.filter(it=>it.group!=group);
         }
         if(live){

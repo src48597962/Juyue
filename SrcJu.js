@@ -185,7 +185,7 @@ function yiji(testSource) {
                 toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
                 return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
             }) : $("#noLoading#").lazyRule(() => {
-                return $.require('jiekou').findBtnF();
+                return $.require('jiekou').findBtnF;
             }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
             col_type: icon5_col,

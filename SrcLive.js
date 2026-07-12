@@ -87,7 +87,7 @@ function Live() {
             require(config.SrcLiveRely);
             let groupname = getMyVar('selectgroup', getMyVar('firstgroup'));
             let datalist = getLiveList(currentSource, groupname).datalist;
-            let loadingList = getLiveName(datalist);
+            let loadingList = getLiveName(currentSource, datalist);
             if(input !=''){
                 loadingList = loadingList.filter(item => {
                     return item.title.toLowerCase().includes(input.toLowerCase());
@@ -174,7 +174,7 @@ function Live() {
                         
                         let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
                         let datalist = getLiveList(currentSource, groupname).datalist;
-                        let loadingList = getLiveName(datalist); 
+                        let loadingList = getLiveName(currentSource, datalist); 
                         deleteItemByCls('livelist');
                         addItemBefore("liveloading_" + currentSource.name, loadingList);
                     }
@@ -197,7 +197,7 @@ function Live() {
                 let lists = datalist.filter(item => {
                     return item.group == groupname;
                 })
-                datalist2 = getLiveName(lists);
+                datalist2 = getLiveName(currentSource, lists);
             }
         })
 
@@ -298,7 +298,7 @@ function getGroupName(datalist) {
     return Object.keys(uniqueNames);
 }
 // 获取不重复的频道名
-function getLiveName(datalist) {
+function getLiveName(currentSource, datalist) {
     datalist = datalist || [];
     let list = Object.values(
         datalist.reduce((map, item) => {

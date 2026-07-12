@@ -214,6 +214,9 @@ function getLiveList(source, selectgroup) {
         if(fileExist(_livejson)){
             datalist = JSON.parse(fetch(_livejson));
         }else{
+            if((source.url.startsWith('file') || source.url.startsWith('hiker')) && !fileExist(source.url)){
+                error = source.url + '本地文件不存在';
+            }
             showLoading('正在初始化获取中.');
             try {
                 let YChtml = fetchCache(source.url, 48, { timeout: 3000 }).replace(/TV-/g, 'TV').replace(/\[.*\]/g, '');

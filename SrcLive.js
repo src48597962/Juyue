@@ -367,9 +367,12 @@ function addCollection(group, live){
         })
         sm = num + '个地址加入收藏';
     }else{
-        datalist = datalist.filter(v=>{
-            return v.group!=group || v.name!=live;
-        })
+        if(group){
+            datalist = datalist.filter(it=>it.group!=group);
+        }
+        if(live){
+            datalist = datalist.filter(it=>it.name!=live);
+        }
         sm = (group?group+'>分组移出':'') + (live?live+'>频道移出':'');
         refreshPage(false);
     }

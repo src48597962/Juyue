@@ -320,7 +320,7 @@ let exports = {
     "imgDec": (key, iv, kiType, mode, isBase64Dec) => 图片解密(input, key, iv, kiType, mode, isBase64Dec),
     "compress": (inSampleSize, quality) => compress(input, inSampleSize, quality),
     "toGrayscale": (inSampleSize) => toGrayscale(input, inSampleSize),
-    "findBtnF": findBtnF
+    "findBtnF": () => findBtnF()
 }
 /*
 try{

@@ -184,7 +184,7 @@ function Live() {
                 extra: {
                     id: groupname,
                     longClick: [{
-                        title: '加入本地收藏',
+                        title: currentSource.name=='收藏'?'移出本地收藏':'加入本地收藏',
                         js: $.toString((group) => {
                             require(config.SrcLiveRely);
                             return addCollection(group);
@@ -321,10 +321,10 @@ function getLiveName(datalist) {
                 id: it.name,
                 cls: 'livelist',
                 longClick: [{
-                    title: '加入本地收藏',
-                    js: $.toString((name) => {
+                    title: currentSource.name=='收藏'?'移出本地收藏':'加入本地收藏',
+                    js: $.toString((live) => {
                         require(config.SrcLiveRely);
-                        return addCollection('', name);
+                        return addCollection('', live);
                     }, it.name)
                 }]
             }
@@ -349,22 +349,32 @@ function LivePlay(name) {
 }
 // 加入收藏本地
 function addCollection(group, live){
-    let currentSource = storage0.getMyVar('currentSource');
-    let datalist2 = getLiveList(currentSource, group, live).datalist;
     let datalist = [];
     let liveStr = fetch(JYlivefile);
     if (liveStr != "") {
         datalist = JSON.parse(liveStr);
     }
+    let sm = '';
     let num = 0;
-    datalist2.forEach(it=>{
-        if(!datalist.some(v=>v.url==it.url)){
-            datalist.push(it);
-            num++;
-        }
-    })
+    let currentSource = storage0.getMyVar('currentSource');
+    if(currentSource){
+        let datalist2 = getLiveList(currentSource, group, live).datalist;
+        datalist2.forEach(it=>{
+            if(!datalist.some(v=>v.url==it.url)){
+                datalist.push(it);
+                num++;
+            }
+        })
+        sm = num + '个地址加入收藏';
+    }else{
+        datalist = datalist.filter(v=>{
+            return v.group!=group || v.name!=live;
+        })
+        sm = (group?group+'>分组移出':'') + (live?live+'>频道移出':'');
+        refreshPage(false);
+    }
     writeFile(JYlivefile, JSON.stringify(datalist));
-    return 'toast://'+num+'个地址加入收藏';
+    return 'toast://' + sm;
 }
 // 管理设置页
 function LiveSet() {

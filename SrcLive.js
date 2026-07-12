@@ -306,8 +306,8 @@ function getLiveName(datalist) {
             return map;
         }, {})
     );
-    let titlelen = list.slice(0, 10).concat(list.slice(-10)).reduce((max, str) => Math.max(max, str.name.length), 0);
-    let list_col_type = titlelen > 10 ? 'avatar' : 'icon_2_round';
+    let titlelen = list.slice(0, 5).concat(list.slice(-5)).reduce((max, str) => Math.max(max, str.name.length), 0);
+    let list_col_type = titlelen > 15 ? 'avatar' : 'icon_2_round';
     return list.map((it)=>{
         return {
             title: it.name,

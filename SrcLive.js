@@ -128,55 +128,33 @@ function Live() {
         addItemBefore("liveloading_" + currentSource.name, {
             title: '未获取到频道数据',
             desc: getUrlConnet.error || '',
-            url: 'hiker://empty',
+            url: currentSource.name=='收藏'?'hiker://empty':$(['停用订阅', '删除订阅'], 1).select((livecfgfile)=>{
+                let currentSource = storage0.getMyVar('currentSource');
+                let livecfg = fetch(livecfgfile);
+                if (livecfg != "") {
+                    eval("var liveconfig = " + livecfg);
+                    let livedata = liveconfig['data'] || [];
+                    for (let i = 0; i < livedata.length; i++) {
+                        if (livedata[i].url == currentSource.url) {
+                            if(input=='停用订阅'){
+                                livedata[i].show = 0;
+                            }else if(input=='删除订阅'){
+                                livedata.splice(i, 1);
+                            }
+                            break;
+                        }
+                    }
+                    liveconfig['data'] = livedata;
+                    writeFile(livecfgfile, JSON.stringify(liveconfig));
+                    clearMyVar('currentSource');
+                    refreshPage(false);
+                }
+            }, livecfgfile),
             col_type: 'text_center_1',
             extra: {
                 lineVisible: false
             }
         })
-        if(currentSource.name!='收藏'){
-            addItemBefore("liveloading_" + currentSource.name, [{
-                title: '停用订阅',
-                url: $('#noLoading#').lazyRule((livecfgfile) => {
-                    let currentSource = storage0.getMyVar('currentSource');
-                    let livecfg = fetch(livecfgfile);
-                    if (livecfg != "") {
-                        eval("var liveconfig = " + livecfg);
-                        let livedata = liveconfig['data'] || [];
-                        for (let i = 0; i < livedata.length; i++) {
-                            if (livedata[i].url == currentSource.url) {
-                                livedata[i].show = 0;
-                                break;
-                            }
-                        }
-                        liveconfig['data'] = livedata;
-                        writeFile(livecfgfile, JSON.stringify(liveconfig));
-                        refreshPage(false);
-                    }
-                }, livecfgfile),
-                col_type: 'text_2'
-            },{
-                title: '删除订阅',
-                url: $('#noLoading#').lazyRule((livecfgfile) => {
-                    let currentSource = storage0.getMyVar('currentSource');
-                    let livecfg = fetch(livecfgfile);
-                    if (livecfg != "") {
-                        eval("var liveconfig = " + livecfg);
-                        let livedata = liveconfig['data'] || [];
-                        for (let i = 0; i < livedata.length; i++) {
-                            if (livedata[i].url == currentSource.url) {
-                                livedata.splice(i, 1);
-                                break;
-                            }
-                        }
-                        liveconfig['data'] = livedata;
-                        writeFile(livecfgfile, JSON.stringify(liveconfig));
-                        refreshPage(false);
-                    }
-                }, livecfgfile),
-                col_type: 'text_2'
-            }])
-        }
     }else{
         let loadingList = [];
         let datalist2 = [];

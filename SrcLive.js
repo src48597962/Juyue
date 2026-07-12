@@ -86,7 +86,7 @@ function Live() {
         url: $.toString((currentSource) => {
             require(config.SrcLiveRely);
             let groupname = getMyVar('selectgroup', getMyVar('firstgroup'));
-            let datalist = getLiveList(currentSource, groupname);
+            let datalist = getLiveList(currentSource, groupname).datalist;
             let loadingList = getLiveName(datalist);
             if(input !=''){
                 loadingList = loadingList.filter(item => {
@@ -94,7 +94,7 @@ function Live() {
                 }); 
             }
             deleteItemByCls('livelist');
-            addItemBefore('liveloading', loadingList);
+            addItemBefore("liveloading_" + currentSource.name, loadingList);
             return "hiker://empty";
         }, currentSource),
         desc: "搜你想要的...",
@@ -115,18 +115,20 @@ function Live() {
     d.push({
         col_type: 'blank_block',
         extra: {
-            id: "liveloading"
+            id: "liveloading_" + currentSource.name
         }
     })
     setResult(d);
 
     // 构建分组和列表
-    let datalist = getLiveList(currentSource); 
+    let getUrlConnet = getLiveList(currentSource);
+    let datalist = getUrlConnet.datalist; 
     if(datalist.length==0){
         deleteItemByCls('loading_gif');
-        addItemBefore('liveloading', {
+        addItemBefore("liveloading_" + currentSource.name, {
             title: '未获取到频道数据',
-            col_type: 'rich_text'
+            desc: getUrlConnet.error || '',
+            col_type: 'text_center_1'
         })
     }else{
         let loadingList = [];
@@ -146,10 +148,10 @@ function Live() {
                         updateItem(groupname, { title: `‘‘’’<b><span style="color:`+color+`">` + groupname });//更新当前分组颜色
                         
                         let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
-                        let datalist = getLiveList(currentSource, groupname);
+                        let datalist = getLiveList(currentSource, groupname).datalist;
                         let loadingList = getLiveName(datalist); 
                         deleteItemByCls('livelist');
-                        addItemBefore('liveloading', loadingList);
+                        addItemBefore("liveloading_" + currentSource.name, loadingList);
                     }
                     return "hiker://empty";
                 }, groupname),
@@ -169,12 +171,13 @@ function Live() {
 
         loadingList = loadingList.concat(datalist2);
         deleteItemByCls('loading_gif');
-        addItemBefore('liveloading', loadingList);
+        addItemBefore("liveloading_" + currentSource.name, loadingList);
         putMyVar('firstgroup', firstgroup);
     }
 }
 // 获取所有频道明细清单
 function getLiveList(source, selectgroup) {
+    let error;
     let datalist = [];
     if (source.url == "juying") {
         let liveStr = fetch(JYlivefile);
@@ -231,6 +234,7 @@ function getLiveList(source, selectgroup) {
                     writeFile(_livejson, JSON.stringify(datalist));
                 }
             } catch (e) {
+                error = e.message;
                 log(source.name +'>'+ e.message);
             }
             hideLoading();
@@ -241,7 +245,7 @@ function getLiveList(source, selectgroup) {
             return item.group == selectgroup;
         })
     }
-    return datalist;
+    return {datalist: datalist, error: error};
 }
 // 获取不重复的分组名
 function getGroupName(datalist) {
@@ -281,7 +285,7 @@ function getLiveName(datalist) {
 // 播放输出
 function LivePlay(name) {
     let currentSource = storage0.getMyVar('currentSource') || {name: '收藏', url: 'juying'};
-    let datalist = getLiveList(currentSource);
+    let datalist = getLiveList(currentSource).datalist;
     
     let urls = datalist.filter(v=>v.name==name).map(v=>v.url+'#isVideo=true#');
     if (urls.length == 0) {

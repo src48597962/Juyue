@@ -68,7 +68,6 @@ function Live() {
             title: currentSource.url == dyurl ? `‘‘’’<b><span style="color:`+color+`">` + dyname : dyname,
             url: $("#noLoading#").lazyRule((source) => {
                 storage0.putMyVar('currentSource', source);
-                clearMyVar('selectgroup');
                 refreshPage(false);
                 return "toast://已切换远程订阅：" + source.name;
             }, livedata[i]),
@@ -160,6 +159,12 @@ function Live() {
         let datalist2 = [];
         let groupNames = getGroupName(datalist);
         let firstgroup = groupNames.length>0?groupNames[0]:'';
+        if(getMyVar('selectgroup')){
+            if(!groupNames.includes(getMyVar('selectgroup'))){
+                clearMyVar('selectgroup');
+            }
+        }
+
         groupNames.forEach((groupname)=>{
             loadingList.push({
                 title: getMyVar('selectgroup', firstgroup)==groupname ? `‘‘’’<b><span style="color:`+color+`">` + groupname : groupname,

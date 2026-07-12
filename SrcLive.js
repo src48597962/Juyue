@@ -182,7 +182,14 @@ function Live() {
                 }, groupname),
                 col_type: "scroll_button",
                 extra: {
-                    id: groupname
+                    id: groupname,
+                    longClick: [{
+                        title: '加入本地收藏',
+                        js: $.toString((group) => {
+                            require(config.SrcLiveRely);
+                            return addCollection(group);
+                        }, groupname)
+                    }]
                 }
             });
 
@@ -201,7 +208,7 @@ function Live() {
     }
 }
 // 获取所有频道明细清单
-function getLiveList(source, selectgroup) {
+function getLiveList(source, selectgroup, selectlive) {
     let error;
     let datalist = [];
     if (source.url == "juying") {
@@ -273,6 +280,11 @@ function getLiveList(source, selectgroup) {
             return item.group == selectgroup;
         })
     }
+    if(selectlive){
+        datalist = datalist.filter(item => {
+            return item.name == selectlive;
+        })
+    }
     return {datalist: datalist, error: error};
 }
 // 获取不重复的分组名
@@ -307,7 +319,14 @@ function getLiveName(datalist) {
             }, it.name),
             extra: {
                 id: it.name,
-                cls: 'livelist'
+                cls: 'livelist',
+                longClick: [{
+                    title: '加入本地收藏',
+                    js: $.toString((name) => {
+                        require(config.SrcLiveRely);
+                        return addCollection('', name);
+                    }, it.name)
+                }]
             }
         }
     })
@@ -327,6 +346,25 @@ function LivePlay(name) {
             urls: urls
         });
     }
+}
+// 加入收藏本地
+function addCollection(group, live){
+    let currentSource = storage0.getMyVar('currentSource');
+    let datalist2 = getLiveList(currentSource, group, live).datalist;
+    let datalist = [];
+    let liveStr = fetch(JYlivefile);
+    if (liveStr != "") {
+        datalist = JSON.parse(liveStr);
+    }
+    let num = 0;
+    datalist2.forEach(it=>{
+        if(!datalist.some(v=>v.url==it.url)){
+            datalist.push(it);
+            num++;
+        }
+    })
+    writeFile(JYlivefile, JSON.stringify(datalist));
+    return 'toast://'+num+'个地址加入收藏';
 }
 // 管理设置页
 function LiveSet() {

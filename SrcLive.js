@@ -294,7 +294,7 @@ function getLiveName(datalist) {
             return map;
         }, {})
     );
-    let titlelen = list.slice(0, 10).concat(列表.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.name).length), 0);
+    let titlelen = list.slice(0, 10).concat(list.slice(-10)).reduce((max, str) => Math.max(max, reviseTitle(str.name).length), 0);
     let list_col_type = titlelen > 6 ? 'avatar' : 'icon_2_round';
     return list.map((it)=>{
         return {

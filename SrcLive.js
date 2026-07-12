@@ -126,7 +126,7 @@ function Live() {
     if(datalist.length==0){
         deleteItemByCls('loading_gif');
         addItemBefore("liveloading_" + currentSource.name, {
-            title: '未获取到频道数据',
+            title: currentSource.name=='收藏'?'收藏列表为空':'未获取到频道数据',
             desc: getUrlConnet.error || '',
             url: currentSource.name=='收藏'?'hiker://empty':$(['停用订阅', '删除订阅'], 1).select((livecfgfile)=>{
                 let currentSource = storage0.getMyVar('currentSource');
@@ -298,7 +298,7 @@ function getLiveName(datalist) {
         return {
             title: it.name,
             img: getLiveIcon('直播-tv.svg'),
-            col_type: 'icon_2_round',
+            col_type: it.name.length<7?'icon_2_round':'avatar',
             url: $('#noLoading#').lazyRule((name) => {
                 require(config.SrcLiveRely);
                 return LivePlay(name);

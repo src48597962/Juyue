@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu": "2.6",
+    "SrcJu": "2.7",
     "hint": "升级后需要重进升级小程序",
     "JYUpdateRecords": [{
-        title: "beta V2.7",
+        title: "2026/07/13 V2.7",
         records: [
             "修复：聚阅解析调用列表多选分享失效问题",
             "优化：聚阅内置解析支持音频源网页自动嗅探",

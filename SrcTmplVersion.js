@@ -1,6 +1,6 @@
 var newVersion = {
     "SrcJu": "2.7",
-    "hint": "升级后需要重进升级小程序",
+    "hint": "升级后可能需要重进",
     "JYUpdateRecords": [{
         title: "2026/07/13 V2.7",
         records: [

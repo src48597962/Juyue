@@ -652,7 +652,7 @@ function erji() {
                 })[0];
             }
 
-            let detailObj = (juDetail||noShow.x5Detail)?{}:(erLoadData.detailObj||detailObj2()||{}); //除设置为简单封面外，优先传封面对象，其次为顺佬X5封面
+            let detailObj = (juDetail||noShow.x5封面)?{}:(erLoadData.detailObj||detailObj2()||{}); //除设置为简单封面外，优先传封面对象，其次为顺佬X5封面
             erjiextra.img = erLoadData.img || erjiextra.img || oldMY_PARAMS.img;// || "https://p1.ssl.qhimgs1.com/sdr/400__/t018d6e64991221597b.jpg";
 
             erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;

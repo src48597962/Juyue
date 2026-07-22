@@ -636,7 +636,7 @@ function selectSource(selectGroup) {
     });
     return 'hiker://empty';
 }
-// 视频类扩展搜索管理
+// 视频类扩展更多搜索管理
 function expandSearch(keyword) {
     let lists = Juconfig['expandSearch'] || [];
     let names = lists.map(v=>v.name);
@@ -673,7 +673,7 @@ function expandSearch(keyword) {
                         d.push({
                             title:'apiname',
                             col_type: 'input',
-                            desc: "扩索搜索名称",
+                            desc: "扩展搜索名称",
                             extra: {
                                 titleVisible: false,
                                 defaultValue: getMyVar('apiname', ""),
@@ -683,9 +683,10 @@ function expandSearch(keyword) {
                         d.push({
                             title:'apicode',
                             col_type: 'input',
-                            desc: "扩索搜索代码，不写return，搜索关键词：keyword",
+                            desc: "扩展搜索代码，不写return，搜索关键词：keyword",
                             extra: {
                                 highlight: true,
+                                height: 5,
                                 type: "textarea",
                                 titleVisible: false,
                                 defaultValue: getMyVar('apicode', ""),

@@ -863,7 +863,7 @@ function erji() {
                 if(stype=="视频"){
                     expandBtn.push('解析管理设置');
                     expandBtn.push("弹幕下载📥");
-                    expandBtn.push("更多搜索🔍");
+                    expandBtn.push("扩展搜索🔍");
                     $.extend({danmudata: {
                         name: name,
                         sskeyword: sskeyword,
@@ -916,7 +916,7 @@ function erji() {
                         if(input=='弹幕下载📥'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             return danmuDownLoad($.danmudata);
-                        }else if(input=='更多搜索🔍'){
+                        }else if(input=='扩展搜索🔍'){
                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                             return expandSearch($.sskeyword);
                         }else if(input.includes('加入收藏')||input.includes('取消收藏')){

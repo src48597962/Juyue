@@ -686,7 +686,7 @@ function expandSearch(keyword) {
                             desc: "扩展搜索代码，不写return，搜索关键词：keyword",
                             extra: {
                                 highlight: true,
-                                height: 5,
+                                height: 8,
                                 type: "textarea",
                                 titleVisible: false,
                                 defaultValue: getMyVar('apicode', ""),
@@ -775,7 +775,7 @@ function expandSearch(keyword) {
                 lists.forEach((it)=>{
                     d.push({
                         title: it.name,
-                        url: $(["删除", "修改"], 2).select((data, expandapi)=>{
+                        url: $(["删除", "修改", "分享"], 2).select((data, expandapi)=>{
                             let Juconfig = getJuconfig();
                             let lists = Juconfig['expandSearch'] || [];
                             if(input=="删除"){
@@ -785,6 +785,23 @@ function expandSearch(keyword) {
                                 writeFile(cfgfile, JSON.stringify(Juconfig));
                             }else if(input=="修改"){
                                 return expandapi(data);
+                            }else if(input=="分享"){
+                                let pastes = getPastes();
+                                return $(pastes, 2).select((data) => {
+                                    showLoading('分享生成中，请稍后...');
+                                    let lists = [data];
+                                    let sharetxt = base64Encode(JSON.stringify(lists));
+                                    let pasteurl = sharePaste(sharetxt, input);
+                                    hideLoading();
+                                    if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
+                                        log('剪贴板地址>'+pasteurl);
+                                        copy('扩展搜索￥'+aesEncode('expandSearch', pasteurl)+'￥聚阅');
+                                        return "toast://分享口令已生成";
+                                    }else{
+                                        log('分享失败>'+pasteurl);
+                                        return "toast://分享失败，剪粘板或网络异常>"+pasteurl;
+                                    }
+                                }, data)
                             }
                         }, it, expandapi),
                         col_type: "text_2",

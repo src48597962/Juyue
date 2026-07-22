@@ -795,7 +795,7 @@ function expandSearch(keyword) {
                                     hideLoading();
                                     if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
                                         log('剪贴板地址>'+pasteurl);
-                                        copy('扩展搜索￥'+aesEncode('expandSearch', pasteurl)+'￥聚阅');
+                                        copy('扩展搜索￥'+aesEncode('expandSearch', pasteurl)+'￥聚阅|'+data.name);
                                         return "toast://分享口令已生成";
                                     }else{
                                         log('分享失败>'+pasteurl);

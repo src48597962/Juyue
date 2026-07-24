@@ -891,7 +891,7 @@ function 弹幕挂载(playUrl, dmfile) {
 }
 function 视频处理(playUrl, dataObj) {
     dataObj = dataObj || {};
-    if(dataObj.dmfile){
+    if(dataObj.dmfile && fileExist(dataObj.dmfile)){
         return 弹幕挂载(playUrl, dataObj.dmfile);
     }
     return playUrl;

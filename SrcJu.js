@@ -1446,10 +1446,7 @@ function erji() {
                                 playUrl = $.require("parseUrl").解析(url, dataObj);
                             }
                             let dmfile = `hiker://files/_cache/Juyue/danmu/${dataObj.id}.xml`;
-                            if(fileExist(dmfile)){
-                                return $.require("parseUrl").处理(playUrl, {dmfile:dmfile});
-                            }
-                            return playUrl;
+                            return $.require("parseUrl").处理(playUrl, {dmfile:dmfile});
                         }, dataObj);
 
                         let extra = Object.assign({}, erLoadData["extra"] || {});//二级返回数据中的extra设为默认

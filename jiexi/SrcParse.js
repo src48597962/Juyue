@@ -237,7 +237,6 @@ function SrcParse(vipUrl, dataObj) {
     let jxfile = "hiker://files/rules/Src/Jiexi/jiexi.json";//解析存放文件
     let parselist = [];//待进线程执行的解析列表
     let jxList= [];//读取本地的解析列表
-    let adJxList= [];//读取本地的AD解析列表
     let isTest;
 
     if(dataObj.testParse){
@@ -250,7 +249,6 @@ function SrcParse(vipUrl, dataObj) {
         if(fetch(jxfile)){
             try{
                 eval("jxList=" + fetch(jxfile));
-                adJxList = jxList.filter(v=>v.type=='4');
             }catch(e){}
 
             jxList.forEach(it=>{
@@ -595,11 +593,7 @@ function SrcParse(vipUrl, dataObj) {
         if(isVip && playSet.danmu==1 && !isTest){
             dm = danmu || 弹幕(vipUrl);
         }
-        if(adJxList.length>0 && playurl.includes('.m3u8') && !isTest){
-            let adParse = adJxList[0];
-            log('调用AD解析去广告>' + adParse.name);
-            playurl = adParse.url + playurl;
-        }
+        
         if(urls.length>1 || dm){
             log('组多线路进入播放');
             return JSON.stringify({
@@ -900,6 +894,19 @@ function 视频处理(playUrl, dataObj) {
     dataObj = dataObj || {};
     if(dataObj.dmfile && fileExist(dataObj.dmfile)){
         return 弹幕挂载(playUrl, dataObj.dmfile);
+    }
+    let jxfile = "hiker://files/rules/Src/Jiexi/jiexi.json";//解析存放文件
+    let adJxList= [];//读取本地的AD解析列表
+    if(fetch(jxfile)){
+        try{
+            eval("jxList=" + fetch(jxfile));
+            adJxList = jxList.filter(v=>v.type=='4');
+        }catch(e){}
+    }
+    if(adJxList.length>0 && playUrl.startsWith('http') && playurl.includes('.m3u8')){
+        let adParse = adJxList[0];
+        log('调用AD解析去广告>' + adParse.name);
+        playurl = adParse.url + playurl;
     }
     return playUrl;
 }

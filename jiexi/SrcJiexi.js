@@ -429,6 +429,9 @@ function jxItemList(datalist) {
                         return 'toast://已删除:' + data.name;
                     }, data)
                 } else if (input == "测试") {
+                    if(data.type=='4'){
+                        return 'toast://不支持测试AD解析';
+                    }
                     return $("hiker://empty#noRecordHistory##noHistory#").rule((data) => {
                         setPageTitle(data.name + "-解析测试");
                         require(config.jxCodePath + 'SrcJiexi.js');
@@ -667,7 +670,7 @@ function jiexiapi(data) {
             if(!parsetype){
                 if(/^functio/.test(parseurl)){
                     parsetype = '2';
-                }else{
+                }else if(parsetype != '4'){
                     let testurl = 'https://www.iqiyi.com/v_20k2cdw6m4w.html';
                     let html = fetch(parseurl + testurl);
                     try{

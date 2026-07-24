@@ -5,7 +5,7 @@ let jxrecordfile = jxrulepath + "record.json";//解析相关记录文件
 let jxcallfile = jxrulepath + "call.json";//解析相关记录文件
 let jxdmfile = jxrulepath + 'danmu.json';//弹幕库列表文件
 let Color = getItem('主题颜色','#3399cc');
-let parseTypes = ["WEB解析", "JSON解析", "函数解析", "APP解析", "AD解析"];
+let parseTypes = ["Web解析", "Json解析", "Func解析", "App解析", "Ad解析"];
 
 let Juconfig = {};
 let Jucfg = fetch(jxcfgfile);

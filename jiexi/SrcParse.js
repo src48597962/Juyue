@@ -903,7 +903,7 @@ function 视频处理(playUrl, dataObj) {
             adJxList = jxList.filter(v=>v.type=='4'&&!v.stop);
         }catch(e){}
     }
-    if(adJxList.length>0 && playUrl.startsWith('http') && playUrl.includes('.m3u8')){
+    if(adJxList.length>0 && playUrl.startsWith('http') && playUrl.includes('.m3u8') && !playUrl.includes('?')){
         let adParse = adJxList[0];
         log('调用AD解析>' + adParse.name);
         playUrl = adParse.url + playUrl;

@@ -905,7 +905,7 @@ function 视频处理(playUrl, dataObj) {
     }
     if(adJxList.length>0 && playUrl.startsWith('http') && playUrl.includes('.m3u8')){
         let adParse = adJxList[0];
-        log('调用AD解析去广告>' + adParse.name);
+        log('调用AD解析>' + adParse.name);
         playUrl = adParse.url + playUrl;
     }
     return playUrl;

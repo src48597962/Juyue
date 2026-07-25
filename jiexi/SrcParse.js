@@ -900,7 +900,7 @@ function 视频处理(playUrl, dataObj) {
     if(fetch(jxfile)){
         try{
             eval("jxList=" + fetch(jxfile));
-            adJxList = jxList.filter(v=>v.type=='4');
+            adJxList = jxList.filter(v=>v.type=='4'&&!v.stop);
         }catch(e){}
     }
     if(adJxList.length>0 && playUrl.startsWith('http') && playUrl.includes('.m3u8')){

@@ -21,6 +21,11 @@ if (getItem('接口日志打印') != "1") {
         return;
     };
 }
+// 重定义fetchCodeByWebView
+if (typeof fetchViaX5 === 'function') {
+    fetchCodeByWebView = fetchViaX5;
+}
+
 // 聚阅全局自定义存储变量方法
 function juItemF(id, s){
     let juItemO = {

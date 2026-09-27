@@ -760,13 +760,13 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            const parse = (function(jkdata, sid) {
+            log(rule);
+            return (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
                 eval(rule);
                 return parse;
             })(input, sid);
-            return parse;
         }else{
             return {};
         }
@@ -777,6 +777,7 @@ function getObjCode(jkdata, key) {
         let tmpldata = jkdata.tmpl || parse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
+                log(tmpldata);
                 let tmplparse = getSource(tmpldata, jkdata.id);
                 log(tmplparse);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';

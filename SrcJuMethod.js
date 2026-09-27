@@ -760,7 +760,6 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            log(rule);
             return (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
@@ -777,11 +776,8 @@ function getObjCode(jkdata, key) {
         let tmpldata = jkdata.tmpl || parse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
-                log(tmpldata);
                 let tmplparse = getSource(tmpldata, jkdata.id);
-                log(tmplparse);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';
-                log('1111');
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + parse['模板名']);
                 }

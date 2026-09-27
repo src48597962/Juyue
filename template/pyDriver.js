@@ -13,13 +13,15 @@ let parse = {
     },
     callApi: function(...arr){
         let sourcename = parse.sourcename;
-        if(parse.pystr )
+        let pyurl = parse.pyurl;
         let PythonHiker = $.require(codepath + "plugins/PythonHiker.js");
-        let pyModule = PythonHiker.runPy(getPyFile(api_url), sourcename).callAttr("Spider");
+        let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);
         return PythonHiker.callFunc(pyModule, arr);
     },
     主页: function(){
+        let home = this.callApi("homeContent", true);
+        log(home);
         let d = [];
         //自行实现页面样式元素
         return d;

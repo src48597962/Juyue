@@ -11,13 +11,13 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
-    callApi: function(...arr){
+    callApi: function(apitype, ...arr){
         let sourcename = parse.sourcename;
         let pyurl = parse.pyurl;
         let PythonHiker = $.require(codepath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);
-        return PythonHiker.callFunc(pyModule, arr);
+        return PythonHiker.callFunc(pyModule, apitype, arr);
     },
     主页: function(){
         let home = this.callApi("homeContent", true);

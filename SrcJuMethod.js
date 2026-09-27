@@ -770,7 +770,7 @@ function getObjCode(jkdata, key) {
                     ${rule};
                     innerParse = parse;
                 `);
-                xlog("innerParse结果：",innerParse);
+                xlog("innerParse结果：" + innerParse);
                 return innerParse;
             })(input, sid);
             return parse;

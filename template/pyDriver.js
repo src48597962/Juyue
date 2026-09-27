@@ -71,5 +71,10 @@ let parse = {
     最新: function(url){
         //自行实现获取最新章节名
         return '';
-    }
+    },
+    新建模板: `
+        let parse = {
+            pyurl: '' //py文件链接，可以是在线地址也可以是本地文件路径
+        }
+    `
 }

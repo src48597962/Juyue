@@ -12,8 +12,10 @@ let parse = {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
     callApi: function(apitype, ...arr){
-        let sourcename = parse.sourcename;
-        let pyurl = parse.pyurl;
+        let sourcename = this.sourcename;
+        log(sourcename);
+        let pyurl = this.pyurl;
+        log(pyurl);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);

@@ -16,8 +16,7 @@ let parse = {
         log(sourcename);
         let pyurl = this.pyurl;
         log(pyurl);
-        log(parse.sourcename);
-        log(parse.pyurl);
+        log(parse);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);

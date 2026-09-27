@@ -154,7 +154,7 @@ function runPy(path, mname, nocache) {
     } else {
         let pa = path.split("/");
         name = pa.pop().split(".")[0];
-        mpath = cPath + name + ".py";
+        mpath = cPath + (mname || name) + ".py";
         FileUtil.copy(new File(path), new File(mpath));
     }
     return machinery.callAttr("SourceFileLoader", mname || name, mpath).callAttr("load_module");

@@ -766,15 +766,21 @@ function getObjCode(jkdata, key) {
                 //eval(rule);
                 //return parse;
                 let innerParse;
-                // 改动点：包一层IIFE在eval内部
-                eval(`
+                // 先打印要eval的全部源码！！
+                const codeText = `
                     innerParse = (function(){
                         ${rule};
                         return parse;
                     })();
-                `);
-                xlog("innerParse结果："+innerParse);
-                return innerParse
+                `;
+                xlog("====eval完整源码====" + codeText);
+                try{
+                    eval(codeText);
+                }catch(err){
+                    xlog("eval执行报错：" + err.message);
+                }
+                xlog("innerParse结果：" + innerParse);
+                return innerParse;
             })(input, sid);
             return parse;
         }else{

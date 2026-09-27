@@ -11,6 +11,14 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
+    callApi: function(...arr){
+        let sourcename = parse.sourcename;
+        if(parse.pystr )
+        let PythonHiker = $.require(codepath + "plugins/PythonHiker.js");
+        let pyModule = PythonHiker.runPy(getPyFile(api_url), sourcename).callAttr("Spider");
+        PythonHiker.callFunc(pyModule, "init", []);
+        return PythonHiker.callFunc(pyModule, arr);
+    },
     主页: function(){
         let d = [];
         //自行实现页面样式元素

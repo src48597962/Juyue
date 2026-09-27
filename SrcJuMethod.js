@@ -763,8 +763,15 @@ function getObjCode(jkdata, key) {
             const parse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                eval(rule);
-                return parse;
+                //eval(rule);
+                //return parse;
+                let innerParse;
+                eval(`
+                    ${rule};
+                    innerParse = parse;
+                `);
+                xlog("innerParse结果：",innerParse);
+                return innerParse;
             })(input, sid);
             return parse;
         }else{

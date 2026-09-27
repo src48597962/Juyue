@@ -766,12 +766,15 @@ function getObjCode(jkdata, key) {
                 //eval(rule);
                 //return parse;
                 let innerParse;
+                // 改动点：包一层IIFE在eval内部
                 eval(`
-                    ${rule};
-                    innerParse = parse;
+                    innerParse = (function(){
+                        ${rule};
+                        return parse;
+                    })();
                 `);
-                xlog("innerParse结果：" + innerParse);
-                return innerParse;
+                xlog("innerParse结果："+innerParse);
+                return innerParse
             })(input, sid);
             return parse;
         }else{

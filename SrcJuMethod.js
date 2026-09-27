@@ -778,7 +778,9 @@ function getObjCode(jkdata, key) {
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
                 let tmplparse = getSource(tmpldata, jkdata.id);
+                log(tmplparse);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';
+                log('1111');
                 if(Object.keys(tmplparse).length==0){
                     toast('未找到模板源：' + parse['模板名']);
                 }

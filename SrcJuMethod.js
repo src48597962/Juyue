@@ -760,12 +760,13 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            return (function(jkdata, sid) {
+            const parse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
                 eval(rule);
                 return parse;
             })(input, sid);
+            return parse;
         }else{
             return {};
         }

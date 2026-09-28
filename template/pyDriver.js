@@ -157,7 +157,7 @@ let parse = {
                 cate_id = fl.cateId;
                 delete fl.cateId;
 
-                let formatJo = this.callApi("categoryContent", cate_id, MY_PAGE, true, fl || {});
+                let formatJo = this.callApi("categoryContent", cate_id, MY_PAGE, true, fl);
                 let vodlist = formatJo.list || [];
                 vodlist.forEach(it=>{
                     vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });

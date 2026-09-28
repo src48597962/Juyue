@@ -49,8 +49,8 @@ let parse = {
         let cate_id = getMyVar('dianbo$分类', '');
         let fl = storage0.getMyVar('dianbo$flCache') || {};
         let d = [];
+        let vodlists = [];
         if (分类.length > 0) {
-            let vodlists = [];
             let Color = getItem('主题颜色','#3399cc');
             try {
                 cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
@@ -147,8 +147,30 @@ let parse = {
                 log('生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
             }
         }
+         if (cate_id!="tj") {
+            try {
+                fl.cateId = fl.cateId || cate_id;
+                cate_id = fl.cateId;
+                delete fl.cateId;
 
-
+                let formatJo = this.callApi("categoryContent", cate_id, MY_PAGE, true, JSON.stringify(fl || {}));
+                let vodlist = formatJo.list || [];
+                vodlist.forEach(it=>{
+                    vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
+                })
+            } catch (e) {
+                log('获取列表异常>' + e.message + ' 错误行#' + e.lineNumber);
+            }
+        }
+        vodlists.forEach(it=>{
+            d.push({
+                title: it.vod_name,
+                desc: it.vod_desc,
+                img: it.vod_pic,
+                url: it.vod_url,
+                col_type: 'movie_3'
+            })
+        })
         return d;
     },
     二级: function(url){

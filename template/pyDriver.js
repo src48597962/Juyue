@@ -142,7 +142,7 @@ let parse = {
                 }
                 torage0.putMyVar('dianbo$flCache', fl);
             } catch (e) {
-                log(api_name + '>生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
+                log(jkdata.name + '>生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
             }
         }
 

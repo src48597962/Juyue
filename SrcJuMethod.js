@@ -820,7 +820,7 @@ function getObjCode(jkdata, key) {
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
                 //let tmplparse = getSource(tmpldata, jkdata.id);
-                getSource(tmpldata, jkdata.id);
+                sourceParse(tmpldata, jkdata.id);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';
                 /*
                 if(Object.keys(tmplparse).length==1){

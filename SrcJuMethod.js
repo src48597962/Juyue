@@ -816,11 +816,13 @@ function getObjCode(jkdata, key) {
     try{
         //let parse = getSource(jkdata);
         sourceParse(jkdata);
+        log(Object.keys(parse).length);
         let tmpldata = jkdata.tmpl || parse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
                 //let tmplparse = getSource(tmpldata, jkdata.id);
                 sourceParse(tmpldata, jkdata.id);
+                log(Object.keys(parse).length);
                 parse['模板名'] = tmpldata.name||tmpldata.id||'';
                 /*
                 if(Object.keys(tmplparse).length==1){

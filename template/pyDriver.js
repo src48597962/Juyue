@@ -21,7 +21,7 @@ let parse = {
             arr[1] = PythonHiker.toInt(arr[1]);
             arr[3] = PythonHiker.toPyJson(arr[3]);
         }
-        return PythonHiker.callFunc(pyModule, apitype, arr);
+        return PythonHiker.callFunc(pyModule, apitype, ...arr);
     },
     主页: function(){
         let 分类 = [];

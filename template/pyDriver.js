@@ -141,7 +141,7 @@ let parse = {
                         }
                     });
                 }
-                torage0.putMyVar('dianbo$flCache', fl);
+                storage0.putMyVar('dianbo$flCache', fl);
             } catch (e) {
                 log('生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
             }

@@ -359,7 +359,7 @@ function getYiData(datatype, jkdata, dd) {
 
     let yijkdata = storage0.getMyVar('一级源接口信息');
     jkdata = jkdata || MY_PARAMS.data || yijkdata;
-    let parse = getObjCode(jkdata, 'yi');
+    let parse = Object.assign({}, getObjCode(jkdata, 'yi'));
     parse["频道"] = parse["频道"] || {};
 
     if(!yijkdata || (yijkdata.id==jkdata.id && parse['二级标识'] && !yijkdata['erjisign'])){

@@ -20,9 +20,6 @@ let parse = {
         return PythonHiker.callFunc(pyModule, apitype, arr);
     },
     主页: function(){
-        let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
-        let cate_id = getMyVar('dianbo$分类', '');
-        let fl = storage0.getMyVar('dianbo$flCache') || {};
         let 分类 = [];
         let 推荐 = [];
         let 筛选;
@@ -47,9 +44,13 @@ let parse = {
                 storage0.putMyVar(jkdata.id+'$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
             }
         }
-        
+
+        let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
+        let cate_id = getMyVar('dianbo$分类', '');
+        let fl = storage0.getMyVar('dianbo$flCache') || {};
         let d = [];
         if (分类.length > 0) {
+            let vodlists = [];
             let Color = getItem('主题颜色','#3399cc');
             try {
                 cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);

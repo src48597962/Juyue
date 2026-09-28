@@ -760,6 +760,7 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
+            /*
             const parse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
@@ -783,6 +784,18 @@ function getObjCode(jkdata, key) {
                 return innerParse;
             })(input, sid);
             return parse;
+            */
+            return (function(jkdata, sid) {
+                let juItem = juItemF(sid||jkdata.id);
+                let juFile = juFileF(sid||jkdata.id);
+                try{
+                    eval(rule);
+                }catch(err){
+                    xlog("eval执行报错：" + err.message);
+                }
+                xlog("innerParse结果：" + $.type(parse));
+                return parse;
+            })(input, sid);
         }else{
             return {};
         }
@@ -793,10 +806,10 @@ function getObjCode(jkdata, key) {
         let tmpldata = jkdata.tmpl || sourceparse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
-                let tmplparse = getSource(tmpldata, jkdata.id);
+                let tmplparse = getSource(tmpldata, jkdata.id) || {};
                 tmplparse['模板名'] = tmpldata.name||tmpldata.id||'';
-                if(Object.keys(tmplparse).length==0){
-                    toast('未找到模板源：' + tmplparse['模板名']);
+                if(Object.keys(tmplparse).length==1){
+                    toast('加载失败，模板源：' + tmplparse['模板名']);
                 }
                 if(getMyVar('调用模板'+jkdata.id)){
                     putMyVar('调用模板'+jkdata.id, '1');

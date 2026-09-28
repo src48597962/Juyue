@@ -3,7 +3,7 @@ let parse = {
     版本: '',
     host: '',//会写入MY_URL
     页码: {
-        主页: false,
+        主页: true,
         分类: true,
         排行: true,
         更新: true

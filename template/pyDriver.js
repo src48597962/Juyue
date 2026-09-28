@@ -53,7 +53,7 @@ let parse = {
             try {
                 cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
 
-                if ($.type(筛选)=='object' && api_type != 'cms' && cate_id != 'tj') {
+                if ($.type(筛选)=='object' && cate_id != 'tj') {
                     d.push({
                             title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
                         url: $('#noLoading#').lazyRule((fold) => {
@@ -106,7 +106,7 @@ let parse = {
                     col_type: "blank_block"
                 });
 
-                if (筛选 && (fold == '1' || api_type == 'cms')) {
+                if (筛选 && fold == '1') {
                     Object.entries(筛选).forEach(([key, value]) => {
                         //console.log(`Key: ${key}, Value: ${value}`);
                         if (key == cate_id) {
@@ -142,7 +142,7 @@ let parse = {
                 }
                 torage0.putMyVar('dianbo$flCache', fl);
             } catch (e) {
-                log(jkdata.name + '>生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
+                log('生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
             }
         }
 

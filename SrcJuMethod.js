@@ -763,32 +763,15 @@ function getObjCode(jkdata, key) {
             const parse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                // 定义参数 juItem, juFile，函数体是rule + return parse
                 const fn = new Function('juItem', 'juFile', `
                     ${rule}
                     return parse;
                 `)
-                // 把本地变量传进去执行
-                const innerParse = fn(juItem, juFile);
-                xlog("innerParse结果：" + $.type(innerParse));
-                return innerParse;
+                return fn(juItem, juFile);
                 //eval(rule);
                 //return parse;
             })(input, sid);
             return parse;
-            /*
-            return (function(jkdata, sid) {
-                let juItem = juItemF(sid||jkdata.id);
-                let juFile = juFileF(sid||jkdata.id);
-                try{
-                    eval(rule);
-                }catch(err){
-                    xlog("eval执行报错：" + err.message);
-                }
-                xlog("innerParse结果：" + $.type(parse));
-                return parse;
-            })(input, sid);
-            */
         }else{
             return {};
         }

@@ -13,10 +13,11 @@ let parse = {
     },
     callApi: function(apitype, ...arr){
         let sourcename = this.sourcename;
-        log(sourcename);
+        log(this.sourcename);
+        log(parse.sourcename);
         let pyurl = this.pyurl;
-        log(pyurl);
-        log(JSON.stringify(parse));
+        log(this.pyurl);
+        log(parse.pyurl);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);

@@ -157,6 +157,7 @@ let parse = {
                 fl.cateId = fl.cateId || cate_id;
                 cate_id = fl.cateId;
                 delete fl.cateId;
+                fl.typeid = cate_id;
 
                 let formatJo = this.callApi("categoryContent", cate_id, page, true, fl);
                 let vodlist = formatJo.list || [];

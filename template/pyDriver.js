@@ -17,6 +17,10 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);
+        if(apitype = 'categoryContent'){
+            arr[1] = PythonHiker.toInt(arr[1]);
+            arr[3] = PythonHiker.toPyJson(arr[3]);
+        }
         return PythonHiker.callFunc(pyModule, apitype, arr);
     },
     主页: function(){
@@ -153,7 +157,7 @@ let parse = {
                 cate_id = fl.cateId;
                 delete fl.cateId;
 
-                let formatJo = this.callApi("categoryContent", cate_id, MY_PAGE, true, JSON.stringify(fl || {}));
+                let formatJo = this.callApi("categoryContent", cate_id, MY_PAGE, true, fl || {});
                 let vodlist = formatJo.list || [];
                 vodlist.forEach(it=>{
                     vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });

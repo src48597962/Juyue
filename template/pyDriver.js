@@ -17,7 +17,7 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
         PythonHiker.callFunc(pyModule, "init", []);
-        if(apitype = 'categoryContent'){
+        if(apitype == 'categoryContent'){
             arr[1] = PythonHiker.toInt(arr[1]);
             arr[3] = PythonHiker.toPyJson(arr[3]);
         }

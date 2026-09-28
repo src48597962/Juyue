@@ -740,6 +740,7 @@ function removeByValue(arr, val) {
 
 // 获取接口对象规则内容
 function getObjCode(jkdata, key) {
+    /*
     // 读取接口对象规则内容
     function getSource(input, sid) {
         let rule;
@@ -760,7 +761,7 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            const parse = (function(jkdata, sid) {
+            const innerParse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
                 const fn = new Function('juItem', 'juFile', `
@@ -771,29 +772,68 @@ function getObjCode(jkdata, key) {
                 //eval(rule);
                 //return parse;
             })(input, sid);
-            return parse;
+            return innerParse;
         }else{
             return {};
         }
     }
+    */
+    let parse = {};
+    function sourceParse(input, sid) {
+        let rule;
+        if($.type(input)=='object'){
+            if(input.url){
+                rule = readFile(input.url) || readFile(input.url.replace('rules/Src','_cache'));
+            }else if(input.id){
+                rule = readFile(`${jkfilespath}${input.id}.txt`);
+            }else if(input.name){
+                input = input.name;
+            }
+        }
+        if(!rule && $.type(input)=='string'){
+            let jkjson = JSON.parse(readFile(jkfile));
+            let id = jkjson.find(x => x.name === input);
+            if(id){
+                rule = readFile(id.url);
+            }
+        }
+        if(rule){
+            const innerParse = (function(jkdata, sid) {
+                let juItem = juItemF(sid||jkdata.id);
+                let juFile = juFileF(sid||jkdata.id);
+                const fn = new Function('juItem', 'juFile', `
+                    ${rule}
+                    return parse;
+                `)
+                return fn(juItem, juFile);
+                //eval(rule);
+                //return parse;
+            })(input, sid);
+            Object.assign(parse, innerParse);
+        }
+    }
     
     try{
-        let parse = getSource(jkdata);
+        //let parse = getSource(jkdata);
+        sourceParse(jkdata);
         let tmpldata = jkdata.tmpl || parse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
-                let tmplparse = getSource(tmpldata, jkdata.id);
-                tmplparse['模板名'] = tmpldata.name||tmpldata.id||'';
+                //let tmplparse = getSource(tmpldata, jkdata.id);
+                getSource(tmpldata, jkdata.id);
+                parse['模板名'] = tmpldata.name||tmpldata.id||'';
+                /*
                 if(Object.keys(tmplparse).length==1){
                     toast('模板源加载为空对象：' + tmplparse['模板名']);
                 }
+                */
                 if(getMyVar('调用模板'+jkdata.id)){
                     putMyVar('调用模板'+jkdata.id, '1');
-                    xlog('当前源：' + jkdata.name + '>调用模板源>' + tmplparse['模板名']);
+                    xlog('当前源：' + jkdata.name + '>调用模板源>' + parse['模板名']);
                 }
-                delete tmplparse['新建模板'];
+                delete parse['新建模板'];
                 delete parse['模板'];
-                parse = Object.assign({}, tmplparse, parse);
+                //parse = Object.assign({}, tmplparse, parse);
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }

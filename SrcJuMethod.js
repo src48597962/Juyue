@@ -773,13 +773,13 @@ function getObjCode(jkdata, key) {
                         return parse;
                     })();
                 `;
-                xlog("====eval完整源码====" + codeText);
+
                 try{
                     eval(codeText);
                 }catch(err){
                     xlog("eval执行报错：" + err.message);
                 }
-                xlog("innerParse结果：" + innerParse);
+                xlog("innerParse结果：" + $.type(innerParse));
                 return innerParse;
             })(input, sid);
             return parse;
@@ -789,27 +789,27 @@ function getObjCode(jkdata, key) {
     }
     
     try{
-        let parse = getSource(jkdata);
-        let tmpldata = jkdata.tmpl || parse['模板'];
+        let sourceparse = getSource(jkdata);
+        let tmpldata = jkdata.tmpl || sourceparse['模板'];
         if(tmpldata && $.type(tmpldata)=='object'){
             try{
                 let tmplparse = getSource(tmpldata, jkdata.id);
-                parse['模板名'] = tmpldata.name||tmpldata.id||'';
+                tmplparse['模板名'] = tmpldata.name||tmpldata.id||'';
                 if(Object.keys(tmplparse).length==0){
-                    toast('未找到模板源：' + parse['模板名']);
+                    toast('未找到模板源：' + tmplparse['模板名']);
                 }
                 if(getMyVar('调用模板'+jkdata.id)){
                     putMyVar('调用模板'+jkdata.id, '1');
-                    xlog('当前源：' + jkdata.name + '>调用模板源>' + parse['模板名']);
+                    xlog('当前源：' + jkdata.name + '>调用模板源>' + tmplparse['模板名']);
                 }
-                parse = Object.assign({}, tmplparse, parse);
+                delete tmplparse['新建模板'];
+                delete tmplparse['模板'];
             }catch(e){
                 xlog(jkdata.name + '>执行模板合并报错，信息>' + e.message + " 错误行#" + e.lineNumber);
             }
             jkdata.tmpl = tmpldata;
-            delete parse['新建模板'];
-            delete parse['模板'];
         }
+        let parse = Object.assign({}, tmplparse, sourceparse);
         parse['id'] = jkdata.id;
         parse['sourcename'] = jkdata.name;
         parse['jkdata'] = jkdata;

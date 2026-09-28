@@ -760,31 +760,14 @@ function getObjCode(jkdata, key) {
             }
         }
         if(rule){
-            /*
             const parse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                //eval(rule);
-                //return parse;
-                let innerParse;
-                // 先打印要eval的全部源码！！
-                const codeText = `
-                    innerParse = (function(){
-                        ${rule};
-                        return parse;
-                    })();
-                `;
-
-                try{
-                    eval(codeText);
-                }catch(err){
-                    xlog("eval执行报错：" + err.message);
-                }
-                xlog("innerParse结果：" + $.type(innerParse));
-                return innerParse;
+                eval(rule);
+                return parse;
             })(input, sid);
             return parse;
-            */
+            /*
             return (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
@@ -796,6 +779,7 @@ function getObjCode(jkdata, key) {
                 xlog("innerParse结果：" + $.type(parse));
                 return parse;
             })(input, sid);
+            */
         }else{
             return {};
         }

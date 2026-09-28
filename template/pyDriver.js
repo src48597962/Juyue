@@ -50,6 +50,7 @@ let parse = {
         
         let d = [];
         if (分类.length > 0) {
+            let Color = getItem('主题颜色','#3399cc');
             try {
                 cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
 

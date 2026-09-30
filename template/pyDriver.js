@@ -165,8 +165,9 @@ let parse = {
     二级: function(url){
         let html = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
         let json = html.list[0];
-        let detail1 = json.vod_actor;
-        let detail2 = json.vod_area + '\n' + (json.vod_remarks || json.vod_class || "");
+        log(json);
+        let detail1 = json.vod_actor || '';
+        let detail2 = (json.vod_area || '') + '\n' + (json.vod_remarks || json.vod_class || '');
         let 简介 = json.vod_content || "";
         let 图片 = json.vod_pic;
         let 线路 = json.vod_play_from.split('$$$');

@@ -46,118 +46,110 @@ let parse = {
 
             if (分类.length > 0) {
                 let Color = getItem('主题颜色','#3399cc');
-                try {
-                    cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
+                cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
 
-                    if ($.type(筛选)=='object' && cate_id != 'tj') {
-                        d.push({
-                                title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
-                            url: $('#noLoading#').lazyRule((fold) => {
-                                putMyVar('dianbo$fold', fold === '1' ? '0' : '1');
-                                clearMyVar('dianbo$flCache');
-                                refreshPage(false);
-                                return "hiker://empty";
-                            }, fold),
-                            col_type: 'scroll_button'
-                        })
-                    }
-                    putMyVar('dianbo$分类', cate_id);
-
-                    if (推荐.length > 0) {
-                        if (cate_id == 'tj') {
-                            vodlists = 推荐;//当前分类为推荐，取推荐列表
-                        }
-                        d.push({
-                            title: cate_id == 'tj' ? '““””<b><span style="color:' + Color + '">' + '推荐' + '</span></b>' : '推荐',
-                            url: $('#noLoading#').lazyRule(() => {
-                                putMyVar('dianbo$分类', 'tj');
-                                refreshPage(true);
-                                return "hiker://empty";
-                            }),
-                            col_type: 'scroll_button',
-                            extra: {
-                                backgroundColor: cate_id=='tj'?"#20" + Color.replace('#',''):undefined
-                            }
-                        });
-                    }
-
-                    分类.forEach((it, i) => {
-                        let itname = it.split('$')[0].replace(/|||/g, '').trim();
-                        let itid = it.split('$')[1];
-                        d.push({
-                            title: cate_id == itid ? '““””<b><span style="color:' + Color + '">' + itname + '</span></b>' : itname,
-                            url: $('#noLoading#').lazyRule((itid) => {
-                                putMyVar('dianbo$分类', itid);
-                                clearMyVar('dianbo$flCache');
-                                refreshPage(true);
-                                return "hiker://empty";
-                            }, itid),
-                            col_type: 'scroll_button',
-                            extra: {
-                                backgroundColor: cate_id==itid?"#20" + Color.replace('#',''):undefined
-                            }
-                        });
-                    })
+                if ($.type(筛选)=='object' && cate_id != 'tj') {
                     d.push({
-                        col_type: "blank_block"
-                    });
-
-                    if (筛选 && fold == '1') {
-                        Object.entries(筛选).forEach(([key, value]) => {
-                            //log(`Key: ${key}, Value: ${value}`);
-                            if (key == cate_id) {
-                                if($.type(value)=="object"){
-                                    value = [value];
-                                }
-                                value.forEach(it => {
-                                    if (it.value.length > 0) {
-                                        fl[it.key] = fl[it.key] || (it.value[0].v=="全部"?it.value[0].v:undefined);
-                                        it.value.forEach((itit) => {
-                                            d.push({
-                                                title: fl[it.key] == itit.v ? '““””<b><span style="color:' + Color + '">' + itit.n + '</span></b>' : itit.n,
-                                                url: $('#noLoading#').lazyRule((flkey, itid) => {
-                                                    let fl = storage0.getMyVar('dianbo$flCache') || {};
-                                                    fl[flkey] = itid;
-                                                    storage0.putMyVar('dianbo$flCache', fl);
-                                                    refreshPage(true);
-                                                    return "hiker://empty";
-                                                }, it.key, itit.v),
-                                                col_type: 'scroll_button',
-                                                extra: {
-                                                    backgroundColor: fl[it.key]==itit.v?"#20" + Color.replace('#',''):""
-                                                }
-                                            });
-                                        })
-                                        d.push({
-                                            col_type: "blank_block"
-                                        });
-                                    }
-                                })
-                            }
-                        });
-                    }
-                    storage0.putMyVar('dianbo$flCache', fl);
-                } catch (e) {
-                    log('生成分类数据异常>' + e.message + " 错误行#" + e.lineNumber);
+                            title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
+                        url: $('#noLoading#').lazyRule((fold) => {
+                            putMyVar('dianbo$fold', fold === '1' ? '0' : '1');
+                            clearMyVar('dianbo$flCache');
+                            refreshPage(false);
+                            return "hiker://empty";
+                        }, fold),
+                        col_type: 'scroll_button'
+                    })
                 }
+                putMyVar('dianbo$分类', cate_id);
+
+                if (推荐.length > 0) {
+                    if (cate_id == 'tj') {
+                        vodlists = 推荐;//当前分类为推荐，取推荐列表
+                    }
+                    d.push({
+                        title: cate_id == 'tj' ? '““””<b><span style="color:' + Color + '">' + '推荐' + '</span></b>' : '推荐',
+                        url: $('#noLoading#').lazyRule(() => {
+                            putMyVar('dianbo$分类', 'tj');
+                            refreshPage(true);
+                            return "hiker://empty";
+                        }),
+                        col_type: 'scroll_button',
+                        extra: {
+                            backgroundColor: cate_id=='tj'?"#20" + Color.replace('#',''):undefined
+                        }
+                    });
+                }
+
+                分类.forEach((it, i) => {
+                    let itname = it.split('$')[0].replace(/|||/g, '').trim();
+                    let itid = it.split('$')[1];
+                    d.push({
+                        title: cate_id == itid ? '““””<b><span style="color:' + Color + '">' + itname + '</span></b>' : itname,
+                        url: $('#noLoading#').lazyRule((itid) => {
+                            putMyVar('dianbo$分类', itid);
+                            clearMyVar('dianbo$flCache');
+                            refreshPage(true);
+                            return "hiker://empty";
+                        }, itid),
+                        col_type: 'scroll_button',
+                        extra: {
+                            backgroundColor: cate_id==itid?"#20" + Color.replace('#',''):undefined
+                        }
+                    });
+                })
+                d.push({
+                    col_type: "blank_block"
+                });
+
+                if (筛选 && fold == '1') {
+                    Object.entries(筛选).forEach(([key, value]) => {
+                        //log(`Key: ${key}, Value: ${value}`);
+                        if (key == cate_id) {
+                            if($.type(value)=="object"){
+                                value = [value];
+                            }
+                            value.forEach(it => {
+                                if (it.value.length > 0) {
+                                    fl[it.key] = fl[it.key] || (it.value[0].v=="全部"?it.value[0].v:undefined);
+                                    it.value.forEach((itit) => {
+                                        d.push({
+                                            title: fl[it.key] == itit.v ? '““””<b><span style="color:' + Color + '">' + itit.n + '</span></b>' : itit.n,
+                                            url: $('#noLoading#').lazyRule((flkey, itid) => {
+                                                let fl = storage0.getMyVar('dianbo$flCache') || {};
+                                                fl[flkey] = itid;
+                                                storage0.putMyVar('dianbo$flCache', fl);
+                                                refreshPage(true);
+                                                return "hiker://empty";
+                                            }, it.key, itit.v),
+                                            col_type: 'scroll_button',
+                                            extra: {
+                                                backgroundColor: fl[it.key]==itit.v?"#20" + Color.replace('#',''):""
+                                            }
+                                        });
+                                    })
+                                    d.push({
+                                        col_type: "blank_block"
+                                    });
+                                }
+                            })
+                        }
+                    });
+                }
+                storage0.putMyVar('dianbo$flCache', fl);
             }
         }
         
         if (cate_id!="tj") {
-            try {
-                fl.cateId = fl.cateId || cate_id;
-                cate_id = fl.cateId;
-                delete fl.cateId;
-                fl.typeid = cate_id;
+            fl.cateId = fl.cateId || cate_id;
+            cate_id = fl.cateId;
+            delete fl.cateId;
+            fl.typeid = cate_id;
 
-                let formatJo = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
-                let vodlist = formatJo.list || [];
-                vodlist.forEach(it=>{
-                    vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
-                })
-            } catch (e) {
-                log('获取列表异常>' + e.message + ' 错误行#' + e.lineNumber);
-            }
+            let formatJo = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
+            let vodlist = formatJo.list || [];
+            vodlist.forEach(it=>{
+                vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
+            })
         }
         vodlists.forEach(it=>{
             d.push({

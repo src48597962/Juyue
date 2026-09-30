@@ -15,13 +15,9 @@ let parse = {
         let sourcename = this.sourcename;
         let pyurl = this.pyurl;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-
-        if(!this.pyModule){
-            this.pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
-            PythonHiker.callFunc(this.pyModule, "init", []);
-        }
-        const pyModule = this.pyModule;
-
+        let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
+        PythonHiker.callFunc(pyModule, "init", []);
+        xlog($.type(pyModule));
         // 只针对categoryContent做参数类型转换
         if(apitype === 'categoryContent'){
             // arr = [tid, pg, filter, extend]

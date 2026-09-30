@@ -219,7 +219,6 @@ if (RuleGlobalMapKey === AppGlobalMapKey) {
     RuleGlobalMapKey = RuleGlobalMapKey + randomKey;
 }
 evalPrivateJS('lB/vSrpX7mguKg/VH0KurSchCsMcToJhRHo+T7+Zt5LfFv2ml38BnivBWM4tL/jQMazY8zTLRput6z/5ET+QKfFf0Mvefc+psWESuxiE3mbcANmuwdRa//jOZ73UsMJIkHVq9G/6eoKzheLN1i/CVCoJKA0d3JHdDbun6RXt7jLFUcmWvHas6UUSmrgNB7pDh5sKF2holpegJXAUHd8i/JWBqzbSvtHDRWrdDAVvY0DC/cQSQrm8sbJF7o9V+1ALkwJ8GfUZnjGU+N88t2SMpkitJ7qfXGDFUHkzaCEnd9Yxe6n3OBO3s0BlFXJPLR/Wju7cQZT64PgaFpYRQ11cnuXsNz5WUqCW3y+fvJRlzLb+wUMH1ck8P0CgXPLZOSsWY3k3tK4G7MgVKYuNXx2plzHQUwCAzlgwNDjsbE1cjLIj8iCrs1bmcqITKuYcBbnlhaLiKJKl+sxpCSswk2eMF6hjk+MsbGaBKUFXHXdCpn6aPsQFfoReAWLnrZ5T1aY/i1aawPfXEKq+UhdtfpbfPNaJT/hwOm7j8bh7l/7yx32aTybvhyxiuFwjkAN8A5Q9L4vdH7NrsLVTaosLhLWrS2T288XRsC5XZ5DGI4O6op4QxwbG142l73JKCGeMcCSJ')
-let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
 $.exports = {
     GM: new GlobalVar(GlobalMap, RuleGlobalMapKey)
 }

@@ -209,6 +209,20 @@ function toInt(num) {
     return new Integer(num);
 }
 Builtins.put("print", hiker.get("log"));
+
+function runPyReuslt(sid, pyurl, apitype, ...arr){
+    let pyModule = runPy(pyurl, sid).callAttr("Spider");
+    callFunc(pyModule, "init", []);
+    // 只针对categoryContent做参数类型转换
+    if(apitype === 'categoryContent'){
+        // arr = [tid, pg, filter, extend]
+        arr[1] = toInt(arr[1]);
+        arr[3] = toPyJson(arr[3]);
+    }
+    // ✅ 不变，自动展开任意长度arr
+    //return PythonHiker.callFunc(pyModule, apitype, ...arr);
+    return callFunc.apply([pyModule, apitype].concat(arr));
+}
 $.exports = {
     PyObject,
     callSyncFunc,
@@ -223,5 +237,6 @@ $.exports = {
     wrapperJsFunc,
     pyToJs,
     fromJs,
-    toInt
+    toInt,
+    runPyReuslt
 }

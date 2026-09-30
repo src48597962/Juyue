@@ -214,7 +214,7 @@ function runPyReuslt(sid, pyurl, apitype, ...arr){
     log(pyurl);
     log(sid);
     let pyModule = runPy(pyurl, sid).callAttr("Spider");
-    log(pyModule);
+    log($.type(pyModule));
     callFunc(pyModule, "init", []);
     // 只针对categoryContent做参数类型转换
     if(apitype === 'categoryContent'){

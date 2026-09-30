@@ -11,6 +11,7 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
+    PythonHiker: $.require(codePath + "plugins/PythonHiker.js"),
     主页: function(){
         let 分类 = [];
         let 推荐 = [];
@@ -21,7 +22,7 @@ let parse = {
             分类 = classCache.分类;
             筛选 = classCache.筛选;
         } else {
-            let home = PythonHiker.runPyReuslt(this.jkdata.id, this.pyurl, "homeContent", true);
+            let home = this.PythonHiker.runPyReuslt(this.jkdata.id, this.pyurl, "homeContent", true);
             log(home);
             log(jkdata);
             let typelist = home['class'] || [];

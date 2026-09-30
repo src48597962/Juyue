@@ -15,7 +15,7 @@ let parse = {
         let sourcename = this.sourcename;
         let pyurl = this.pyurl;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        return PythonHiker.runPyReuslt(sourcename, pyurl, apitype, ...arr);
+        return PythonHiker.runPyReuslt.apply([sourcename, pyurl, apitype].concat(arr));
     },
     主页: function(){
         let 分类 = [];

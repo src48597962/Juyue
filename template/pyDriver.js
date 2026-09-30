@@ -21,7 +21,6 @@ let parse = {
             分类 = classCache.分类;
             筛选 = classCache.筛选;
         } else {
-            let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
             let home = PythonHiker.runPyReuslt(this.jkdata.id, this.pyurl, "homeContent", true);
             log(home);
             log(jkdata);

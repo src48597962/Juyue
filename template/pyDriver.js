@@ -11,12 +11,6 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
-    callApi: function(apitype, ...arr){
-        let sourcename = this.sourcename;
-        let pyurl = this.pyurl;
-        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        return PythonHiker.runPyReuslt.apply([sourcename, pyurl, apitype].concat(arr));
-    },
     主页: function(){
         let 分类 = [];
         let 推荐 = [];
@@ -27,8 +21,10 @@ let parse = {
             分类 = classCache.分类;
             筛选 = classCache.筛选;
         } else {
-            let home = this.callApi("homeContent", true);
-            
+            let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+            let home = PythonHiker.runPyReuslt(this.jkdata.id, this.pyurl, "homeContent", true);
+            log(home);
+            log(jkdata);
             let typelist = home['class'] || [];
             typelist.forEach(v=>{
                 分类.push(v.type_name + '$' + v.type_id);

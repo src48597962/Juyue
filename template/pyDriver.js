@@ -104,7 +104,7 @@ let parse = {
 
                     if (筛选 && fold == '1') {
                         Object.entries(筛选).forEach(([key, value]) => {
-                            //console.log(`Key: ${key}, Value: ${value}`);
+                            //log(`Key: ${key}, Value: ${value}`);
                             if (key == cate_id) {
                                 if($.type(value)=="object"){
                                     value = [value];
@@ -171,32 +171,23 @@ let parse = {
         return d;
     },
     二级: function(url){
-        //自行实现代码
-        let detail1 = '';
-        let detail2 = '';
-        let 简介 = '';
-        let 图片 = '';
-        let html = fetch(url);
-        let 选集 = pdfa(html, '.play-list&&li').map((data) => {
-            let 选集列表 = {};
-            选集列表.title = pdfh(data, 'a--span--i&&Text')
-            选集列表.url = pd(data, 'a&&href');
-            //选集列表.extra = {};
-            return 选集列表;
-        })
-        return { //如果有多线路，则传line: 线路数组, 则list应为多线路合并后的数组[线路1选集列表，线路2选集列表]
-            detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>", //封面上面，可自由组合，可用html样式
-            detail2: "‘‘’’<font color=#f8ecc9>"+detail2+"</font>", //封面下部，可自由组合，可用html样式
-            //"detailurl"：封面url自己写点击想执行的事件,//可不传
-            //detailextra: {},//封面附加,可不传
+        let html = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
+        let json = html.list[0];
+        let detail1 = json.vod_actor;
+        let detail2 = json.vod_area + '\n' + (json.vod_remarks || json.vod_class || "");
+        let 简介 = json.vod_content || "";
+        let 图片 = json.vod_pic;
+        let 线路 = json.vod_play_from.split('$$$');
+        let 选集 = json.vod_play_url.split('$$$').map(it => {
+            return it.split('#');
+        });
+        return {
+            detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
+            detail2: "‘‘’’<font color=#f8ecc9>"+detail2+"</font>",
             desc: 简介,
-            img: 图片, //不传则用上一级的图片
-            //"line": 线路,//单线路可不传
-            list: 选集, //如果有多线路，则list应为多线路合并后的数组[线路1选集列表数组, 线路2选集列表数组]
-            //rule:1,//当接口类型为漫画、影视、音乐等选集解析是lazyRule时，且这个接口又有文章类的内容，可传此值可选集变为rule事件
-            //type:"漫画",//可以强制指定当前内容为漫画或小说，优先于接口类型
-            //moreitems: [],//二级扩展项，可以传任意样式元素对象数组，如当前影片的一些更多信息，不传则不显示，或长按样式可关闭，显示在线路上面
-            //extenditems: [],//二级扩展项，可以传任意样式元素对象数组，如猜你所想列表，不传则不显示，或长按样式可关闭，显示在选集底部
+            img: 图片,
+            line: 线路,
+            list: 选集
         }  
     },
     搜索: function(name){

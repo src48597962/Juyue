@@ -211,10 +211,7 @@ function toInt(num) {
 Builtins.put("print", hiker.get("log"));
 
 function runPyReuslt(sid, pyurl, apitype, ...arr){
-    log(pyurl);
-    log(sid);
     let pyModule = runPy(pyurl, sid).callAttr("Spider");
-    log($.type(pyModule));
     callFunc(pyModule, "init", []);
     // 只针对categoryContent做参数类型转换
     if(apitype === 'categoryContent'){

@@ -11,23 +11,6 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
-    callApi: function(apitype, ...arr){
-        let sourcename = this.sourcename;
-        let pyurl = this.pyurl;
-        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let pyModule = PythonHiker.runPy(pyurl, sourcename).callAttr("Spider");
-        PythonHiker.callFunc(pyModule, "init", []);
-        xlog($.type(pyModule));
-        // 只针对categoryContent做参数类型转换
-        if(apitype === 'categoryContent'){
-            // arr = [tid, pg, filter, extend]
-            arr[1] = PythonHiker.toInt(arr[1]);
-            arr[3] = PythonHiker.toPyJson(arr[3]);
-        }
-        // ✅ 不变，自动展开任意长度arr
-        //return PythonHiker.callFunc(pyModule, apitype, ...arr);
-        return PythonHiker.callFunc.apply(PythonHiker, [pyModule, apitype].concat(arr));
-    },
     主页: function(){
         let 分类 = [];
         let 推荐 = [];

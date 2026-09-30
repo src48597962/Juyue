@@ -218,7 +218,7 @@ function runPyGetReuslt(pyurl, sid, apitype, ...arr){
         arr[1] = toInt(arr[1]);
         arr[3] = toPyJson(arr[3]);
     }
-    let args = arr.map(v => v);
+    let args = arr.map(v => fromJs(v));
     return callFunc(pyModule, apitype, ...args);
 }
 $.exports = {

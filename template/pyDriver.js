@@ -22,7 +22,7 @@ let parse = {
             分类 = classCache.分类;
             筛选 = classCache.筛选;
         } else {
-            let home = this.PythonHiker.runPyGetReuslt(jkdata.id, this.pyurl, "homeContent", true);
+            let home = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
             let typelist = home['class'] || [];
             typelist.forEach(v=>{
                 分类.push(v.type_name + '$' + v.type_id);
@@ -146,7 +146,7 @@ let parse = {
                 delete fl.cateId;
                 fl.typeid = cate_id;
 
-                let formatJo = this.PythonHiker.runPyGetReuslt(jkdata.id, this.pyurl, "categoryContent", cate_id, page, true, fl);
+                let formatJo = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
                 let vodlist = formatJo.list || [];
                 vodlist.forEach(it=>{
                     vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });

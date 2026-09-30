@@ -179,7 +179,7 @@ let parse = {
             detail2: "‘‘’’<font color=#f8ecc9>"+detail2+"</font>",
             desc: 简介,
             img: 图片,
-            line: 线路,
+            //line: 线路,
             list: 选集
         }  
     },

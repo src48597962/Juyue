@@ -226,6 +226,7 @@ function runPyGetReuslt(pyurl, sid, apitype, ...arr){
         pyModule = runPy(pyurl, sid).callAttr("Spider");
         callFunc(pyModule, "init", []);
         GM.put('py_'+sid, pyModule);
+        writeFile(cachepath+'pycache/'+sid, pyModule);
     }
 
     if(apitype === 'categoryContent'){

@@ -224,7 +224,7 @@ function runPyReuslt(sid, pyurl, apitype, ...arr){
     }
     // ✅ 不变，自动展开任意长度arr
     //return PythonHiker.callFunc(pyModule, apitype, ...arr);
-    return callFunc.apply([pyModule, apitype].concat(arr));
+    return callFunc(pyModule, apitype, arr);
 }
 $.exports = {
     PyObject,

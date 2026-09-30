@@ -210,6 +210,14 @@ function toInt(num) {
 }
 Builtins.put("print", hiker.get("log"));
 
+// 新增方法
+function callFuncApply(pyObject, name, argArr) {
+    const args = argArr.map(v => fromJs(v));
+    const fullArgs = [name].concat(args);
+    const ret = pyObject.callAttr.apply(pyObject, fullArgs);
+    return pyToJs(ret);
+}
+
 function runPyGetReuslt(pyurl, sid, apitype, ...arr){
     let pyModule = runPy(pyurl, sid).callAttr("Spider");
     callFunc(pyModule, "init", []);
@@ -218,8 +226,7 @@ function runPyGetReuslt(pyurl, sid, apitype, ...arr){
         arr[1] = toInt(arr[1]);
         arr[3] = toPyJson(arr[3]);
     }
-    let args = arr.map(v => fromJs(v));
-    return callFunc(pyModule, apitype, ...args);
+    return callFuncApply(pyModule, apitype, arr);
 }
 $.exports = {
     PyObject,

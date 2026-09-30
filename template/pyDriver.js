@@ -11,6 +11,12 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
+    callApi: function(apitype, ...arr){
+        let sourcename = this.sourcename;
+        let pyurl = this.pyurl;
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        return PythonHiker.runPyReuslt(sourcename, pyurl, apitype, arr);
+    },
     主页: function(){
         let 分类 = [];
         let 推荐 = [];

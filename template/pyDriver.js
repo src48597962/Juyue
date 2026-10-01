@@ -35,10 +35,7 @@ let parse = {
                     分类.push(v.type_name + '$' + v.type_id);
                 })
                 筛选 = home['filters'];
-                let homeVod = home['list'] || [];
-                homeVod.forEach(it=>{
-                    推荐.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
-                })
+                推荐 = home['list'] || [];
                 if (分类.length > 0) {
                     storage0.putMyVar(jkdata.id+'$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
                 }
@@ -146,17 +143,14 @@ let parse = {
             fl.typeid = cate_id;
 
             let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
-            let vodlist = json.list || [];
-            vodlist.forEach(it=>{
-                vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
-            })
+            vodlists = json.list || [];
         }
         vodlists.forEach(it=>{
             d.push({
                 title: it.vod_name,
-                desc: it.vod_desc,
+                desc: it.vod_remarks,
                 img: it.vod_pic,
-                url: it.vod_url,
+                url: it.vod_id.toString(),
                 col_type: 'movie_3'
             })
         })
@@ -199,9 +193,9 @@ let parse = {
         vodlist.forEach(it=>{
             d.push({
                 title: it.vod_name,
-                url: it.vod_id.toString(),
                 desc: it.vod_remarks,
                 img: it.vod_pic,
+                url: it.vod_id.toString(),
                 col_type: 'movie_3'
             });
         })

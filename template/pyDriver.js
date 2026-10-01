@@ -10,6 +10,11 @@ let parse = {
     },
     主页: function(){
         let d = [];
+        d.push({
+          title: '‘‘’’<font color="#FF4757">▐ </font><b>热门推荐</b>',
+          url: "hiker://empty",
+          col_type: "text_1"
+        });
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent");
         let vodlists = json.list || [];
@@ -42,7 +47,6 @@ let parse = {
                 分类 = classCache.分类;
                 筛选 = classCache.筛选;
             } else {
-                log(PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent"));
                 let home = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
                 let typelist = home['class'] || [];
                 typelist.forEach(v=>{

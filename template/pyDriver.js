@@ -1,17 +1,32 @@
 let parse = {
     作者: '',
     版本: '',
-    host: '',//会写入MY_URL
+    host: '',
     页码: {
-        主页: true,
-        分类: true,
-        排行: true,
-        更新: true
+        主页: false,
+        分类: true
     },
     频道: {
-        包含项: ["分类", "排行", "周表"]//基础用法
+        包含项: ["分类"]
     },
     主页: function(){
+        let d = [];
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        
+        let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
+        let vodlists = json.list || [];
+        vodlists.forEach(it=>{
+            d.push({
+                title: it.vod_name,
+                desc: it.vod_remarks || it.vod_year || '',
+                img: it.vod_pic,
+                url: it.vod_id.toString(),
+                col_type: 'movie_3'
+            })
+        })
+        return d;
+    },
+    分类: function(){
         let d = [];
         let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
         let cate_id = getMyVar('dianbo$分类', '');
@@ -149,7 +164,7 @@ let parse = {
         vodlists.forEach(it=>{
             d.push({
                 title: it.vod_name,
-                desc: it.vod_remarks,
+                desc: it.vod_remarks || it.vod_year || '',
                 img: it.vod_pic,
                 url: it.vod_id.toString(),
                 col_type: 'movie_3'
@@ -186,10 +201,9 @@ let parse = {
         }  
     },
     搜索: function(name){
+        let d = [];
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "searchContent", name, false, PythonHiker.toInt(page));
-        log(json);
-        let d = [];
         let vodlist = json.list || [];
         vodlist.forEach(it=>{
             d.push({

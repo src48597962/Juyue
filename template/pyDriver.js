@@ -179,13 +179,7 @@ let parse = {
                 return 选集列表;
             });
         });
-        let 选集 = pdfa(html, '.play-list&&li').map((data) => {
-            let 选集列表 = {};
-            选集列表.title = pdfh(data, 'a--span--i&&Text')
-            选集列表.url = pd(data, 'a&&href');
-            //选集列表.extra = {};
-            return 选集列表;
-        })
+
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#FFFF00>"+detail2+"</font>",

@@ -2,7 +2,7 @@ let parse = {
     作者: '聚阅',
     版本: '2026100101',
     页码: {
-        主页: false,
+        主页: true,
         分类: true
     },
     频道: {
@@ -10,24 +10,27 @@ let parse = {
     },
     主页: function(){
         let d = [];
-        d.push({
-          title: '‘‘’’<font color="#FF4757">▐ </font><b>热门推荐</b>',
-          url: "hiker://empty",
-          col_type: "text_1"
-        });
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent");
-        log(json);
-        let vodlists = json.list || [];
-        vodlists.forEach(it=>{
+        if(json){
             d.push({
-                title: it.vod_name,
-                desc: it.vod_remarks || it.vod_year || '',
-                img: it.vod_pic,
-                url: it.vod_id.toString(),
-                col_type: 'movie_3'
+            title: '‘‘’’<font color="#FF4757">▐ </font><b>热门推荐</b>',
+            url: "hiker://empty",
+            col_type: "text_1"
+            });
+            let vodlists = json.list || [];
+            vodlists.forEach(it=>{
+                d.push({
+                    title: it.vod_name,
+                    desc: it.vod_remarks || it.vod_year || '',
+                    img: it.vod_pic,
+                    url: it.vod_id.toString(),
+                    col_type: 'movie_3'
+                })
             })
-        })
+        }else{
+            d = this.主页();
+        }
         return d;
     },
     分类: function(){

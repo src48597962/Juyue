@@ -763,11 +763,11 @@ function getObjCode(jkdata, key) {
             const innerParse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                const fn = new Function('juItem', 'juFile', `
+                const fn = new Function('juItem', 'juFile', 'jkdata', `
                     ${rule}
                     return parse;
                 `)
-                return fn(juItem, juFile);
+                return fn(juItem, juFile, jkdata);
                 //eval(rule);
                 //return parse;
             })(input, sid);

@@ -219,8 +219,6 @@ function callFuncApply(pyObject, name, argArr) {
 }
 
 function runPyGetReuslt(pyurl, sid, apitype, ...arr){
-    //let pyModule = runPy(pyurl, sid).callAttr("Spider");
-    //callFunc(pyModule, "init", []);
     //log(GM.listKeys());
     let pyModule = GM.get('py_'+sid);
     if(!pyModule){
@@ -229,12 +227,6 @@ function runPyGetReuslt(pyurl, sid, apitype, ...arr){
         GM.put('py_'+sid, pyModule);
     }
 
-    if(apitype === 'categoryContent'){
-        arr[1] = toInt(arr[1]);
-        arr[3] = toPyJson(arr[3]);
-    }else if(apitype === 'searchContent'){
-        arr[2] = toInt(arr[1]);
-    }
     return callFuncApply(pyModule, apitype, arr);
 }
 $.exports = {

@@ -11,13 +11,13 @@ let parse = {
     频道: {
         包含项: ["分类", "排行", "周表"]//基础用法
     },
-    PythonHiker: $.require(codePath + "plugins/PythonHiker.js"),
     主页: function(){
         let d = [];
         let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
         let cate_id = getMyVar('dianbo$分类', '');
         let fl = storage0.getMyVar('dianbo$flCache') || {};
         let vodlists = [];
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         
         if(page==1){
             let 分类 = [];
@@ -29,7 +29,7 @@ let parse = {
                 分类 = classCache.分类;
                 筛选 = classCache.筛选;
             } else {
-                let home = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
+                let home = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
                 let typelist = home['class'] || [];
                 typelist.forEach(v=>{
                     分类.push(v.type_name + '$' + v.type_id);
@@ -145,7 +145,7 @@ let parse = {
             delete fl.cateId;
             fl.typeid = cate_id;
 
-            let formatJo = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
+            let formatJo = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
             let vodlist = formatJo.list || [];
             vodlist.forEach(it=>{
                 vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
@@ -163,7 +163,8 @@ let parse = {
         return d;
     },
     二级: function(url){
-        let html = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
         let json = html.list[0];
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || '') + '\n' + (json.vod_remarks || json.vod_class || '');
@@ -173,9 +174,9 @@ let parse = {
         let 选集 = json.vod_play_url.split('$$$').map(it => {
             return it.split('#').map(data => {
                 let 选集列表 = {};
-                let [title, url] = data.split("$");
-                选集列表.title = title;
-                选集列表.url = url;
+                let arr = data.split("$");
+                选集列表.title = arr[0] || "";
+                选集列表.url = arr[1] || "";
                 return 选集列表;
             });
         });

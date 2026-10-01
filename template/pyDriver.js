@@ -1,7 +1,6 @@
 let parse = {
     作者: '',
     版本: '',
-    host: '',
     页码: {
         主页: false,
         分类: true
@@ -216,7 +215,14 @@ let parse = {
         return d;
     },
     解析: function(url){
-        let play = url;//自行实现
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        let play = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "playerContent", '', url, []);
+        if($.type(play.url) == "array"){
+            play.url = play.url[1];
+        }
+        if(play.jx='1'){
+            return $.require("parseUrl").解析(url);
+        }
         return play;
     },
     最新: function(url){

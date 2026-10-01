@@ -165,21 +165,33 @@ let parse = {
     二级: function(url){
         let html = this.PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
         let json = html.list[0];
-        log(json);
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || '') + '\n' + (json.vod_remarks || json.vod_class || '');
         let 简介 = json.vod_content || "";
         let 图片 = json.vod_pic;
         let 线路 = json.vod_play_from.split('$$$');
         let 选集 = json.vod_play_url.split('$$$').map(it => {
-            return it.split('#');
+            return it.split('#').map(data => {
+                let 选集列表 = {};
+                let [title, url] = data.split("$");
+                选集列表.title = title;
+                选集列表.url = url;
+                return 选集列表;
+            });
         });
+        let 选集 = pdfa(html, '.play-list&&li').map((data) => {
+            let 选集列表 = {};
+            选集列表.title = pdfh(data, 'a--span--i&&Text')
+            选集列表.url = pd(data, 'a&&href');
+            //选集列表.extra = {};
+            return 选集列表;
+        })
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
-            detail2: "‘‘’’<font color=#f8ecc9>"+detail2+"</font>",
+            detail2: "‘‘’’<font color=#FFFF00>"+detail2+"</font>",
             desc: 简介,
             img: 图片,
-            //line: 线路,
+            line: 线路,
             list: 选集
         }  
     },

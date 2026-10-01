@@ -145,7 +145,7 @@ let parse = {
             delete fl.cateId;
             fl.typeid = cate_id;
 
-            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
+            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
             let vodlist = json.list || [];
             vodlist.forEach(it=>{
                 vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
@@ -191,6 +191,8 @@ let parse = {
         }  
     },
     搜索: function(name){
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "searchContent", name, false, PythonHiker.toInt(page));
         let d = [];
 
     let api_type = jkdata.type || "";
@@ -206,11 +208,8 @@ let parse = {
 
     let lists = [];
 
-            let json;
 
-                PythonHiker.callFunc(pyModule, "init", []);
-                json = PythonHiker.callFunc(pyModule, "searchContent", name, false, PythonHiker.toInt(page));
-            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "searchContent", name, false, page);
+            
             let vodlist = json.list || [];
             vodlist.forEach(it=>{
                 vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });

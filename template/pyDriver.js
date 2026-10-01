@@ -17,6 +17,7 @@ let parse = {
         });
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent");
+        log(json);
         let vodlists = json.list || [];
         vodlists.forEach(it=>{
             d.push({

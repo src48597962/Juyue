@@ -221,9 +221,9 @@ let parse = {
             play.url = play.url[1];
         }
         if(play.jx='1'){
-            return $.require("parseUrl").解析(url);
+            return $.require("parseUrl").解析(play.url);
         }
-        return play;
+        return play.url;
     },
     最新: function(url){
         //自行实现获取最新章节名

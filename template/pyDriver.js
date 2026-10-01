@@ -166,6 +166,7 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
         let json = html.list[0];
+        log(json);
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || '') + '\n' + (json.vod_remarks || json.vod_class || '');
         let 简介 = json.vod_content || "";

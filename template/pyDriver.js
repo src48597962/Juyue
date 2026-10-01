@@ -28,10 +28,10 @@ let parse = {
                     col_type: 'movie_3'
                 })
             })
+            return d;
         }else{
-            d = this.主页();
+            return this.主页();
         }
-        return d;
     },
     分类: function(){
         let d = [];

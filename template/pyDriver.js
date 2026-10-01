@@ -13,11 +13,14 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "homeVideoContent");
         if(json){
-            d.push({
-            title: '‘‘’’<font color="#FF4757">▐ </font><b>热门推荐</b>',
-            url: "hiker://empty",
-            col_type: "text_1"
-            });
+            if(page==1){
+                d.push({
+                    title: '‘‘’’<font color="#FF4757">▐ </font><b>推荐</b>',
+                    url: "hiker://empty",
+                    col_type: "text_1"
+                });
+            }
+            
             let vodlists = json.list || [];
             vodlists.forEach(it=>{
                 d.push({

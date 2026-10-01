@@ -232,6 +232,8 @@ function runPyGetReuslt(pyurl, sid, apitype, ...arr){
     if(apitype === 'categoryContent'){
         arr[1] = toInt(arr[1]);
         arr[3] = toPyJson(arr[3]);
+    }else if(apitype === 'searchContent'){
+        arr[2] = toInt(arr[1]);
     }
     return callFuncApply(pyModule, apitype, arr);
 }

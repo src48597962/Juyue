@@ -221,7 +221,7 @@ function callFuncApply(pyObject, name, argArr) {
 function runPyGetReuslt(pyurl, sid, apitype, ...arr){
     //let pyModule = runPy(pyurl, sid).callAttr("Spider");
     //callFunc(pyModule, "init", []);
-    log(GM.listKeys());
+    //log(GM.listKeys());
     let pyModule = GM.get('py_'+sid);
     if(!pyModule){
         pyModule = runPy(pyurl, sid).callAttr("Spider");

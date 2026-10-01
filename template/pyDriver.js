@@ -29,6 +29,7 @@ let parse = {
                 分类 = classCache.分类;
                 筛选 = classCache.筛选;
             } else {
+                log(PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent"));
                 let home = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
                 let typelist = home['class'] || [];
                 typelist.forEach(v=>{
@@ -193,7 +194,7 @@ let parse = {
         vodlist.forEach(it=>{
             d.push({
                 title: it.vod_name,
-                desc: it.vod_remarks,
+                desc: it.vod_remarks || it.vod_year || '',
                 img: it.vod_pic,
                 url: it.vod_id.toString(),
                 col_type: 'movie_3'

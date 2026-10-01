@@ -226,7 +226,33 @@ let parse = {
         return play.url;
     },
     最新: function(url){
-        //自行实现获取最新章节名
+        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
+        let json = html.list[0];
+        let lists = json.vod_play_url.split('$$$').map(it => {
+            return it.split('#');
+        });
+        if(lists.length>0){
+            //取线路选集最多的索引
+            let indexOfMax = 0;
+            let tempMax = lists[0].length;
+            for(let i = 0; i < lists.length; i ++){
+                if(lists[i].length > tempMax){
+                    tempMax = lists[i].length;
+                    indexOfMax = i;
+                }
+            }
+            let list = lists[indexOfMax];
+            try{
+                let list1 = list[0].split('$')[0];
+                let list2 = list[list.length-1].split('$')[0];
+                if(parseInt(list1.match(/(\d+)/)[0])>parseInt(list2.match(/(\d+)/)[0])){
+                    list.reverse();
+                }
+            }catch(e){
+            }
+            return list[list.length-1].split('$')[0];
+        }
         return '';
     },
     新建模板: `let parse = {

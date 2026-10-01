@@ -11,7 +11,7 @@ let parse = {
     主页: function(){
         let d = [];
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeVideoContent");
+        let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "homeVideoContent");
         if(json){
             d.push({
             title: '‘‘’’<font color="#FF4757">▐ </font><b>热门推荐</b>',
@@ -45,13 +45,13 @@ let parse = {
             let 分类 = [];
             let 推荐 = [];
             let 筛选;
-            let classCache = storage0.getMyVar(jkdata.id+'$classCache');
+            let classCache = storage0.getMyVar(this.id+'$classCache');
             if (classCache) {
                 推荐 = classCache.推荐;
                 分类 = classCache.分类;
                 筛选 = classCache.筛选;
             } else {
-                let home = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "homeContent", true);
+                let home = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "homeContent", true);
                 let typelist = home['class'] || [];
                 typelist.forEach(v=>{
                     分类.push(v.type_name + '$' + v.type_id);
@@ -59,7 +59,7 @@ let parse = {
                 筛选 = home['filters'];
                 推荐 = home['list'] || [];
                 if (分类.length > 0) {
-                    storage0.putMyVar(jkdata.id+'$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
+                    storage0.putMyVar(this.id+'$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
                 }
             }
 
@@ -164,7 +164,7 @@ let parse = {
             delete fl.cateId;
             fl.typeid = cate_id;
 
-            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+            let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
             vodlists = json.list || [];
         }
         vodlists.forEach(it=>{
@@ -180,7 +180,7 @@ let parse = {
     },
     二级: function(url){
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
+        let html = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "detailContent", [url]);
         let json = html.list[0];
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '') + '\n' + (json.type_name || '');
@@ -209,7 +209,7 @@ let parse = {
     搜索: function(name){
         let d = [];
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "searchContent", name, false, PythonHiker.toInt(page));
+        let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "searchContent", name, false, PythonHiker.toInt(page));
         let vodlist = json.list || [];
         vodlist.forEach(it=>{
             d.push({
@@ -224,7 +224,7 @@ let parse = {
     },
     解析: function(url){
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "playerContent", '', url, []);
+        let play = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "playerContent", '', url, []);
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }
@@ -235,7 +235,7 @@ let parse = {
     },
     最新: function(url){
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
+        let html = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "detailContent", [url]);
         let json = html.list[0];
         let lists = json.vod_play_url.split('$$$').map(it => {
             return it.split('#');

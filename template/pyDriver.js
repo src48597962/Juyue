@@ -145,8 +145,8 @@ let parse = {
             delete fl.cateId;
             fl.typeid = cate_id;
 
-            let formatJo = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
-            let vodlist = formatJo.list || [];
+            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "categoryContent", cate_id, page, true, fl);
+            let vodlist = json.list || [];
             vodlist.forEach(it=>{
                 vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
             })
@@ -166,9 +166,8 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "detailContent", [url]);
         let json = html.list[0];
-        log(json);
         let detail1 = json.vod_actor || '';
-        let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '');
+        let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '') + '\n' + (json.type_name || '');
         let 简介 = json.vod_content || "";
         let 图片 = json.vod_pic;
         let 线路 = json.vod_play_from.split('$$$');
@@ -193,12 +192,87 @@ let parse = {
     },
     搜索: function(name){
         let d = [];
-        if(page>1){
-            return d;//如果本身没有第2页，应主动输出为空
+
+    let api_type = jkdata.type || "";
+    let api_ua = jkdata.ua || "MOBILE_UA";
+    api_ua = api_ua == "MOBILE_UA" ? MOBILE_UA : api_ua == "PC_UA" ? PC_UA : api_ua;
+    let headers = { 'User-Agent': api_ua };
+    page = page || MY_PAGE;
+
+    let vodhost, ssurl, detailurl, postdata, listnode, extdata;
+        detailurl = "";
+
+    
+
+    let lists = [];
+
+            let json;
+
+                PythonHiker.callFunc(pyModule, "init", []);
+                json = PythonHiker.callFunc(pyModule, "searchContent", name, false, PythonHiker.toInt(page));
+            let json = PythonHiker.runPyGetReuslt(this.pyurl, jkdata.id, "searchContent", name, false, page);
+            let vodlist = json.list || [];
+            vodlist.forEach(it=>{
+                vodlists.push({ "vod_url": it.vod_id.toString(), "vod_name": it.vod_name, "vod_desc": it.vod_remarks, "vod_pic": it.vod_pic });
+            })
+
+
+            if (lists.length == 0 && api_type == "iptv") {
+                ssurl = ssurl.replace('&zm=' + name, '');
+                json = JSON.parse(getHtmlCode(ssurl, headers));
+                lists = json.data || [];
+            }
+            lists = lists.map(list => {
+                let vodname = list.vod_name || list.title;
+                let vodpic = list.vod_pic || list.pic || "";
+                let voddesc = list.vod_remarks || list.state || "";
+                let vodurl = list.vod_id ? detailurl + list.vod_id : list.nextlink;
+                let vodcontent = list.vod_content || list.vod_blurb || list.type_name ||"";
+                return {
+                    name: vodname,
+                    pic: vodpic,
+                    desc: voddesc,
+                    id: vodurl,
+                    content: vodcontent
+                }
+            })
+
+
+    let searchs = [];
+    if (lists.length > 0) {
+        try {
+            lists.forEach((list) => {
+                let vodpic = list.pic ? list.pic.replace(/http.*\/tu\.php\?tu=|\/img\.php\?url=| |\/tu\.php\?tu=/g, '') : getIcon("404.jpg");
+                if(vodpic.startsWith("//")){
+                    vodpic = "https:" + vodpic;
+                }
+                if(!/^http|^hiker/.test(vodpic) && list.id.startsWith('http')){
+                    vodpic = getHome(list.id) + '/' + vodpic;
+                }
+
+                if (searchContains(list.name, name, true)) {
+                    searchs.push({
+                        vod_name: list.name.replace('立刻播放','').replace(/<[^>]+>/g, ''),
+                        vod_desc: list.desc,
+                        vod_content: (list.content||"").replace(/<[^>]+>/g, ''),
+                        vod_pic: vodpic,
+                        vod_url: list.id,
+                        //vod_play: noerji?list.id:""
+                    })
+                }
+            });
+        } catch (e) {
+            error = 1;
+            log(jkdata.name + ' 输出结果报错>' + e.message + " 错误行#" + e.lineNumber);
         }
-        
-        //实现逻辑
-        return d;
+    }
+    if(error){
+        setJkSort(jkdata.url, {fail: 1});
+    }
+    return {
+        vodlists: searchs,
+        error: error
+    }
     },
     解析: function(url){
         let play = url;//自行实现

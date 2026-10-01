@@ -183,7 +183,7 @@ let parse = {
 
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
-            detail2: "‘‘’’<font color=#FFFF00>"+detail2+"</font>",
+            detail2: "‘‘’’<font color=#99CC99>"+detail2+"</font>",
             desc: 简介,
             img: 图片,
             line: 线路,

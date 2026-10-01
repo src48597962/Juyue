@@ -1,4 +1,4 @@
-const mpath = "hiker://files/plugins/Chaquopy"
+const mpath = "hiker://files/plugins/Chaquopy";
 
 function getMP(name) {
     return mpath + "/" + name;
@@ -21,12 +21,12 @@ let PyObject = new org.mozilla.javascript.NativeJavaClass(this, findJavaClass("c
 let Kwarg = new org.mozilla.javascript.NativeJavaClass(this, findJavaClass("com.chaquo.python.Kwarg"));
 
 if (!Python.isStarted()) {
-    let androidPlatform = new AndroidPlatform(getCurrentActivity())
+    let androidPlatform = new AndroidPlatform(getCurrentActivity());
     Python.start(androidPlatform);
 
     let sys = Python.getInstance().getModule("sys");
     let spath = sys.get("path").asList();
-    spath.add(spath.size(), PyObject.fromJava(getPath(getMP("libs_py")).slice(7)))
+    spath.add(spath.size(), PyObject.fromJava(getPath(getMP("libs_py")).slice(7)));
 }
 
 
@@ -40,7 +40,7 @@ let machinery = py.getModule("importlib.machinery");
 let Builtins = py.getBuiltins();
 
 //构建海阔环境模块
-let hkrule = (typeof MY_RULE !== "undefined") && MY_RULE ? MY_RULE : {}
+let hkrule = (typeof MY_RULE !== "undefined") && MY_RULE ? MY_RULE : {};
 let hiker = py.getModule("base.hiker");
 hiker.put("MY_TITLE", MY_RULE.title || "");
 hiker.put("MY_TICKET", MY_TICKET);
@@ -161,7 +161,7 @@ function runPy(path, mname, nocache) {
 }
 
 function fromJs(obj) {
-    let type = Object.prototype.toString.call(obj)
+    let type = Object.prototype.toString.call(obj);
     if ("[object Array]" === type) {
 
         let list = Builtins.callAttr("list");
@@ -202,7 +202,7 @@ function fromJs(obj) {
 }
 
 function isInteger(obj) {
-    return ~~obj == obj
+    return ~~obj == obj;
 }
 
 function toInt(num) {
@@ -221,6 +221,7 @@ function callFuncApply(pyObject, name, argArr) {
 function runPyGetReuslt(pyurl, sid, apitype, ...arr){
     //let pyModule = runPy(pyurl, sid).callAttr("Spider");
     //callFunc(pyModule, "init", []);
+    log(GM.listKeys());
     let pyModule = GM.get('py_'+sid);
     if(!pyModule){
         pyModule = runPy(pyurl, sid).callAttr("Spider");

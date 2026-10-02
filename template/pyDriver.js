@@ -15,6 +15,68 @@ let parse = {
                 url: "hiker://empty",
                 col_type: "text_1"
             });
+            d.push({
+                title:'本地选择',
+                col_type: 'input',
+                desc: '手工输入目录地址',
+                url: $.toString(() => {
+                    return `fileSelect://`+$.toString(()=>{
+                        if(!MY_PATH){
+                            return "toast://获取文件真实路径失败：不支持通过文件管理器获取，可手工填写目录路径";
+                        }
+                        MY_PATH = MY_PATH.substr(0, MY_PATH.lastIndexOf('/')+1)
+                        putMyVar("importinput",MY_PATH);
+                        refreshPage();
+                        return "hiker://empty";
+                    })
+                }),
+                extra: {
+                    titleVisible: true,
+                    defaultValue: getMyVar('importinput', ''),
+                    onChange: 'putMyVar("importinput",input);'
+                }
+            });
+            d.push({
+                title: '🆗 确定扫描',
+                url: $('#noLoading#').lazyRule(() => {
+                    let input = getMyVar('importinput', '').trim();
+                    if(!input.endsWith('/') || !input.startsWith('/')){
+                        return 'toast://文件夹路径不正确，以/开头结尾';
+                    }
+                    
+                    if(input.startsWith('/')){
+                        input = "file://" + input;
+                    }
+                    showLoading("正在扫描本地文件夹");
+                    let newfiles = readDir(input).filter(v=>(v.endsWith('.js')||v.endsWith('.py')) && !v.includes('[合]') && oldfiles.filter(o=>o.includes(v)).length==0).map(v=>input+v);
+                    function scanFolder(input,start) {
+                        if(!start){
+                            
+                        }
+
+                        let oldfiles = getDatas("jk").filter(v=>(v.type=="hipy_t3"||v.type=="py") && v.url.startsWith(jkfilespath)).map(v=>v.url);
+                        
+                        if(!start){
+                            hideLoading();
+                        }
+                        
+                        if(newfiles.length==0){
+                            log("扫描本地文件夹,未发现新增的js/py文件");
+                            return start?"hiker://empty":"toast://没有新增的js/py文件"
+                        }else if(start){
+                            return newfiles;
+                        }else{
+                            return $('hiker://empty#noRecordHistory##noHistory#').rule((newfiles) => {
+                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
+                                importConfirm(newfiles);
+                            },newfiles)
+                        }
+                    }
+                    return scanFolder(input);
+                }),
+                col_type: "text_center_1"
+            });
+
         }else{
             let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
             let cate_id = getMyVar('dianbo$分类', '');

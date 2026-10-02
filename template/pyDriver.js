@@ -48,31 +48,13 @@ let parse = {
                         input = "file://" + input;
                     }
                     showLoading("正在扫描本地文件夹");
-                    let newfiles = readDir(input).filter(v=>(v.endsWith('.js')||v.endsWith('.py')) && !v.includes('[合]') && oldfiles.filter(o=>o.includes(v)).length==0).map(v=>input+v);
-                    function scanFolder(input,start) {
-                        if(!start){
-                            
-                        }
-
-                        let oldfiles = getDatas("jk").filter(v=>(v.type=="hipy_t3"||v.type=="py") && v.url.startsWith(jkfilespath)).map(v=>v.url);
+                    let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
+                    if(pyfiles.length==0){
+                        return "toast://没有找到py文件"
+                    }else{
                         
-                        if(!start){
-                            hideLoading();
-                        }
-                        
-                        if(newfiles.length==0){
-                            log("扫描本地文件夹,未发现新增的js/py文件");
-                            return start?"hiker://empty":"toast://没有新增的js/py文件"
-                        }else if(start){
-                            return newfiles;
-                        }else{
-                            return $('hiker://empty#noRecordHistory##noHistory#').rule((newfiles) => {
-                                require(config.聚影.replace(/[^/]*$/,'') + 'SrcJySet.js');
-                                importConfirm(newfiles);
-                            },newfiles)
-                        }
                     }
-                    return scanFolder(input);
+                    return "toast://找到py文件" + pyfiles.length + "个";
                 }),
                 col_type: "text_center_1"
             });

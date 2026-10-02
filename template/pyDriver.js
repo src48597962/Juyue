@@ -49,10 +49,12 @@ let parse = {
                     }
                     showLoading("正在扫描本地文件夹");
                     let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
+                    hideLoading();
                     if(pyfiles.length==0){
                         return "toast://没有找到py文件"
                     }else{
-                        
+                        log(input);
+                        log(pyfiles);
                     }
                     return "toast://找到py文件" + pyfiles.length + "个";
                 }),

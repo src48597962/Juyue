@@ -4,12 +4,30 @@ let parse = {
     页码: {
         主页: true
     },
+    _readDir: function(input, pycache){
+        if(!input.endsWith('/') || !input.startsWith('/')){
+            return 'toast://文件夹路径不正确，以/开头结尾';
+        }
+        showLoading("正在扫描本地文件夹");
+        let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
+        if(pyfiles.length>0){
+            pyfiles.forEach(it=>{
+                it = input + it;
+            })
+            writeFile(pycache, JSON.stringify(pyfiles));
+            juItem.set('path', input);
+            juItem.set('url', pyfiles[0]);
+        }
+        hideLoading();
+        return pyfiles;
+    },
     主页: function(){
         let d = [];
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.path;
         let pyurl = pyConfig.url;
-        if(!pypath){
+        let pycache = cachepath + 'pylist.json';
+        if(!pypath || !fileExist('file://' + pypath)){
             d.push({
                 title: '‘‘’’<font color="#FF4757">▐ </font><b>需先设置py文件所在目录</b>',
                 url: "hiker://empty",
@@ -18,7 +36,7 @@ let parse = {
             d.push({
                 title:'本地选择',
                 col_type: 'input',
-                desc: '手工输入目录地址',
+                desc: '手工输入目录路径',
                 url: $.toString(() => {
                     return `fileSelect://`+$.toString(()=>{
                         if(!MY_PATH){
@@ -38,30 +56,135 @@ let parse = {
             });
             d.push({
                 title: '🆗 确定扫描',
-                url: $('#noLoading#').lazyRule(() => {
+                url: $('#noLoading#').lazyRule((_readDir, pycache) => {
                     let input = getMyVar('importinput', '').trim();
-                    if(!input.endsWith('/') || !input.startsWith('/')){
-                        return 'toast://文件夹路径不正确，以/开头结尾';
-                    }
-                    
-                    if(input.startsWith('/')){
-                        input = "file://" + input;
-                    }
-                    showLoading("正在扫描本地文件夹");
-                    let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
-                    hideLoading();
-                    if(pyfiles.length==0){
-                        return "toast://没有找到py文件"
-                    }else{
-                        log(input);
-                        log(pyfiles);
-                    }
-                    return "toast://找到py文件" + pyfiles.length + "个";
-                }),
+                    let pyfiles = _readDir(input, pycache);
+                    return "toast://找到" + pyfiles.length + "个py文件";
+                }, _readDir, pycache),
                 col_type: "text_center_1"
             });
-
         }else{
+            let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):_readDir(pypath, pycache);
+            d.push({
+                title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
+                url: $('#noLoading#').lazyRule((pyfiles, index) => {
+                    let sourceList = pyfiles.map((it, i)=>{
+                        let name = it.match(/[^\/]+(?=\.py$)/)[0];
+                        //if(i === index){
+                         //   name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+name+`</front></strong>`;
+                        //}
+                        return name;
+                    });
+                    let tmpList = sourceList;
+
+                    hikerPop.setUseStartActivity(false);
+
+
+                    let sourceName = sourceList[index];
+                    let spen = 3;
+                    let inputBox;
+                    let pop = hikerPop.selectBottomRes({
+                        options: sourceList,
+                        columns: spen,
+                        title: "当前:" + (sourceName||"") + "  合计:" + sourceList.length,
+                        noAutoDismiss: true,
+                        //position: index,
+                        toPosition: index,
+                        extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                            hint: "输入py源关键字筛选",
+                            onChange(s, manage) {
+                                putMyVar("SrcJu_pysourceListFilter", s);
+                                tmpList = sourceList.filter(x => x.toLowerCase().includes(s.toLowerCase()));
+                                manage.list.length = 0;
+                                tmpList.forEach(x => {
+                                    manage.list.push(x);
+                                });
+                                manage.change();
+                            },
+                            defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
+                            titleVisible: false
+                        })),
+                        longClick(s, i, manage) {
+
+                        },
+                        click(s, i, manage) {
+                            pop.dismiss();
+/*
+                            let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                            if(tmpList[i].name==input){
+                                Juconfig["homeSource"] = tmpList[i];
+                                writeFile(cfgfile, JSON.stringify(Juconfig));
+                                
+                                clearMyVar('dianbo$分类');
+                                clearMyVar('dianbo$fold');
+                                clearMyVar('dianbo$classCache');
+                                clearMyVar('dianbo$flCache');
+                                clearMyVar('点播动态加载loading');
+                                clearMyVar('点播一级jkdata');
+                                
+                                let key = tmpList[i].url;
+                                setJkSort(key, {use: 1});
+                                refreshPage(true);
+                                
+                                return 'toast://' + '主页源已设置为：' + input;
+                            }else{
+                                return 'toast://源列表索引异常'
+                            }
+                            */
+                        },
+                        menuClick(manage) {
+                            let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];
+                            if(lockgroups.length>0){
+                                menuarr.push("显示加锁分组");
+                            }
+                            hikerPop.selectCenter({
+                                options: menuarr,
+                                columns: 2,
+                                title: "请选择",
+                                click(s, i) {
+                                    if (i === 0) {
+                                        spen = spen == 3 ? 2 : 3;
+                                        manage.changeColumns(spen);
+                                        manage.scrollToPosition(index, false);
+                                    } else if (i === 1) {
+                                        manage.list.reverse();
+                                        manage.change();
+                                        manage.scrollToPosition(index, true);
+                                    } else if (i === 2) {
+                                        let sorttype = ["更新时间","接口名称","使用频率"].map(v=>v==getItem('sourceListSort','更新时间')?v+"√":v);
+                                        showSelectOptions({
+                                            "title": "选择排序方式", 
+                                            "options" : sorttype, 
+                                            "col": 1, 
+                                            "js": `setItem('sourceListSort', input.replace("√",""));'toast://排序方式在下次生效：' + input.replace("√","")`
+                                        })
+                                    } else if (i === 3) {
+                                        if (hikerPop.canBiometric() !== 0) {
+                                            return "toast://调用生物学验证出错";
+                                        }
+                                        let pop = hikerPop.checkByBiometric(() => {
+                                            putMyVar('Src_Jy_已验证指纹','1');
+                                            toast("验证成功，重新点切换站源吧");
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }, pyfiles, pyfiles.indexOf(pyurl)),
+                col_type: 'text_3'
+            })
+            d.push({
+                title: '上一个',
+                url: '',
+                col_type: 'text_3'
+            })
+            d.push({
+                title: '下一个',
+                url: '',
+                col_type: 'text_3'
+            })
+
             let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
             let cate_id = getMyVar('dianbo$分类', '');
             let fl = storage0.getMyVar('dianbo$flCache') || {};
@@ -78,7 +201,7 @@ let parse = {
                     分类 = classCache.分类;
                     筛选 = classCache.筛选;
                 } else {
-                    let home = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "homeContent", true);
+                    let home = PythonHiker.runPyGetReuslt(pyurl, this.id, "homeContent", true);
                     let typelist = home['class'] || [];
                     typelist.forEach(v=>{
                         分类.push(v.type_name + '$' + v.type_id);
@@ -191,7 +314,7 @@ let parse = {
                 delete fl.cateId;
                 fl.typeid = cate_id;
 
-                let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                let json = PythonHiker.runPyGetReuslt(pyurl, this.id, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                 vodlists = json.list || [];
             }
             vodlists.forEach(it=>{

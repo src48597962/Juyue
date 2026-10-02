@@ -218,13 +218,13 @@ function callFuncApply(pyObject, name, argArr) {
     return pyToJs(ret);
 }
 
-function runPyGetReuslt(pyurl, sid, apitype, ...arr){
+function runPyGetReuslt(pyurl, apitype, ...arr){
     //log(GM.listKeys());
-    let pyModule = GM.get('py_'+sid);
+    let pyModule = GM.get('py_'+md5(pyurl));
     if(!pyModule){
-        pyModule = runPy(pyurl, sid).callAttr("Spider");
+        pyModule = runPy(pyurl).callAttr("Spider");
         callFunc(pyModule, "init", []);
-        GM.put('py_'+sid, pyModule);
+        GM.put('py_'+md5(pyurl), pyModule);
     }
 
     return callFuncApply(pyModule, apitype, arr);

@@ -77,8 +77,8 @@ let parse = {
                     });
                     let tmpList = sourceList;
 
+                    const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                     hikerPop.setUseStartActivity(false);
-
 
                     let sourceName = sourceList[index];
                     let spen = 3;

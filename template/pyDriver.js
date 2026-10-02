@@ -70,9 +70,6 @@ let parse = {
                 url: $('#noLoading#').lazyRule((pyfiles, index) => {
                     let sourceList = pyfiles.map((it, i)=>{
                         let name = it.match(/[^\/]+(?=\.py$)/)[0];
-                        //if(i === index){
-                         //   name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+name+`</front></strong>`;
-                        //}
                         return name;
                     });
                     let tmpList = sourceList;
@@ -81,6 +78,7 @@ let parse = {
                     hikerPop.setUseStartActivity(false);
 
                     let sourceName = sourceList[index];
+                    sourceList[index] = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index]+`</front></strong>`;
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({
@@ -109,28 +107,17 @@ let parse = {
                         },
                         click(s, i, manage) {
                             pop.dismiss();
-/*
                             let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                            if(tmpList[i].name==input){
-                                Juconfig["homeSource"] = tmpList[i];
-                                writeFile(cfgfile, JSON.stringify(Juconfig));
-                                
-                                clearMyVar('dianbo$分类');
-                                clearMyVar('dianbo$fold');
-                                clearMyVar('dianbo$classCache');
-                                clearMyVar('dianbo$flCache');
-                                clearMyVar('点播动态加载loading');
-                                clearMyVar('点播一级jkdata');
-                                
-                                let key = tmpList[i].url;
-                                setJkSort(key, {use: 1});
-                                refreshPage(true);
-                                
-                                return 'toast://' + '主页源已设置为：' + input;
-                            }else{
-                                return 'toast://源列表索引异常'
-                            }
-                            */
+                            
+                            clearMyVar('dianbo$分类');
+                            clearMyVar('dianbo$fold');
+                            clearMyVar('dianbo$classCache');
+                            clearMyVar('dianbo$flCache');
+                            juItem.set('url', pyfiles[i]);
+                            
+                            refreshPage(true);
+                            
+                            return 'toast://' + '主页源已设置为：' + input;
                         },
                         menuClick(manage) {
                             let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];
@@ -171,6 +158,7 @@ let parse = {
                             });
                         }
                     });
+                    return 'hiker://empty';
                 }, pyfiles, pyfiles.indexOf(pyurl)),
                 col_type: 'text_3'
             })
@@ -185,7 +173,7 @@ let parse = {
                 col_type: 'text_3'
             })
             try{
-                    let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
+                let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
                 let cate_id = getMyVar('dianbo$分类', '');
                 let fl = storage0.getMyVar('dianbo$flCache') || {};
                 let vodlists = [];

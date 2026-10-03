@@ -331,7 +331,7 @@ let parse = {
                             col_type: 'movie_3'
                         })
                     })
-                    log(vodlists);
+                    //log(vodlists);
                     log('bbb');
                 }
             }else{

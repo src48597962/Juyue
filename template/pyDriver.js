@@ -113,7 +113,7 @@ let parse = {
                         },
                         click(s, i, manage) {
                             pop.dismiss();
-                            let input = s.name.replace(/[’‘]|<[^>]*>/g, "");
+                            let input = s.replace(/[’‘]|<[^>]*>/g, "");
                             
                             clearMyVar('dianbo$分类');
                             clearMyVar('dianbo$fold');

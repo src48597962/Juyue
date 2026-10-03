@@ -59,12 +59,12 @@ let parse = {
                 url: $('#noLoading#').lazyRule((_readDir, pycache) => {
                     let input = getMyVar('importinput', '').trim();
                     let pyfiles = _readDir(input, pycache);
+                    refreshPage();
                     return "toast://找到" + pyfiles.length + "个py文件";
                 }, this._readDir, pycache),
                 col_type: "text_center_1"
             });
         }else{
-            log(fetch('file://' + pyurl));
             let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
             d.push({
                 title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',

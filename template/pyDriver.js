@@ -336,7 +336,7 @@ let parse = {
                 });
             }
         }
-        log(vodlists);
+        log(d);
         return d;
     },
     二级: function(url){

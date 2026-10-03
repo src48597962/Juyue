@@ -16,7 +16,7 @@ let parse = {
             })
             writeFile(pycache, JSON.stringify(pyfiles));
             juItem.set('pypath', input);
-            juItem.set('pyurl', input + pyfiles[0]);
+            juItem.set('pyurl', pyfiles[0]);
         }
         hideLoading();
         return pyfiles;
@@ -66,6 +66,7 @@ let parse = {
             });
         }else{
             let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
+            
             d.push({
                 title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
                 url: $('#noLoading#').lazyRule((pyfiles, index) => {

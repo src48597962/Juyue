@@ -454,14 +454,14 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-
+        let d2 = [];
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
             }
             for(let i=0;i<num;i++){
-                d.push({
+                d2.push({
                     title: "",
                     url: "hiker://empty",
                     col_type: "text_1",
@@ -471,7 +471,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            d.push({
+            d2.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
@@ -487,11 +487,11 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(parse[datatype]){
             let 执行str = parse[datatype].toString();
-            let pred = [];
+            let d3 = [];
             if(执行str.includes('setPreResult')){
-                pred = d;
+                d3 = d;
             }else{
-                setPreResult(d);
+                setPreResult(d.concat(d2));
             }
             d = [];
             let obj = parse['静态分类'] || {};
@@ -513,7 +513,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { setPreResult2(pred.concat(rd)); };
+                setPreResult = function(rd) { setPreResult2(d3.concat(rd)); };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };

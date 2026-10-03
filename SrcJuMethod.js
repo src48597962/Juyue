@@ -454,8 +454,10 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-
+        setPreResult(d);
+        d = [];
         if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
+            setResult(d);
             let num = 1;
             if(datatype!='主页'){
                 num = 3;

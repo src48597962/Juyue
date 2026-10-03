@@ -69,8 +69,7 @@ let parse = {
                 title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
                 url: $('#noLoading#').lazyRule((pyfiles, index) => {
                     let sourceList = pyfiles.map((it, i)=>{
-                        let name = it.match(/[^\/]+(?=\.py$)/)[0];
-                        return {name: name, index: i};
+                        return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
                     });
                     let tmpList = sourceList;
 
@@ -78,7 +77,7 @@ let parse = {
                     hikerPop.setUseStartActivity(false);
 
                     let sourceName = sourceList[index].name;
-                    sourceList[index] = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index]+`</front></strong>`;
+                    sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({

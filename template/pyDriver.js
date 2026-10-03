@@ -11,8 +11,8 @@ let parse = {
         showLoading("正在扫描本地文件夹");
         let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
         if(pyfiles.length>0){
-            pyfiles.forEach(it=>{
-                it = input + it;
+            pyfiles = pyfiles.map(it=>{
+                return input + it;
             })
             writeFile(pycache, JSON.stringify(pyfiles));
             juItem.set('pypath', input);

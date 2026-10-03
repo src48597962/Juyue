@@ -95,6 +95,7 @@ let parse = {
                         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                             hint: "输入py源关键字筛选",
                             onChange(s, manage) {
+                                log('ssss');
                                 putMyVar("SrcJu_pysourceListFilter", s);
                                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                                 manage.list.length = 0;

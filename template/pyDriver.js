@@ -108,6 +108,8 @@ let parse = {
 
                         },
                         click(s, i, manage) {
+                            log(s);
+                            log(i);
                             pop.dismiss();
                             let input = s.replace(/[’‘]|<[^>]*>/g, "");
                             
@@ -116,9 +118,9 @@ let parse = {
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
                             log('选择'+pyfiles[i]);
-                            juItem.set('pyurl', pyfiles[i]);
-                            clearMyVar('主页动态加载loading');
-                            refreshPage(true);
+                            //juItem.set('pyurl', pyfiles[i]);
+                            //clearMyVar('主页动态加载loading');
+                            //refreshPage(true);
                             
                             return 'toast://' + '主页源已设置为：' + input;
                         },

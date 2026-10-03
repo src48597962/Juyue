@@ -114,7 +114,7 @@ let parse = {
                             clearMyVar('dianbo$fold');
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
-                            juItem.set('url', pyfiles[i]);
+                            juItem.set('pyurl', pyfiles[i]);
                             
                             refreshPage(true);
                             

@@ -400,7 +400,7 @@ let parse = {
     解析: function(url){
         let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(pyurl, id, "playerContent", '', url, []);
+        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, []);
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }

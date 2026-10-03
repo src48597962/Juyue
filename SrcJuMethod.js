@@ -454,20 +454,16 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-
+        let topd = d;
+        let pred = [];
+        d = [];
         if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
-            d.push({
-                col_type: "blank_block",
-                extra: {
-                    id: "setPreResultid"
-                }
-            })
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
             }
             for(let i=0;i<num;i++){
-                d.push({
+                pred.push({
                     title: "<br>",
                     col_type: "rich_text",
                     extra: {
@@ -475,7 +471,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            d.push({
+            pred.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
@@ -484,8 +480,6 @@ function getYiData(datatype, jkdata, dd) {
                 }
             })
             putMyVar(datatype+'动态加载loading', '1');
-            setPreResult(d);
-            d = [];
         }
 
         if(parse['host']){
@@ -493,6 +487,9 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(parse[datatype]){
             let 执行str = parse[datatype].toString();
+            if(!执行str.includes('setPreResult')){
+                setPreResult(topd.concat(pred));
+            }
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
                 createClass(d, obj);
@@ -512,7 +509,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { dynamicsItemList.push({action:"addItemBefore", key:'setPreResultid', value:rd}); };
+                setPreResult = function(rd) { setPreResult(topd.concat(rd).concat(pred)); };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };

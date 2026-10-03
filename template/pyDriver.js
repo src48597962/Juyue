@@ -178,7 +178,7 @@ let parse = {
                 url: '',
                 col_type: 'text_3'
             })
-            storage0.putMyVar('预加载组件', d);
+            setPreResult(d);
             d = [];
 
             if(pyurl){

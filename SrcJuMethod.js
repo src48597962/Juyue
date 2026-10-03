@@ -454,16 +454,14 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        let topd = d;
-        let pred = [];
-        d = [];
+
         if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
             }
             for(let i=0;i<num;i++){
-                pred.push({
+                d.push({
                     title: "<br>",
                     col_type: "rich_text",
                     extra: {
@@ -471,7 +469,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            pred.push({
+            d.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
@@ -480,7 +478,8 @@ function getYiData(datatype, jkdata, dd) {
                 }
             })
             putMyVar(datatype+'动态加载loading', '1');
-            setPreResult(topd.concat(pred));
+            setPreResult(d);
+            d = [];
         }
 
         if(parse['host']){

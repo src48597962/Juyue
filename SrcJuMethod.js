@@ -553,6 +553,7 @@ function getYiData(datatype, jkdata, dd) {
             deleteItem = deleteItem2;
             deleteItemByCls = deleteItemByCls2;
         }else{
+            setPreResult(topd);
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
                 desc: parse['模板名']?('确认模板源>'+(parse['模板名']||'')):'',

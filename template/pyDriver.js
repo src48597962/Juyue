@@ -11,9 +11,7 @@ let parse = {
         showLoading("正在扫描本地文件夹");
         let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
         if(pyfiles.length>0){
-            pyfiles = pyfiles.map(it=>{
-                return input + it;
-            })
+            pyfiles = pyfiles.map(it=>input+it);
             writeFile(pycache, JSON.stringify(pyfiles));
             juItem.set('pypath', input);
         }
@@ -23,8 +21,8 @@ let parse = {
     主页: function(){
         let d = [];
         let pyConfig = juItem.getAll();
-        let pypath = pyConfig.pypath;
-        let pyurl = pyConfig.pyurl;
+        let pypath = pyConfig.pypath || '';
+        let pyurl = pyConfig.pyurl || '';
         let pycache = cachepath + 'pylist.json';
         if(!pypath || !fileExist('file://' + pypath)){
             d.push({
@@ -72,19 +70,19 @@ let parse = {
                 url: $('#noLoading#').lazyRule((pyfiles, index) => {
                     let sourceList = pyfiles.map((it, i)=>{
                         let name = it.match(/[^\/]+(?=\.py$)/)[0];
-                        return name;
+                        return {name: name, index: i};
                     });
                     let tmpList = sourceList;
 
                     const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                     hikerPop.setUseStartActivity(false);
 
-                    let sourceName = sourceList[index];
+                    let sourceName = sourceList[index].name;
                     sourceList[index] = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index]+`</front></strong>`;
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({
-                        options: sourceList,
+                        options: sourceList.map(v=>v.name),
                         columns: spen,
                         title: "当前:" + (sourceName||"") + "  合计:" + sourceList.length,
                         noAutoDismiss: true,
@@ -94,7 +92,7 @@ let parse = {
                             hint: "输入py源关键字筛选",
                             onChange(s, manage) {
                                 putMyVar("SrcJu_pysourceListFilter", s);
-                                tmpList = sourceList.filter(x => x.toLowerCase().includes(s.toLowerCase()));
+                                tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                                 manage.list.length = 0;
                                 tmpList.forEach(x => {
                                     manage.list.push(x);
@@ -110,19 +108,19 @@ let parse = {
                         click(s, i, manage) {
                             log(s);
                             log(i);
-                            pop.dismiss();
-                            let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                            //pop.dismiss();
+                            //let input = s.name.replace(/[’‘]|<[^>]*>/g, "");
                             
                             clearMyVar('dianbo$分类');
                             clearMyVar('dianbo$fold');
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
-                            log('选择'+pyfiles[i]);
+                            //log('选择'+pyfiles[s.index]);
                             //juItem.set('pyurl', pyfiles[i]);
                             //clearMyVar('主页动态加载loading');
                             //refreshPage(true);
                             
-                            return 'toast://' + '主页源已设置为：' + input;
+                            //return 'toast://' + '主页源已设置为：' + input;
                         },
                         menuClick(manage) {
                             let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];

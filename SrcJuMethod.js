@@ -509,7 +509,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { setPreResult(topd.concat(rd).concat(pred)); };
+                setPreResult = function(rd) { setPreResult2(topd.concat(rd).concat(pred)); };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };

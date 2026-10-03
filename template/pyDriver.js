@@ -64,6 +64,7 @@ let parse = {
                 col_type: "text_center_1"
             });
         }else{
+            log(fetch('file://' + pyurl));
             let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
             d.push({
                 title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',

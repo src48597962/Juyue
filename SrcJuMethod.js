@@ -455,14 +455,13 @@ function getYiData(datatype, jkdata, dd) {
             }
         }
 
-        let pred = [];
         if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
             }
             for(let i=0;i<num;i++){
-                pred.push({
+                d.push({
                     title: "",
                     url: "hiker://empty",
                     col_type: "text_1",
@@ -472,7 +471,7 @@ function getYiData(datatype, jkdata, dd) {
                     }
                 })
             }
-            pred.push({
+            d.push({
                 pic_url: config.聚阅.replace(/[^/]*$/,'') + "img/Loading.gif",
                 col_type: "pic_1_center",
                 url: "hiker://empty",
@@ -488,9 +487,13 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(parse[datatype]){
             let 执行str = parse[datatype].toString();
-            if(pred.length>0 && !执行str.includes('setPreResult')){
-                setPreResult(pred);
+            let pred = [];
+            if(执行str.includes('setPreResult')){
+                pred = d;
+            }else{
+                setPreResult(d);
             }
+            d = [];
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
                 createClass(d, obj);
@@ -510,6 +513,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
+                setPreResult = function(rd) { setPreResult2(pred.concat(rd)); };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
@@ -547,6 +551,7 @@ function getYiData(datatype, jkdata, dd) {
             }
             //恢复全局变量
             setResult = setResult2;
+            setPreResult = setPreResult2;
             addItemBefore = addItemBefore2;
             addItemAfter = addItemAfter2;
             deleteItem = deleteItem2;

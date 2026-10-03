@@ -59,6 +59,7 @@ let parse = {
                 url: $('#noLoading#').lazyRule((_readDir, pycache) => {
                     let input = getMyVar('importinput', '').trim();
                     let pyfiles = _readDir(input, pycache);
+                    clearMyVar('主页动态加载loading');
                     refreshPage();
                     return "toast://找到" + pyfiles.length + "个py文件";
                 }, this._readDir, pycache),

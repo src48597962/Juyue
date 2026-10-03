@@ -16,7 +16,7 @@ let parse = {
             })
             writeFile(pycache, JSON.stringify(pyfiles));
             juItem.set('path', input);
-            juItem.set('url', pyfiles[0]);
+            juItem.set('url', input + pyfiles[0]);
         }
         hideLoading();
         return pyfiles;

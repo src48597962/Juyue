@@ -328,7 +328,10 @@ let parse = {
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
                             url: it.vod_id.toString(),
-                            col_type: 'movie_3'
+                            col_type: 'movie_3',
+                            extra: {
+                                pyurl: pyurl
+                            }
                         })
                     })
                     //log(vodlists);
@@ -345,8 +348,9 @@ let parse = {
         return d;
     },
     二级: function(url){
+        let pyurl = MY_PARAMS.pyurl;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "detailContent", [url]);
+        let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
         let json = html.list[0];
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '') + '\n' + (json.type_name || '');
@@ -373,9 +377,10 @@ let parse = {
         }  
     },
     搜索: function(name){
+        let pyurl = juItem.get('pyurl');
         let d = [];
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let json = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "searchContent", name, false, PythonHiker.toInt(page));
+        let json = PythonHiker.runPyGetReuslt(pyurl, "searchContent", name, false, PythonHiker.toInt(page));
         let vodlist = json.list || [];
         vodlist.forEach(it=>{
             d.push({
@@ -383,14 +388,18 @@ let parse = {
                 desc: it.vod_remarks || it.vod_year || '',
                 img: it.vod_pic,
                 url: it.vod_id.toString(),
-                col_type: 'movie_3'
+                col_type: 'movie_3',
+                extra: {
+                    pyurl: pyurl
+                }
             });
         })
         return d;
     },
     解析: function(url){
+        let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "playerContent", '', url, []);
+        let play = PythonHiker.runPyGetReuslt(pyurl, id, "playerContent", '', url, []);
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }
@@ -400,8 +409,9 @@ let parse = {
         return play.url;
     },
     最新: function(url){
+        let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(this.pyurl, this.id, "detailContent", [url]);
+        let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
         let json = html.list[0];
         let lists = json.vod_play_url.split('$$$').map(it => {
             return it.split('#');

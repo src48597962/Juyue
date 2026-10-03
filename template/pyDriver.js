@@ -199,7 +199,7 @@ let parse = {
                         let 分类 = [];
                         let 推荐 = [];
                         let 筛选;
-                        let classCache = storage0.getMyVar(this.id+'$classCache');
+                        let classCache = storage0.getMyVar('dianbo$classCache');
                         if (classCache) {
                             推荐 = classCache.推荐;
                             分类 = classCache.分类;
@@ -213,7 +213,7 @@ let parse = {
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
-                                storage0.putMyVar(this.id+'$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
+                                storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
                             }
                         }
 

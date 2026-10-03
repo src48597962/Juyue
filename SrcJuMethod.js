@@ -455,7 +455,7 @@ function getYiData(datatype, jkdata, dd) {
             }
         }
 
-        if (page == 1 && typeof (setPreResult) != "undefined" && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
+        if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
             d.push({
                 col_type: "blank_block",
                 extra: {
@@ -512,7 +512,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { addItemBefore('setPreResultid', rd) };
+                setPreResult = function(rd) { dynamicsItemList.push({action:"addItemBefore", key:'setPreResultid', value:rd}); };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };

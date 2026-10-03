@@ -496,6 +496,7 @@ function getYiData(datatype, jkdata, dd) {
             }
 
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
+            let issetPreResult = false;
             //全局变量劫持
             const setResult2 = setResult;
             const setPreResult2 = setPreResult;
@@ -509,7 +510,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { setPreResult2(topd.concat(rd).concat(pred)); };
+                setPreResult = function(rd) { setPreResult2(topd.concat(rd).concat(pred)); issetPreResult = true; };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
@@ -552,6 +553,9 @@ function getYiData(datatype, jkdata, dd) {
             addItemAfter = addItemAfter2;
             deleteItem = deleteItem2;
             deleteItemByCls = deleteItemByCls2;
+            if(!issetPreResult){
+                setPreResult(topd); //一级代码中存在setPreResult，但未执行，所以需要补聚阅头部
+            }
         }else{
             setPreResult(topd);
             d.push({

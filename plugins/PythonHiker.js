@@ -152,10 +152,10 @@ function runPy(path, mname, nocache) {
            requireDownload(path, (mpath = cPath + (mname || name) + ".py"));
         }
     } else {
-        let pa = path.split("/");
-        name = pa.pop().split(".")[0];
-        mpath = cPath + (mname || name) + ".py";
-        FileUtil.copy(new File(path), new File(mpath));
+        if(path.startsWith('hiker://')){
+            mpath = getPath(path);
+        }
+        mpath = mpath.replace("file://", "");
     }
     return machinery.callAttr("SourceFileLoader", mname || name, mpath).callAttr("load_module");
 }

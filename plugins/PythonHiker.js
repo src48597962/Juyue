@@ -155,7 +155,8 @@ function runPy(path, mname, nocache) {
         if(path.startsWith('hiker://')){
             mpath = getPath(path);
         }
-        mpath = mpath.replace("file://", "");
+        mpath = path.replace("file://", "");
+        log(mpath);
     }
     return machinery.callAttr("SourceFileLoader", mname || name, mpath).callAttr("load_module");
 }

@@ -82,7 +82,7 @@ let parse = {
                         sourceName = sourceList[index].name;
                         sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                     }
-                    
+                    log(sourceList.map(v=>v.name));
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({

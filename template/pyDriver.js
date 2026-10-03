@@ -115,6 +115,7 @@ let parse = {
                             clearMyVar('dianbo$fold');
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
+                            log('选择'+pyfiles[i]);
                             juItem.set('pyurl', pyfiles[i]);
                             clearMyVar('主页动态加载loading');
                             refreshPage(true);

@@ -82,11 +82,11 @@ let parse = {
                         sourceName = sourceList[index].name;
                         sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                     }
-                    log(sourceList.map(v=>v.name));
+
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({
-                        options: sourceList.map(v=>v.name),
+                        options: [],
                         columns: spen,
                         title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
                         noAutoDismiss: true,
@@ -100,7 +100,7 @@ let parse = {
                                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                                 manage.list.length = 0;
                                 tmpList.forEach(x => {
-                                    manage.list.push(x);
+                                    manage.list.push(x.name);
                                 });
                                 manage.change();
                             },

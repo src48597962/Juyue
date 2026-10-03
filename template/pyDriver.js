@@ -67,7 +67,7 @@ let parse = {
             
             d.push({
                 title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
-                url: $('#noLoading#').lazyRule((pyfiles, index) => {
+                url: $('#noLoading#').lazyRule((pyfiles, pyurl) => {
                     let sourceList = pyfiles.map((it, i)=>{
                         return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
                     });
@@ -76,14 +76,19 @@ let parse = {
                     const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                     hikerPop.setUseStartActivity(false);
 
-                    let sourceName = sourceList[index].name;
-                    sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
+                    let index = pyfiles.indexOf(pyurl);
+                    let sourceName = "";
+                    if(index>0){
+                        sourceName = sourceList[index].name;
+                        sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
+                    }
+                    
                     let spen = 3;
                     let inputBox;
                     let pop = hikerPop.selectBottomRes({
                         options: sourceList.map(v=>v.name),
                         columns: spen,
-                        title: "当前:" + (sourceName||"") + "  合计:" + sourceList.length,
+                        title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
                         noAutoDismiss: true,
                         //position: index,
                         toPosition: index,
@@ -161,7 +166,7 @@ let parse = {
                         }
                     });
                     return 'hiker://empty';
-                }, pyfiles, pyfiles.indexOf(pyurl)),
+                }, pyfiles, pyurl),
                 col_type: 'text_3'
             })
             d.push({

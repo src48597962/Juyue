@@ -15,8 +15,8 @@ let parse = {
                 it = input + it;
             })
             writeFile(pycache, JSON.stringify(pyfiles));
-            juItem.set('path', input);
-            juItem.set('url', input + pyfiles[0]);
+            juItem.set('pypath', input);
+            juItem.set('pyurl', input + pyfiles[0]);
         }
         hideLoading();
         return pyfiles;
@@ -24,8 +24,8 @@ let parse = {
     主页: function(){
         let d = [];
         let pyConfig = juItem.getAll();
-        let pypath = pyConfig.path;
-        let pyurl = pyConfig.url;
+        let pypath = pyConfig.pypath;
+        let pyurl = pyConfig.pyurl;
         let pycache = cachepath + 'pylist.json';
         if(!pypath || !fileExist('file://' + pypath)){
             d.push({

@@ -156,7 +156,6 @@ function runPy(path, mname, nocache) {
             mpath = getPath(path);
         }
         mpath = path.replace("file://", "");
-        log(mpath);
     }
     return machinery.callAttr("SourceFileLoader", mname || name, mpath).callAttr("load_module");
 }

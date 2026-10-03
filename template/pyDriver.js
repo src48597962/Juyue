@@ -71,7 +71,8 @@ let parse = {
                     let sourceList = pyfiles.map((it, i)=>{
                         return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
                     });
-                    let tmpList = sourceList;
+                    let tmpList = [];
+                    let tmpIndexs = {};
 
                     const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                     hikerPop.setUseStartActivity(false);
@@ -99,8 +100,9 @@ let parse = {
                                 putMyVar("SrcJu_pysourceListFilter", s);
                                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                                 manage.list.length = 0;
-                                tmpList.forEach(x => {
+                                tmpList.forEach((x, i) => {
                                     manage.list.push(x.name);
+                                    tmpIndexs[i] = x.index;
                                 });
                                 manage.change();
                             },
@@ -112,7 +114,7 @@ let parse = {
                         },
                         click(s, i, manage) {
                             log(s);
-                            log(i);
+                            log(tmpIndexs[i]);
                             //pop.dismiss();
                             //let input = s.name.replace(/[’‘]|<[^>]*>/g, "");
                             
@@ -120,7 +122,7 @@ let parse = {
                             clearMyVar('dianbo$fold');
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
-                            //log('选择'+pyfiles[s.index]);
+                            log('选择'+pyfiles[tmpIndexs[i]]);
                             //juItem.set('pyurl', pyfiles[i]);
                             //clearMyVar('主页动态加载loading');
                             //refreshPage(true);

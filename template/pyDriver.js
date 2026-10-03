@@ -191,7 +191,6 @@ let parse = {
                         筛选 = classCache.筛选;
                     } else {
                         let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                        log(home);
                         let typelist = home['class'] || [];
                         typelist.forEach(v=>{
                             分类.push(v.type_name + '$' + v.type_id);

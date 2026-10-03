@@ -96,7 +96,6 @@ let parse = {
                         extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                             hint: "输入py源关键字筛选",
                             onChange(s, manage) {
-                                log('ssss');
                                 putMyVar("SrcJu_pysourceListFilter", s);
                                 tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                                 manage.list.length = 0;
@@ -113,21 +112,18 @@ let parse = {
 
                         },
                         click(s, i, manage) {
-                            log(s);
-                            log(tmpIndexs[i]);
-                            //pop.dismiss();
-                            //let input = s.name.replace(/[’‘]|<[^>]*>/g, "");
+                            pop.dismiss();
+                            let input = s.name.replace(/[’‘]|<[^>]*>/g, "");
                             
                             clearMyVar('dianbo$分类');
                             clearMyVar('dianbo$fold');
                             clearMyVar('dianbo$classCache');
                             clearMyVar('dianbo$flCache');
-                            log('选择'+pyfiles[tmpIndexs[i]]);
-                            //juItem.set('pyurl', pyfiles[i]);
-                            //clearMyVar('主页动态加载loading');
-                            //refreshPage(true);
+                            juItem.set('pyurl', pyfiles[tmpIndexs[i]]);
+                            clearMyVar('主页动态加载loading');
+                            refreshPage(true);
                             
-                            //return 'toast://' + '主页源已设置为：' + input;
+                            return 'toast://' + '主页源已设置为：' + input;
                         },
                         menuClick(manage) {
                             let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];

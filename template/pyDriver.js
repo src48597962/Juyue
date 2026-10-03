@@ -62,6 +62,7 @@ let parse = {
                 }, this._readDir, pycache),
                 col_type: "text_center_1"
             });
+            return d;
         }else{
             let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
             

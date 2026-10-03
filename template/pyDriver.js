@@ -319,7 +319,7 @@ let parse = {
                         fl.typeid = cate_id;
                         log('ccc');
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
-                        log(json);
+                        log('ddd');
                         vodlists = json.list || [];
                     }
                     vodlists.forEach(it=>{
@@ -333,7 +333,6 @@ let parse = {
                     })
                     log(vodlists);
                     log('bbb');
-                    log(d);
                 }
             }else{
                 d.push({
@@ -343,7 +342,6 @@ let parse = {
                 });
             }
         }
-        log(d);
         return d;
     },
     二级: function(url){

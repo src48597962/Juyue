@@ -480,6 +480,7 @@ function getYiData(datatype, jkdata, dd) {
                 }
             })
             putMyVar(datatype+'动态加载loading', '1');
+            setPreResult(topd.concat(pred));
         }
 
         if(parse['host']){
@@ -487,16 +488,13 @@ function getYiData(datatype, jkdata, dd) {
         }
         if(parse[datatype]){
             let 执行str = parse[datatype].toString();
-            if(!执行str.includes('setPreResult')){
-                setPreResult(topd.concat(pred));
-            }
+
             let obj = parse['静态分类'] || {};
             if (obj.url && obj.type == datatype && !obj.noauto) {//海阔定义分类方法获取分类数据
                 createClass(d, obj);
             }
-
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
-            let issetPreResult = false;
+
             //全局变量劫持
             const setResult2 = setResult;
             const setPreResult2 = setPreResult;
@@ -510,7 +508,7 @@ function getYiData(datatype, jkdata, dd) {
                 eval(evalPublicStr);
                 let resultd,resultd2;
                 setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { setPreResult2(topd.concat(rd).concat(pred)); issetPreResult = true; };
+                setPreResult = function(rd) { resultd2 = rd; };
                 addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
                 addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
                 deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
@@ -553,11 +551,7 @@ function getYiData(datatype, jkdata, dd) {
             addItemAfter = addItemAfter2;
             deleteItem = deleteItem2;
             deleteItemByCls = deleteItemByCls2;
-            if(!issetPreResult){
-                setPreResult(topd); //一级代码中存在setPreResult，但未执行，所以需要补聚阅头部
-            }
         }else{
-            setPreResult(topd);
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
                 desc: parse['模板名']?('确认模板源>'+(parse['模板名']||'')):'',

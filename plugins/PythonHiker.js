@@ -218,38 +218,7 @@ function callFuncApply(pyObject, name, argArr) {
     const ret = pyObject.callAttr.apply(pyObject, fullArgs);
     return pyToJs(ret);
 }
-// 新增：异步调用py，带超时
-function callFuncWithTimeout(pyObject, name, argArr, timeoutMs = 8000) {
-    return new Promise(function(resolve, reject) {
-        let isDone = false;
-        // 超时计时器
-        const timer = setTimeout(function() {
-            if (!isDone) {
-                isDone = true;
-                reject(new Error("PY调用超时:" + timeoutMs + "ms"));
-            }
-        }, timeoutMs);
 
-        // 异步执行python调用（Chaquopy需要放到子线程执行，防止卡住JS主线程）
-        new java.lang.Thread(function() {
-            try {
-                const ret = callFuncApply(pyObject, name, argArr);
-                if (!isDone) {
-                    isDone = true;
-                    clearTimeout(timer);
-                    resolve(ret);
-                }
-            } catch (e) {
-                if (!isDone) {
-                    isDone = true;
-                    clearTimeout(timer);
-                    reject(e);
-                }
-            }
-        }).start();
-    });
-}
-/*
 function runPyGetReuslt(pyurl, apitype, ...arr){
     try{
         let pyModule = GM.get('py_'+pyurl);
@@ -265,34 +234,6 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
         return callFuncApply(pyModule, apitype, arr);
     }catch(e){
         log('runpy发生异常' + e.message);
-    }
-    return {};
-}
-*/
-
-// 改造后的 runPyGetReuslt
-async function runPyGetReuslt(pyurl, apitype, ...arr){
-    const timeout = 8000; // 8秒超时，按需修改
-    try{
-        let pyModule = GM.get('py_'+pyurl);
-        if(!pyModule){
-            pyModule = runPy(pyurl).callAttr("Spider");
-            callFunc(pyModule, "init", []);
-            GM.put('py_'+pyurl, pyModule);
-            let keys = GM.listKeys();
-            if(keys.length>10){
-                GM.remove(keys[0]); // 原代码GM.clear会清空全部，这里改成删除最早一条，修复bug
-            }
-        }
-        // 带超时调用
-        const res = await callFuncWithTimeout(pyModule, apitype, arr, timeout);
-        return res;
-    }catch(e){
-        log('runpy发生异常: ' + e.message);
-        // 超时的时候，可以额外记录日志
-        if(e.message.indexOf("PY调用超时") >=0 ){
-            log(`【PY超时】${pyurl} -> ${apitype}`);
-        }
     }
     return {};
 }

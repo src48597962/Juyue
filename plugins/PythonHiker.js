@@ -220,22 +220,17 @@ function callFuncApply(pyObject, name, argArr) {
 }
 
 function runPyGetReuslt(pyurl, apitype, ...arr){
-    try{
-        let pyModule = GM.get('py_'+pyurl);
-        if(!pyModule){
-            pyModule = runPy(pyurl).callAttr("Spider");
-            callFunc(pyModule, "init", []);
-            GM.put('py_'+pyurl, pyModule);
-            let keys = GM.listKeys();
-            if(keys.length>10){
-                GM.clear(keys[0]);
-            }
+    let pyModule = GM.get('py_'+pyurl);
+    if(!pyModule){
+        pyModule = runPy(pyurl).callAttr("Spider");
+        callFunc(pyModule, "init", []);
+        GM.put('py_'+pyurl, pyModule);
+        let keys = GM.listKeys();
+        if(keys.length>10){
+            GM.clear(keys[0]);
         }
-        return callFuncApply(pyModule, apitype, arr);
-    }catch(e){
-        log('runpy发生异常' + e.message);
     }
-    return {};
+    return callFuncApply(pyModule, apitype, arr);
 }
 
 

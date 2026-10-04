@@ -474,7 +474,7 @@ function getYiData(datatype, jkdata, dd) {
         deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
         deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
 
-        if(parse[datatype+'预加载']){
+        if(page == 1 && parse[datatype+'预加载']){
             let 执行str = parse[datatype+'预加载'].toString();
             try {
                 let getData = [];

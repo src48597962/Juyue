@@ -19,7 +19,6 @@ let parse = {
         return pyfiles;
     },
     主页预加载: function(){
-        log(sourcename);
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
         let pyurl = pyConfig.pyurl || '';
@@ -45,7 +44,7 @@ let parse = {
                     sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                 }
 
-                let spen = 3;
+                let spen = 2;
                 let inputBox;
                 let pop = hikerPop.selectBottomRes({
                     options: [],
@@ -127,17 +126,17 @@ let parse = {
                 });
                 return 'hiker://empty';
             }, pyfiles, pyurl),
-            col_type: 'text_3'
+            col_type: 'text_2'
         })
         d.push({
             title: '上一个',
             url: '',
-            col_type: 'text_3'
+            col_type: 'text_4'
         })
         d.push({
             title: '下一个',
             url: '',
-            col_type: 'text_3'
+            col_type: 'text_4'
         })
         return d;
     },

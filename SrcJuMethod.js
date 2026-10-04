@@ -457,6 +457,8 @@ function getYiData(datatype, jkdata, dd) {
         if(parse['host']){
             MY_URL = parse['host'];
         }
+        
+        let sourcename = jkdata.name;
         //全局变量劫持
         const setResult2 = setResult;
         const setPreResult2 = setPreResult;
@@ -472,30 +474,29 @@ function getYiData(datatype, jkdata, dd) {
         deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
         deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
 
-        if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
-            if(parse[datatype+'预加载']){
-                let 执行str = parse[datatype+'预加载'].toString();
-                try {
-                    let sourcename = jkdata.name;
-                    let getData = [];
-                    eval(evalPublicStr);
+        if(parse[datatype+'预加载']){
+            let 执行str = parse[datatype+'预加载'].toString();
+            try {
+                let getData = [];
+                eval(evalPublicStr);
 
-                    eval("let 数据 = " + 执行str);
-                    getData = 数据.call(parse) || [];
-                    if(resultd){
-                        getData = resultd;
-                    }
-                    if(resultd2){
-                        getData = resultd2.concat(getData);
-                    }
-                    d = d.concat(getData);
-                } catch (e) {
-                    xlog(jkdata.name + '>执行' + datatype + '预加载，异常' + e.message + ' 错误行#' + e.lineNumber);
+                eval("let 数据 = " + 执行str);
+                getData = 数据.call(parse) || [];
+                if(resultd){
+                    getData = resultd;
                 }
-                resultd = null;
-                resultd2 = null;
+                if(resultd2){
+                    getData = resultd2.concat(getData);
+                }
+                d = d.concat(getData);
+            } catch (e) {
+                xlog(jkdata.name + '>执行' + datatype + '预加载，异常' + e.message + ' 错误行#' + e.lineNumber);
             }
-            
+            resultd = null;
+            resultd2 = null;
+        }
+
+        if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
@@ -533,7 +534,6 @@ function getYiData(datatype, jkdata, dd) {
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
             try {
-                //let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
 
@@ -788,7 +788,6 @@ function getObjCode(jkdata, key) {
             const innerParse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                //let sourcename = jkdata.name;
                 const fn = new Function('juItem', 'juFile', 'jkdata', `
                     ${rule}
                     return parse;

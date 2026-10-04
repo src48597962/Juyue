@@ -18,6 +18,128 @@ let parse = {
         hideLoading();
         return pyfiles;
     },
+    主页预加载: function(){
+        let pyConfig = juItem.getAll();
+        let pypath = pyConfig.pypath || '';
+        let pyurl = pyConfig.pyurl || '';
+        let pycache = cachepath + 'pylist.json';
+        let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
+        let d = [];
+        d.push({
+            title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
+            url: $('#noLoading#').lazyRule((pyfiles, pyurl) => {
+                let sourceList = pyfiles.map((it, i)=>{
+                    return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
+                });
+                let tmpList = [];
+                let tmpIndexs = {};
+
+                const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+                hikerPop.setUseStartActivity(false);
+
+                let index = pyfiles.indexOf(pyurl);
+                let sourceName = "";
+                if(index>0){
+                    sourceName = sourceList[index].name;
+                    sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
+                }
+
+                let spen = 3;
+                let inputBox;
+                let pop = hikerPop.selectBottomRes({
+                    options: [],
+                    columns: spen,
+                    title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
+                    noAutoDismiss: true,
+                    //position: index,
+                    toPosition: index,
+                    extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                        hint: "输入py源关键字筛选",
+                        onChange(s, manage) {
+                            putMyVar("SrcJu_pysourceListFilter", s);
+                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            manage.list.length = 0;
+                            tmpList.forEach((x, i) => {
+                                manage.list.push(x.name);
+                                tmpIndexs[i] = x.index;
+                            });
+                            manage.change();
+                        },
+                        defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
+                        titleVisible: false
+                    })),
+                    longClick(s, i, manage) {
+
+                    },
+                    click(s, i, manage) {
+                        pop.dismiss();
+                        let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                        
+                        clearMyVar('dianbo$分类');
+                        clearMyVar('dianbo$fold');
+                        clearMyVar('dianbo$classCache');
+                        clearMyVar('dianbo$flCache');
+                        juItem.set('pyurl', pyfiles[tmpIndexs[i]]);
+                        clearMyVar('主页动态加载loading');
+                        refreshPage(true);
+                        
+                        return 'toast://' + '主页源已设置为：' + input;
+                    },
+                    menuClick(manage) {
+                        let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];
+                        if(lockgroups.length>0){
+                            menuarr.push("显示加锁分组");
+                        }
+                        hikerPop.selectCenter({
+                            options: menuarr,
+                            columns: 2,
+                            title: "请选择",
+                            click(s, i) {
+                                if (i === 0) {
+                                    spen = spen == 3 ? 2 : 3;
+                                    manage.changeColumns(spen);
+                                    manage.scrollToPosition(index, false);
+                                } else if (i === 1) {
+                                    manage.list.reverse();
+                                    manage.change();
+                                    manage.scrollToPosition(index, true);
+                                } else if (i === 2) {
+                                    let sorttype = ["更新时间","接口名称","使用频率"].map(v=>v==getItem('sourceListSort','更新时间')?v+"√":v);
+                                    showSelectOptions({
+                                        "title": "选择排序方式", 
+                                        "options" : sorttype, 
+                                        "col": 1, 
+                                        "js": `setItem('sourceListSort', input.replace("√",""));'toast://排序方式在下次生效：' + input.replace("√","")`
+                                    })
+                                } else if (i === 3) {
+                                    if (hikerPop.canBiometric() !== 0) {
+                                        return "toast://调用生物学验证出错";
+                                    }
+                                    let pop = hikerPop.checkByBiometric(() => {
+                                        putMyVar('Src_Jy_已验证指纹','1');
+                                        toast("验证成功，重新点切换站源吧");
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+                return 'hiker://empty';
+            }, pyfiles, pyurl),
+            col_type: 'text_3'
+        })
+        d.push({
+            title: '上一个',
+            url: '',
+            col_type: 'text_3'
+        })
+        d.push({
+            title: '下一个',
+            url: '',
+            col_type: 'text_3'
+        })
+        return d;
+    },
     主页: function(){
         let d = [];
         let pyConfig = juItem.getAll();
@@ -64,124 +186,6 @@ let parse = {
             });
             return d;
         }else{
-            let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
-            
-            d.push({
-                title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
-                url: $('#noLoading#').lazyRule((pyfiles, pyurl) => {
-                    let sourceList = pyfiles.map((it, i)=>{
-                        return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
-                    });
-                    let tmpList = [];
-                    let tmpIndexs = {};
-
-                    const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-                    hikerPop.setUseStartActivity(false);
-
-                    let index = pyfiles.indexOf(pyurl);
-                    let sourceName = "";
-                    if(index>0){
-                        sourceName = sourceList[index].name;
-                        sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
-                    }
-
-                    let spen = 3;
-                    let inputBox;
-                    let pop = hikerPop.selectBottomRes({
-                        options: [],
-                        columns: spen,
-                        title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
-                        noAutoDismiss: true,
-                        //position: index,
-                        toPosition: index,
-                        extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                            hint: "输入py源关键字筛选",
-                            onChange(s, manage) {
-                                putMyVar("SrcJu_pysourceListFilter", s);
-                                tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
-                                manage.list.length = 0;
-                                tmpList.forEach((x, i) => {
-                                    manage.list.push(x.name);
-                                    tmpIndexs[i] = x.index;
-                                });
-                                manage.change();
-                            },
-                            defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
-                            titleVisible: false
-                        })),
-                        longClick(s, i, manage) {
-
-                        },
-                        click(s, i, manage) {
-                            pop.dismiss();
-                            let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                            
-                            clearMyVar('dianbo$分类');
-                            clearMyVar('dianbo$fold');
-                            clearMyVar('dianbo$classCache');
-                            clearMyVar('dianbo$flCache');
-                            juItem.set('pyurl', pyfiles[tmpIndexs[i]]);
-                            clearMyVar('主页动态加载loading');
-                            refreshPage(true);
-                            
-                            return 'toast://' + '主页源已设置为：' + input;
-                        },
-                        menuClick(manage) {
-                            let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];
-                            if(lockgroups.length>0){
-                                menuarr.push("显示加锁分组");
-                            }
-                            hikerPop.selectCenter({
-                                options: menuarr,
-                                columns: 2,
-                                title: "请选择",
-                                click(s, i) {
-                                    if (i === 0) {
-                                        spen = spen == 3 ? 2 : 3;
-                                        manage.changeColumns(spen);
-                                        manage.scrollToPosition(index, false);
-                                    } else if (i === 1) {
-                                        manage.list.reverse();
-                                        manage.change();
-                                        manage.scrollToPosition(index, true);
-                                    } else if (i === 2) {
-                                        let sorttype = ["更新时间","接口名称","使用频率"].map(v=>v==getItem('sourceListSort','更新时间')?v+"√":v);
-                                        showSelectOptions({
-                                            "title": "选择排序方式", 
-                                            "options" : sorttype, 
-                                            "col": 1, 
-                                            "js": `setItem('sourceListSort', input.replace("√",""));'toast://排序方式在下次生效：' + input.replace("√","")`
-                                        })
-                                    } else if (i === 3) {
-                                        if (hikerPop.canBiometric() !== 0) {
-                                            return "toast://调用生物学验证出错";
-                                        }
-                                        let pop = hikerPop.checkByBiometric(() => {
-                                            putMyVar('Src_Jy_已验证指纹','1');
-                                            toast("验证成功，重新点切换站源吧");
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    return 'hiker://empty';
-                }, pyfiles, pyurl),
-                col_type: 'text_3'
-            })
-            d.push({
-                title: '上一个',
-                url: '',
-                col_type: 'text_3'
-            })
-            d.push({
-                title: '下一个',
-                url: '',
-                col_type: 'text_3'
-            })
-            setPreResult(d);
-            d = [];
-
             if(pyurl){
                 if(!pyurl.startsWith('http') && !fileExist('file://'+pyurl)){
                     d.push({

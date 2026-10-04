@@ -476,6 +476,7 @@ function getYiData(datatype, jkdata, dd) {
             if(parse[datatype+'预加载']){
                 let 执行str = parse[datatype+'预加载'].toString();
                 try {
+                    let sourcename = jkdata.name;
                     let getData = [];
                     eval(evalPublicStr);
 
@@ -787,12 +788,12 @@ function getObjCode(jkdata, key) {
             const innerParse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                let sourcename = jkdata.name;
-                const fn = new Function('juItem', 'juFile', 'jkdata', 'sourcename', `
+                //let sourcename = jkdata.name;
+                const fn = new Function('juItem', 'juFile', 'jkdata', `
                     ${rule}
                     return parse;
                 `)
-                return fn(juItem, juFile, jkdata, sourcename);
+                return fn(juItem, juFile, jkdata);
                 //eval(rule);
                 //return parse;
             })(input, sid);

@@ -804,11 +804,12 @@ function getObjCode(jkdata, key) {
             const innerParse = (function(jkdata, sid) {
                 let juItem = juItemF(sid||jkdata.id);
                 let juFile = juFileF(sid||jkdata.id);
-                const fn = new Function('juItem', 'juFile', 'jkdata', `
+                let sourcename = jkdata.name;
+                const fn = new Function('juItem', 'juFile', 'jkdata', 'sourcename', `
                     ${rule}
                     return parse;
                 `)
-                return fn(juItem, juFile, jkdata);
+                return fn(juItem, juFile, jkdata, sourcename);
                 //eval(rule);
                 //return parse;
             })(input, sid);

@@ -19,6 +19,7 @@ let parse = {
         return pyfiles;
     },
     主页预加载: function(){
+        log(sourcename);
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
         let pyurl = pyConfig.pyurl || '';

@@ -454,9 +454,64 @@ function getYiData(datatype, jkdata, dd) {
                 }
             }
         }
-        log(setPreResult.toString());
+        if(parse['host']){
+            MY_URL = parse['host'];
+        }
+        //全局变量劫持
+        const setResult2 = setResult;
+        const setPreResult2 = setPreResult;
+        const addItemBefore2 = addItemBefore;
+        const addItemAfter2 = addItemAfter;
+        const deleteItem2 = deleteItem;
+        const deleteItemByCls2 = deleteItemByCls;
+        let resultd,resultd2;
+        setResult = function(rd) { resultd = rd; };
+        setPreResult = function(rd) { resultd2 = rd; };
+        addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
+        addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
+        deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
+        deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
+
         if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
-            setResult(d);
+            if(parse[datatype+'预加载']){
+                let 执行str = parse[datatype+'预加载'].toString();
+                try {
+                    
+                    let getData = [];
+                    eval(evalPublicStr);
+
+                    eval("let 数据 = " + 执行str);
+                    getData = 数据.call(parse) || [];
+                    if(resultd){
+                        getData = resultd;
+                    }
+                    if(resultd2){
+                        getData = resultd2.concat(getData);
+                    }
+                    if (getData.length == 0 && page == 1) {
+                        d.push({
+                            title: "未获取到数据",
+                            url: "hiker://empty",
+                            col_type: "text_center_1",
+                        })
+                    } else if (getData.length > 0) {
+                        getData.forEach(item => {
+                            item = toerji(item, jkdata);
+                        })
+                    }
+                    d = d.concat(getData);
+                } catch (e) {
+                    d.push({
+                        title: jkdata.name + '>' + datatype + '>加载异常',
+                        desc: e.message + ' 错误行#' + e.lineNumber,
+                        url: 'hiker://empty',
+                        col_type: 'text_center_1'
+                    });
+                    xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
+                    setJkSort(jkdata.id, {fail: 1});
+                }
+            }
+            
             let num = 1;
             if(datatype!='主页'){
                 num = 3;
@@ -479,13 +534,11 @@ function getYiData(datatype, jkdata, dd) {
                 }
             })
             putMyVar(datatype+'动态加载loading', '1');
-            setPreResult(d);
+            setPreResult2(d);
             d = [];
         }
 
-        if(parse['host']){
-            MY_URL = parse['host'];
-        }
+
         if(parse[datatype]){
             let 执行str = parse[datatype].toString();
 
@@ -495,24 +548,10 @@ function getYiData(datatype, jkdata, dd) {
             }
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
-            //全局变量劫持
-            const setResult2 = setResult;
-            const setPreResult2 = setPreResult;
-            const addItemBefore2 = addItemBefore;
-            const addItemAfter2 = addItemAfter;
-            const deleteItem2 = deleteItem;
-            const deleteItemByCls2 = deleteItemByCls;
             try {
                 let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
-                let resultd,resultd2;
-                setResult = function(rd) { resultd = rd; };
-                setPreResult = function(rd) { resultd2 = rd; };
-                addItemBefore = function(id, arr) { dynamicsItemList.push({action:"addItemBefore", key:id, value:arr}); };
-                addItemAfter = function(id, arr) { dynamicsItemList.push({action:"addItemAfter", key:id, value:arr}); };
-                deleteItem = function(id) { dynamicsItemList.push({action:"deleteItem", key:id}); };
-                deleteItemByCls = function(id) { dynamicsItemList.push({action:"deleteItemByCls", key:id}); };
 
                 eval("let 数据 = " + 执行str);
                 getData = 数据.call(parse) || [];
@@ -544,13 +583,6 @@ function getYiData(datatype, jkdata, dd) {
                 xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
                 setJkSort(jkdata.id, {fail: 1});
             }
-            //恢复全局变量
-            setResult = setResult2;
-            setPreResult = setPreResult2;
-            addItemBefore = addItemBefore2;
-            addItemAfter = addItemAfter2;
-            deleteItem = deleteItem2;
-            deleteItemByCls = deleteItemByCls2;
         }else{
             d.push({
                 title: jkdata.name + '>' + datatype + '>代码不存在',
@@ -559,6 +591,15 @@ function getYiData(datatype, jkdata, dd) {
                 col_type: 'text_center_1'
             });
         }
+
+        //恢复全局变量
+        setResult = setResult2;
+        setPreResult = setPreResult2;
+        addItemBefore = addItemBefore2;
+        addItemAfter = addItemAfter2;
+        deleteItem = deleteItem2;
+        deleteItemByCls = deleteItemByCls2;
+
         deleteItemByCls("loading_gif");
         let t2 = new Date().getTime();
         xlog('获取'+datatype+'，第'+page+'页数据完成，耗时：' + (t2-t1) + 'ms');

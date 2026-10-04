@@ -476,7 +476,6 @@ function getYiData(datatype, jkdata, dd) {
             if(parse[datatype+'预加载']){
                 let 执行str = parse[datatype+'预加载'].toString();
                 try {
-                    
                     let getData = [];
                     eval(evalPublicStr);
 
@@ -488,28 +487,12 @@ function getYiData(datatype, jkdata, dd) {
                     if(resultd2){
                         getData = resultd2.concat(getData);
                     }
-                    if (getData.length == 0 && page == 1) {
-                        d.push({
-                            title: "未获取到数据",
-                            url: "hiker://empty",
-                            col_type: "text_center_1",
-                        })
-                    } else if (getData.length > 0) {
-                        getData.forEach(item => {
-                            item = toerji(item, jkdata);
-                        })
-                    }
                     d = d.concat(getData);
                 } catch (e) {
-                    d.push({
-                        title: jkdata.name + '>' + datatype + '>加载异常',
-                        desc: e.message + ' 错误行#' + e.lineNumber,
-                        url: 'hiker://empty',
-                        col_type: 'text_center_1'
-                    });
-                    xlog(jkdata.name + '>加载' + datatype + '异常' + e.message + ' 错误行#' + e.lineNumber);
-                    setJkSort(jkdata.id, {fail: 1});
+                    xlog(jkdata.name + '>执行' + datatype + '预加载，异常' + e.message + ' 错误行#' + e.lineNumber);
                 }
+                resultd = null;
+                resultd2 = null;
             }
             
             let num = 1;
@@ -549,7 +532,7 @@ function getYiData(datatype, jkdata, dd) {
             执行str = 执行str.replace('getResCode()', 'request(MY_URL)');
 
             try {
-                let sourcename = jkdata.name;
+                //let sourcename = jkdata.name;
                 let getData = [];
                 eval(evalPublicStr);
 

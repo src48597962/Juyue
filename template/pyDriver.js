@@ -355,9 +355,7 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-                    log(vodlists[0]);
-                    log(vodlists[0].vod_id.toString());
-                    log(String(vodlists[0].vod_id));
+
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,

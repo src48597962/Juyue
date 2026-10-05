@@ -362,7 +362,7 @@ let parse = {
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
                             url: 1==1?$('').lazyRule((url, parse) => {
-                                return parse(url);
+                                return parse._yiparse(url);
                             }, it.vod_id.toString(), this):it.vod_id.toString(),
                             col_type: 'movie_3',
                             extra: {

@@ -657,7 +657,7 @@ function erji() {
 
             erTempData.img = detailObj.img || detailObj.pic_url || erjiextra.img || erTempData.img;
             erTempData.desc = erLoadData.desc || erTempData.desc;
-            erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1;
+            erTempData.detail1 = detailObj.title || erLoadData.detail1 || erTempData.detail1 || name;
             erTempData.detail2 =  detailObj.desc || erLoadData.detail2 || erTempData.detail2;
             erTempData.url =  detailObj.url || erLoadData.detailurl || erTempData.url;
             erTempData.col_type =  detailObj.col_type;

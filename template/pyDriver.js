@@ -346,7 +346,7 @@ let parse = {
                             storage0.putMyVar('dianbo$flCache', fl);
                         }
                     }
-
+                    log(vodlists[0]);
                     if (cate_id!="tj") {
                         fl.cateId = fl.cateId || cate_id;
                         cate_id = fl.cateId;
@@ -355,7 +355,7 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-
+                    log(vodlists[0]);
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,

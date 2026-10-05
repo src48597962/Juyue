@@ -356,6 +356,8 @@ let parse = {
                         vodlists = json.list || [];
                     }
                     log(vodlists[0]);
+                    log(vodlists[0].vod_id.toString());
+                    log(String(vodlists[0].vod_id));
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,

@@ -377,7 +377,7 @@ let parse = {
             play.url = play.url[1];
         }
         if(play.jx='1'){
-            return $.require("parseUrl").解析(play.url);
+            return $.require("parseUrl").解析(play.url||url);
         }
         return play.url;
     },

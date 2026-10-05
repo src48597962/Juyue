@@ -86,10 +86,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "列表倒序排列", "选择排序方式"];
-                        if(lockgroups.length>0){
-                            menuarr.push("显示加锁分组");
-                        }
+                        let menuarr = ["改变列表样式", "更新文件缓存"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -100,25 +97,8 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
-                                    manage.list.reverse();
-                                    manage.change();
-                                    manage.scrollToPosition(index, true);
-                                } else if (i === 2) {
-                                    let sorttype = ["更新时间","接口名称","使用频率"].map(v=>v==getItem('sourceListSort','更新时间')?v+"√":v);
-                                    showSelectOptions({
-                                        "title": "选择排序方式", 
-                                        "options" : sorttype, 
-                                        "col": 1, 
-                                        "js": `setItem('sourceListSort', input.replace("√",""));'toast://排序方式在下次生效：' + input.replace("√","")`
-                                    })
-                                } else if (i === 3) {
-                                    if (hikerPop.canBiometric() !== 0) {
-                                        return "toast://调用生物学验证出错";
-                                    }
-                                    let pop = hikerPop.checkByBiometric(() => {
-                                        putMyVar('Src_Jy_已验证指纹','1');
-                                        toast("验证成功，重新点切换站源吧");
-                                    });
+                                    deleteFile(cachepath + 'pylist.json');
+                                    refreshPage(true);
                                 }
                             }
                         });

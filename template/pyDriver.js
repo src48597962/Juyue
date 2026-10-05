@@ -362,7 +362,14 @@ let parse = {
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
                             url: 1==1?$('').lazyRule((url, parse) => {
-                                return parse._yiparse(url);
+                                let parse = $.require("jiekou").parse();
+                                eval("let 二级获取 = " + parse['二级'])
+                                let erLoadData = 二级获取.call(parse, url);
+                                let list = erLoadData.list;
+                                eval("let 解析2 = " + parse['解析']);
+                                let playUrl = 解析2.call(parse, list[0][0].url);
+                                log(playUrl);
+                                return playUrl;
                             }, it.vod_id.toString(), this):it.vod_id.toString(),
                             col_type: 'movie_3',
                             extra: {
@@ -380,15 +387,6 @@ let parse = {
             }
         }
         return d;
-    },
-    _yiparse: function(url){
-        eval("let 二级获取 = " + parse['二级'])
-        let erLoadData = 二级获取.call(parse, url);
-        let list = erLoadData.list;
-        eval("let 解析2 = " + parse['解析']);
-        let playUrl = 解析2.call(parse, list[0][0].url);
-        log(playUrl);
-        return playUrl;
     },
     二级: function(url){
         let pyurl = MY_PARAMS.pyurl;

@@ -361,7 +361,7 @@ let parse = {
                             title: it.vod_name,
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
-                            url: 1==1?$('').lazyRule((url, parse) => {
+                            url: 1==1?$('').lazyRule((url, MY_PARAMS) => {
                                 let parse = $.require("jiekou").parse();
                                 eval("let 二级获取 = " + parse['二级'])
                                 let erLoadData = 二级获取.call(parse, url);
@@ -370,7 +370,7 @@ let parse = {
                                 let playUrl = 解析2.call(parse, list[0][0].url);
                                 log(playUrl);
                                 return playUrl;
-                            }, it.vod_id.toString(), this):it.vod_id.toString(),
+                            }, it.vod_id.toString(), {pyurl: pyurl}):it.vod_id.toString(),
                             col_type: 'movie_3',
                             extra: {
                                 pyurl: pyurl

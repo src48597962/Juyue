@@ -104,6 +104,7 @@ let parse = {
                                     pop.dismiss();
                                     deleteFile(cachepath + 'pylist.json');
                                     juItem.clear('pypath');
+                                    juItem.clear('pyurl');
                                     refreshPage(false);
                                 }
                             }
@@ -161,7 +162,7 @@ let parse = {
                     if(importrecord.length>20){//保留20个记录
                         importrecord.shift();
                     }
-                    if(!importrecord.some(item => item.url==input)){
+                    if(!importrecord.some(item => item==input)){
                         importrecord.push(input);
                         juItem.set('importrecord', importrecord);
                     }

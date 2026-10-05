@@ -97,6 +97,7 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
+                                    pop.dismiss();
                                     deleteFile(cachepath + 'pylist.json');
                                     refreshPage(true);
                                 }
@@ -197,7 +198,7 @@ let parse = {
                             let Color = getItem('主题颜色','#3399cc');
                             cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
 
-                            if ($.type(筛选)=='object' && cate_id != 'tj') {
+                            if ($.type(筛选)=='object' && Object.keys(筛选).length>0 && cate_id != 'tj') {
                                 d.push({
                                         title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
                                     url: $('#noLoading#').lazyRule((fold) => {
@@ -287,15 +288,13 @@ let parse = {
                             storage0.putMyVar('dianbo$flCache', fl);
                         }
                     }
-                    log('aaa');
+
                     if (cate_id!="tj") {
                         fl.cateId = fl.cateId || cate_id;
                         cate_id = fl.cateId;
                         delete fl.cateId;
                         fl.typeid = cate_id;
-                        log('ccc');
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
-                        log('ddd');
                         vodlists = json.list || [];
                     }
                     vodlists.forEach(it=>{
@@ -310,8 +309,6 @@ let parse = {
                             }
                         })
                     })
-                    //log(vodlists);
-                    log('bbb');
                 }
             }else{
                 d.push({

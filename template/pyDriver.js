@@ -355,7 +355,7 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-
+                    log(vodlists[0]);
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,
@@ -385,13 +385,12 @@ let parse = {
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
-        log(json);
         let detail1 = json.vod_actor || "";
         let detail2 = (json.vod_area || json.vod_year || "") + '\n' + (json.vod_remarks || json.vod_class || "") + '\n' + (json.type_name || '');
         let 简介 = json.vod_content || "";
         let 图片 = json.vod_pic || "";
-        let 线路 = (json.vod_play_from||"").split('$$$');
-        let 选集 = (json.vod_play_url||"").split('$$$').map(it => {
+        let 线路 = json.vod_play_from?json.vod_play_from.split('$$$'):[];
+        let 选集 = json.vod_play_url?json.vod_play_url.split('$$$').map(it => {
             return it.split('#').map(data => {
                 let 选集列表 = {};
                 let arr = data.split("$");
@@ -399,7 +398,7 @@ let parse = {
                 选集列表.url = arr[1] || "";
                 return 选集列表;
             });
-        });
+        }):[];
 
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
@@ -443,33 +442,33 @@ let parse = {
         return play.url;
     },
     最新: function(url){
-        let pyurl = juItem.get('pyurl');
-        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
-        let json = html.list[0];
-        let lists = json.vod_play_url.split('$$$').map(it => {
-            return it.split('#');
-        });
-        if(lists.length>0){
-            //取线路选集最多的索引
-            let indexOfMax = 0;
-            let tempMax = lists[0].length;
-            for(let i = 0; i < lists.length; i ++){
-                if(lists[i].length > tempMax){
-                    tempMax = lists[i].length;
-                    indexOfMax = i;
+        try{
+            let pyurl = juItem.get('pyurl');
+            let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+            let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
+            let json = html.list[0];
+            let lists = json.vod_play_url.split('$$$').map(it => {
+                return it.split('#');
+            });
+            if(lists.length>0){
+                //取线路选集最多的索引
+                let indexOfMax = 0;
+                let tempMax = lists[0].length;
+                for(let i = 0; i < lists.length; i ++){
+                    if(lists[i].length > tempMax){
+                        tempMax = lists[i].length;
+                        indexOfMax = i;
+                    }
                 }
-            }
-            let list = lists[indexOfMax];
-            try{
+                let list = lists[indexOfMax];
                 let list1 = list[0].split('$')[0];
                 let list2 = list[list.length-1].split('$')[0];
                 if(parseInt(list1.match(/(\d+)/)[0])>parseInt(list2.match(/(\d+)/)[0])){
                     list.reverse();
                 }
-            }catch(e){
+                return list[list.length-1].split('$')[0];
             }
-            return list[list.length-1].split('$')[0];
+        }catch(e){
         }
         return '';
     },

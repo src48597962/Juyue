@@ -346,7 +346,7 @@ let parse = {
                             storage0.putMyVar('dianbo$flCache', fl);
                         }
                     }
-                    log(vodlists[0]);
+                    
                     if (cate_id!="tj") {
                         fl.cateId = fl.cateId || cate_id;
                         cate_id = fl.cateId;
@@ -355,7 +355,7 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-                    log(vodlists[0]);
+                    
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,
@@ -378,6 +378,15 @@ let parse = {
             }
         }
         return d;
+    },
+    _yiparse: function(url){
+        eval("let 二级获取 = " + parse['二级'])
+        let erLoadData = 二级获取.call(parse, url);
+        let list = erLoadData.list;
+        eval("let 解析2 = " + parse['解析']);
+        let playUrl = 解析2.call(parse, list[0][0].url);
+        log(playUrl);
+        return playUrl;
     },
     二级: function(url){
         let pyurl = MY_PARAMS.pyurl;

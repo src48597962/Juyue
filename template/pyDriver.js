@@ -386,12 +386,12 @@ let parse = {
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
         log(json);
-        let detail1 = json.vod_actor || '';
-        let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '') + '\n' + (json.type_name || '');
+        let detail1 = json.vod_actor || "";
+        let detail2 = (json.vod_area || json.vod_year || "") + '\n' + (json.vod_remarks || json.vod_class || "") + '\n' + (json.type_name || '');
         let 简介 = json.vod_content || "";
-        let 图片 = json.vod_pic;
-        let 线路 = json.vod_play_from.split('$$$');
-        let 选集 = json.vod_play_url.split('$$$').map(it => {
+        let 图片 = json.vod_pic || "";
+        let 线路 = (json.vod_play_from||"").split('$$$');
+        let 选集 = (json.vod_play_url||"").split('$$$').map(it => {
             return it.split('#').map(data => {
                 let 选集列表 = {};
                 let arr = data.split("$");

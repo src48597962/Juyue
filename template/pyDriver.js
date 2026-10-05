@@ -355,7 +355,7 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-                    log(vodlists[0]);
+
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,
@@ -385,6 +385,7 @@ let parse = {
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
+        log(json);
         let detail1 = json.vod_actor || '';
         let detail2 = (json.vod_area || json.vod_year || '') + '\n' + (json.vod_remarks || json.vod_class || '') + '\n' + (json.type_name || '');
         let 简介 = json.vod_content || "";

@@ -126,17 +126,8 @@ let parse = {
                 });
                 return 'hiker://empty';
             }, pyfiles, pyurl),
-            col_type: 'text_2'
-        })
-        d.push({
-            title: '上一个',
-            url: '',
-            col_type: 'text_4'
-        })
-        d.push({
-            title: '下一个',
-            url: '',
-            col_type: 'text_4'
+            img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
+            col_type: 'avatar'
         })
         return d;
     },

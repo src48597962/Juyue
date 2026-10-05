@@ -1,6 +1,6 @@
 let parse = {
     作者: '聚阅',
-    版本: '2026100101',
+    版本: '2026100501',
     页码: {
         主页: true
     },
@@ -86,7 +86,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "更新文件缓存"];
+                        let menuarr = ["改变列表样式", "更新文件缓存", "更换文件目录"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -99,7 +99,12 @@ let parse = {
                                 } else if (i === 1) {
                                     pop.dismiss();
                                     deleteFile(cachepath + 'pylist.json');
-                                    refreshPage(true);
+                                    refreshPage(false);
+                                } else if (i === 2) {
+                                    pop.dismiss();
+                                    deleteFile(cachepath + 'pylist.json');
+                                    juItem.clear('pypath');
+                                    refreshPage(false);
                                 }
                             }
                         });
@@ -151,11 +156,63 @@ let parse = {
                     let input = getMyVar('importinput', '').trim();
                     let pyfiles = _readDir(input, pycache);
                     clearMyVar('主页动态加载loading');
+
+                    let importrecord = juItem.get('importrecord')||[];
+                    if(importrecord.length>20){//保留20个记录
+                        importrecord.shift();
+                    }
+                    if(!importrecord.some(item => item.url==input)){
+                        importrecord.push(input);
+                        juItem.set('importrecord', importrecord);
+                    }
+
                     refreshPage();
                     return "toast://找到" + pyfiles.length + "个py文件";
                 }, this._readDir, pycache),
                 col_type: "text_center_1"
             });
+            d.push({
+                col_type: "line_blank"
+            });
+            d.push({
+                title: '🆖 历史记录',
+                col_type: "rich_text"
+            });
+            let importrecord = juItem.get('importrecord')||[];
+            let lists = importrecord;
+            lists.reverse();
+            
+            if(lists.length>0){
+                for(let i=0;i<lists.length;i++){
+                    d.push({
+                        title: lists[i].url,
+                        url: $('#noLoading#').lazyRule((url) => {
+                            putMyVar('importinput', url);
+                            refreshPage(true);
+                            return "toast://已选择，需确定扫描";
+                        }, lists[i].url),
+                        col_type: "text_1",
+                        extra: {
+                            id: lists[i].url,
+                            longClick: [{
+                                title: "删除",
+                                js: $.toString((url) => {
+                                    let importrecord = juItem.get('importrecord')||[];
+                                    importrecord = importrecord.filter(v=>v!=url);
+                                    juItem.set('importrecord', importrecord);
+                                    refreshPage(false);
+                                    return "toast://已删除";
+                                },lists[i].url)
+                            }]
+                        }
+                    });
+                }
+            }else{
+                d.push({
+                    title: '↻无记录',
+                    col_type: "rich_text"
+                });
+            }
             return d;
         }else{
             if(pyurl){

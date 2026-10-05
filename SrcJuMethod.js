@@ -897,7 +897,7 @@ function toerji(item, jkdata) {
                 extra.data = extra.data || jkdata;
                 extra.img = extra.img || item.pic_url || item.img;
                 extra.pageTitle = extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
-                extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#|#/g,"");
+                extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#/g,"");
                 item.extra = extra;
 
                 item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {

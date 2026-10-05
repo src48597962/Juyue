@@ -39,7 +39,7 @@ let parse = {
 
                 let index = pyfiles.indexOf(pyurl);
                 let sourceName = "";
-                if(index>0){
+                if(index>-1){
                     sourceName = sourceList[index].name;
                     sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                 }

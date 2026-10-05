@@ -368,7 +368,6 @@ let parse = {
                                 let list = erLoadData.list;
                                 eval("let 解析2 = " + parse['解析']);
                                 let playUrl = 解析2.call(parse, list[0][0].url);
-                                log(playUrl);
                                 return playUrl;
                             }, it.vod_id.toString(), {pyurl: pyurl}):it.vod_id.toString(),
                             col_type: 'movie_3',
@@ -442,6 +441,7 @@ let parse = {
         let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
+        log(play);
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }
@@ -480,9 +480,5 @@ let parse = {
         }catch(e){
         }
         return '';
-    },
-    新建模板: `let parse = {
-        pyurl: '' //py文件链接，可以是在线地址也可以是本地文件路径
     }
-    `
 }

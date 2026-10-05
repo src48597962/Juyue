@@ -185,15 +185,15 @@ let parse = {
             if(lists.length>0){
                 for(let i=0;i<lists.length;i++){
                     d.push({
-                        title: lists[i].url,
+                        title: lists[i],
                         url: $('#noLoading#').lazyRule((url) => {
                             putMyVar('importinput', url);
                             refreshPage(true);
                             return "toast://已选择，需确定扫描";
-                        }, lists[i].url),
+                        }, lists[i]),
                         col_type: "text_1",
                         extra: {
-                            id: lists[i].url,
+                            id: lists[i],
                             longClick: [{
                                 title: "删除",
                                 js: $.toString((url) => {
@@ -202,7 +202,7 @@ let parse = {
                                     juItem.set('importrecord', importrecord);
                                     refreshPage(false);
                                     return "toast://已删除";
-                                },lists[i].url)
+                                },lists[i])
                             }]
                         }
                     });

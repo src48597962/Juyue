@@ -442,6 +442,16 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
         log(play);
+        if(play.header){
+            if($.type(play.url) == "string"){
+                play.url = [play.url];
+                play.header = [play.header];
+            }
+            return JSON.stringify({
+                urls: play.url,
+                headers: play.header
+            }); 
+        }
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }

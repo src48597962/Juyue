@@ -382,7 +382,7 @@ let parse = {
     二级: function(url){
         let pyurl = MY_PARAMS.pyurl;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
+        let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
         let detail1 = json.vod_actor || '';
@@ -432,7 +432,7 @@ let parse = {
     解析: function(url){
         let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, []);
+        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
         if($.type(play.url) == "array"){
             play.url = play.url[1];
         }

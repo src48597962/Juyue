@@ -142,7 +142,7 @@ let parse = {
                         return "toast://已重新加载当前py源文件";
                     }, pyurl)
                 },{
-                    title: (juItem.get('yiparse')||{}).pyname?"一级播放":"二级播放",
+                    title: (juItem.get('yiparse')||{})[pyname]?"一级播放":"二级播放",
                     js: $.toString((pyname) => {
                         let yiparses = juItem.get('yiparse') || {};
                         let isyiparse = yiparses[pyname] || 0;

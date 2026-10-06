@@ -86,7 +86,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "更新文件缓存", "更换文件目录"];
+                        let menuarr = ["改变列表样式", "更新目录缓存", "更换文件目录"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -114,7 +114,19 @@ let parse = {
                 return 'hiker://empty';
             }, pyfiles, pyurl),
             img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
-            col_type: 'avatar'
+            col_type: 'avatar',
+            extra: {
+                longClick: [{
+                    title: "删除",
+                    js: $.toString((pyurl) => {
+                        deleteFile('file://' + pyurl);
+                        deleteFile(cachepath + 'pylist.json');
+                        juItem.clear('pyurl');
+                        refreshPage(false);
+                        return "toast://已删除当前py源";
+                    }, pyurl)
+                }]
+            }
         })
         return d;
     },
@@ -355,13 +367,14 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-                    
+                    let yiparses = juItem.get('yiparse') || {};
+                    let isyiparse = yiparses[pyurl.match(/[^\/]+(?=\.py$)/)[0]] || 0;
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
-                            url: 1==1?$('').lazyRule((url, MY_PARAMS) => {
+                            url: isyiparse?$('').lazyRule((url, MY_PARAMS) => {
                                 let parse = $.require("jiekou").parse();
                                 eval("let 二级获取 = " + parse['二级'])
                                 let erLoadData = 二级获取.call(parse, url);
@@ -441,7 +454,7 @@ let parse = {
         let pyurl = juItem.get('pyurl');
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         if(play.header){
             if($.type(play.url) == "string"){
                 play.url = [play.url];

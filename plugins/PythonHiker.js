@@ -220,11 +220,11 @@ function callFuncApply(pyObject, name, argArr) {
 }
 
 function runPyGetReuslt(pyurl, apitype, ...arr){
-    let pyModule = GM.get('py_'+pyurl);
+    let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
         callFunc(pyModule, "init", []);
-        GM.put('py_'+pyurl, pyModule);
+        GM.put(pyurl, pyModule);
         let keys = GM.listKeys();
         if(keys.length>10){
             GM.clear(keys[0]);

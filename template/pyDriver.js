@@ -27,7 +27,7 @@ let parse = {
         
         let d = [];
         d.push({
-            title: (pyurl&&pyname?pyname:'选择py源') + ' / ' + pylists.length,
+            title: (pyurl&&pyname?pyname:'选择py源') + ' / (' + pylists.length + ')',
             url: $('#noLoading#').lazyRule((pyurl) => {
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
@@ -142,7 +142,7 @@ let parse = {
                         return "toast://已重新加载当前py源文件";
                     }, pyurl)
                 },{
-                    title: "播放切换",
+                    title: (juItem.get('yiparse')||{}).pyname?"一级播放":"二级播放",
                     js: $.toString((pyname) => {
                         let yiparses = juItem.get('yiparse') || {};
                         let isyiparse = yiparses[pyname] || 0;

@@ -21,8 +21,8 @@ let parse = {
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
         let pySource = pyConfig.pySource || {};
-        let pyurl = pySource.pyurl || '';
-        let pyname = pySource.pyname || '';
+        let pyurl = pySource.url || '';
+        let pyname = pySource.name || '';
         let pylists = storage0.getMyVar('pylists') || this._readDir(pypath);
         
         let d = [];
@@ -143,8 +143,8 @@ let parse = {
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
         let pySource = pyConfig.pySource || {};
-        let pyurl = pySource.pyurl || '';
-        let pyname = pySource.pyname || '';
+        let pyurl = pySource.url || '';
+        let pyname = pySource.name || '';
         
         if(!pypath || !fileExist('file://' + pypath)){
             d.push({
@@ -420,7 +420,7 @@ let parse = {
     },
     二级: function(url){
         let pySource = MY_PARAMS.pySource;
-        let pyurl = pySource.pyurl;
+        let pyurl = pySource.url;
         storage0.putMyVar('pySource', pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
@@ -452,7 +452,7 @@ let parse = {
     },
     搜索: function(name){
         let pySource = juItem.get('pySource') || {};
-        let pyurl = pySource.pyurl;
+        let pyurl = pySource.url;
         let d = [];
         if(pyurl){
             let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
@@ -475,7 +475,7 @@ let parse = {
     },
     解析: function(url){
         let pySource = storage0.getMyVar('pySource') || {};
-        let pyurl = pySource.pyurl;
+        let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
         //log(play);

@@ -478,7 +478,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         if(play.url){
             let urls, headers;
             if($.type(play.url) == "array"){
@@ -488,9 +488,17 @@ let parse = {
                 if($.type(play.url) == "string"){
                     urls = [play.url+'#isVideo=true#'];
                 }
-                if($.type(play.header) == "string"){
-                    headers = [play.header];
+                function expandToLength(input, refArr) {
+                    const targetLen = refArr.length;
+                    // 统一转数组
+                    let baseArr = Array.isArray(input) ? input : [input];
+                    let result = [];
+                    for(let i = 0; i < targetLen; i++){
+                        result.push(baseArr[i % baseArr.length]);
+                    }
+                    return result;
                 }
+                headers = expandToLength(play.header, urls);
             }
             if(urls){
                 return JSON.stringify({

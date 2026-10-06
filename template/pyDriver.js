@@ -130,9 +130,34 @@ let parse = {
                         storage0.putMyVar('pylists', pylists);
                         juItem.clear('pySource');
                         juItem.clear('pyurl');
+                        
                         refreshPage(false);
                         return "toast://已删除当前py源";
                     }, pyurl)
+                },{
+                    title: "重载",
+                    js: $.toString((pyurl) => {
+                        GM.clear(pyurl);
+                        refreshPage(false);
+                        return "toast://已重新加载当前py源文件";
+                    }, pyurl)
+                },{
+                    title: "播放切换",
+                    js: $.toString((pyname) => {
+                        let yiparses = juItem.get('yiparse') || {};
+                        let isyiparse = yiparses[pyname] || 0;
+                        let sm;
+                        if(isyiparse){
+                            delete yiparses[pyname];
+                            sm = '二级播放';
+                        }else{
+                            yiparses[pyname] = 1;
+                            sm = '一级播放';
+                        }
+                        juItem.set('yiparse', yiparses);
+                        refreshPage(false);
+                        return "toast://" + pyname + ">已切换为：" + sm;
+                    }, pyname)
                 }]
             }
         })

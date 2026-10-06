@@ -893,7 +893,7 @@ function toerji(item, jkdata) {
             let extra = item.extra || {};
             let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
             let excludeurl = ['.m3u8?', '.mp4?']
-            if(!extra.noDetail && !/select:|@|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.toString().includes(ext))){
+            if(!extra.noDetail && !/select:|js:|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.toString().includes(ext))){
                 extra.data = extra.data || jkdata;
                 extra.img = extra.img || item.pic_url || item.img;
                 extra.pageTitle = extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");

@@ -4,40 +4,47 @@ let parse = {
     页码: {
         主页: true
     },
-    _readDir: function(input, pycache){
-        if(!input.endsWith('/') || !input.startsWith('/')){
-            return 'toast://文件夹路径不正确，以/开头结尾';
-        }
-        showLoading("正在扫描本地文件夹");
-        let pyfiles = readDir(input).filter(v=>(v.endsWith('.py')));
-        if(pyfiles.length>0){
-            pyfiles = pyfiles.map(it=>input+it);
-            writeFile(pycache, JSON.stringify(pyfiles));
-            juItem.set('pypath', input);
-        }
+    _readDir: function(input){
+        showLoading("扫描目录py文件");
+        let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
+        let pylists = pyfiles.map(it=>{
+            return {
+                name: it.slice(0, -3),
+                url: input+it
+            }
+        });
+        storage0.putMyVar('pylists', pylists);
         hideLoading();
-        return pyfiles;
+        return pylists;
     },
     主页预加载: function(){
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
-        let pyurl = pyConfig.pyurl || '';
-        let pycache = cachepath + 'pylist.json';
-        let pyfiles = fileExist(pycache)?JSON.parse(fetch(pycache)):this._readDir(pypath, pycache);
+        let pySource = pyConfig.pySource || {};
+        let pyurl = pySource.pyurl || '';
+        let pyname = pySource.pyname || '';
+        let pylists = storage0.getMyVar('pylists') || this._readDir(pypath);
+        
         let d = [];
         d.push({
-            title: pyurl?pyurl.match(/[^\/]+(?=\.py$)/)[0]:'选择py源',
-            url: $('#noLoading#').lazyRule((pyfiles, pyurl) => {
-                let sourceList = pyfiles.map((it, i)=>{
-                    return {name: it.match(/[^\/]+(?=\.py$)/)[0], index: i};
-                });
+            title: (pyurl&&pyname?pyname:'选择py源') + ' / ' + pylists.length,
+            url: $('#noLoading#').lazyRule((pyurl) => {
+                let index = -1;
+                let pylists = storage0.getMyVar('pylists');
+                let sourceList = pylists.map((it, i) => {
+                    if(it.url==pyurl){
+                        index = i;
+                    }
+                    it.index = i;
+                    return it;
+                })
+                
                 let tmpList = [];
                 let tmpIndexs = {};
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                 hikerPop.setUseStartActivity(false);
-
-                let index = pyfiles.indexOf(pyurl);
+                
                 let sourceName = "";
                 if(index>-1){
                     sourceName = sourceList[index].name;
@@ -51,7 +58,6 @@ let parse = {
                     columns: spen,
                     title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
                     noAutoDismiss: true,
-                    //position: index,
                     toPosition: index,
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                         hint: "输入py源关键字筛选",
@@ -79,7 +85,7 @@ let parse = {
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        juItem.set('pyurl', pyfiles[tmpIndexs[i]]);
+                        juItem.set('pySource', pylists[tmpIndexs[i]]);
                         clearMyVar('主页动态加载loading');
                         refreshPage(true);
                         
@@ -98,13 +104,12 @@ let parse = {
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     pop.dismiss();
-                                    deleteFile(cachepath + 'pylist.json');
+                                    clearMyVar('pylists');
                                     refreshPage(false);
                                 } else if (i === 2) {
                                     pop.dismiss();
-                                    deleteFile(cachepath + 'pylist.json');
                                     juItem.clear('pypath');
-                                    juItem.clear('pyurl');
+                                    juItem.clear('pySource');
                                     refreshPage(false);
                                 }
                             }
@@ -112,7 +117,7 @@ let parse = {
                     }
                 });
                 return 'hiker://empty';
-            }, pyfiles, pyurl),
+            }, pyurl),
             img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
             col_type: 'avatar',
             extra: {
@@ -120,7 +125,10 @@ let parse = {
                     title: "删除",
                     js: $.toString((pyurl) => {
                         deleteFile('file://' + pyurl);
-                        deleteFile(cachepath + 'pylist.json');
+                        let pylists = storage0.getMyVar('pylists');
+                        pylists = pylists.filter(it=>it.url!=pyurl);
+                        storage0.putMyVar('pylists', pylists);
+                        juItem.clear('pySource');
                         juItem.clear('pyurl');
                         refreshPage(false);
                         return "toast://已删除当前py源";
@@ -134,8 +142,10 @@ let parse = {
         let d = [];
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
-        let pyurl = pyConfig.pyurl || '';
-        let pycache = cachepath + 'pylist.json';
+        let pySource = pyConfig.pySource || {};
+        let pyurl = pySource.pyurl || '';
+        let pyname = pySource.pyname || '';
+        
         if(!pypath || !fileExist('file://' + pypath)){
             d.push({
                 title: '‘‘’’<font color="#FF4757">▐ </font><b>需先设置py文件所在目录</b>',
@@ -165,23 +175,31 @@ let parse = {
             });
             d.push({
                 title: '🆗 确定扫描',
-                url: $('#noLoading#').lazyRule((_readDir, pycache) => {
+                url: $('#noLoading#').lazyRule((_readDir) => {
                     let input = getMyVar('importinput', '').trim();
-                    let pyfiles = _readDir(input, pycache);
-                    clearMyVar('主页动态加载loading');
-
-                    let importrecord = juItem.get('importrecord')||[];
-                    if(importrecord.length>20){//保留20个记录
-                        importrecord.shift();
+                    if(!input.endsWith('/') || !input.startsWith('/')){
+                        return 'toast://文件夹路径不正确，以/开头结尾';
                     }
-                    if(!importrecord.some(item => item==input)){
-                        importrecord.push(input);
-                        juItem.set('importrecord', importrecord);
+                    let pylists = _readDir(input);
+                    
+                    if(pylists.length>0){
+                        clearMyVar('主页动态加载loading');
+
+                        let importrecord = juItem.get('importrecord')||[];
+                        if(importrecord.length>20){//保留20个记录
+                            importrecord.shift();
+                        }
+                        if(!importrecord.some(item => item==input)){
+                            importrecord.push(input);
+                            juItem.set('importrecord', importrecord);
+                        }
+
+                        juItem.set('pypath', input);
+                        refreshPage(true);
                     }
 
-                    refreshPage();
-                    return "toast://找到" + pyfiles.length + "个py文件";
-                }, this._readDir, pycache),
+                    return "toast://发现" + pylists.length + "个py文件";
+                }, this._readDir),
                 col_type: "text_center_1"
             });
             d.push({
@@ -228,7 +246,7 @@ let parse = {
             }
             return d;
         }else{
-            if(pyurl){
+            if(pyurl && pyname){
                 if(!pyurl.startsWith('http') && !fileExist('file://'+pyurl)){
                     d.push({
                         title: pyurl + '文件不存在',
@@ -368,7 +386,7 @@ let parse = {
                         vodlists = json.list || [];
                     }
                     let yiparses = juItem.get('yiparse') || {};
-                    let isyiparse = yiparses[pyurl.match(/[^\/]+(?=\.py$)/)[0]] || 0;
+                    let isyiparse = yiparses[pyname] || 0;
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,
@@ -382,10 +400,10 @@ let parse = {
                                 eval("let 解析2 = " + parse['解析']);
                                 let playUrl = 解析2.call(parse, list[0][0].url);
                                 return playUrl;
-                            }, it.vod_id.toString(), {pyurl: pyurl}):it.vod_id.toString(),
+                            }, it.vod_id.toString(), {pySource: pySource}):it.vod_id.toString(),
                             col_type: 'movie_3',
                             extra: {
-                                pyurl: pyurl
+                                pySource: pySource
                             }
                         })
                     })
@@ -401,7 +419,9 @@ let parse = {
         return d;
     },
     二级: function(url){
-        let pyurl = MY_PARAMS.pyurl;
+        let pySource = MY_PARAMS.pySource;
+        let pyurl = pySource.pyurl;
+        storage0.putMyVar('pySource', pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
@@ -431,43 +451,55 @@ let parse = {
         }  
     },
     搜索: function(name){
-        let pyurl = juItem.get('pyurl');
+        let pySource = juItem.get('pySource') || {};
+        let pyurl = pySource.pyurl;
         let d = [];
-        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let json = PythonHiker.runPyGetReuslt(pyurl, "searchContent", name, false, PythonHiker.toInt(page));
-        let vodlist = json.list || [];
-        vodlist.forEach(it=>{
-            d.push({
-                title: it.vod_name,
-                desc: it.vod_remarks || it.vod_year || '',
-                img: it.vod_pic,
-                url: it.vod_id.toString(),
-                col_type: 'movie_3',
-                extra: {
-                    pyurl: pyurl
-                }
-            });
-        })
+        if(pyurl){
+            let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+            let json = PythonHiker.runPyGetReuslt(pyurl, "searchContent", name, false, PythonHiker.toInt(page));
+            let vodlist = json.list || [];
+            vodlist.forEach(it=>{
+                d.push({
+                    title: it.vod_name,
+                    desc: it.vod_remarks || it.vod_year || '',
+                    img: it.vod_pic,
+                    url: it.vod_id.toString(),
+                    col_type: 'movie_3',
+                    extra: {
+                        pySource: pySource
+                    }
+                });
+            })
+        }
         return d;
     },
     解析: function(url){
-        let pyurl = juItem.get('pyurl');
+        let pySource = storage0.getMyVar('pySource') || {};
+        let pyurl = pySource.pyurl;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
         //log(play);
-        if(play.header){
-            if($.type(play.url) == "string"){
-                play.url = [play.url];
-                play.header = [play.header];
+        if(play.url){
+            let urls, headers;
+            if($.type(play.url) == "array"){
+                urls = play.url;
             }
-            return JSON.stringify({
-                urls: play.url,
-                headers: play.header
-            }); 
+            if(play.header){
+                if($.type(play.url) == "string"){
+                    urls = [play.url+'#isVideo=true#'];
+                }
+                if($.type(play.header) == "string"){
+                    headers = [play.header];
+                }
+            }
+            if(urls){
+                return JSON.stringify({
+                    urls: urls,
+                    headers: headers
+                }); 
+            }
         }
-        if($.type(play.url) == "array"){
-            play.url = play.url[1];
-        }
+        
         if(play.jx='1'){
             return $.require("parseUrl").解析(play.url||url);
         }
@@ -475,7 +507,7 @@ let parse = {
     },
     最新: function(url){
         try{
-            let pyurl = juItem.get('pyurl');
+            let pyurl = MY_PARAMS.pyurl;
             let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
             let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
             let json = html.list[0];

@@ -108,6 +108,7 @@ let parse = {
                                     refreshPage(false);
                                 } else if (i === 2) {
                                     pop.dismiss();
+                                    clearMyVar('pylists');
                                     juItem.clear('pypath');
                                     juItem.clear('pySource');
                                     refreshPage(false);

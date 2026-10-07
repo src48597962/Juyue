@@ -30,33 +30,41 @@ let parse = {
             title: (pyurl&&pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule((pyurl) => {
-                function sortByPinyin(arr) {
-                    var arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
-                    for (var m in arrNew) {
-                        var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
-                        if (mm > -1) {
-                            break;
-                        }
-                    }
-                    for (var n = arrNew.length - 1; n >= 0; n--) {
-                        var nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
-                        if (nn > -1) {
-                            break;
-                        }
-                    }
-                    if (mm > -1) {
-                        var arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
-                        arrNew = arrNew.concat(arrTmp);
-                    }
-                    return arrNew
-                }
-
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
-                let sortlist = ['读取目录顺序', '文件名称排序'];
+                let sortlist = ['按读取目录顺序', '按文件名称排序', '按使用频率排序'];
                 let sourceSort = juItem.get('sourceSort', 0);
                 if(sourceSort == 1){
+                    function sortByPinyin(arr) {
+                        var arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
+                        for (var m in arrNew) {
+                            var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                            if (mm > -1) {
+                                break;
+                            }
+                        }
+                        for (var n = arrNew.length - 1; n >= 0; n--) {
+                            var nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
+                            if (nn > -1) {
+                                break;
+                            }
+                        }
+                        if (mm > -1) {
+                            var arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
+                            arrNew = arrNew.concat(arrTmp);
+                        }
+                        return arrNew
+                    }
                     pylists = sortByPinyin(pylists);
+                }else if(sourceSort == 2){
+                    let sourceSet = juItem.get('sourceSet') || {};
+                    pylists.forEach(it=>{
+                        let pyset = sourceSet[it] || {};
+                        it.sort = pyset['sort'] || 0;
+                    })
+                    pylists.sort((a, b) => {
+                        return b.sort - a.sort
+                    })
                 }
                 let sourceList = pylists.map((it, i) => {
                     if(it.url==pyurl){
@@ -113,6 +121,12 @@ let parse = {
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
                         juItem.set('pySource', pylists[tmpIndexs[i]]);
+                        let sourceSet = juItem.get('sourceSet') || {};
+                        let pyset = sourceSet[input] || {};
+                        pyset['sort'] = (pyset['sort'] || 0) + 1;
+                        sourceSet[input] = pyset;
+                        juItem.set('sourceSet', sourceSet);
+
                         clearMyVar('主页动态加载loading');
                         refreshPage(true);
                         
@@ -130,13 +144,19 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
-                                    pop.dismiss();
-                                    if(sourceSort == 0){
-                                        juItem.set('sourceSort', 1);
-                                    }else{
-                                        juItem.set('sourceSort', 0);
-                                    }
-                                    return 'toast://列表排序设置为:' + sortlist[juItem.get('sourceSort', 0)];
+                                    hikerPop.selectCenter({
+                                        options: sortlist,
+                                        columns: 1,
+                                        title: "选择排序方式",
+                                        position: sourceSort,
+                                        click(a, i) {
+                                            pop.dismiss();
+                                            juItem.set('sourceSort', i);
+                                            hikerPop.runOnNewThread(() => {
+                                                return 'toast://列表排序设置为:' + a;
+                                            });
+                                        }
+                                    });
                                 } else if (i === 2) {
                                     pop.dismiss();
                                     clearMyVar('pylists');

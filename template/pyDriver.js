@@ -98,7 +98,7 @@ let parse = {
                         hint: "输入py源关键字筛选",
                         onChange(s, manage) {
                             putMyVar("SrcJu_pysourceListFilter", s);
-                            tmpList = sourceList.map(v=>v).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            tmpList = Object.assign({}, sourceList).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x, i) => {
                                 manage.list.push(x.name);

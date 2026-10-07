@@ -599,6 +599,7 @@ let parse = {
                 return list[list.length-1].split('$')[0];
             }
         }catch(e){
+            log(e.messsage);
         }
         return '';
     }

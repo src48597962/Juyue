@@ -27,7 +27,8 @@ let parse = {
         
         let d = [];
         d.push({
-            title: (pyurl&&pyname?pyname:'选择py源') + ' / ' + pylists.length,
+            title: (pyurl&&pyname?'当前:'+pyname:'选择py源'),
+            desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule((pyurl) => {
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');

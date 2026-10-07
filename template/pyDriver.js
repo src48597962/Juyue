@@ -503,7 +503,7 @@ let parse = {
         let pySource = storage0.getMyVar('pySource') || {};
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
+        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
         log(play);
         if(play.url){
             let urls, headers;

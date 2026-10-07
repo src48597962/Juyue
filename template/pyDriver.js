@@ -122,9 +122,7 @@ let parse = {
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
                         let homeSource = pylists[tmpIndexs[i]];
-                        log(homeSource);
-                        log(tmpList[i]);
-                        log(tmpList[tmpIndexs[i]]);
+                        delete homeSource['sort'];
                         juItem.set('pySource', homeSource);
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};

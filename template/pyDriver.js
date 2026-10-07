@@ -422,9 +422,11 @@ let parse = {
                                 let parse = $.require("jiekou").parse();
                                 eval("let 二级获取 = " + parse['二级'])
                                 let erLoadData = 二级获取.call(parse, url);
-                                let list = erLoadData.list;
+                                let list = erLoadData.list[0];
+                                let line = erLoadData.line[0];
+                                let dataObj = {line: line};
                                 eval("let 解析2 = " + parse['解析']);
-                                let playUrl = 解析2.call(parse, list[0][0].url);
+                                let playUrl = 解析2.call(parse, list[0].url);
                                 return playUrl;
                             }, it.vod_id.toString(), {pySource: pySource}):it.vod_id.toString(),
                             col_type: 'movie_3',

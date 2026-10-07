@@ -423,6 +423,7 @@ let parse = {
                         delete fl.cateId;
                         fl.typeid = cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                        log(json);
                         vodlists = json.list || [];
                     }
                     let sourceSet = juItem.get('sourceSet') || {};

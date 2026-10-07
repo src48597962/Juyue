@@ -311,6 +311,7 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                            log(home);
                             let typelist = home['class'] || [];
                             typelist.forEach(v=>{
                                 分类.push(v.type_name + '$' + v.type_id);
@@ -423,7 +424,7 @@ let parse = {
                         delete fl.cateId;
                         fl.typeid = cate_id;
                         log(fl);
-                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), fl, PythonHiker.toPyJson(fl));
+                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         log(json);
                         vodlists = json.list || [];
                     }

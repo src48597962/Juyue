@@ -131,7 +131,7 @@ let parse = {
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     pop.dismiss();
-                                    if(sortlist == 0){
+                                    if(sourceSort == 0){
                                         juItem.set('sourceSort', 1);
                                     }else{
                                         juItem.set('sourceSort', 0);

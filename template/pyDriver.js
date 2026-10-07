@@ -59,13 +59,12 @@ let parse = {
                 }else if(sourceSort == 2){
                     let sourceSet = juItem.get('sourceSet') || {};
                     pylists.forEach(it=>{
-                        let pyset = sourceSet[it] || {};
+                        let pyset = sourceSet[it.name] || {};
                         it.sort = pyset['sort'] || 0;
                     })
                     pylists.sort((a, b) => {
                         return b.sort - a.sort
                     })
-                    log(pylists);
                 }
                 let sourceList = pylists.map((it, i) => {
                     if(it.url==pyurl){
@@ -99,7 +98,7 @@ let parse = {
                         hint: "输入py源关键字筛选",
                         onChange(s, manage) {
                             putMyVar("SrcJu_pysourceListFilter", s);
-                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            tmpList = sourceList.map(v=>v).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x, i) => {
                                 manage.list.push(x.name);
@@ -121,7 +120,8 @@ let parse = {
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        juItem.set('pySource', pylists[tmpIndexs[i]]);
+                        let homeSource = pylists[tmpIndexs[i]];
+                        juItem.set('pySource', homeSource);
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;

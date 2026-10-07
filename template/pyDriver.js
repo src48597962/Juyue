@@ -311,11 +311,7 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                            log(home);
-                            let typelist = home['class'] || [];
-                            typelist.forEach(v=>{
-                                分类.push(v.type_name + '$' + v.type_id);
-                            })
+                            分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
@@ -325,7 +321,7 @@ let parse = {
 
                         if (分类.length > 0) {
                             let Color = getItem('主题颜色','#3399cc');
-                            cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].split('$')[1]);
+                            cate_id = cate_id || (推荐.length > 0 ? 'tj' : 分类[0].type_id);
 
                             if ($.type(筛选)=='object' && Object.keys(筛选).length>0 && cate_id != 'tj') {
                                 d.push({
@@ -360,8 +356,8 @@ let parse = {
                             }
 
                             分类.forEach((it, i) => {
-                                let itname = it.split('$')[0].replace(/|||/g, '').trim();
-                                let itid = it.split('$')[1];
+                                let itname = it.type_name.replace(/|||/g, '').trim();
+                                let itid = it.type_id;
                                 d.push({
                                     title: cate_id == itid ? '““””<b><span style="color:' + Color + '">' + itname + '</span></b>' : itname,
                                     url: $('#noLoading#').lazyRule((itid) => {

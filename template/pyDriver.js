@@ -130,7 +130,8 @@ let parse = {
                         pylists = pylists.filter(it=>it.url!=pyurl);
                         storage0.putMyVar('pylists', pylists);
                         juItem.clear('pySource');
-                        juItem.clear('pyurl');
+                        juItem.clear('pyurl');//临时
+                        juItem.clear('yiparse');//临时
                         
                         refreshPage(false);
                         return "toast://已删除当前py源";
@@ -143,19 +144,21 @@ let parse = {
                         return "toast://已重新加载当前py源文件";
                     }, pyurl)
                 },{
-                    title: (juItem.get('yiparse')||{})[pyname]?"二级播放":"一级播放",
+                    title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
                     js: $.toString((pyname) => {
-                        let yiparses = juItem.get('yiparse') || {};
-                        let isyiparse = yiparses[pyname] || 0;
+                        let sourceSet = juItem.get('sourceSet') || {};
+                        let pyset = sourceSet[pyname] || {};
+                        let isyiparse = pyset['yiparse'] || 0;
                         let sm;
                         if(isyiparse){
-                            delete yiparses[pyname];
+                            delete pyset['yiparse'];
                             sm = '二级播放';
                         }else{
-                            yiparses[pyname] = 1;
+                            pyset['yiparse'] = 1;
                             sm = '一级播放';
                         }
-                        juItem.set('yiparse', yiparses);
+                        sourceSet[pyname] = pyset;
+                        juItem.set('sourceSet', sourceSet);
                         refreshPage(false);
                         return "toast://" + pyname + ">已切换为：" + sm;
                     }, pyname)
@@ -411,8 +414,9 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
-                    let yiparses = juItem.get('yiparse') || {};
-                    let isyiparse = yiparses[pyname] || 0;
+                    let sourceSet = juItem.get('sourceSet') || {};
+                    let pyset = sourceSet[pyname] || {};
+                    let isyiparse = pyset['yiparse'] || 0;
                     vodlists.forEach(it=>{
                         d.push({
                             title: it.vod_name,

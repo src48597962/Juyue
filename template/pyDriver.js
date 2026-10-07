@@ -574,6 +574,7 @@ let parse = {
     最新: function(url){
         try{
             let pyurl = MY_PARAMS.pyurl;
+            log(pyurl);
             let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
             let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
             let json = html.list[0];

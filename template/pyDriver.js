@@ -458,7 +458,7 @@ let parse = {
         let 图片 = json.vod_pic || "";
         let 线路 = json.vod_play_from?json.vod_play_from.split('$$$'):[];
         let 选集 = json.vod_play_url?json.vod_play_url.split('$$$').map(it => {
-            return it.split('#').map(data => {
+            return it.split('#').map((data) => {
                 let 选集列表 = {};
                 let arr = data.split("$");
                 选集列表.title = arr[0] || "";

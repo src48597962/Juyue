@@ -27,7 +27,7 @@ let parse = {
         
         let d = [];
         d.push({
-            title: (pyurl&&pyname?pyname:'选择py源') + ' / (' + pylists.length + ')',
+            title: (pyurl&&pyname?pyname:'选择py源') + ' / ' + pylists.length,
             url: $('#noLoading#').lazyRule((pyurl) => {
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
@@ -124,24 +124,30 @@ let parse = {
             extra: {
                 longClick: [{
                     title: "删除",
-                    js: $.toString((pyurl) => {
-                        deleteFile('file://' + pyurl);
-                        let pylists = storage0.getMyVar('pylists');
-                        pylists = pylists.filter(it=>it.url!=pyurl);
-                        storage0.putMyVar('pylists', pylists);
-                        juItem.clear('pySource');
-                        juItem.clear('pyurl');//临时
-                        juItem.clear('yiparse');//临时
-                        
-                        refreshPage(false);
-                        return "toast://已删除当前py源";
-                    }, pyurl)
+                    js: $.toString((pyurl, pyname) => {
+                        return $("确定要删除<"+pyname+">本地源文件？").confirm((pyurl)=>{
+                            deleteFile('file://' + pyurl);
+                            let pylists = storage0.getMyVar('pylists');
+                            pylists = pylists.filter(it=>it.url!=pyurl);
+                            storage0.putMyVar('pylists', pylists);
+                            juItem.clear('pySource');
+                            juItem.clear('pyurl');//临时
+                            
+                            refreshPage(false);
+                            return "toast://已删除当前py源";
+                        }, pyurl)
+                    }, pyurl, pyname)
                 },{
                     title: "重载",
                     js: $.toString((pyurl) => {
                         GM.clear(pyurl);
                         refreshPage(false);
                         return "toast://已重新加载当前py源文件";
+                    }, pyurl)
+                },{
+                    title: "分享",
+                    js: $.toString((pyurl) => {
+                        return 'share://file://'+ pyurl;
                     }, pyurl)
                 },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
@@ -159,6 +165,7 @@ let parse = {
                         }
                         sourceSet[pyname] = pyset;
                         juItem.set('sourceSet', sourceSet);
+                        juItem.clear('yiparse');//临时
                         refreshPage(false);
                         return "toast://" + pyname + ">已切换为：" + sm;
                     }, pyname)

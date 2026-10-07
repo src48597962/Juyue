@@ -53,6 +53,11 @@ let parse = {
 
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
+                let sortlist = ['读取目录顺序', '文件名称排序'];
+                let sourceSort = juItem.get('sourceSort', 0);
+                if(sourceSort == 1){
+                    pylists = sortByPinyin(pylists);
+                }
                 let sourceList = pylists.map((it, i) => {
                     if(it.url==pyurl){
                         index = i;
@@ -126,8 +131,7 @@ let parse = {
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     pop.dismiss();
-                                    let sortlist = ['读取目录顺序', '文件名称排序'];
-                                    if(juItem.get('sourceSort', 0) == 0){
+                                    if(sortlist == 0){
                                         juItem.set('sourceSort', 1);
                                     }else{
                                         juItem.set('sourceSort', 0);

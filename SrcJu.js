@@ -1432,6 +1432,7 @@ function erji() {
                         let dataObj = {
                             data: jkdata,
                             type: stype,
+                            line: linename,
                             id: listId
                         }
                         let lazy = $("").lazyRule((dataObj) => {

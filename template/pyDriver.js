@@ -92,7 +92,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "更新目录缓存", "更换文件目录"];
+                        let menuarr = ["改变列表样式", "更新目录缓存", "更换目录路径"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -125,17 +125,20 @@ let parse = {
                 longClick: [{
                     title: "删除",
                     js: $.toString((pyurl, pyname) => {
-                        return $("确定要删除<"+pyname+">本地源文件？").confirm((pyurl)=>{
+                        return $("确定要删除<"+pyname+">本地源文件？").confirm((pyurl, pyname)=>{
                             deleteFile('file://' + pyurl);
                             let pylists = storage0.getMyVar('pylists');
                             pylists = pylists.filter(it=>it.url!=pyurl);
                             storage0.putMyVar('pylists', pylists);
                             juItem.clear('pySource');
                             juItem.clear('pyurl');//临时
+                            let sourceSet = juItem.get('sourceSet') || {};
+                            delete sourceSet[pyname];
+                            juItem.set('sourceSet', sourceSet);
                             
                             refreshPage(false);
                             return "toast://已删除当前py源";
-                        }, pyurl)
+                        }, pyurl, pyname)
                     }, pyurl, pyname)
                 },{
                     title: "重载",

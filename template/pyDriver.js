@@ -67,11 +67,12 @@ let parse = {
                     })
                 }
                 let sourceList = pylists.map((it, i) => {
-                    if(it.url==pyurl){
+                    let item = Object.assign({}, it); 
+                    if(item.url==pyurl){
                         index = i;
                     }
-                    it.index = i;
-                    return it;
+                    item.index = i;
+                    return item;
                 })
                 
                 let tmpList = [];
@@ -98,7 +99,7 @@ let parse = {
                         hint: "输入py源关键字筛选",
                         onChange(s, manage) {
                             putMyVar("SrcJu_pysourceListFilter", s);
-                            tmpList = Object.assign({}, sourceList).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x, i) => {
                                 manage.list.push(x.name);
@@ -121,6 +122,9 @@ let parse = {
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
                         let homeSource = pylists[tmpIndexs[i]];
+                        log(homeSource);
+                        log(tmpList[i]);
+                        log(tmpList[tmpIndexs[i]]);
                         juItem.set('pySource', homeSource);
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};

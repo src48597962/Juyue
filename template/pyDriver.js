@@ -65,6 +65,7 @@ let parse = {
                     pylists.sort((a, b) => {
                         return b.sort - a.sort
                     })
+                    log(pylists);
                 }
                 let sourceList = pylists.map((it, i) => {
                     if(it.url==pyurl){

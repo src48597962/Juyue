@@ -30,6 +30,27 @@ let parse = {
             title: (pyurl&&pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule((pyurl) => {
+                function sortByPinyin(arr) {
+                    var arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
+                    for (var m in arrNew) {
+                        var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                        if (mm > -1) {
+                            break;
+                        }
+                    }
+                    for (var n = arrNew.length - 1; n >= 0; n--) {
+                        var nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
+                        if (nn > -1) {
+                            break;
+                        }
+                    }
+                    if (mm > -1) {
+                        var arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
+                        arrNew = arrNew.concat(arrTmp);
+                    }
+                    return arrNew
+                }
+
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
                 let sourceList = pylists.map((it, i) => {
@@ -93,7 +114,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "更新目录缓存", "更换目录路径"];
+                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -105,9 +126,18 @@ let parse = {
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     pop.dismiss();
+                                    let sortlist = ['读取目录顺序', '文件名称排序'];
+                                    if(juItem.get('sourceSort', 0) == 0){
+                                        juItem.set('sourceSort', 1);
+                                    }else{
+                                        juItem.set('sourceSort', 0);
+                                    }
+                                    return 'toast://列表排序设置为:' + sortlist[juItem.get('sourceSort', 0)];
+                                } else if (i === 2) {
+                                    pop.dismiss();
                                     clearMyVar('pylists');
                                     refreshPage(false);
-                                } else if (i === 2) {
+                                } else if (i === 3) {
                                     pop.dismiss();
                                     clearMyVar('pylists');
                                     juItem.clear('pypath');

@@ -850,23 +850,23 @@ function getObjCode(jkdata, key) {
                         delarr = ['二级','最新'];
                         break;
                     case 'er':
-                        delarr = ['主页','分类','排序','更新','搜索','解析'];
+                        delarr = ['主页','分类','排行','更新','搜索','解析'];
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'ss':
-                        delarr = ['主页','分类','排序','更新','二级','最新'];
+                        delarr = ['主页','分类','排行','更新','二级','最新'];
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'jx':
-                        delarr = ['主页','分类','排序','更新','二级','搜索','最新'];
+                        delarr = ['主页','分类','排行','更新','二级','搜索','最新'];
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'zx':
-                        delarr = ['主页','分类','排序','更新','搜索','解析'];
+                        delarr = ['主页','分类','排行','更新','搜索','解析'];
                         delarr = delarr.concat(pdarr);
                         break;
                     case 'page':
-                        delarr = ['主页','分类','排序','更新','搜索'];
+                        delarr = ['主页','分类','排行','更新','搜索'];
                         break;
                     default:
                 }

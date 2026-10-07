@@ -573,7 +573,9 @@ let parse = {
     },
     最新: function(url){
         try{
-            let pyurl = MY_PARAMS.pyurl;
+            log(MY_PARAMS);
+            let pySource = MY_PARAMS.pySource;
+            let pyurl = pySource.url;
             log(pyurl);
             let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
             let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", [url]);
@@ -600,7 +602,7 @@ let parse = {
                 return list[list.length-1].split('$')[0];
             }
         }catch(e){
-            log(e.messsage);
+            log(e.message + " 错误行#" + e.lineNumber);
         }
         return '';
     }

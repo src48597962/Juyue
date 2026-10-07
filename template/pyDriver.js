@@ -32,6 +32,7 @@ let parse = {
             url: $('#noLoading#').lazyRule((pyurl) => {
                 let index = -1;
                 let pylists = storage0.getMyVar('pylists');
+                let sourceSet = juItem.get('sourceSet') || {};
                 let sortlist = ['按读取目录顺序', '按文件名称排序', '按使用频率排序'];
                 let sourceSort = juItem.get('sourceSort', 0);
                 if(sourceSort == 1){
@@ -57,7 +58,6 @@ let parse = {
                     }
                     pylists = sortByPinyin(pylists);
                 }else if(sourceSort == 2){
-                    let sourceSet = juItem.get('sourceSet') || {};
                     pylists.forEach(it=>{
                         let pyset = sourceSet[it.name] || {};
                         it.sort = pyset['sort'] || 0;
@@ -124,7 +124,6 @@ let parse = {
                         let homeSource = pylists[tmpIndexs[i]];
                         delete homeSource['sort'];
                         juItem.set('pySource', homeSource);
-                        let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
                         sourceSet[input] = pyset;

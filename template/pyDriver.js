@@ -507,6 +507,9 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
         log(play);
+        if(play.jx=='1' || play.parse=='1'){
+            return $.require("parseUrl").解析(play.url||url);
+        }
         if(play.url){
             let urls, headers;
             if($.type(play.url) == "array"){
@@ -518,14 +521,32 @@ let parse = {
                 }
                 function expandToLength(input, refArr) {
                     const targetLen = refArr.length;
-                    // 统一转数组
-                    let baseArr = Array.isArray(input) ? input : [input];
+                    let baseVal = input;
+                    let parseOk = true;
+                    if (typeof baseVal === "string") {
+                        try {
+                            const parsed = JSON.parse(baseVal);
+                            if ($.type(parsed) === "object") {
+                                baseVal = parsed;
+                            } else {
+                                parseOk = false;
+                            }
+                        } catch (e) {
+                            parseOk = false;
+                        }
+                        if (!parseOk) {
+                            return undefined;
+                        }
+                    }
+
+                    let baseArr = Array.isArray(baseVal) ? baseVal : [baseVal];
                     let result = [];
                     for(let i = 0; i < targetLen; i++){
                         result.push(baseArr[i % baseArr.length]);
                     }
                     return result;
                 }
+
                 headers = expandToLength(play.header, urls);
             }
             if(urls){
@@ -535,10 +556,7 @@ let parse = {
                 }); 
             }
         }
-        
-        if(play.jx='1'){
-            return $.require("parseUrl").解析(play.url||url);
-        }
+
         return play.url;
     },
     最新: function(url){

@@ -504,7 +504,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", '', url, PythonHiker.toPyJson([]));
-        //log(play);
+        log(play);
         if(play.url){
             let urls, headers;
             if($.type(play.url) == "array"){

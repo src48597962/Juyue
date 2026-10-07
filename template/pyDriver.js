@@ -328,7 +328,7 @@ let parse = {
 
                             if ($.type(筛选)=='object' && Object.keys(筛选).length>0 && cate_id != 'tj') {
                                 d.push({
-                                        title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
+                                        title: fold === '1' ? '““””<b><span style="color: #F54343">∧</span></b>' : '““””<b><span style="color:' + Color + '">∨</span></b>',
                                     url: $('#noLoading#').lazyRule((fold) => {
                                         putMyVar('dianbo$fold', fold === '1' ? '0' : '1');
                                         clearMyVar('dianbo$flCache');
@@ -422,7 +422,8 @@ let parse = {
                         cate_id = fl.cateId;
                         delete fl.cateId;
                         fl.typeid = cate_id;
-                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                        log(fl);
+                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), fl, PythonHiker.toPyJson(fl));
                         log(json);
                         vodlists = json.list || [];
                     }

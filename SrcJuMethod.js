@@ -885,6 +885,7 @@ function getObjCode(jkdata, key) {
 // 修正按钮元素
 function toerji(item, jkdata) {
     try{
+        item.url = item.url.toString();
         if(item.url && item.url!='hiker://empty'){
             jkdata = jkdata || storage0.getMyVar('二级源接口信息') || storage0.getMyVar('一级源接口信息');
             if(!jkdata.url){
@@ -893,11 +894,11 @@ function toerji(item, jkdata) {
             let extra = item.extra || {};
             let extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp','.webp', '.svg', '.tiff', '.ico', '.m3u8', '.mp4'];
             let excludeurl = ['.m3u8?', '.mp4?']
-            if(!extra.noDetail && !/select:|js:|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.toString().toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.toString().includes(ext))){
+            if(!extra.noDetail && !/select:|js:|toast:|hiker:|video:|pics:/.test(item.url) && item.col_type!="x5_webview_single" && !extensions.some(ext => item.url.startsWith('http')&&item.url.toLowerCase().endsWith(ext)) && !excludeurl.some(ext => item.url.includes(ext))){
                 extra.data = extra.data || jkdata;
                 extra.img = extra.img || item.pic_url || item.img;
                 extra.pageTitle = extra.pageTitle || (item.title?item.title.replace(/‘|’|“|”|<[^>]+>/g,""):"");
-                extra.url = item.url.toString().replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#/g,"");
+                extra.url = item.url.replace(/#immersiveTheme#|#autoCache#|#noRecordHistory#|#noHistory#|#noLoading#/g,"");
                 item.extra = extra;
 
                 item.url = $("hiker://empty?type="+jkdata.type+"&page=fypage#autoCache#" + (jkdata.erjisign||"#immersiveTheme#")).rule(() => {

@@ -500,7 +500,7 @@ let parse = {
                                 let pyurl = pySource.url;
                                 let cate_id = url;
                                 let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-                                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson({}));
+                                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(1), true, PythonHiker.toPyJson({}));
                                 log(json);
                                 //let vodlists = json.list || [];
 

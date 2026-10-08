@@ -136,7 +136,7 @@ let parse = {
                                     deleteFile('file://'+ longSource.url);
                                     manage.list.length = 0;
                                     longList.splice(i, 1).forEach((x) => {
-                                        manage.list.push(x);
+                                        manage.list.push(x.name);
                                     });
                                     manage.change();
                                 }

@@ -4,6 +4,12 @@ let parse = {
     页码: {
         主页: true
     },
+    获取更新: function(){
+        return {
+            url: (config.聚阅||getPublicItem('聚阅','')).replace(/[^/]*$/,'') + 'template/pyDriver.js',
+            onlyCache: 1
+        }
+    },
     _readDir: function(input){
         showLoading("扫描目录py文件");
         let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));

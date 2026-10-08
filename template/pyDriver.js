@@ -293,6 +293,10 @@ let parse = {
                     let pylists = _readDir(input);
                     
                     if(pylists.length>0){
+                        clearMyVar('dianbo$分类');
+                        clearMyVar('dianbo$fold');
+                        clearMyVar('dianbo$classCache');
+                        clearMyVar('dianbo$flCache');
                         clearMyVar('主页动态加载loading');
 
                         let importrecord = juItem.get('importrecord')||[];

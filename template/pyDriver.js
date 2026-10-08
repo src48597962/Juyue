@@ -367,7 +367,6 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                            log(home);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
@@ -484,24 +483,49 @@ let parse = {
                     let pyset = sourceSet[pyname] || {};
                     let isyiparse = pyset['yiparse'] || 0;
                     vodlists.forEach(it=>{
+                        let yiparseF = $('').lazyRule((url, MY_PARAMS) => {
+                            let parse = $.require("jiekou").parse();
+                            eval("let 二级获取 = " + parse['二级'])
+                            let erLoadData = 二级获取.call(parse, url);
+                            let list = erLoadData.list[0];
+                            let line = erLoadData.line[0];
+                            let dataObj = {line: line};
+                            eval("let 解析2 = " + parse['解析']);
+                            let playUrl = 解析2.call(parse, list[0].url);
+                            return playUrl;
+                        }, it.vod_id.toString(), {pySource: pySource});
+                        let folderlistF = $('').lazyRule((url, MY_PARAMS, folder) => {
+                            if(folder){
+                                let pySource = MY_PARAMS.pySource;
+                                let pyurl = pySource.url;
+                                let cate_id = url;
+                                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson({}));
+                                log(json);
+                                //let vodlists = json.list || [];
+
+                            }
+                            return 'toast://' + url;
+                            /*
+                            let parse = $.require("jiekou").parse();
+                            eval("let 二级获取 = " + parse['二级'])
+                            let erLoadData = 二级获取.call(parse, url);
+                            let list = erLoadData.list[0];
+                            let line = erLoadData.line[0];
+                            let dataObj = {line: line};
+                            eval("let 解析2 = " + parse['解析']);
+                            let playUrl = 解析2.call(parse, list[0].url);
+                            return playUrl;
+                            */
+                        }, it.vod_id.toString(), {pySource: pySource});
                         d.push({
                             title: it.vod_name,
                             desc: it.vod_remarks || it.vod_year || '',
                             img: it.vod_pic,
-                            url: isyiparse?$('').lazyRule((url, MY_PARAMS) => {
-                                let parse = $.require("jiekou").parse();
-                                eval("let 二级获取 = " + parse['二级'])
-                                let erLoadData = 二级获取.call(parse, url);
-                                let list = erLoadData.list[0];
-                                let line = erLoadData.line[0];
-                                let dataObj = {line: line};
-                                eval("let 解析2 = " + parse['解析']);
-                                let playUrl = 解析2.call(parse, list[0].url);
-                                return playUrl;
-                            }, it.vod_id.toString(), {pySource: pySource}):it.vod_id.toString(),
+                            url: it.vod_tag=='folder'?folderlistF:isyiparse?yiparseF:it.vod_id.toString(),
                             col_type: 'movie_3',
                             extra: {
-                                pySource: pySource
+                                pySource: pySource,
+                                cls: 'pyhomelist'
                             }
                         })
                     })

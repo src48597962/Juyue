@@ -610,9 +610,7 @@ let parse = {
                                     let line = lines[i].trim();
                                     if (!line) continue;
                                     const colonPos = line.indexOf(":");
-                                    if (colonPos <= 0) {
-                                        continue;
-                                    }
+                                    if (colonPos <= 0) continue;
                                     let key = line.substring(0, colonPos).trim();
                                     let value = line.substring(colonPos + 1).trim();
                                     if (key) {
@@ -637,6 +635,7 @@ let parse = {
                     for(let i = 0; i < targetLen; i++){
                         result.push(baseArr[i % baseArr.length]);
                     }
+                    log(result);
                     return result;
                 }
 

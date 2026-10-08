@@ -516,7 +516,7 @@ let parse = {
                             let playUrl = 解析2.call(parse, list[0].url);
                             return playUrl;
                             */
-                        }, it.vod_id.toString(), {pySource: pySource});
+                        }, it.vod_id.toString(), {pySource: pySource}, it.vod_tag=='folder'?true:false);
                         d.push({
                             title: it.vod_name,
                             desc: it.vod_remarks || it.vod_year || '',

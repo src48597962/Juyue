@@ -669,7 +669,9 @@ let parse = {
 
                 headers = parseHttpHeaders(play.header, urls);
             }
+            log('11');
             if(urls && (urls.length>1 || headers)){
+                log('22');
                 return JSON.stringify({
                     urls: urls,
                     headers: headers

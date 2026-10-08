@@ -40,56 +40,50 @@ let parse = {
         
         let d = [];
         d.push({
-            title: (pyurl&&pyname?'当前:'+pyname:'选择py源'),
+            title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
-            url: $('#noLoading#').lazyRule((pyurl) => {
-                let index = -1;
-                let pylists = storage0.getMyVar('pylists');
-                let sourceSet = juItem.get('sourceSet') || {};
-                let sortlist = ['按读取目录顺序', '按文件名称排序', '按使用频率排序'];
-                let sourceSort = juItem.get('sourceSort', 0);
-                if(sourceSort == 1){
-                    function sortByPinyin(arr) {
-                        var arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
-                        for (var m in arrNew) {
-                            var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+            url: $('#noLoading#').lazyRule((index) => {
+                function getpylist() {
+                    let pylists = storage0.getMyVar('pylists');
+                    let sourceSort = juItem.get('sourceSort', 0);
+                    if(sourceSort == 1){
+                        function sortByPinyin(arr) {
+                            let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
+                            for (let m in arrNew) {
+                                let mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                                if (mm > -1) {
+                                    break;
+                                }
+                            }
+                            for (let n = arrNew.length - 1; n >= 0; n--) {
+                                let nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
+                                if (nn > -1) {
+                                    break;
+                                }
+                            }
                             if (mm > -1) {
-                                break;
+                                let arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
+                                arrNew = arrNew.concat(arrTmp);
                             }
+                            return arrNew
                         }
-                        for (var n = arrNew.length - 1; n >= 0; n--) {
-                            var nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
-                            if (nn > -1) {
-                                break;
-                            }
-                        }
-                        if (mm > -1) {
-                            var arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
-                            arrNew = arrNew.concat(arrTmp);
-                        }
-                        return arrNew
+                        pylists = sortByPinyin(pylists);
+                    }else if(sourceSort == 2){
+                        pylists.forEach(it=>{
+                            let pyset = sourceSet[it.name] || {};
+                            it.sort = pyset['sort'] || 0;
+                        })
+                        pylists.sort((a, b) => {
+                            return b.sort - a.sort
+                        })
                     }
-                    pylists = sortByPinyin(pylists);
-                }else if(sourceSort == 2){
-                    pylists.forEach(it=>{
-                        let pyset = sourceSet[it.name] || {};
-                        it.sort = pyset['sort'] || 0;
-                    })
-                    pylists.sort((a, b) => {
-                        return b.sort - a.sort
-                    })
+                    return pylists;
                 }
-                let sourceList = pylists.map((it, i) => {
-                    let item = Object.assign({}, it); 
-                    if(item.url==pyurl){
-                        index = i;
-                    }
-                    item.index = i;
-                    return item;
-                })
+
                 
+                let sourceSet = juItem.get('sourceSet') || {};
+                let sourceList = getpylist();
                 let tmpList = [];
-                let tmpIndexs = {};
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                 hikerPop.setUseStartActivity(false);
@@ -116,7 +110,6 @@ let parse = {
                             manage.list.length = 0;
                             tmpList.forEach((x, i) => {
                                 manage.list.push(x.name);
-                                tmpIndexs[i] = x.index;
                             });
                             manage.change();
                         },
@@ -124,7 +117,17 @@ let parse = {
                         titleVisible: false
                     })),
                     longClick(s, i, manage) {
+                        let longarr = ["分享", "打开", "删除", "改名"];
+                        hikerPop.selectCenter({
+                            options: longarr,
+                            columns: 2,
+                            title: "请选择",
+                            click(a) {
+                                if(a=='删除'){
 
+                                }
+                            }
+                        });
                     },
                     click(s, i, manage) {
                         pop.dismiss();
@@ -134,7 +137,7 @@ let parse = {
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        let homeSource = pylists[tmpIndexs[i]];
+                        let homeSource = sourceList.find(v=>v.name===input);
                         delete homeSource['sort'];
                         juItem.set('pySource', homeSource);
                         let pyset = sourceSet[input] || {};
@@ -159,6 +162,7 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
+                                    let sortlist = ['按读取目录顺序', '按文件名称排序', '按使用频率排序'];
                                     hikerPop.selectCenter({
                                         options: sortlist,
                                         columns: 1,
@@ -188,7 +192,7 @@ let parse = {
                     }
                 });
                 return 'hiker://empty';
-            }, pyurl),
+            }, pylists.findIndex(v=>v.name===pyname)),
             img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
             col_type: 'avatar',
             extra: {
@@ -201,7 +205,6 @@ let parse = {
                             pylists = pylists.filter(it=>it.url!=pyurl);
                             storage0.putMyVar('pylists', pylists);
                             juItem.clear('pySource');
-                            juItem.clear('pyurl');//临时
                             let sourceSet = juItem.get('sourceSet') || {};
                             delete sourceSet[pyname];
                             juItem.set('sourceSet', sourceSet);
@@ -225,7 +228,7 @@ let parse = {
                 },{
                     title: "编辑",
                     js: $.toString((pyurl) => {
-                        return 'editFile://file://'+ pyurl + `@js=toast('需要手动重载才可以生效');`;
+                        return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
                     }, pyurl)
                 },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
@@ -243,7 +246,6 @@ let parse = {
                         }
                         sourceSet[pyname] = pyset;
                         juItem.set('sourceSet', sourceSet);
-                        juItem.clear('yiparse');//临时
                         refreshPage(false);
                         return "toast://" + pyname + ">已切换为：" + sm;
                     }, pyname)

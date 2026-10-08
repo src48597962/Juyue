@@ -606,6 +606,7 @@ let parse = {
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
         }
+        play.url = play.url || play.playUrl;
         if(play.url){
             let urls, headers;
             if($.type(play.url) == "array"){

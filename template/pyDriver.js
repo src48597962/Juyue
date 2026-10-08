@@ -137,7 +137,7 @@ let parse = {
                                     let manageList = manage.list;
                                     manage.list.length = 0;
                                     manageList.forEach((x) => {
-                                        manage.list.push(x.name);
+                                        manage.list.push(x);
                                     });
                                     manage.change();
                                 }

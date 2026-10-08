@@ -120,30 +120,7 @@ let parse = {
                         titleVisible: false
                     })),
                     longClick(s, i, manage) {
-                        let longList = tmpList.length==sourceList.length?sourceList:tmpList;
-                        let longSource = longList[i];
-                        let longarr = ["分享", "打开", "删除", "改名"];
-                        hikerPop.selectCenter({
-                            options: longarr,
-                            columns: 2,
-                            title: "请选择",
-                            click(a) {
-                                if(a=="分享"){
-                                    return 'share://file://'+ longSource.url;
-                                }else if(a=="打开"){
-                                    return 'openFile://file://'+ longSource.url;
-                                }else if(a=="删除"){
-                                    deleteFile('file://'+ longSource.url);
-                                    manage.list.length = 0;
-                                    longList.splice(i-1, 1).forEach((x) => {
-                                        manage.list.push(x.name);
-                                    });
-                                    manage.change();
-                                }
-
-                                return 'toast://' + tmpList.length + '-' + sourceList.length;
-                            }
-                        });
+                        
                     },
                     click(s, i, manage) {
                         pop.dismiss();

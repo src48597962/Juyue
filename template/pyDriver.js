@@ -126,6 +126,7 @@ let parse = {
                                 if(a=='删除'){
 
                                 }
+                                return 'toast://' + a;
                             }
                         });
                     },
@@ -163,6 +164,7 @@ let parse = {
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     let sortlist = ['按读取目录顺序', '按文件名称排序', '按使用频率排序'];
+                                    let sourceSort = juItem.get('sourceSort', 0);
                                     hikerPop.selectCenter({
                                         options: sortlist,
                                         columns: 1,

@@ -629,6 +629,8 @@ let parse = {
             let urls, headers;
             if($.type(play.url) == "array"){
                 urls = play.url;
+            }else if(play.url.startsWith("pics://")){
+                return play.url;
             }
             if(play.header){
                 if($.type(play.url) == "string"){

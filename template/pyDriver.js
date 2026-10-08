@@ -127,7 +127,7 @@ let parse = {
                             options: longarr,
                             columns: 2,
                             title: "请选择",
-                            click(a, i, manage) {
+                            click(a, i) {
                                 if(i==0){
                                     return 'share://file://'+ longSource.url;
                                 }else if(i==1){

@@ -619,12 +619,13 @@ function getYiData(datatype, jkdata, dd) {
                 title: parse["频道"].显示为
             })
         }
-        if(parse['获取更新'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
+        if(jkdata && parse['获取更新'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
             let lastCheckTime = juItem.get('versionCheckTime') || 0;
             let nowtime = Date.now();
             if (nowtime > (lastCheckTime+24*60*60*1000)) {
                 try{
-                    let newurl = parse['获取更新'].call(parse);
+                    let getnew = parse['获取更新'].call(parse);
+                    let newurl = getnew.url;
                     let json = JSON.parse(fetch(newurl, {
                         withStatusCode:true,
                         timeout: 5000
@@ -636,11 +637,15 @@ function getYiData(datatype, jkdata, dd) {
                             confirm({
                                 title: "当前源有新版本",
                                 content: "本地:"+parse['版本']+"\n云端:"+newparse['版本'],
-                                confirm: $.toString((id, parseStr, newVer) => {
-                                    updateSourceById(id, parseStr, newVer);
+                                confirm: $.toString((id, parseStr, newVer, getnew) => {
+                                    if(getnew.onlyCache){
+                                        deleteCache(getnew.url);
+                                    }else{
+                                        updateSourceById(id, parseStr, newVer);
+                                    }
                                     refreshPage(true);
                                     return 'toast://已更新';
-                                }, jkdata.id, json.body, newparse['版本']),
+                                }, jkdata.id, json.body, newparse['版本'], getnew),
                                 cancel: $.toString(() => {
                                 })
                             });

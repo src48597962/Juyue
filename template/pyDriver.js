@@ -218,7 +218,7 @@ let parse = {
                 },{
                     title: "编辑",
                     js: $.toString((pyurl) => {
-                        return 'openFile://file://'+ pyurl;
+                        return 'editFile://file://'+ pyurl;
                     }, pyurl)
                 },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",

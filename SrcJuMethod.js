@@ -497,7 +497,7 @@ function getYiData(datatype, jkdata, dd) {
         }
 
         if (page == 1 && getMyVar(datatype+'动态加载loading') != '1') {// && !(parse[datatype]||"").toString().includes('dtfl?rule=')
-            let num = 1;
+            let num = 0;
             if(datatype!='主页'){
                 num = 3;
             }

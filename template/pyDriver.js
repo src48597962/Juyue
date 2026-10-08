@@ -1,6 +1,6 @@
 let parse = {
     作者: '聚阅',
-    版本: '2026100501',
+    版本: '2026100810',
     页码: {
         主页: true
     },
@@ -24,6 +24,12 @@ let parse = {
         let pyurl = pySource.url || '';
         let pyname = pySource.name || '';
         let pylists = storage0.getMyVar('pylists') || this._readDir(pypath);
+        if((pyurl==''||pyname=='')&&pylists.length>0){
+            let pydefault = pylists[0];
+            pyurl = pydefault.url;
+            pyname = pydefault.name;
+            juItem.set('pySource', pydefault);
+        }
         
         let d = [];
         d.push({
@@ -162,7 +168,7 @@ let parse = {
                                 } else if (i === 2) {
                                     pop.dismiss();
                                     clearMyVar('pylists');
-                                    refreshPage(false);
+                                    return 'toast://已更新目录缓存';
                                 } else if (i === 3) {
                                     pop.dismiss();
                                     clearMyVar('pylists');
@@ -208,6 +214,11 @@ let parse = {
                     title: "分享",
                     js: $.toString((pyurl) => {
                         return 'share://file://'+ pyurl;
+                    }, pyurl)
+                },{
+                    title: "编辑",
+                    js: $.toString((pyurl) => {
+                        return 'openFile://file://'+ pyurl;
                     }, pyurl)
                 },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",

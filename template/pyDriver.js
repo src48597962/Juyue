@@ -513,7 +513,7 @@ let parse = {
                                     extra: {
                                         pySource: pySource
                                     }
-                                }))
+                                }, MY_PARAMS.data))
                             })
                             setResult(d);
                         }, it.vod_id.toString(), isyiparse?yiparseF:undefined)

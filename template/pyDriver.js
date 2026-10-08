@@ -129,9 +129,8 @@ let parse = {
                                 if(a=='删除'){
 
                                 }
-                                log(tmpList.length);
-                                log(sourceList.length);
-                                return 'toast://' + a;
+
+                                return 'toast://' + tmpList.length + '-' + sourceList.length;
                             }
                         });
                     },

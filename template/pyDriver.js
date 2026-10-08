@@ -29,6 +29,7 @@ let parse = {
             pyurl = pydefault.url;
             pyname = pydefault.name;
             juItem.set('pySource', pydefault);
+            toast('已默认第1个py为当前源');
         }
         
         let d = [];

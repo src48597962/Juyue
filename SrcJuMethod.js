@@ -622,7 +622,7 @@ function getYiData(datatype, jkdata, dd) {
         if(jkdata && parse['获取更新'] && !getMyVar('SrcJu_VersionCheck_'+jkdata.id)){
             let lastCheckTime = juItem.get('versionCheckTime') || 0;
             let nowtime = Date.now();
-            if (nowtime > (lastCheckTime+24*60*60*1000)) {
+            if (nowtime > (lastCheckTime+12*60*60*1000)) {
                 try{
                     let getnew = parse['获取更新'].call(parse);
                     let newurl = getnew.url;

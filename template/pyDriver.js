@@ -587,7 +587,7 @@ let parse = {
                 if($.type(play.url) == "string"){
                     urls = [play.url+'#isVideo=true#'];
                 }
-                function expandToLength(input, refArr) {
+                function parseHttpHeaders(input, refArr) {
                     const targetLen = refArr.length;
                     let baseVal = input;
                     let parseOk = true;
@@ -601,6 +601,27 @@ let parse = {
                             }
                         } catch (e) {
                             parseOk = false;
+                            if(!baseVal.startsWith('{') && baseVal.includes('\r\n') && baseVal.includes(':')){
+                                let tmpObj = {};
+                                const lines = input.replace(/\r/g, "").split("\r\n");
+                                for (let i = 0; i < lines.length; i++) {
+                                    let line = lines[i].trim();
+                                    if (!line) continue;
+                                    const colonPos = line.indexOf(":");
+                                    if (colonPos <= 0) {
+                                        continue;
+                                    }
+                                    let key = line.substring(0, colonPos).trim();
+                                    let value = line.substring(colonPos + 1).trim();
+                                    if (key) {
+                                        tmpObj[key] = value;
+                                    }
+                                }
+                                if(Object.keys(tmpObj)>0){
+                                    baseVal = tmpObj;
+                                    parseOk = true;
+                                }
+                            }
                         }
                         if (!parseOk) {
                             return undefined;
@@ -615,7 +636,7 @@ let parse = {
                     return result;
                 }
 
-                headers = expandToLength(play.header, urls);
+                headers = parseHttpHeaders(play.header, urls);
             }
             if(urls){
                 return JSON.stringify({

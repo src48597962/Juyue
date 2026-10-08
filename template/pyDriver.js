@@ -367,6 +367,7 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                            log(home);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
@@ -476,6 +477,7 @@ let parse = {
                         delete fl.cateId;
                         fl.typeid = cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                        log(json);
                         vodlists = json.list || [];
                     }
                     let sourceSet = juItem.get('sourceSet') || {};
@@ -574,7 +576,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
         }
@@ -600,30 +602,8 @@ let parse = {
                                 parseOk = false;
                             }
                         } catch (e) {
-                            log('进来了1');
                             parseOk = false;
-                            if(!baseVal.startsWith('{') && baseVal.includes('\r\n') && baseVal.includes(':')){
-                                log('进来了2');
-                                let tmpObj = {};
-                                const lines = input.replace(/\r/g, "").split("\n");
-                                for (let i = 0; i < lines.length; i++) {
-                                    let line = lines[i].trim();
-                                    if (!line) continue;
-                                    const colonPos = line.indexOf(":");
-                                    if (colonPos <= 0) continue;
-                                    let key = line.substring(0, colonPos).trim();
-                                    let value = line.substring(colonPos + 1).trim();
-                                    if (key) {
-                                        tmpObj[key] = value;
-                                    }
-                                }
-                                log(tmpObj);
-                                if(Object.keys(tmpObj)>0){
-                                    log('进来了3');
-                                    baseVal = tmpObj;
-                                    parseOk = true;
-                                }
-                            }
+
                         }
                         if (!parseOk) {
                             return undefined;
@@ -635,7 +615,6 @@ let parse = {
                     for(let i = 0; i < targetLen; i++){
                         result.push(baseArr[i % baseArr.length]);
                     }
-                    log(result);
                     return result;
                 }
 

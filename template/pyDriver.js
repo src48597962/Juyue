@@ -135,7 +135,7 @@ let parse = {
                                 }else if(a=="删除"){
                                     deleteFile('file://'+ longSource.url);
                                     manage.list.length = 0;
-                                    longList.splice(i, 1).forEach((x) => {
+                                    longList.splice(i-1, 1).forEach((x) => {
                                         manage.list.push(x.name);
                                     });
                                     manage.change();

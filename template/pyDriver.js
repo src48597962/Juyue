@@ -502,18 +502,18 @@ let parse = {
                             let vodlists = json.list || [];
                             let d = [];
                             vodlists.forEach(it=>{
-                                d.push({
+                                d.push(toerji({
                                     title: it.vod_name,
                                     desc: it.vod_remarks || it.vod_year || '',
                                     img: it.vod_pic,
                                     url: yiparseF?$('').lazyRule((url, params, yiparseF) => {
                                         return yiparseF(url, params);
-                                    }, it.vod_id.toString(), {pySource: pySource}, yiparseF):toerji(it.vod_id.toString()),
+                                    }, it.vod_id.toString(), {pySource: pySource}, yiparseF):it.vod_id.toString(),
                                     col_type: 'movie_3',
                                     extra: {
                                         pySource: pySource
                                     }
-                                })
+                                }))
                             })
                             setResult(d);
                         }, it.vod_id.toString(), isyiparse?yiparseF:undefined)

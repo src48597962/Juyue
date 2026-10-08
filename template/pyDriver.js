@@ -627,15 +627,17 @@ let parse = {
         play.url = play.url || play.playUrl;
         if(play.url){
             let urls, headers;
-            if($.type(play.url) == "array"){
+            if($.type(play.url) == "string"){
+                if(play.url.startsWith("pics://")){
+                    return play.url;
+                }else if(!play.url.includes('.m4a') && !play.url.includes('.mp3')){
+                    urls = [play.url+'#isVideo=true#'];
+                    play.url = play.url+'#isVideo=true#';
+                }
+            }else if($.type(play.url) == "array"){
                 urls = play.url;
-            }else if(play.url.startsWith("pics://")){
-                return play.url;
             }
             if(play.header){
-                if($.type(play.url) == "string"){
-                    urls = [play.url+'#isVideo=true#'];
-                }
                 function parseHttpHeaders(input, refArr) {
                     const targetLen = refArr.length;
                     let baseVal = input;
@@ -667,7 +669,7 @@ let parse = {
 
                 headers = parseHttpHeaders(play.header, urls);
             }
-            if(urls){
+            if(urls && (urls.length>1 || headers)){
                 return JSON.stringify({
                     urls: urls,
                     headers: headers

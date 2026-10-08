@@ -12,6 +12,7 @@ let parse = {
     },
     _readDir: function(input){
         showLoading("扫描目录py文件");
+        input = input || juItem.get('pypath');
         let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
@@ -42,9 +43,9 @@ let parse = {
         d.push({
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
-            url: $('#noLoading#').lazyRule((index) => {
+            url: $('#noLoading#').lazyRule((_readDir) => {
                 function getpylist() {
-                    let pylists = storage0.getMyVar('pylists');
+                    let pylists = storage0.getMyVar('pylists') || _readDir();
                     let sourceSort = juItem.get('sourceSort', 0);
                     if(sourceSort == 1){
                         function sortByPinyin(arr) {
@@ -89,8 +90,10 @@ let parse = {
                 hikerPop.setUseStartActivity(false);
                 
                 let sourceName = "";
+                let pySource = juItem.get('pySource') || {};
+                let index = sourceList.findIndex(v=>v.url==pySource.url);
                 if(index>-1){
-                    sourceName = sourceList[index].name;
+                    sourceName = pySource.name;
                     sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                 }
 
@@ -194,7 +197,7 @@ let parse = {
                     }
                 });
                 return 'hiker://empty';
-            }, pylists.findIndex(v=>v.name===pyname)),
+            }, this._readDir),
             img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
             col_type: 'avatar',
             extra: {

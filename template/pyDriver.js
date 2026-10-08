@@ -127,15 +127,21 @@ let parse = {
                             options: longarr,
                             columns: 2,
                             title: "请选择",
-                            click(a, i) {
+                            click(a, i, manage) {
                                 if(i==0){
                                     return 'share://file://'+ longSource.url;
                                 }else if(i==1){
                                     return 'openFile://file://'+ longSource.url;
                                 }else if(i==2){
                                     //deleteFile('file://'+ longSource.url);
-                                    log(inputBox.getDefaultValue());
-                                    inputBox.setDefaultValue("");
+                                    /*
+                                    manage.list.length = 0;
+                                    tmpList.forEach((x, i) => {
+                                        manage.list.push(x.name);
+                                    });
+                                    manage.change();
+                                    */
+                                    log(manage.list);
                                 }
 
                                 return 'toast://' + tmpList.length + '-' + sourceList.length;

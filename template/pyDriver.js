@@ -140,6 +140,8 @@ let parse = {
                                         manage.list.push(x);
                                     });
                                     manage.change();
+                                    log(manageList.length);
+                                    log(manage.list.length);
                                 }
 
                                 return 'toast://' + tmpList.length + '-' + sourceList.length;

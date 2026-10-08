@@ -134,7 +134,7 @@ let parse = {
                                     return 'openFile://file://'+ longSource.url;
                                 }else if(i==2){
                                     deleteFile('file://'+ longSource.url);
-                                    let manageList = manage.list;
+                                    let manageList = Object.assign([], manage.list);
                                     manage.list.length = 0;
                                     manageList.forEach((x) => {
                                         manage.list.push(x);

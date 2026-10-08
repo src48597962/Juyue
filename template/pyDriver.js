@@ -600,8 +600,10 @@ let parse = {
                                 parseOk = false;
                             }
                         } catch (e) {
+                            log('进来了1');
                             parseOk = false;
                             if(!baseVal.startsWith('{') && baseVal.includes('\r\n') && baseVal.includes(':')){
+                                log('进来了2');
                                 let tmpObj = {};
                                 const lines = input.replace(/\r/g, "").split("\r\n");
                                 for (let i = 0; i < lines.length; i++) {
@@ -617,6 +619,7 @@ let parse = {
                                         tmpObj[key] = value;
                                     }
                                 }
+                                log(tmpObj);
                                 if(Object.keys(tmpObj)>0){
                                     baseVal = tmpObj;
                                     parseOk = true;

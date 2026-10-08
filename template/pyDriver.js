@@ -111,7 +111,7 @@ let parse = {
                             putMyVar("SrcJu_pysourceListFilter", s);
                             tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
-                            tmpList.forEach((x, i) => {
+                            tmpList.forEach((x) => {
                                 manage.list.push(x.name);
                             });
                             manage.change();
@@ -133,15 +133,13 @@ let parse = {
                                 }else if(i==1){
                                     return 'openFile://file://'+ longSource.url;
                                 }else if(i==2){
-                                    //deleteFile('file://'+ longSource.url);
-                                    /*
+                                    deleteFile('file://'+ longSource.url);
+                                    let manageList = manage.list;
                                     manage.list.length = 0;
-                                    tmpList.forEach((x, i) => {
+                                    manageList.forEach((x) => {
                                         manage.list.push(x.name);
                                     });
                                     manage.change();
-                                    */
-                                    log(manage.list);
                                 }
 
                                 return 'toast://' + tmpList.length + '-' + sourceList.length;

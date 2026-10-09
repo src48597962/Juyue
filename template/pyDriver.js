@@ -625,6 +625,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
+        let novel;
         //log(play);
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
@@ -636,6 +637,7 @@ let parse = {
                 if(play.url.startsWith("pics://")){
                     return play.url;
                 }else if(play.url.startsWith("novel://")){
+                    novel = 1;
                     let noveljson = JSON.parse(play.url.replace('novel://', ''));
                     return $("hiker://empty#readTheme##autoPage#").rule((data)=>{
                         let d = [];
@@ -664,7 +666,7 @@ let parse = {
                 urls = play.url;
             }
             
-            if(play.header && urls){
+            if(!novel && play.header && urls){
                 function parseHttpHeaders(input, refArr) {
                     const targetLen = refArr.length;
                     let baseVal = input;
@@ -704,8 +706,9 @@ let parse = {
                 }); 
             }
         }
-
-        return play.url || url;
+        if(!novel){
+            return play.url || url;
+        }
     },
     最新: function(url){
         try{

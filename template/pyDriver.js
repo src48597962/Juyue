@@ -634,6 +634,27 @@ let parse = {
             if($.type(play.url) == "string"){
                 if(play.url.startsWith("pics://")){
                     return play.url;
+                }else if(play.url.startsWith("novel://")){
+                    let noveljson = JSON.parse(play.url.replace('novel://', ''));
+                    return $("#readTheme##autoPage#").rule((data)=>{
+                        let d = [];
+                        d.push({
+                            title: '<big>' + data.title + '</big>',
+                            col_type: 'rich_text',
+                            extra: {
+                                click: true
+                            }
+                        });
+                        d.push({
+                                title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
+                            col_type: "rich_text",
+                            extra: {
+                                textSize: 18,
+                                click: true
+                            }
+                        });
+                        setResult(d)
+                    }, noveljson);
                 }else if(!play.url.includes('.m4a') && !play.url.includes('.mp3')){
                     urls = [play.url+'#isVideo=true#'];
                     play.url = play.url+'#isVideo=true#';

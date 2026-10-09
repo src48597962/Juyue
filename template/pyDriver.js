@@ -80,8 +80,6 @@ let parse = {
                     }
                     return pylists;
                 }
-
-                
                 let sourceSet = juItem.get('sourceSet') || {};
                 let sourceList = getpylist();
                 let tmpList = [];
@@ -263,7 +261,7 @@ let parse = {
                             refreshPage(false);
                             return "toast://" + pyname + ">已切换为：" + sm;
                         }, pySource)
-                    }, pySource, sourceSet)
+                    }, pySource)
                 },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
                     js: $.toString((pyname) => {

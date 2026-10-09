@@ -254,16 +254,18 @@ let parse = {
                                 refreshPage(false);
                                 return "toast://" + pyname + ">已切换为：" + sm;
                             }else if(input.includes('类型')){
-                                return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pyname, sourceSet, pyset)=>{
+                                return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pySource, sourceSet, pyset)=>{
                                     if(input=='未指定'){
                                         delete pyset['type'];
                                     }else{
                                         pyset['type'] = input;
                                     }
-                                    sourceSet[pyname] = pyset;
+                                    sourceSet[pySource.name] = pyset;
                                     juItem.set('sourceSet', sourceSet);
-                                    return "toast://" + pyname + ">类型设置为：" + input;
-                                }, pyname, sourceSet, pyset)
+                                    pySource.type = input;
+                                    juItem.set('pySource', pySource);
+                                    return "toast://" + pySource.name + ">类型设置为：" + input;
+                                }, pySource, sourceSet, pyset)
                             }
                         }, pySource, sourceSet, pyset)
                     }, pySource)

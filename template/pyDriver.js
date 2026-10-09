@@ -85,7 +85,7 @@ let parse = {
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule((_readDir) => {
-                let sourceList = $.require("jiekou").parse().getpylist();
+                let sourceList = $.require("jiekou").parse()._getpylist();
                 let tmpList = [];
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");

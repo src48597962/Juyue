@@ -84,7 +84,7 @@ let parse = {
         d.push({
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
-            url: $('#noLoading#').lazyRule((_readDir) => {
+            url: $('#noLoading#').lazyRule(() => {
                 let sourceList = $.require("jiekou").parse()._getpylist();
                 let tmpList = [];
 
@@ -188,7 +188,7 @@ let parse = {
                     }
                 });
                 return 'hiker://empty';
-            }, this._readDir),
+            }),
             img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
             col_type: 'avatar',
             extra: {
@@ -623,8 +623,8 @@ let parse = {
             type: pySource.type
         }  
     },
-    搜索: function(name){
-        let pySource = juItem.get('pySource') || {};
+    搜索: function(name, source){
+        let pySource = (source?JSON.parse(source):undefined) || juItem.get('pySource') || {};
         let pyurl = pySource.url;
         let d = [];
         if(pyurl){
@@ -645,6 +645,18 @@ let parse = {
             })
         }
         return d;
+    },
+    聚合搜索: function(keyword){
+        let sourceList = $.require("jiekou").parse()._getpylist();
+        let judata = [];
+        sourceList.forEach(it=>{
+            judata.push({
+                "title": it.name,
+                "search_url": "hiker://empty##**##fypage",
+                "searchFind": `js: let parse = $.require("jiekou").parse(); let d = 搜索('` + keyword + `', ` + JSON.stringify(it) + `); setResult(d);`
+            });
+        })
+        return JSON.stringify(judata);
     },
     解析: function(url){
         let pySource = storage0.getMyVar('pySource') || {};

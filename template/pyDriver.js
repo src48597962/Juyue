@@ -263,7 +263,7 @@ let parse = {
                                     sourceSet[pyname] = pyset;
                                     juItem.set('sourceSet', sourceSet);
                                     return "toast://" + pyname + ">类型设置为：" + input;
-                                }, pyname, sourceSet)
+                                }, pyname, sourceSet, pyset)
                             }
                         }, pySource, sourceSet, pyset)
                     }, pySource)

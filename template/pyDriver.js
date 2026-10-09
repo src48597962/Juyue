@@ -575,15 +575,18 @@ let parse = {
         let 线路 = json.vod_play_from?json.vod_play_from.split('$$$'):[];
         log(json.vod_play_url);
         let 选集 = json.vod_play_url?json.vod_play_url.split('$$$').map(it => {
-            return it.split('#').map((data) => {
+            return it.split('#').map((data, i) => {
                 let 选集列表 = {};
                 let arr = data.split("$");
+                if(arr.length==1 && data.includes('.m3u8')){
+                    arr[0] = '第'+(i+1)+'集';
+                    arr[1] = data;
+                }
                 选集列表.title = arr[0] || "";
                 选集列表.url = arr[1] || "";
                 return 选集列表;
             });
         }):[];
-        log(选集);
 
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",

@@ -260,27 +260,8 @@ let parse = {
                             juItem.set('sourceSet', sourceSet);
                             refreshPage(false);
                             return "toast://" + pyname + ">已切换为：" + sm;
-                        }, pySource)
+                        }, pySource, sourceSet)
                     }, pySource)
-                },{
-                    title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
-                    js: $.toString((pyname) => {
-                        let sourceSet = juItem.get('sourceSet') || {};
-                        let pyset = sourceSet[pyname] || {};
-                        let isyiparse = pyset['yiparse'] || 0;
-                        let sm;
-                        if(isyiparse){
-                            delete pyset['yiparse'];
-                            sm = '二级播放';
-                        }else{
-                            pyset['yiparse'] = 1;
-                            sm = '一级播放';
-                        }
-                        sourceSet[pyname] = pyset;
-                        juItem.set('sourceSet', sourceSet);
-                        refreshPage(false);
-                        return "toast://" + pyname + ">已切换为：" + sm;
-                    }, pyname)
                 }]
             }
         })

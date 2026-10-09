@@ -225,6 +225,46 @@ let parse = {
                         return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
                     }, pyurl)
                 },{
+                    title: "设置",
+                    js: $.toString((pySource) => {
+                        let sourceSet = juItem.get('sourceSet') || {};
+                        let pyset = sourceSet[pySource.name] || {};
+                        let isyiparse = pyset['yiparse'] || 0;
+                        let isnovel = pyset['novel'] || 0;
+
+                        sourceSet[input] = pyset;
+                        juItem.set('sourceSet', sourceSet);
+
+                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '选集rule解析：' + (isnovel?'是':'否')], 1).select((pySource,sourceSet)=>{
+                            let pyname = pySource.name;
+                            let pyset = sourceSet[pyname] || {};
+                            let sm;
+                            if(input.includes('播放')){
+                                let isyiparse = pyset['yiparse'] || 0;
+                                if(isyiparse){
+                                    delete pyset['yiparse'];
+                                    sm = '二级播放';
+                                }else{
+                                    pyset['yiparse'] = 1;
+                                    sm = '一级播放';
+                                }
+                            }else if(input.includes('rule')){
+                                let isnovel = pyset['novel'] || 0;
+                                if(isnovel){
+                                    delete pyset['novel'];
+                                    sm = '选集解析为视频、漫画等lazyRule';
+                                }else{
+                                    pyset['novel'] = 1;
+                                    sm = '选集解析为小说、文章等rule';
+                                }
+                            }
+                            sourceSet[pyname] = pyset;
+                            juItem.set('sourceSet', sourceSet);
+                            refreshPage(false);
+                            return "toast://" + pyname + ">已切换为：" + sm;
+                        }, pySource)
+                    }, pySource, sourceSet)
+                },{
                     title: ((juItem.get('sourceSet')||{})[pyname]||{})['yiparse']?"二级播放":"一级播放",
                     js: $.toString((pyname) => {
                         let sourceSet = juItem.get('sourceSet') || {};
@@ -588,6 +628,7 @@ let parse = {
         }):[];
         let sourceSet = juItem.get('sourceSet') || {};
         let pyset = sourceSet[pySource.name] || {};
+        let isnovel = pyset['novel'];
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
@@ -595,7 +636,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: pyset.type
+            rule: isnovel
         }  
     },
     搜索: function(name){

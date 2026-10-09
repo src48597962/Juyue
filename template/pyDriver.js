@@ -708,26 +708,24 @@ let parse = {
             }
         }
         if(novel){
-            let noveljson = JSON.parse(play.url.replace('novel://', ''));
-            return $("hiker://empty#readTheme##autoPage#").rule((data)=>{
-                let d = [];
-                d.push({
-                    title: '<big>' + data.title + '</big>',
-                    col_type: 'rich_text',
-                    extra: {
-                        click: true
-                    }
-                });
-                d.push({
-                        title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
-                    col_type: "rich_text",
-                    extra: {
-                        textSize: 18,
-                        click: true
-                    }
-                });
-                setResult(d)
-            }, noveljson);
+            let data = JSON.parse(play.url.replace('novel://', ''));
+            let d = [];
+            d.push({
+                title: '<big>' + data.title + '</big>',
+                col_type: 'rich_text',
+                extra: {
+                    click: true
+                }
+            });
+            d.push({
+                    title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
+                col_type: "rich_text",
+                extra: {
+                    textSize: 18,
+                    click: true
+                }
+            });
+            setResult(d)
         }else{
             return play.url || url;
         }

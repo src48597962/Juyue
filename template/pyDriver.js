@@ -50,8 +50,9 @@ let parse = {
                     if(sourceSort == 1){
                         function sortByPinyin(arr) {
                             let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
+                            let mm;
                             for (let m in arrNew) {
-                                let mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                                mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
                                 if (mm > -1) {
                                     break;
                                 }
@@ -620,7 +621,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
-        //log(play);
+        log(play);
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
         }

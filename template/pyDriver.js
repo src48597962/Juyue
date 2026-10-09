@@ -653,7 +653,7 @@ let parse = {
             judata.push({
                 "title": it.name,
                 "search_url": "hiker://empty##**##fypage",
-                "searchFind": `js: let parse = $.require("jiekou").parse(); let d = 搜索('` + keyword + `', ` + JSON.stringify(it) + `); setResult(d);`
+                "searchFind": `js: let parse = $.require("jiekou").parse(); let d = parse.搜索('` + keyword + `', ` + JSON.stringify(it) + `); setResult(d);`
             });
         })
         return JSON.stringify(judata);

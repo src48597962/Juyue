@@ -385,7 +385,6 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                            log(home);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
@@ -495,7 +494,6 @@ let parse = {
                         delete fl.cateId;
                         fl.typeid = cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
-                        log(json);
                         vodlists = json.list || [];
                     }
                     let sourceSet = juItem.get('sourceSet') || {};
@@ -568,7 +566,6 @@ let parse = {
         storage0.putMyVar('pySource', pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
-        log(html);
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
         let detail1 = json.vod_actor || "";
@@ -589,14 +586,16 @@ let parse = {
                 return 选集列表;
             });
         }):[];
-
+        let sourceSet = juItem.get('sourceSet') || {};
+        let pyset = sourceSet[pySource.name] || {};
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
             desc: 简介,
             img: 图片,
             line: 线路,
-            list: 选集
+            list: 选集,
+            type: pyset.type
         }  
     },
     搜索: function(name){
@@ -623,7 +622,6 @@ let parse = {
         return d;
     },
     解析: function(url){
-        log('进入解析>' + url);
         let pySource = storage0.getMyVar('pySource') || {};
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
@@ -641,26 +639,6 @@ let parse = {
                     return play.url;
                 }else if(play.url.startsWith("novel://")){
                     novel = 1;
-                    let noveljson = JSON.parse(play.url.replace('novel://', ''));
-                    return $("hiker://empty#readTheme##autoPage#").rule((data)=>{
-                        let d = [];
-                        d.push({
-                            title: '<big>' + data.title + '</big>',
-                            col_type: 'rich_text',
-                            extra: {
-                                click: true
-                            }
-                        });
-                        d.push({
-                                title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
-                            col_type: "rich_text",
-                            extra: {
-                                textSize: 18,
-                                click: true
-                            }
-                        });
-                        setResult(d)
-                    }, noveljson);
                 }else if(!play.url.includes('.m4a') && !play.url.includes('.mp3')){
                     urls = [play.url+'#isVideo=true#'];
                     play.url = play.url+'#isVideo=true#';
@@ -709,7 +687,28 @@ let parse = {
                 }); 
             }
         }
-        if(!novel){
+        if(novel){
+            let noveljson = JSON.parse(play.url.replace('novel://', ''));
+            return $("hiker://empty#readTheme##autoPage#").rule((data)=>{
+                let d = [];
+                d.push({
+                    title: '<big>' + data.title + '</big>',
+                    col_type: 'rich_text',
+                    extra: {
+                        click: true
+                    }
+                });
+                d.push({
+                        title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
+                    col_type: "rich_text",
+                    extra: {
+                        textSize: 18,
+                        click: true
+                    }
+                });
+                setResult(d)
+            }, noveljson);
+        }else{
             return play.url || url;
         }
     },

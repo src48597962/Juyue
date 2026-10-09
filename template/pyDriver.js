@@ -573,7 +573,6 @@ let parse = {
         let 简介 = json.vod_content || "";
         let 图片 = json.vod_pic || "";
         let 线路 = json.vod_play_from?json.vod_play_from.split('$$$'):[];
-        log(json.vod_play_url);
         let 选集 = json.vod_play_url?json.vod_play_url.split('$$$').map(it => {
             return it.split('#').map((data, i) => {
                 let 选集列表 = {};

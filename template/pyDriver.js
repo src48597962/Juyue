@@ -582,6 +582,7 @@ let parse = {
                 return 选集列表;
             });
         }):[];
+        log(选集);
 
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",

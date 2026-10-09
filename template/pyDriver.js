@@ -610,9 +610,6 @@ let parse = {
                 return 选集列表;
             });
         }):[];
-        let sourceSet = juItem.get('sourceSet') || {};
-        let pyset = sourceSet[pySource.name] || {};
-        let stype = pyset['type'];
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
@@ -620,7 +617,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: stype
+            type: pySource.type
         }  
     },
     搜索: function(name){

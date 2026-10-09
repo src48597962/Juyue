@@ -50,14 +50,13 @@ let parse = {
                     if(sourceSort == 1){
                         function sortByPinyin(arr) {
                             let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
-                            let mm;
-                            for (let m in arrNew) {
-                                mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                            for (var m in arrNew) {
+                                var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
                                 if (mm > -1) {
                                     break;
                                 }
                             }
-                            for (let n = arrNew.length - 1; n >= 0; n--) {
+                            for (var n = arrNew.length - 1; n >= 0; n--) {
                                 let nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
                                 if (nn > -1) {
                                     break;

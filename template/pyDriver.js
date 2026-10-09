@@ -46,6 +46,14 @@ let parse = {
             url: $('#noLoading#').lazyRule((_readDir) => {
                 function getpylist() {
                     let pylists = storage0.getMyVar('pylists') || _readDir();
+                    pylists.forEach(it=>{
+                        let pyset = sourceSet[it.name] || {};
+                        it.sort = pyset['sort'] || 0;
+                        let stype = pyset['type'];
+                        if(stype){
+                            it.type = stype;
+                        }
+                    })
                     let sourceSort = juItem.get('sourceSort', 0);
                     if(sourceSort == 1){
                         function sortByPinyin(arr) {
@@ -70,10 +78,6 @@ let parse = {
                         }
                         pylists = sortByPinyin(pylists);
                     }else if(sourceSort == 2){
-                        pylists.forEach(it=>{
-                            let pyset = sourceSet[it.name] || {};
-                            it.sort = pyset['sort'] || 0;
-                        })
                         pylists.sort((a, b) => {
                             return b.sort - a.sort
                         })
@@ -129,7 +133,6 @@ let parse = {
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
                         let homeSource = sourceList.find(v=>v.name===input);
-                        delete homeSource['sort'];
                         juItem.set('pySource', homeSource);
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
@@ -228,16 +231,16 @@ let parse = {
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[pySource.name] || {};
                         let isyiparse = pyset['yiparse'] || 0;
-                        let isnovel = pyset['novel'] || 0;
+                        let stype = pyset['type'] || '未指定';
 
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
 
-                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '是否小说类型：' + (isnovel?'是':'否')], 1).select((pySource,sourceSet)=>{
+                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
                             let pyname = pySource.name;
                             let pyset = sourceSet[pyname] || {};
-                            let sm;
                             if(input.includes('播放')){
+                                let sm;
                                 let isyiparse = pyset['yiparse'] || 0;
                                 if(isyiparse){
                                     delete pyset['yiparse'];
@@ -246,21 +249,23 @@ let parse = {
                                     pyset['yiparse'] = 1;
                                     sm = '一级播放';
                                 }
-                            }else if(input.includes('rule')){
-                                let isnovel = pyset['novel'] || 0;
-                                if(isnovel){
-                                    delete pyset['novel'];
-                                    sm = '选集解析为视频、漫画等lazyRule';
-                                }else{
-                                    pyset['novel'] = 1;
-                                    sm = '选集解析为小说、文章等rule';
-                                }
+                                sourceSet[pyname] = pyset;
+                                juItem.set('sourceSet', sourceSet);
+                                refreshPage(false);
+                                return "toast://" + pyname + ">已切换为：" + sm;
+                            }else if(input.includes('类型')){
+                                return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pyname, sourceSet, pyset)=>{
+                                    if(input=='未指定'){
+                                        delete pyset['type'];
+                                    }else{
+                                        pyset['type'] = input;
+                                    }
+                                    sourceSet[pyname] = pyset;
+                                    juItem.set('sourceSet', sourceSet);
+                                    return "toast://" + pyname + ">类型设置为：" + input;
+                                }, pyname, sourceSet)
                             }
-                            sourceSet[pyname] = pyset;
-                            juItem.set('sourceSet', sourceSet);
-                            refreshPage(false);
-                            return "toast://" + pyname + ">已切换为：" + sm;
-                        }, pySource, sourceSet)
+                        }, pySource, sourceSet, pyset)
                     }, pySource)
                 }]
             }
@@ -607,7 +612,7 @@ let parse = {
         }):[];
         let sourceSet = juItem.get('sourceSet') || {};
         let pyset = sourceSet[pySource.name] || {};
-        let isnovel = pyset['novel'];
+        let stype = pyset['type'];
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
@@ -615,7 +620,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: isnovel?'小说':undefined
+            type: stype
         }  
     },
     搜索: function(name){

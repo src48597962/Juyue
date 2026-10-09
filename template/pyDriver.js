@@ -24,6 +24,47 @@ let parse = {
         hideLoading();
         return pylists;
     },
+    _getpylist: function() {
+        let pylists = storage0.getMyVar('pylists') || this._readDir();
+        let sourceSet = juItem.get('sourceSet') || {};
+        pylists.forEach(it=>{
+            let pyset = sourceSet[it.name] || {};
+            it.sort = pyset['sort'] || 0;
+            let stype = pyset['type'];
+            if(stype){
+                it.type = stype;
+            }
+        })
+        let sourceSort = juItem.get('sourceSort', 0);
+        if(sourceSort == 1){
+            function sortByPinyin(arr) {
+                let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
+                for (var m in arrNew) {
+                    var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
+                    if (mm > -1) {
+                        break;
+                    }
+                }
+                for (var n = arrNew.length - 1; n >= 0; n--) {
+                    let nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
+                    if (nn > -1) {
+                        break;
+                    }
+                }
+                if (mm > -1) {
+                    let arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
+                    arrNew = arrNew.concat(arrTmp);
+                }
+                return arrNew
+            }
+            pylists = sortByPinyin(pylists);
+        }else if(sourceSort == 2){
+            pylists.sort((a, b) => {
+                return b.sort - a.sort
+            })
+        }
+        return pylists;
+    },
     主页预加载: function(){
         let pyConfig = juItem.getAll();
         let pypath = pyConfig.pypath || '';
@@ -44,48 +85,7 @@ let parse = {
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule((_readDir) => {
-                function getpylist() {
-                    let pylists = storage0.getMyVar('pylists') || _readDir();
-                    pylists.forEach(it=>{
-                        let pyset = sourceSet[it.name] || {};
-                        it.sort = pyset['sort'] || 0;
-                        let stype = pyset['type'];
-                        if(stype){
-                            it.type = stype;
-                        }
-                    })
-                    let sourceSort = juItem.get('sourceSort', 0);
-                    if(sourceSort == 1){
-                        function sortByPinyin(arr) {
-                            let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
-                            for (var m in arrNew) {
-                                var mm = /^[\u4e00-\u9fa5]/.test(arrNew[m].name) ? m : '-1';
-                                if (mm > -1) {
-                                    break;
-                                }
-                            }
-                            for (var n = arrNew.length - 1; n >= 0; n--) {
-                                let nn = /^[\u4e00-\u9fa5]/.test(arrNew[n].name) ? n : '-1';
-                                if (nn > -1) {
-                                    break;
-                                }
-                            }
-                            if (mm > -1) {
-                                let arrTmp = arrNew.splice(m, parseInt(n - m) + 1);
-                                arrNew = arrNew.concat(arrTmp);
-                            }
-                            return arrNew
-                        }
-                        pylists = sortByPinyin(pylists);
-                    }else if(sourceSort == 2){
-                        pylists.sort((a, b) => {
-                            return b.sort - a.sort
-                        })
-                    }
-                    return pylists;
-                }
-                let sourceSet = juItem.get('sourceSet') || {};
-                let sourceList = getpylist();
+                let sourceList = $.require("jiekou").parse().getpylist();
                 let tmpList = [];
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
@@ -134,6 +134,7 @@ let parse = {
                         clearMyVar('dianbo$flCache');
                         let homeSource = sourceList.find(v=>v.name===input);
                         juItem.set('pySource', homeSource);
+                        let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
                         sourceSet[input] = pyset;

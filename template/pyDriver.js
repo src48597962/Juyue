@@ -233,7 +233,7 @@ let parse = {
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
 
-                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '选集rule解析：' + (isnovel?'是':'否')], 1).select((pySource,sourceSet)=>{
+                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '是否小说类型：' + (isnovel?'是':'否')], 1).select((pySource,sourceSet)=>{
                             let pyname = pySource.name;
                             let pyset = sourceSet[pyname] || {};
                             let sm;
@@ -615,7 +615,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            rule: isnovel
+            type: isnovel?'小说':undefined
         }  
     },
     搜索: function(name){

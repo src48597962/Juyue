@@ -636,7 +636,7 @@ let parse = {
                     return play.url;
                 }else if(play.url.startsWith("novel://")){
                     let noveljson = JSON.parse(play.url.replace('novel://', ''));
-                    return $("#readTheme##autoPage#").rule((data)=>{
+                    return $("hiker://empty#readTheme##autoPage#").rule((data)=>{
                         let d = [];
                         d.push({
                             title: '<big>' + data.title + '</big>',

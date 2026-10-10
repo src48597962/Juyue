@@ -413,7 +413,7 @@ function yiji(testSource) {
                                 cls: 'sousuoNotice'
                             }
                         });
-                        addItemBefore('homesousuoid', d);
+                        addItemAfter('homesousuoid', d);
                     }else{
                         deleteItemByCls('sousuoNotice');
                     }

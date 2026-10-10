@@ -1381,6 +1381,7 @@ function erji() {
                             let url = input;
                             let jkdata = dataObj.data;
                             let parse = getObjCode(jkdata, 'jx');
+                            parse.dataObj = dataObj;
                             let playUrl;
                             if(parse['解析']){
                                 eval("let 解析2 = " + parse['解析']);

@@ -1659,7 +1659,9 @@ function sousuo() {
                         try{
                             log(it.name + '进聚合');
                             eval("let 数据 = " + parse['聚合搜索'].toString());
+                            log('1');
                             let getData = 数据.call(parse, keyword, it) || [];
+                            log('2');
                             judata = judata.concat(getData);
                         }catch(e){
                             log(it.name+'>聚合搜索组装失败>'+e.message);

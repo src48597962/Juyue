@@ -1657,17 +1657,13 @@ function sousuo() {
                     let parse = $.require("jiekou").parse(it);//getObjCode(it, 'ss');
                     if(parse['聚合搜索']){
                         try{
-                            log(it.name + '进聚合');
                             eval("let 数据 = " + parse['聚合搜索'].toString());
-                            log('1');
                             let getData = 数据.call(parse, keyword, it) || [];
-                            log('2');
                             judata = judata.concat(getData);
                         }catch(e){
-                            log(it.name+'>聚合搜索组装失败>'+e.message);
+                            log(it.name+'>读取聚合搜索失败>'+e.message);
                         }
                     }else{
-                        log(it.name + '非聚合');
                         judata.push({
                             "title": it.name,
                             "search_url": "hiker://empty##**##fypage",

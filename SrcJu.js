@@ -1664,10 +1664,6 @@ function sousuo() {
                 let keyword = sskeyword.split('  ')[0].trim();
                 let keyword2;
                 if(sskeyword.indexOf('  ')>-1){
-                    if(sskeyword.split('  ')[1].trim()=='聚合搜索'){
-                        let parse = getObjCode(info, 'ss');
-                        return parse['聚合搜索'](keyword);
-                    }
                     keyword2 = sskeyword.split('  ')[1].trim() || info.name;
                 }
 
@@ -1716,6 +1712,12 @@ function sousuo() {
 
                 let judata = [];
                 ssdatalist.forEach(it=>{
+                    let parse = getObjCode(it, 'ss');
+
+                    if(parse['聚合搜索']){
+                        
+                        return parse['聚合搜索'](keyword);
+                    }
                     judata.push({
                         "title": it.name,
                         "search_url": "hiker://empty##**##fypage",

@@ -142,71 +142,14 @@ function yiji(testSource) {
             }
         })
         let Color = getItem('主题颜色','#3399cc');
-        function modeSelect(v) {
-            return `‘‘’’<strong><font color="`+Color+`">`+v+`√</front></strong>`;
-        }
-        let searchModeS = (MY_NAME=="海阔视界"?["主页界面","当前接口","分组接口","页面聚合"]:["主页界面","页面聚合"]).map(v=>{
-            return v==juItem2.get('接口搜索方式','主页界面')?modeSelect(v):v+'  ';
-        });
-        searchModeS.push(getItem("搜索建议词","")=='1'?modeSelect('搜索建议词'):'搜索建议词');
-        searchModeS.push(getItem("记忆搜索词","")=='1'?modeSelect('记忆搜索词'):'记忆搜索词');
-        searchModeS.push('显示搜索数');
-        searchModeS.push('聚合搜索页');
         let searchBtn = getItem('切换搜索按钮','搜索');
         d.push({
             title: searchBtn,
-            url: searchBtn==='搜索' ? $(searchModeS, 2, '主页搜索框设定').select(()=>{
-                input = input.replace(/[’‘]|<[^>]*>| |√/g, "");
-
-                if(input=='搜索建议词'||input=='记忆搜索词'){
-                    if(getItem(input,"")=='1'){
-                        clearItem(input);
-                        return "toast://已取消" + input;
-                    }else{
-                        setItem(input, "1");
-                        return "toast://已设置" + input;
-                    }
-                }else if(input=='显示搜索数'){
-                    return $(getItem("显示搜索历史数量", "18"),"显示搜索历史数量").input(()=>{
-                        if(!parseInt(input)||parseInt(input)<1||parseInt(input)>100){
-                            return 'toast://输入有误，请输入1-100数字';
-                        }
-                        setItem("显示搜索历史数量", input);
-                        return "hiker://empty";
-                    })
-                }else if(input=='聚合搜索页'){
-                    return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=视频&page=fypage&keyword=`;
-                }else{
-                    juItem2.set("接口搜索方式",input);
-                    refreshPage();
-                    return "toast://搜索方式设置为："+input;
-                }
-            }) : searchBtn=='短剧' ? $("#noLoading#").lazyRule(() => {
-                toast('三针科兴短剧，越看越有趣\n      顺佬出品，必属精品');
-                return 'hiker://page/duanju#gameTheme##noRecordHistory##noHistory#?rule=聚阅';
-            }) : $("#noLoading#").lazyRule(() => {
+            url: $("#noLoading#").lazyRule(() => {
                 return $.require('jiekou').findBtnF();
             }),
             pic_url: getIcon(homeIcons[2].img, false, homeIcons[2].color),
-            col_type: icon5_col,
-            extra: {
-                id: 'ssbtnid',
-                longClick: [{
-                    title: '切换按钮：' + searchBtn,
-                    js: $.toString(()=>{
-                        let btns = ['搜索', '短剧', '发现'];
-                        return $(btns, 1).select(() => {
-                            if(input=='搜索'){
-                                clearItem('切换搜索按钮');
-                            }else{
-                                setItem('切换搜索按钮', input);
-                            }
-                            refreshPage();
-                            return `toast://已切换为` + getItem('切换搜索按钮','搜索');
-                        })
-                    })
-                }]
-            }
+            col_type: icon5_col
         })
         d.push({
             title: "收藏",
@@ -1714,7 +1657,9 @@ function sousuo() {
                 ssdatalist.forEach(it=>{
                     let parse = getObjCode(it, 'ss');
                     if(parse['聚合搜索']){
-                        judata = judata.concat(parse['聚合搜索'](keyword, it));
+                        eval("let 数据 = " + parse['聚合搜索'].toString());
+                        let getData = 数据.call(parse, keyword, it) || [];
+                        judata = judata.concat(getData);
                     }else{
                         judata.push({
                             "title": it.name,
@@ -1991,7 +1936,7 @@ function newSearchPage(keyword, searchtype) {
     
     let sskeyword = getMyVar('SrcJu_sousuoName', keyword||'');
     let group = getMyVar('SrcJu_sousuoType', searchtype||homeGroup);
-    setPageTitle("聚合搜索 | 聚阅");
+    setPageTitle("新搜索页 | 聚阅");
 
     let keyword = sskeyword.split('  ')[0].trim();
     let keyword2;

@@ -596,13 +596,6 @@ function getYiData(datatype, jkdata, dd) {
         if(!parse['搜索'] || parse['不显示搜索']){
             deleteItem('homesousuoid');
         }
-        if(parse['聚合搜索'] && page==1){
-            updateItem('homesousuoid', {
-                url: $.toString(() => {
-                    return 'hiker://search?s='+input+'  聚合搜索&rule='+MY_RULE.title;
-                })
-            });
-        }
         if(sourcemenu.length==0){
             updateItem("sourcemenu", {
                 title: "历史",

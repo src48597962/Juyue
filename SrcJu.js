@@ -1651,7 +1651,7 @@ function sousuo() {
                 }catch(e){
                     //xlog(e.message);
                 }
-                log(ssdatalist);
+                
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     let parse = $.require("jiekou").parse(it);//getObjCode(it, 'ss');

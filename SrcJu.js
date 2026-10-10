@@ -142,9 +142,8 @@ function yiji(testSource) {
             }
         })
         let Color = getItem('主题颜色','#3399cc');
-        let searchBtn = getItem('切换搜索按钮','搜索');
         d.push({
-            title: searchBtn,
+            title: '发现',
             url: $("#noLoading#").lazyRule(() => {
                 return $.require('jiekou').findBtnF();
             }),

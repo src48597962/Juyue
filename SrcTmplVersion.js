@@ -1,6 +1,6 @@
 var newVersion = {
     "SrcJu": "2.7",
-    "hint": "",
+    "hint": "使用py文件需要py合集源",
     "JYUpdateRecords": [{
         title: "beta V2.8",
         records: [
@@ -8,7 +8,7 @@ var newVersion = {
             "优化：toerji方法调整，应对奇奇怪怪的源",
             "优化：二级返回内容及解析调用方法微调",
             "优化：获取源代码内容方法调整防作用域错乱",
-            "新增：移植聚影py相关代码，增加py驱动器"
+            "新增：移植聚影py相关代码，适配py合集源"
         ]
     },{
         title: "2026/07/13 V2.7",

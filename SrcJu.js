@@ -398,11 +398,11 @@ function yiji(testSource) {
                             })
                         }
                         addItemAfter('homesousuoid', d);
-                    }else if(input.length==2){
+                    }else if(input.length==1){
                         let d = [];
                         d.push({
                             title: `<small>
-                                    使用技巧：
+                                    使用技巧：<br>
                                     1. 输入1个空格显示搜索历史记录。<br>
                                     2. 搜索词结尾+2空格互换方式，如由当前源变为分组。<br>
                                     3. 搜索词结尾+2空格+指定源名，可搜索指定源。<br>

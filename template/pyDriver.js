@@ -646,15 +646,14 @@ let parse = {
         }
         return d;
     },
-    聚合搜索: function(keyword){
-
-        let sourceList = $.require("jiekou").parse(info)._getpylist();
+    聚合搜索: function(keyword, jkdata){
+        let sourceList = $.require("jiekou").parse(jkdata)._getpylist();
         let judata = [];
         sourceList.forEach(it=>{
             judata.push({
                 "title": it.name,
                 "search_url": "hiker://empty##**##fypage",
-                "searchFind": `js: js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
+                "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(jkdata) + ` , false,` + JSON.stringify(it) + `); setResult(d);`
             });
         })
         return JSON.stringify(judata);

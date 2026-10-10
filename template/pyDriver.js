@@ -558,6 +558,7 @@ let parse = {
         let list = erLoadData.list[0];
         let line = erLoadData.line[0];
         let dataObj = {line: line};
+        parse.line = line;
         eval("let 解析2 = " + parse['解析']);
         let playUrl = 解析2.call(parse, list[0].url);
         return playUrl;
@@ -668,6 +669,7 @@ let parse = {
         let pySource = storage0.getMyVar('pySource') || {};
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        log(this.line);
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", dataObj.line, url, PythonHiker.toPyJson([]));
         let novel;
         //log(play);

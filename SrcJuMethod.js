@@ -713,9 +713,7 @@ function getSsData(name, jkdata, page, expand) {
     const setResult2 = setResult;
     try {
         if(parse['搜索']){
-            log('1');
             eval(evalPublicStr);
-            log('2');
             let resultd;
             setResult = function(rd) { resultd = rd; };
             eval("let 数据 = " + parse['搜索'].toString());

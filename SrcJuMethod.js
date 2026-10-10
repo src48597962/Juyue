@@ -705,7 +705,7 @@ function ocr(codeurl,headers) {
     return code;
 }
 //获取搜索数据
-function getSsData(name, jkdata, page) {
+function getSsData(name, jkdata, page, expand) {
     page = page || 1;
     let error = "";
     let getData = [];
@@ -724,7 +724,7 @@ function getSsData(name, jkdata, page) {
             let resultd;
             setResult = function(rd) { resultd = rd; };
             eval("let 数据 = " + parse['搜索'].toString());
-            getData = 数据.call(parse, name) || [];
+            getData = 数据.call(parse, name, expand) || [];
             if(resultd){
                 getData = resultd;
             }

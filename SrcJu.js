@@ -1656,10 +1656,12 @@ function sousuo() {
                 ssdatalist.forEach(it=>{
                     let parse = $.require("jiekou").parse(it);//getObjCode(it, 'ss');
                     if(parse['聚合搜索']){
+                        log(it.name + '进聚合');
                         eval("let 数据 = " + parse['聚合搜索'].toString());
                         let getData = 数据.call(parse, keyword, it) || [];
                         judata = judata.concat(getData);
                     }else{
+                        log(it.name + '非聚合');
                         judata.push({
                             "title": it.name,
                             "search_url": "hiker://empty##**##fypage",

@@ -1713,16 +1713,15 @@ function sousuo() {
                 let judata = [];
                 ssdatalist.forEach(it=>{
                     let parse = getObjCode(it, 'ss');
-
                     if(parse['聚合搜索']){
-                        
-                        return parse['聚合搜索'](keyword);
+                        judata = judata.concat(parse['聚合搜索'](keyword, it));
+                    }else{
+                        judata.push({
+                            "title": it.name,
+                            "search_url": "hiker://empty##**##fypage",
+                            "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
+                        });
                     }
-                    judata.push({
-                        "title": it.name,
-                        "search_url": "hiker://empty##**##fypage",
-                        "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
-                    });
                 })
                 return JSON.stringify(judata);
             },sskeyword)
@@ -1730,7 +1729,7 @@ function sousuo() {
     }])
 }
 //搜索逻辑代码
-function search(sskeyword, sstype, jkdata, blurMatch) {
+function search(sskeyword, sstype, jkdata, blurMatch, expand) {
     if(sstype=="hkjusou"){
         sskeyword = MY_URL.split('##')[1].split('  ')[0].trim();
     }
@@ -1755,7 +1754,7 @@ function search(sskeyword, sstype, jkdata, blurMatch) {
     }
 
     let isnewVer = ((MY_NAME=="海阔视界"&&getAppVersion()>=5566)||(MY_NAME=="嗅觉浏览器"&&getAppVersion()>=2305));
-    getSsData(sskeyword, jkdata, page).vodlists.forEach(it => {
+    getSsData(sskeyword, jkdata, page, expand).vodlists.forEach(it => {
         if(sstype=='erji'){
             if(it.extra && it.extra.url){
                 it.url = "hiker://empty##"+ it.extra.url + $("#noLoading#").b64().lazyRule((extra) => {

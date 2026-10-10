@@ -300,6 +300,7 @@ function yiji(testSource) {
         d.push({
             title: getItem("搜索建议词","")=='1'?'搜索':'🔍',
             url: $.toString((searchurl) => {
+                deleteItemByCls('sousuoNotice');
                 if(input.endsWith('  ')){
                     putMyVar('接口搜索方式互换', '1');
                 }
@@ -414,8 +415,6 @@ function yiji(testSource) {
                             }
                         });
                         addItemAfter('homesousuoid', d);
-                    }else{
-                        deleteItemByCls('sousuoNotice');
                     }
                 }, searchurl)
             }

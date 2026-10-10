@@ -656,7 +656,7 @@ let parse = {
                 "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(jkdata) + ` , false,` + JSON.stringify(it) + `); setResult(d);`
             });
         })
-        return JSON.stringify(judata);
+        return judata;
     },
     解析: function(url){
         let pySource = storage0.getMyVar('pySource') || {};

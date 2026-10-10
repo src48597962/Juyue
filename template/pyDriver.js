@@ -556,7 +556,9 @@ let parse = {
         eval("let 二级获取 = " + parse['二级'])
         let erLoadData = 二级获取.call(parse, url);
         let list = erLoadData.list[0];
-        parse.line = erLoadData.line[0];
+        let line = erLoadData.line[0];
+        let dataObj = {line: line, lazyData: storage0.getMyVar('解析传递数据')};
+        parse.dataObj = dataObj;
         eval("let 解析2 = " + parse['解析']);
         let playUrl = 解析2.call(parse, list[0].url);
         return playUrl;
@@ -590,7 +592,7 @@ let parse = {
     二级: function(url){
         let pySource = MY_PARAMS.pySource;
         let pyurl = pySource.url;
-        storage0.putMyVar('pySource', pySource);
+        storage0.putMyVar('解析传递数据', pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
@@ -664,10 +666,10 @@ let parse = {
         return judata;
     },
     解析: function(url){
-        let pySource = storage0.getMyVar('pySource') || {};
+        let pySource = this.dataObj.lazyData || {};
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.line, url, PythonHiker.toPyJson([]));
+        let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
         let novel;
         //log(play);
         if(play.jx=='1' || play.parse=='1'){

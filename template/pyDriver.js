@@ -647,13 +647,14 @@ let parse = {
         return d;
     },
     聚合搜索: function(keyword){
-        let sourceList = $.require("jiekou").parse()._getpylist();
+
+        let sourceList = $.require("jiekou").parse(info)._getpylist();
         let judata = [];
         sourceList.forEach(it=>{
             judata.push({
                 "title": it.name,
                 "search_url": "hiker://empty##**##fypage",
-                "searchFind": `js: let parse = $.require("jiekou").parse(); let d = parse.搜索('` + keyword + `', ` + JSON.stringify(it) + `); setResult(d);`
+                "searchFind": `js: js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(it) + `); setResult(d);`
             });
         })
         return JSON.stringify(judata);

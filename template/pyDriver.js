@@ -624,6 +624,8 @@ let parse = {
         }  
     },
     搜索: function(name, source){
+        log('进搜索');
+        log(source);
         let pySource = (source?JSON.parse(source):undefined) || juItem.get('pySource') || {};
         let pyurl = pySource.url;
         let d = [];

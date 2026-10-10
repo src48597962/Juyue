@@ -1740,6 +1740,7 @@ function search(sskeyword, sstype, jkdata, blurMatch, expand) {
             }
         }else if(isMatch(sskeyword, it.title) || !it.url.includes('erji();') || it.retain){
             delete it.retain;
+            it.desc = '聚阅-' + it.desc;
             ssdata.push(it);
         }
     })

@@ -1656,10 +1656,14 @@ function sousuo() {
                 ssdatalist.forEach(it=>{
                     let parse = $.require("jiekou").parse(it);//getObjCode(it, 'ss');
                     if(parse['聚合搜索']){
-                        log(it.name + '进聚合');
-                        eval("let 数据 = " + parse['聚合搜索'].toString());
-                        let getData = 数据.call(parse, keyword, it) || [];
-                        judata = judata.concat(getData);
+                        try{
+                            log(it.name + '进聚合');
+                            eval("let 数据 = " + parse['聚合搜索'].toString());
+                            let getData = 数据.call(parse, keyword, it) || [];
+                            judata = judata.concat(getData);
+                        }catch(e){
+                            log(it.name+'>聚合搜索组装失败>'+e.message);
+                        }
                     }else{
                         log(it.name + '非聚合');
                         judata.push({

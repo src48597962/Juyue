@@ -646,8 +646,8 @@ let parse = {
         }
         return d;
     },
-    聚合搜索: function(keyword, jkdata){
-        let sourceList = $.require("jiekou").parse(jkdata)._getpylist();
+    聚合搜索: function(keyword){
+        let sourceList = $.require("jiekou").parse(this.jkdata)._getpylist();
         let judata = [];
         sourceList.forEach(it=>{
             judata.push({

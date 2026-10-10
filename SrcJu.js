@@ -730,6 +730,11 @@ function erji() {
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
             let download = $.toString((jkdata) => {
                 let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
+                let dataObj = {
+                    data: jkdata,
+                    lazyData: storage0.getMyVar('解析传递数据')
+                }
+                parse.dataObj = dataObj;
                 if(parse['解析']){
                     eval("let 解析2 = " + parse['解析']);
                     return 解析2.call(parse, input);
@@ -1375,7 +1380,8 @@ function erji() {
                             data: jkdata,
                             type: stype,
                             line: linename,
-                            id: listId
+                            id: listId,
+                            lazyData: storage0.getMyVar('解析传递数据')
                         }
                         let lazy = $("").lazyRule((dataObj) => {
                             let url = input;

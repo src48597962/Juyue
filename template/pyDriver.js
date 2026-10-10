@@ -653,7 +653,7 @@ let parse = {
             judata.push({
                 "title": it.name,
                 "search_url": "hiker://empty##**##fypage",
-                "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(jkdata) + ` , false,` + JSON.stringify(it) + `); setResult(d);`
+                "searchFind": `js: require(config.聚阅); let d = search('` + keyword + `', 'hkjusou' ,` + JSON.stringify(this.jkdata) + ` , false,` + JSON.stringify(it) + `); setResult(d);`
             });
         })
         return judata;

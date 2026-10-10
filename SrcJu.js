@@ -251,7 +251,7 @@ function yiji(testSource) {
             }else if((juItem2.get('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
                 showLoading('搜索中');
-                let d = search(input, 'yiji' , jkdata);
+                let d = search(input.trim(), 'yiji' , jkdata);
                 hideLoading();
                 if(d.length>0){
                     d.push({
@@ -293,6 +293,8 @@ function yiji(testSource) {
                 }else if(ssmode=="当前接口"){
                     storage0.putMyVar('搜索临时搜索数据', jkdata);
                 }
+                log(input);
+                log(ssmode);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup'], testSource?1:0);

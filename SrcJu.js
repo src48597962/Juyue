@@ -293,8 +293,8 @@ function yiji(testSource) {
                 }else if(ssmode=="当前接口"){
                     storage0.putMyVar('搜索临时搜索数据', jkdata);
                 }
-                log(input);
-                log(ssmode);
+                xlog(input);
+                xlog(ssmode);
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }
         }, jkdata, Juconfig['homeGroup'], testSource?1:0);

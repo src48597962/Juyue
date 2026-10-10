@@ -241,14 +241,12 @@ function yiji(testSource) {
             })
         }
         let searchurl = $('#noLoading#').lazyRule((jkdata, homeGroup, isTest) => {
-            log('进入来1');
             deleteItemByCls('homesousuolist');
             searchRecord('put', input);
             putVar("keyword", input.split('  ')[0]);
             if(!jkdata.name){
                 return 'toast://当前无接口数据';
             }else if(input.includes('  ') && !input.endsWith('  ')){//+2空格搜索指定源名或分组
-                log('进入来2');
                 return 'hiker://search?s='+input+'&rule='+MY_RULE.title;
             }else if((juItem2.get('接口搜索方式','主页界面')=="主页界面" && !getMyVar('接口搜索方式互换')) || isTest){
                 require(config.聚阅); 
@@ -285,7 +283,6 @@ function yiji(testSource) {
             }else if(juItem2.get('接口搜索方式')=="页面聚合"){
                 return `hiker://page/sousuopage#noRecordHistory##noHistory##immersiveTheme##noRefresh#?type=`+(homeGroup||jkdata.type)+`&page=fypage&keyword=`+input;
             }else{//分组接口/当前接口
-                log('进入来3');
                 let ssmode = juItem2.get('接口搜索方式');
                 if(getMyVar('接口搜索方式互换')){
                     ssmode = ssmode === "分组接口" ? "当前接口" : "分组接口";
@@ -1654,10 +1651,10 @@ function sousuo() {
                 }catch(e){
                     //xlog(e.message);
                 }
-
+                log(ssdatalist);
                 let judata = [];
                 ssdatalist.forEach(it=>{
-                    let parse = getObjCode(it, 'ss');
+                    let parse = $.require("jiekou").parse(it);//getObjCode(it, 'ss');
                     if(parse['聚合搜索']){
                         eval("let 数据 = " + parse['聚合搜索'].toString());
                         let getData = 数据.call(parse, keyword, it) || [];

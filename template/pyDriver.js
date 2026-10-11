@@ -238,7 +238,7 @@ let parse = {
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[pySource.name] || {};
                         let isyiparse = pyset['yiparse'] || 0;
-                        let stype = pyset['type'] || '未指定';
+                        let stype = pyset['type'] || pySource.type || '未指定';
 
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);

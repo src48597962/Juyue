@@ -1,6 +1,6 @@
 let parse = {
     作者: '聚阅',
-    版本: '2026101103',
+    版本: '2026101105',
     页码: {
         主页: true
     },
@@ -781,7 +781,7 @@ let parse = {
             if(playurl && !playurl.startsWith('http')){
                 playurl = 'toast://' + playurl;
             }
-            return playurl || url;
+            return playurl?playurl:url.startsWith('http')?url:'toast://播放解析失败';
         }
     },
     最新: function(url){

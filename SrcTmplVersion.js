@@ -1,8 +1,8 @@
 var newVersion = {
-    "SrcJu": "2.7",
-    "hint": "使用py文件需要py合集源",
+    "SrcJu": "2.8",
+    "hint": "py文件需要py合集源",
     "JYUpdateRecords": [{
-        title: "beta V2.8",
+        title: "2026/10/11 V2.8",
         records: [
             "优化：一级执行增加优先处理显示预加载",
             "优化：toerji方法调整，应对奇奇怪怪的源",

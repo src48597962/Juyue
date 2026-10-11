@@ -781,7 +781,7 @@ let parse = {
             if(playurl && !playurl.startsWith('http')){
                 playurl = 'toast://' + playurl;
             }
-            return playurl || 'toast://获取播放失败';
+            return playurl || url;
         }
     },
     最新: function(url){

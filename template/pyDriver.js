@@ -274,7 +274,7 @@ let parse = {
                                     return "toast://" + pySource.name + ">类型设置为：" + input;
                                 }, pySource, sourceSet, pyset)
                             }else if(input.includes('重命名')){
-                                return $(pySource.name, '输入新的文件名称').input((pySource)=>{
+                                return $(pySource.name, '输入新的文件名称').input((pySource, sourceSet)=>{
                                     input = input.trim();
                                     if(input==''){
                                         return 'hiker://empty';
@@ -282,13 +282,16 @@ let parse = {
                                     let newurl = pySource.url.replace(pySource.name, input);
                                     writeFile('file://'+newurl, fetch('file://'+pySource.url));
                                     deleteFile('file://'+pySource.url);
+                                    sourceSet[input] = sourceSet[pySource.name];
+                                    delete sourceSet[pySource.name];
+                                    juItem.set('sourceSet', sourceSet);
                                     pySource.name = input;
                                     pySource.url = newurl;
                                     juItem.set('pySource', pySource);
                                     clearMyVar('pylists');
                                     refreshPage(false);
                                     return "hiker://empty";
-                                }, pySource)
+                                }, pySource, sourceSet)
                             }
                         }, pySource, sourceSet, pyset)
                     }, pySource)

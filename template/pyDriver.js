@@ -264,12 +264,13 @@ let parse = {
                                 return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pySource, sourceSet, pyset)=>{
                                     if(input=='未指定'){
                                         delete pyset['type'];
+                                        delete pySource['type'];
                                     }else{
                                         pyset['type'] = input;
+                                        pySource.type = input;
                                     }
                                     sourceSet[pySource.name] = pyset;
                                     juItem.set('sourceSet', sourceSet);
-                                    pySource.type = input;
                                     juItem.set('pySource', pySource);
                                     return "toast://" + pySource.name + ">类型设置为：" + input;
                                 }, pySource, sourceSet, pyset)
@@ -696,7 +697,7 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
         let novel;
-        //log(play);
+        log(play);
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
         }

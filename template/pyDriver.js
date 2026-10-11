@@ -243,7 +243,7 @@ let parse = {
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
 
-                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
+                        return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype, 'py文件重命名'], 1).select((pySource,sourceSet)=>{
                             let pyname = pySource.name;
                             let pyset = sourceSet[pyname] || {};
                             if(input.includes('播放')){
@@ -272,6 +272,22 @@ let parse = {
                                     pySource.type = input;
                                     juItem.set('pySource', pySource);
                                     return "toast://" + pySource.name + ">类型设置为：" + input;
+                                }, pySource, sourceSet, pyset)
+                            }else if(input.includes('重命名')){
+                                return $(pySource.name, '输入新的文件名称').select((pySource, sourceSet, pyset)=>{
+                                    input = input.trim();
+                                    if(input==''){
+                                        return 'hiker://empty';
+                                    }
+                                    let newurl = pySource.url.replace(pySource.name, input);
+                                    writeFile('file://'+newurl, fetch('file://'+pySource.url));
+                                    deleteFile('file://'+pySource.url);
+                                    pySource.name = input;
+                                    pySource.url = newurl;
+                                    juItem.set('pySource', pySource);
+                                    clearMyVar('pylists');
+                                    refreshPage(false);
+                                    return "hiker://empty";
                                 }, pySource, sourceSet, pyset)
                             }
                         }, pySource, sourceSet, pyset)
@@ -757,7 +773,11 @@ let parse = {
             });
             setResult(d)
         }else{
-            return play.url || url;
+            let playurl = play.url;
+            if(playurl && !playurl.startsWith('http')){
+                playurl = 'toast://' + playurl;
+            }
+            return playurl;
         }
     },
     最新: function(url){

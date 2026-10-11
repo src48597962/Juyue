@@ -400,6 +400,7 @@ function yiji(testSource) {
                         }
                         addItemAfter('homesousuoid', d);
                     }else if(input.length==1){
+                        deleteItemByCls('sousuoNotice');
                         let d = [];
                         d.push({
                             title: `<small>

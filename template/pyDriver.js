@@ -274,7 +274,7 @@ let parse = {
                                     return "toast://" + pySource.name + ">类型设置为：" + input;
                                 }, pySource, sourceSet, pyset)
                             }else if(input.includes('重命名')){
-                                return $(pySource.name, '输入新的文件名称').select((pySource, sourceSet, pyset)=>{
+                                return $(pySource.name, '输入新的文件名称').input((pySource)=>{
                                     input = input.trim();
                                     if(input==''){
                                         return 'hiker://empty';
@@ -288,7 +288,7 @@ let parse = {
                                     clearMyVar('pylists');
                                     refreshPage(false);
                                     return "hiker://empty";
-                                }, pySource, sourceSet, pyset)
+                                }, pySource)
                             }
                         }, pySource, sourceSet, pyset)
                     }, pySource)

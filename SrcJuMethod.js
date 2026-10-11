@@ -567,7 +567,7 @@ function getYiData(datatype, jkdata, dd) {
                 if(jkdata.name.includes('py') && e.message.includes('int java.lang.Object.hashCode()')){
                     d.push({
                         title: '缺少python扩展插件',
-                        desc: '点击下载并用海阔打开，执行一键安装',
+                        desc: '点击下载海阔打开，执行一键安装',
                         url: 'web://https://streamshare.wireway.ch/download/bzls81wm',
                         col_type: 'text_center_1'
                     });

@@ -697,7 +697,7 @@ let parse = {
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
         let novel;
-        log(play);
+        //log(play);
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
         }
@@ -781,7 +781,7 @@ let parse = {
             if(playurl && !playurl.startsWith('http')){
                 playurl = 'toast://' + playurl;
             }
-            return playurl;
+            return playurl || 'toast://获取播放失败';
         }
     },
     最新: function(url){

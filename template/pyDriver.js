@@ -11,13 +11,19 @@ let parse = {
         }
     },
     _readDir: function(input){
+        function extractBracketContent(str) {
+            const _type = {'说':'小说', '画':'漫画', '漫':'视频', '书':'音频', '影':'视频', '短':'视频', '音':'音频', '图':'图集'}
+            const match = str.match(/\[([^\]]*)\]/);
+            return match ? _type[match[1]] : undefined;
+        }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
         let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
                 name: it.slice(0, -3),
-                url: input+it
+                url: input+it,
+                type: extractBracketContent(it)
             }
         });
         storage0.putMyVar('pylists', pylists);
@@ -32,7 +38,7 @@ let parse = {
             it.sort = pyset['sort'] || 0;
             let stype = pyset['type'];
             if(stype){
-                it.type = stype;
+                it.type = stype || it.type;
             }
         })
         let sourceSort = juItem.get('sourceSort', 0);

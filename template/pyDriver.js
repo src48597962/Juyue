@@ -560,7 +560,7 @@ let parse = {
                             url: it.vod_tag=='folder' ? this._folderlistF(it.vod_id.toString(), isyiparse?this._yiparseF:undefined) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
                                 return yiparseF(url, params);
                             }, it.vod_id.toString(), {pySource: pySource}, this._yiparseF) : it.vod_id.toString(),
-                            col_type: it.vod_pic?'movie_3':'text_2',
+                            col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                             extra: {
                                 pySource: pySource
                             }
@@ -606,7 +606,7 @@ let parse = {
                     url: yiparseF?$('').lazyRule((url, params, yiparseF) => {
                         return yiparseF(url, params);
                     }, it.vod_id.toString(), {pySource: pySource}, yiparseF):it.vod_id.toString(),
-                    col_type: it.vod_pic?'movie_3':'text_2',
+                    col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                     extra: {
                         pySource: pySource
                     }
@@ -670,7 +670,7 @@ let parse = {
                     url: it.vod_tag=='folder' ? this._folderlistF(it.vod_id.toString(), isyiparse?this._yiparseF:undefined) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
                         return yiparseF(url, params);
                     }, it.vod_id.toString(), {pySource: pySource}, this._yiparseF) : it.vod_id.toString(),
-                    col_type: it.vod_pic?'movie_3':'text_2',
+                    col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                     extra: {
                         pySource: pySource
                     }

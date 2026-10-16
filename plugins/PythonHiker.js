@@ -230,6 +230,11 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
             GM.clear(keys[0]);
         }
     }
+    if(!pyModule.get("getProxyUrl")){
+        pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(){
+            return "";
+        }));
+    }
     return callFuncApply(pyModule, apitype, arr);
 }
 

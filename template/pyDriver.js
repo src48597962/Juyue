@@ -105,7 +105,7 @@ let parse = {
                     sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                 }
 
-                let spen = 2;
+                let spen = juItem.get('selectBottomRescolumns') || 2;
                 let inputBox;
                 let pop = hikerPop.selectBottomRes({
                     options: [],
@@ -160,6 +160,7 @@ let parse = {
                             click(s, i) {
                                 if (i === 0) {
                                     spen = spen == 3 ? 2 : 3;
+                                    juItem.set('selectBottomRescolumns', spen);
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {

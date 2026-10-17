@@ -1526,3 +1526,33 @@ function readDir(path) {
     }
     return names;
 }
+// 读取目录路径下含子目录文件输出对象数组
+function readDir2(path) {
+    let list = [];
+    if (!path) return list;
+    if(path.startsWith('hiker://')){
+        path = getPath(path);
+    }
+    let file = new java.io.File(path.replace("file://", ""));
+    if (!(file.exists() && file.isDirectory())) return list;
+
+    const files = file.listFiles();
+    if (!files) return list;
+
+    // 取当前目录名，根目录传进来的时候目录名置空
+    let currentDirName = file.getParent() ? String(file.getName()) : "";
+
+    for (let it of files) {
+        if (it.isDirectory()) {
+            // 递归子目录
+            const subList = readDir2(it.getAbsolutePath());
+            list = list.concat(subList);
+        } else {
+            list.push({
+                dir: currentDirName,
+                name: String(it.getName())
+            });
+        }
+    }
+    return list;
+        }

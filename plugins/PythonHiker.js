@@ -229,7 +229,7 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
         }
         */
         evalCode(`def getProxyUrl(self, local=True):
-            return "proxy?pyurl="`);
+            return 'proxy?pyurl='`);
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);
         let keys = GM.listKeys();

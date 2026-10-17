@@ -697,7 +697,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);
@@ -788,6 +788,8 @@ let parse = {
                     };
                     try{
                         let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
+                        log(res[0]);
+                        log(res);
                         if(res[0]==200){
                             let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
                             writeFile(pym3u8, res[2]);

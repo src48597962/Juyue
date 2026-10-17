@@ -228,8 +228,11 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
             pyModule.put("local", 'proxy?pyurl='+pyurl);
         }
         */
-        evalCode(`def getProxyUrl(self, local=True):
-            return 'proxy?pyurl='`);
+        if(!pyModule.get("getProxyUrl")){
+            pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(local){
+                return 'proxy?pyurl=';
+            }));
+        }
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);
         let keys = GM.listKeys();

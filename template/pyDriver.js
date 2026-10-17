@@ -643,7 +643,7 @@ let parse = {
         }):[];
         function extractActorText(text) {
             if (!text) return text;
-            let arr = [];
+            let group = {}; // key=类型标题，value=名称数组
             let reg = /\[a=cr:(\{.*?\})\//g;
             let match;
             let found = false;
@@ -651,15 +651,23 @@ let parse = {
                 found = true;
                 try {
                     const obj = JSON.parse(match[1]);
-                    if (obj.id && obj.id.includes("actor")) {
-                        arr.push("演员：" + obj.name);
+                    if (obj.id && obj.id.indexOf("actor") > -1) {
+                        const title = "演员";
+                        if (!group[title]) group[title] = [];
+                        group[title].push(obj.name);
                     }
                 } catch (e) {
                     log("标签解析失败", match[1]);
                 }
             }
-            return found ? arr.join(",") : text;
+            if (!found) return text;
+            const lines = [];
+            for (let title in group) {
+                lines.push(`${title}：${group[title].join("，")}`);
+            }
+            return lines.join("\n");
         }
+
 
         return {
             detail1: "‘‘’’<font color=#FA7298>"+extractActorText(detail1)+"</font>",

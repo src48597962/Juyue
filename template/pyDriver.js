@@ -650,9 +650,9 @@ let parse = {
             while ((match = reg.exec(text)) !== null) {
                 found = true;
                 try {
-                    const obj = JSON.parse(match[1]);
+                    let obj = JSON.parse(match[1]);
                     if (obj.id && obj.id.indexOf("actor") > -1) {
-                        const title = "演员";
+                        let title = "演员";
                         if (!group[title]) group[title] = [];
                         group[title].push(obj.name);
                     }
@@ -661,7 +661,7 @@ let parse = {
                 }
             }
             if (!found) return text;
-            const lines = [];
+            let lines = [];
             for (let title in group) {
                 lines.push(`${title}：${group[title].join("，")}`);
             }

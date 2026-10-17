@@ -646,7 +646,7 @@ let parse = {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
             desc: 简介,
-            img: 图片,
+            img: 图片 + '#.jpg',
             line: 线路,
             list: 选集,
             type: pySource.type,

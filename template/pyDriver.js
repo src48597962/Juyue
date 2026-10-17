@@ -779,8 +779,19 @@ let parse = {
             setResult(d)
         }else{
             let playurl = play.url;
-            if(playurl && !playurl.startsWith('http')){
-                playurl = 'toast://' + playurl;
+            if(playUrl){
+                if(!playUrl.startsWith('http')){
+                    return 'toast://' + playUrl;
+                }else if(playUrl.includes('proxy?do=py')){
+                    let paramObj = {
+                        action: "clean",
+                        src: "https://fengbao13.com/video/huochaihedadianying/d1cd08c1a732/index.m3u8"
+                    };
+
+                    // 方式一：直接传 JS 普通对象（PythonHiker 内部会自动通过 fromJs 转成 Python dict）
+                    let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
+                    log(res);
+                }
             }
             return playurl?playurl:url.startsWith('http')?url:'toast://播放解析失败';
         }

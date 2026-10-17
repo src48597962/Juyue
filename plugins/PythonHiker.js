@@ -223,11 +223,18 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
-        const jsGetProxyUrl = wrapperJsFunc(function(argsObj){
-            const isLocal = argsObj.local;
-            return getProxyUrl(isLocal);
-        });
-        pyModule.put("getProxyUrl", jsGetProxyUrl);
+        // ========= 新增：动态给实例注入py函数getProxyUrl，支持 local=True 关键字参数 =========
+            // execCode 在py侧执行代码，挂载到实例上
+            execCode(`
+def getProxyUrl(self, local=False):
+    # 调用JS全局的getProxyUrl
+    import base.hiker
+    return base.hiker.getProxyUrl(local)
+            `);
+            // 把上面定义的函数绑定到pyModule实例
+            const fn = evalCode("getProxyUrl");
+            pyModule.put("getProxyUrl", fn);
+            // =================================================================================
 
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);

@@ -747,11 +747,11 @@ function erji() {
             
             stype = erLoadData.type || stype;
             let itype = stype=="漫画"?"comic":stype=="小说"?"novel":"";
-            let download = $.toString((jkdata) => {
+            let download = $.toString((jkdata, lazyData) => {
                 let parse = $.require("jiekou?rule=聚阅").parse(jkdata);
                 let dataObj = {
                     data: jkdata,
-                    lazyData: storage0.getMyVar('解析传递数据')
+                    lazyData: lazyData
                 }
                 parse.dataObj = dataObj;
                 if(parse['解析']){
@@ -760,7 +760,7 @@ function erji() {
                 }else{
                     return "toast://没找到解析方法";
                 }
-            }, jkdata);
+            }, jkdata, erLoadData.lazyData);
             
             if(!noShow.简介){
                 let erIcons = getThemeList(true)['二级图标'];
@@ -1400,7 +1400,7 @@ function erji() {
                             type: stype,
                             line: linename,
                             id: listId,
-                            lazyData: storage0.getMyVar('解析传递数据')
+                            lazyData: erLoadData.lazyData
                         }
                         let lazy = $("").lazyRule((dataObj) => {
                             let url = input;

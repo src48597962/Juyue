@@ -641,6 +641,7 @@ let parse = {
                 return 选集列表;
             });
         }):[];
+        log(detail1);
         return {
             detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
             detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",

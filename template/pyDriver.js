@@ -439,6 +439,7 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                            log(home);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];

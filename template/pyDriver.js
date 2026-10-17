@@ -781,15 +781,13 @@ let parse = {
             let playUrl = play.url;
             if(playUrl){
                 if(playUrl.includes('localProxy?do=py')){
-                    let psrc = decodeURIComponent(getParam('src', '',playUrl));
+                    let psrc = decodeURIComponent(getParam('src', '', playUrl));
                     let paramObj = {
-                        action: getParam('clean', '',playUrl),
+                        action: getParam('action', '', playUrl),
                         src: psrc
                     };
                     try{
                         let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
-                        log(res[0]);
-                        log(res);
                         if(res[0]==200){
                             let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
                             writeFile(pym3u8, res[2]);

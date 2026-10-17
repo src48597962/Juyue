@@ -1528,31 +1528,36 @@ function readDir(path) {
 }
 // 读取目录路径下含子目录文件输出对象数组
 function readDir2(path) {
-    let list = [];
-    if (!path) return list;
-    if(path.startsWith('hiker://')){
-        path = getPath(path);
-    }
-    let file = new java.io.File(path.replace("file://", ""));
-    if (!(file.exists() && file.isDirectory())) return list;
-
-    const files = file.listFiles();
-    if (!files) return list;
-
-    // 取当前目录名，根目录传进来的时候目录名置空
-    let currentDirName = file.getParent() ? String(file.getName()) : "";
-
-    for (let it of files) {
-        if (it.isDirectory()) {
-            // 递归子目录
-            const subList = readDir2(it.getAbsolutePath());
-            list = list.concat(subList);
-        } else {
-            list.push({
-                dir: currentDirName,
-                name: String(it.getName())
-            });
+    // 内部递归入口，增加isRoot标记
+    function scan(p, isRoot) {
+        let list = [];
+        if (!p) return list;
+        if(p.startsWith('hiker://')){
+            p = getPath(p);
         }
-    }
-    return list;
+        let file = new java.io.File(p.replace("file://", ""));
+        if (!(file.exists() && file.isDirectory())) return list;
+
+        const files = file.listFiles();
+        if (!files) return list;
+
+        // isRoot=true → 当前是调用时传入的顶层目录，dir置空
+        const currentDirName = isRoot ? "" : String(file.getName());
+
+        for (let it of files) {
+            if (it.isDirectory()) {
+                // 子目录递归，子目录不再是root，isRoot=false
+                const subList = scan(it.getAbsolutePath(), false);
+                list = list.concat(subList);
+            } else {
+                list.push({
+                    dir: currentDirName,
+                    name: String(it.getName())
+                });
+            }
         }
+        return list;
+    }
+    // 首次调用，标记isRoot=true
+    return scan(path, true);
+}

@@ -778,11 +778,11 @@ let parse = {
             });
             setResult(d)
         }else{
-            let playurl = play.url;
+            let playUrl = play.url;
             if(playUrl){
                 if(!playUrl.startsWith('http')){
                     return 'toast://' + playUrl;
-                }else if(playUrl.includes('proxy?do=py')){
+                }else if(playUrl.includes('do=py')){
                     let paramObj = {
                         action: "clean",
                         src: "https://fengbao13.com/video/huochaihedadianying/d1cd08c1a732/index.m3u8"
@@ -793,7 +793,7 @@ let parse = {
                     log(res);
                 }
             }
-            return playurl?playurl:url.startsWith('http')?url:'toast://播放解析失败';
+            return playUrl?playUrl:url.startsWith('http')?url:'toast://播放解析失败';
         }
     },
     最新: function(url){

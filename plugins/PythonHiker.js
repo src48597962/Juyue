@@ -234,12 +234,7 @@ def _custom_get_proxy_url(*args, **kwargs):
 getattr(pyModule, '__class__').getProxyUrl = _custom_get_proxy_url
             `);
         } catch (e) {
-            // 如果 evalCode 作用域拿不到 pyModule，可以直接通过 Spider 对象的类打补丁：
-            try {
-                let pyClass = pyModule.get("__class__");
-                let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1:9978/proxy?do=py"`);
-                pyClass.put("getProxyUrl", patchFunc);
-            } catch(err) {}
+            
         }
         // =========================================================
 

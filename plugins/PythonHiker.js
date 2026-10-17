@@ -223,12 +223,21 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
+        pyModule.put("local", 'http://0.0.0.0:52000');
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);
         let keys = GM.listKeys();
         if(keys.length>10){
             GM.clear(keys[0]);
         }
+        /*
+        if(!pyModule.get("getProxyUrl")){
+            pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(){
+                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                return PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
+            }));
+        }
+        */
     }
 
     return callFuncApply(pyModule, apitype, arr);

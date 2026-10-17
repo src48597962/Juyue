@@ -584,7 +584,7 @@ let parse = {
         let erLoadData = 二级获取.call(parse, url);
         let list = erLoadData.list[0];
         let line = erLoadData.line[0];
-        let dataObj = {line: line, lazyData: storage0.getMyVar('解析传递数据')};
+        let dataObj = {line: line, lazyData: erLoadData.lazyData};
         parse.dataObj = dataObj;
         eval("let 解析2 = " + parse['解析']);
         let playUrl = 解析2.call(parse, list[0].url);
@@ -619,7 +619,6 @@ let parse = {
     二级: function(url){
         let pySource = MY_PARAMS.pySource;
         let pyurl = pySource.url;
-        storage0.putMyVar('解析传递数据', pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let list = html.list || [];
@@ -649,7 +648,8 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: pySource.type
+            type: pySource.type,
+            lazyData: pySource
         }  
     },
     搜索: function(name, source){

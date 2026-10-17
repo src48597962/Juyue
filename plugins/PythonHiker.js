@@ -225,17 +225,10 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
         pyModule = runPy(pyurl).callAttr("Spider");
         // ======= 关键修复：动态为 pyModule 注入 getProxyUrl 方法 =======
         try {
-            evalCode(`
-def _custom_get_proxy_url(*args, **kwargs):
-    # 无论传 local=True 还是其他参数，均返回本地代理基础协议头
-    return "http://127.0.0.1:9978/proxy?do=py"
-
-# 获取当前实例的类并绑定该方法
-getattr(pyModule, '__class__').getProxyUrl = _custom_get_proxy_url
-            `);
-        } catch (e) {
-            
-        }
+            let pyClass = pyModule.get("__class__");
+            let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1:9978/proxy?do=py"`);
+            pyClass.put("getProxyUrl", patchFunc);
+        } catch(err) {}
         // =========================================================
 
         callFunc(pyModule, "init", []);

@@ -223,16 +223,21 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
-        // ========= 重点：exec 直接给实例增加方法 =========
-            // 这里exec代码，以pyModule作为全局环境，给实例添加getProxyUrl
+        // =========== 注入 getProxyUrl 【修复exec globals报错版本】 ===========
+            // 1、在python全局域定义函数，**支持关键字参数 local=True，用**kwargs兜底**
             execCode(`
-def getProxyUrl(self, local=False):
-    import base.hiker
-    return base.hiker.getProxyUrl(local)
-# 绑定到当前实例
-self.getProxyUrl = getProxyUrl.__get__(self, type(self))
-            `, pyModule);
-            // ================================================
+import base.hiker
+def _inner_get_proxy_url(self,**kwargs):
+    local_arg = kwargs.get("local", False)
+    return base.hiker.getProxyUrl(local_arg)
+            `);
+            // 2、取出定义好的原始函数
+            const rawFn = evalCode("_inner_get_proxy_url");
+            // 3、绑定self，把普通函数转为实例方法，绑定到当前pyModule实例
+            const boundMethod = rawFn.callAttr("__get__", pyModule, pyModule.callAttr("__class__"));
+            // 4、挂载到spider实例，self.getProxyUrl 就可用
+            pyModule.put("getProxyUrl", boundMethod);
+            // ===================================================================
 
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);

@@ -223,9 +223,13 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
+        /*
         if(!pyModule.get("local")){
             pyModule.put("local", 'proxy?pyurl='+pyurl);
         }
+        */
+        evalCode(`def getProxyUrl(self, local=True):
+            return "`);
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);
         let keys = GM.listKeys();

@@ -782,12 +782,18 @@ let parse = {
             if(playUrl){
                 if(playUrl.includes('localProxy?do=py')){
                     let paramObj = {
-                        action: "clean",
-                        src: "https://fengbao13.com/video/huochaihedadianying/d1cd08c1a732/index.m3u8"
+                        action: getParam('clean', '',playUrl),
+                        src: getParam('src', '',playUrl)
                     };
-
-                    let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
-                    log(res);
+                    try{
+                        let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
+                        if(res[0]==200){
+                            let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
+                            writeFile(pym3u8, res[2]);
+                            playUrl = pym3u8;
+                        }
+                    }catch(e){}
+                    
                 }
                 return playUrl;
             }

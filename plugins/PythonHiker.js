@@ -226,7 +226,7 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
         // ======= 关键修复：动态为 pyModule 注入 getProxyUrl 方法 =======
         try {
             let pyClass = pyModule.get("__class__");
-            let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1:9978/proxy?do=py"`);
+            let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1/localProxy?do=py"`);
             pyClass.put("getProxyUrl", patchFunc);
         } catch(err) {}
         // =========================================================

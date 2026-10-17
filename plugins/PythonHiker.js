@@ -233,7 +233,7 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
         */
         if(!pyModule.get("getProxyUrl")){
             // 注入 setCache 方法
-            pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(...arr){
+            pyModule.put("getProxyUrl", wrapperJsFunc(function(...arr){
                 return "http://127.0.0.1/localProxy?do=py";
             }));
         }

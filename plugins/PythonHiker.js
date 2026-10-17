@@ -224,19 +224,11 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
         // ======= 关键修复：动态为 pyModule 注入 getProxyUrl 方法 =======
-        /*
         try {
             let pyClass = pyModule.get("__class__");
             let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1/localProxy?do=py"`);
             pyClass.put("getProxyUrl", patchFunc);
-        } catch(err) {}
-        */
-        if(!pyModule.get("getProxyUrl")){
-            // 注入 setCache 方法
-            pyModule.put("getProxyUrl", wrapperJsFunc(function(local){
-                return "http://127.0.0.1/localProxy?do=py";
-            }));
-        }
+        } catch(e) {}
         // =========================================================
 
         callFunc(pyModule, "init", []);

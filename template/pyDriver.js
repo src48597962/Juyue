@@ -641,12 +641,31 @@ let parse = {
                 return 选集列表;
             });
         }):[];
-        log(detail1);
+        function extractActorText(text) {
+            if (!text) return text;
+            let arr = [];
+            let reg = /\[a=cr:(\{.*?\})\//g;
+            let match;
+            let found = false;
+            while ((match = reg.exec(text)) !== null) {
+                found = true;
+                try {
+                    const obj = JSON.parse(match[1]);
+                    if (obj.id && obj.id.includes("actor")) {
+                        arr.push("演员：" + obj.name);
+                    }
+                } catch (e) {
+                    log("标签解析失败", match[1]);
+                }
+            }
+            return found ? arr.join(",") : text;
+        }
+
         return {
-            detail1: "‘‘’’<font color=#FA7298>"+detail1+"</font>",
-            detail2: "‘‘’’<font color=#336633>"+detail2+"</font>",
+            detail1: "‘‘’’<font color=#FA7298>"+extractActorText(detail1)+"</font>",
+            detail2: "‘‘’’<font color=#336633>"+extractActorText(detail2)+"</font>",
             desc: 简介,
-            img: 图片 + '#.jpg',
+            img: 图片,
             line: 线路,
             list: 选集,
             type: pySource.type,

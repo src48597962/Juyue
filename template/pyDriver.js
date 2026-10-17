@@ -18,7 +18,7 @@ let parse = {
         }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
-
+        log(readDir2(input));
         let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {

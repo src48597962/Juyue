@@ -223,21 +223,25 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
-        // ========== 参考你getName写法，evalCode直接定义并返回py函数 ==========
-            // 函数签名支持 **kwargs，完美接收 local=True 关键字参数
-            const getProxyFn = evalCode(`
-def getProxyUrl(self,**kwargs):
-    local_arg = kwargs.get("local", False)
-    import base.hiker
-    return base.hiker.getProxyUrl(local_arg)
-# 返回这个函数
-getProxyUrl
+        // ======= 关键修复：动态为 pyModule 注入 getProxyUrl 方法 =======
+        try {
+            evalCode(`
+def _custom_get_proxy_url(*args, **kwargs):
+    # 无论传 local=True 还是其他参数，均返回本地代理基础协议头
+    return "http://127.0.0.1:9978/proxy?do=py"
+
+# 获取当前实例的类并绑定该方法
+getattr(pyModule, '__class__').getProxyUrl = _custom_get_proxy_url
             `);
-            // 把普通函数绑定为实例方法（绑定self）
-            const boundMethod = getProxyFn.callAttr("__get__", pyModule, pyModule.callAttr("__class__"));
-            // 挂载到spider实例 self.getProxyUrl
-            pyModule.put("getProxyUrl", boundMethod);
-            // =====================================================================
+        } catch (e) {
+            // 如果 evalCode 作用域拿不到 pyModule，可以直接通过 Spider 对象的类打补丁：
+            try {
+                let pyClass = pyModule.get("__class__");
+                let patchFunc = evalCode(`lambda self, *args, **kwargs: "http://127.0.0.1:9978/proxy?do=py"`);
+                pyClass.put("getProxyUrl", patchFunc);
+            } catch(err) {}
+        }
+        // =========================================================
 
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);

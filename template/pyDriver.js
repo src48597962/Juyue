@@ -18,22 +18,8 @@ let parse = {
         }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
-        function readDir2(path) {
-            let names = [];
-            if(path){
-                if(path.startsWith('hiker://')){
-                    path = getPath(path);
-                }
-                let file = new java.io.File(path.replace("file://", ""));
-                log(file);
-                if (!(file.exists() && file.isDirectory())) return names;
-                for (let it of file.listFiles()) {
-                    names.push(String(it.getName()));
-                }
-            }
-            return names;
-        }
-        let pyfiles = readDir2(input).filter(v=>v.endsWith('.py'));
+
+        let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
                 name: it.slice(0, -3),

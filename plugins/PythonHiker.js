@@ -222,19 +222,13 @@ function callFuncApply(pyObject, name, argArr) {
 function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
-        /*
-        if(!pyModule.get("local")){
-            pyModule.put("local", 'proxy?pyurl='+pyurl);
-        }
-
-        if(!pyModule.get("getProxyUrl")){
-            pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(local){
-                return '123';
-            }));
-        }
-        */
-        evalCode(`local = false`);
         pyModule = runPy(pyurl).callAttr("Spider");
+        const jsGetProxyUrl = wrapperJsFunc(function(argsObj){
+            const isLocal = argsObj.local;
+            return getProxyUrl(isLocal);
+        });
+        pyModule.put("getProxyUrl", jsGetProxyUrl);
+
         callFunc(pyModule, "init", []);
         GM.put(pyurl, pyModule);
         let keys = GM.listKeys();

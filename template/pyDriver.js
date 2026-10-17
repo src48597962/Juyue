@@ -695,6 +695,7 @@ let parse = {
     解析: function(url){
         let pySource = this.dataObj.lazyData || {};
         let pyurl = pySource.url;
+        log(dataObj);
         log(pySource);
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));

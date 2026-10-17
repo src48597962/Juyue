@@ -223,14 +223,14 @@ function runPyGetReuslt(pyurl, apitype, ...arr){
     let pyModule = GM.get(pyurl);
     if(!pyModule){
         pyModule = runPy(pyurl).callAttr("Spider");
-        /*
+
         if(!pyModule.get("local")){
             pyModule.put("local", 'proxy?pyurl='+pyurl);
         }
-        */
+
         if(!pyModule.get("getProxyUrl")){
             pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(local){
-                return 'proxy?pyurl=';
+                return '123';
             }));
         }
         callFunc(pyModule, "init", []);

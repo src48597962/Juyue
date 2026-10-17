@@ -791,7 +791,7 @@ let parse = {
                         if(res[0]==200){
                             let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
                             writeFile(pym3u8, res[2]);
-                            playUrl = pym3u8;
+                            playUrl = getPath(pym3u8);
                         }else if(psrc.includes('.m3u8')){
                             playUrl = psrc;
                         }

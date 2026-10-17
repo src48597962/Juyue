@@ -696,6 +696,18 @@ let parse = {
         let pySource = this.dataObj.lazyData || {};
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+        /*
+        if(!pyModule.get("local")){
+            pyModule.put("local", 'proxy?pyurl='+pyurl);
+        }
+
+        if(!pyModule.get("getProxyUrl")){
+            pyModule.put("getProxyUrl", PythonHiker.wrapperJsFunc(function(local){
+                return '123';
+            }));
+        }
+        */
+        PythonHiker.evalCode(`local = false`);
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
         let novel;
         //log(play);

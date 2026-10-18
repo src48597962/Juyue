@@ -153,9 +153,13 @@ function runPy(path, mname, nocache) {
         }
     } else {
         if(path.startsWith('hiker://')){
-            mpath = getPath(path);
+            path = getPath(path);
         }
-        mpath = path.replace("file://", "");
+        path = path.replace("file://", "");
+        let pa = path.split("/");
+        name = pa.pop().split(".")[0];
+        mpath = cPath + name + ".py";
+        FileUtil.copy(new File(path), new File(mpath));
     }
     return machinery.callAttr("SourceFileLoader", mname || name, mpath).callAttr("load_module");
 }

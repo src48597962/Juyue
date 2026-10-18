@@ -1552,7 +1552,8 @@ function readDir2(path) {
             } else {
                 list.push({
                     dir: currentDirName,
-                    name: String(it.getName())
+                    name: String(it.getName()),
+                    path: String(it.getAbsolutePath())
                 });
             }
         }

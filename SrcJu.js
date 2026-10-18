@@ -826,7 +826,7 @@ function erji() {
                 let expandext = {
                     cls: "Juloadlist"
                 }
-                if(stype=="视频"){
+                if(stype=="视频"||type=="聚合"){
                     expandBtn.push('解析管理设置');
                     expandBtn.push("弹幕下载📥");
                     expandBtn.push("扩展搜索🔍");

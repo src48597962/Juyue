@@ -995,7 +995,7 @@ function 解析方法(obj) {
             ua: header['user-agent'] || MOBILE_UA,
             referer: header['referer'] || webUrl,
             checkTime: 100,
-            timeout: 12000
+            timeout: 18000
         })
     }
     //加密函数java

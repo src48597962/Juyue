@@ -1553,10 +1553,14 @@ function readDir2(path) {
                 list.push({
                     dir: currentDirName,
                     name: String(it.getName()),
-                    path: String(it.getAbsolutePath())
+                    path: String(it.getAbsolutePath()),
+                    modifyTime: it.lastModified()
                 });
             }
         }
+        list.sort(function (a, b) {
+            return b.modifyTime - a.modifyTime;
+        });
         return list;
     }
     // 首次调用，标记isRoot=true

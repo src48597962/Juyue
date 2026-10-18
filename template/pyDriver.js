@@ -726,7 +726,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        //log(play);
+        log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url);

@@ -18,7 +18,7 @@ let parse = {
         }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
-        log(readDir2(input));
+        //log(readDir2(input));
         let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
@@ -726,7 +726,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url, {header: play.header});

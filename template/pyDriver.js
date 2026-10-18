@@ -726,28 +726,46 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        //log(play);
+        log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url, {header: play.header});
         }
-        play.url = play.url || play.playUrl;
-        if(play.url){
-            let urls, headers;
-            if($.type(play.url) == "string"){
-                if(play.url.startsWith("pics://")){
-                    return play.url;
-                }else if(play.url.startsWith("novel://")){
+        let urls = [];
+        let headers = [];
+        let playUrl = play.url || play.playUrl;
+        if(playUrl){
+            if($.type(playUrl) == "string"){
+                if(playUrl.startsWith("pics://")){
+                    return playUrl;
+                }else if(playUrl.startsWith("novel://")){
                     novel = 1;
-                }else if(!play.url.includes('.m4a') && !play.url.includes('.mp3')){
-                    urls = [play.url+'#isVideo=true#'];
-                    play.url = play.url+'#isVideo=true#';
+                }else if(playUrl.includes('localProxy?do=py')){
+                    let psrc = decodeURIComponent(getParam('src', '', playUrl));
+                    let paramObj = {
+                        action: getParam('action', '', playUrl),
+                        src: psrc
+                    };
+                    try{
+                        let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
+                        if(res[0]==200){
+                            let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
+                            writeFile(pym3u8, res[2]);
+                            playUrl = getPath(pym3u8);
+                        }else if(psrc.includes('.m3u8')){
+                            playUrl = psrc;
+                        }
+                    }catch(e){}
+                    urls.push(playUrl+'#isVideo=true#');
+                }else if(playUrl.startsWith('http') && !playUrl.includes('.m4a') && !playUrl.includes('.mp3')){
+                    urls.push(playUrl+'#isVideo=true#');
+                    playUrl = playUrl+'#isVideo=true#';
                 }
-            }else if($.type(play.url) == "array"){
-                urls = play.url;
+            }else if($.type(playUrl) == "array"){
+                urls = playUrl;
             }
             
-            if(!novel && play.header && urls){
+            if(!novel && play.header){
                 function parseHttpHeaders(input, refArr) {
                     const targetLen = refArr.length;
                     let baseVal = input;
@@ -780,7 +798,7 @@ let parse = {
                 headers = parseHttpHeaders(play.header, urls);
             }
 
-            if(urls && (urls.length>1 || headers)){
+            if(headers.length>0){
                 return JSON.stringify({
                     urls: urls,
                     headers: headers
@@ -798,7 +816,7 @@ let parse = {
                 }
             });
             d.push({
-                    title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
+                title: "　　" + data.content.replace(/(&nbsp;){1,}/g, '　　').replace(/\n/g, "<p>　　"),
                 col_type: "rich_text",
                 extra: {
                     textSize: 18,
@@ -807,29 +825,7 @@ let parse = {
             });
             setResult(d)
         }else{
-            let playUrl = play.url;
-            if(playUrl){
-                if(playUrl.includes('localProxy?do=py')){
-                    let psrc = decodeURIComponent(getParam('src', '', playUrl));
-                    let paramObj = {
-                        action: getParam('action', '', playUrl),
-                        src: psrc
-                    };
-                    try{
-                        let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
-                        if(res[0]==200){
-                            let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
-                            writeFile(pym3u8, res[2]);
-                            playUrl = getPath(pym3u8);
-                        }else if(psrc.includes('.m3u8')){
-                            playUrl = psrc;
-                        }
-                    }catch(e){}
-                    
-                }
-                return playUrl;
-            }
-            return url.startsWith('http') ? url : 'toast://' + (playUrl||'播放解析失败');
+            return playUrl ? playUrl : url.startsWith('http') ? url : 'toast://' + (playUrl||'播放解析失败');
         }
     },
     最新: function(url){

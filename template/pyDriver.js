@@ -18,10 +18,10 @@ let parse = {
         }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
-        //log(readDir2(input));
-        let pyfiles = readDir2(input).filter(v=>v.dir=="" && v.name.endsWith('.py'));
+        let pyfiles = readDir2(input).filter(v=>v.name.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
+                dir: it.dir,
                 name: it.name.slice(0, -3),
                 url: it.path,
                 type: extractBracketContent(it.name)

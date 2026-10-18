@@ -741,15 +741,46 @@ let parse = {
                 }else if(playUrl.startsWith("novel://")){
                     novel = 1;
                 }else if(playUrl.includes('localProxy?do=py')){
+                    function parseUrlQuery(url) {
+                        let result = {};
+                        if (!url || typeof url !== 'string') return result;
+                        let questionIndex = url.indexOf('?');
+                        if (questionIndex < 0) return result;
+                        let query = url.slice(questionIndex + 1);
+                        let pairs = query.split('&');
+                        for (let pair of pairs) {
+                            if (!pair) continue;
+                            let eqPos = pair.indexOf('=');
+                            let k, v;
+                            if (eqPos === -1) {
+                                k = pair;
+                                v = '';
+                            } else {
+                                k = pair.substring(0, eqPos);
+                                v = pair.substring(eqPos + 1);
+                            }
+                            try {
+                                k = decodeURIComponent(k);
+                                v = decodeURIComponent(v);
+                            } catch (err) {
+                            }
+                            result[k] = v;
+                        }
+                        return result;
+                    }
+                    /*
                     let psrc = decodeURIComponent(getParam('src', '', playUrl));
                     let paramObj = {
                         action: getParam('action', '', playUrl),
                         src: psrc
                     };
+                    */
+                    let paramObj = parseUrlQuery(playUrl);
+                    let psrc = paramObj.src || paramObj.url;
                     try{
                         let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
                         if(res[0]==200){
-                            let pym3u8 = 'hiker://files/_cache/pyProxy.m3u8';
+                            let pym3u8 = 'hiker://files/_cache/py/proxy.m3u8';
                             writeFile(pym3u8, res[2]);
                             playUrl = getPath(pym3u8);
                         }else if(psrc.includes('.m3u8')){

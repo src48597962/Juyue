@@ -729,7 +729,7 @@ let parse = {
         log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
-            return $.require("parseUrl").解析(play.url||url);
+            return $.require("parseUrl").解析(play.url||url, {header: play.header});
         }
         play.url = play.url || play.playUrl;
         if(play.url){

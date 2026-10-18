@@ -18,13 +18,13 @@ let parse = {
         }
         showLoading("扫描目录py文件");
         input = input || juItem.get('pypath');
-        log(readDir2(input));
-        let pyfiles = readDir(input).filter(v=>v.endsWith('.py'));
+        //log(readDir2(input));
+        let pyfiles = readDir2(input).filter(v=>v.dir=="" && v.name.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
-                name: it.slice(0, -3),
-                url: input+it,
-                type: extractBracketContent(it)
+                name: it.name.slice(0, -3),
+                url: it.path,
+                type: extractBracketContent(it.name)
             }
         });
         storage0.putMyVar('pylists', pylists);
@@ -726,7 +726,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        log(play);
+        //log(play);
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url, {header: play.header});
@@ -768,13 +768,6 @@ let parse = {
                         }
                         return result;
                     }
-                    /*
-                    let psrc = decodeURIComponent(getParam('src', '', playUrl));
-                    let paramObj = {
-                        action: getParam('action', '', playUrl),
-                        src: psrc
-                    };
-                    */
                     let paramObj = parseUrlQuery(playUrl);
                     let psrc = paramObj.src || paramObj.url;
                     try{
@@ -829,7 +822,7 @@ let parse = {
                 headers = parseHttpHeaders(play.header, urls);
             }
 
-            if(headers.length>0){
+            if(headers.length>0 && urls.length>0){
                 return JSON.stringify({
                     urls: urls,
                     headers: headers

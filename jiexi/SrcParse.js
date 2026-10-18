@@ -994,8 +994,8 @@ function 解析方法(obj) {
             js: js,
             ua: header['user-agent'] || MOBILE_UA,
             referer: header['referer'] || webUrl,
-            checkTime: 100,
-            timeout: 18000
+            checkTime: 80,
+            timeout: 20000
         })
     }
     //加密函数java

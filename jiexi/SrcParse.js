@@ -201,7 +201,8 @@ function SrcParse(vipUrl, dataObj) {
             isWeb: 1,
             videoplay: playSet.videoplay,
             ismusic: dataObj.type=="音频"?true:false,
-            js: dataObj.js
+            js: dataObj.js,
+            header: dataObj.header || {}
         }
         return 解析方法(obj);
     }
@@ -933,7 +934,7 @@ function 解析方法(obj) {
     }
     
     function exeWebRule(webObj, music) {
-        let head = webObj.head || {};
+        let header = webObj.header || {};
         let webUrl = webObj.webUrl;
         let js = webObj.js;
         clearVar('getParse');
@@ -991,8 +992,8 @@ function 解析方法(obj) {
             blockRules: ['.m4a','.mp3','.gif','.jpg','.jpeg','.png','.ico','hm.baidu.com','/ads/*.js','/klad/*.php','layer.css'],
             jsLoadingInject: true,
             js: js,
-            ua: head['user-agent'] || MOBILE_UA,
-            referer: head['referer'] || undefined,
+            ua: header['user-agent'] || MOBILE_UA,
+            referer: header['referer'] || webUrl,
             checkTime: 100,
             timeout: 12000
         })
@@ -1148,7 +1149,7 @@ function 解析方法(obj) {
         }else if(obj.videoplay){
             return 'video://' + obj.vipUrl;
         }else{
-            return exeWebRule({webUrl:obj.vipUrl, js:obj.js||extraJS(obj.vipUrl)}, 0) || "toast://webRule解析失败";
+            return exeWebRule({webUrl:obj.vipUrl, header: obj.header, js:obj.js||extraJS(obj.vipUrl)}, 0) || "toast://webRule解析失败";
         }
     }else if(/^function/.test(obj.ulist.url.trim())){
         //js解析
@@ -1227,7 +1228,7 @@ function 解析方法(obj) {
                         purl = pd(fetch(burl), "iframe&&src", purl);
                         log("获取到iframe地址>" + purl);
                     }
-                    rurl = exeWebRule({webUrl: purl, head: taskheader, js: ext.js||extraJS(purl)}, 0) || "";
+                    rurl = exeWebRule({webUrl: purl, header: taskheader, js: ext.js||extraJS(purl)}, 0) || "";
                 }
             }
 

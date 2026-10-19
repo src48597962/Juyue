@@ -120,7 +120,7 @@ let parse = {
                         title: sourceListGroup,
                         onChange(s, manage) {
                             putMyVar("SrcJu_pysourceListFilter", s);
-                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            tmpList = (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup)).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x) => {
                                 manage.list.push(x.name);
@@ -164,7 +164,7 @@ let parse = {
                     click(s, i, manage) {
                         pop.dismiss();
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                        log(tmpList(i));
+                        log(tmpList[i]);
                         clearMyVar('dianbo$分类');
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');

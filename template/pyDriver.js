@@ -119,8 +119,8 @@ let parse = {
                         hint: "输入py源关键字筛选",
                         title: sourceListGroup,
                         onChange(s, manage) {
-                            putMyVar("SrcJu_pysourceListFilter", s);
-                            tmpList = (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup)).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            putMyVar("SrcJu_pysourceListFilter", s);// (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup))
+                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x) => {
                                 manage.list.push(x.name);

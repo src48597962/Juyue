@@ -99,14 +99,15 @@ let parse = {
                 hikerPop.setUseStartActivity(false);
                 
                 let sourceName = "";
-                let pySource = juItem.get('pySource') || {};
+                let pyConfig = juItem.getAll();
+                let pySource = pyConfig.pySource || {};
                 let index = sourceList.findIndex(v=>v.url==pySource.url);
                 if(index>-1){
                     sourceName = pySource.name;
                     sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
                 }
-
-                let spen = juItem.get('selectBottomRescolumns') || 2;
+                let sourceListGroup = pyConfig.sourceListGroup || '全部';
+                let spen = pyConfig.selectBottomRescolumns || 2;
                 let inputBox;
                 let pop = hikerPop.selectBottomRes({
                     options: [],
@@ -116,6 +117,7 @@ let parse = {
                     toPosition: index,
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                         hint: "输入py源关键字筛选",
+                        title: sourceListGroup,
                         onChange(s, manage) {
                             putMyVar("SrcJu_pysourceListFilter", s);
                             tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
@@ -126,7 +128,41 @@ let parse = {
                             manage.change();
                         },
                         defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
-                        titleVisible: false
+                        click(s, manage) {
+                            function uniqueArr(arr) {
+                                let res = [];
+                                for (let v of arr) {
+                                    if (res.indexOf(v) === -1) res.push(v);
+                                }
+                                return res;
+                            }
+                            let groupnames = uniqueArr(sourceList.map(v=>v.dir));
+                            let selects = ['全部'].concat(groupnames);
+                            hikerPop.selectCenter({
+                                options: selects, 
+                                columns: 3, 
+                                title: "切换源分组", 
+                                position: groupnames.indexOf(s),
+                                click(s) {
+                                    inputBox.setTitle(s);
+                                    inputBox.setDefaultValue("");
+                                    /*
+                                    Juconfig["sourceListGroup"] = s;
+                                    writeFile(cfgfile, JSON.stringify(Juconfig));
+                                    
+                                    sourceList = getGroupLists(sourceAllList, s);
+                                    tmpList = sourceList;
+                                    names = getnames(tmpList).names;
+                                    manage.list.length = 0;
+                                    names.forEach(x => {
+                                        manage.list.push(x);
+                                    });
+                                    manage.change();
+                                    */
+                                }
+                            });
+                        },
+                        titleVisible: true
                     })),
                     longClick(s, i, manage) {
                         

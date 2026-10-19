@@ -1541,14 +1541,16 @@ function readDir2(path) {
         const files = file.listFiles();
         if (!files) return list;
 
-        // isRoot=true → 当前是调用时传入的顶层目录，dir置空
-        const currentDirName = isRoot ? "" : String(file.getName());
+        // isRoot=true → 当前是调用时传入的顶层目录
+        const currentDirName = isRoot ? "root" : String(file.getName());
 
         for (let it of files) {
             if (it.isDirectory()) {
-                // 子目录递归，子目录不再是root，isRoot=false
-                const subList = scan(it.getAbsolutePath(), false);
-                list = list.concat(subList);
+                // 子目录递归，子目录不再是root，isRoot=false，且子目录名不能是root
+                if(String(file.getName())!='root'){
+                    let subList = scan(it.getAbsolutePath(), false);
+                    list = list.concat(subList);
+                }
             } else {
                 list.push({
                     dir: currentDirName,

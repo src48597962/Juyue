@@ -164,13 +164,13 @@ let parse = {
                     click(s, i, manage) {
                         pop.dismiss();
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                        log(tmpList[i]);
+                        //log(tmpList[i]);
                         clearMyVar('dianbo$分类');
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        let homeSource = sourceList.find(v=>v.name===input);
-                        juItem.set('pySource', homeSource);
+                        //let homeSource = sourceList.find(v=>v.name===input);
+                        juItem.set('pySource', tmpList[i]);
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;

@@ -112,7 +112,7 @@ let parse = {
                 let pop = hikerPop.selectBottomRes({
                     options: [],
                     columns: spen,
-                    title: "当前:" + (sourceName||"未选择") + "  合计:" + sourceList.length,
+                    title: "当前:" + (sourceName||"未选择"),
                     noAutoDismiss: true,
                     toPosition: index,
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
@@ -127,7 +127,7 @@ let parse = {
                             });
                             manage.change();
                             if(s==''){
-                                manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
+                                manage.setTitle("当前:" + (sourceName||"未选择") + "  " + sourceListGroup + ":" + tmpList.length);
                             }
                         },
                         defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),

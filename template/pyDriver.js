@@ -126,6 +126,9 @@ let parse = {
                                 manage.list.push(x.name);
                             });
                             manage.change();
+                            if(s==''){
+                                manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
+                            }
                         },
                         defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
                         click(s, manage) {

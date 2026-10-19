@@ -141,7 +141,7 @@ let parse = {
                             hikerPop.selectCenter({
                                 options: selects, 
                                 columns: 3, 
-                                title: "切换源分组", 
+                                title: "切换源目录", 
                                 position: groupnames.indexOf(s),
                                 click(s) {
                                     inputBox.setTitle(s);

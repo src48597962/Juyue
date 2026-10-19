@@ -146,19 +146,13 @@ let parse = {
                                 click(s) {
                                     inputBox.setTitle(s);
                                     inputBox.setDefaultValue("");
-                                    /*
-                                    Juconfig["sourceListGroup"] = s;
-                                    writeFile(cfgfile, JSON.stringify(Juconfig));
-                                    
-                                    sourceList = getGroupLists(sourceAllList, s);
-                                    tmpList = sourceList;
-                                    names = getnames(tmpList).names;
+                                    juItem.set('sourceListGroup', s);
+                                    tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
                                     manage.list.length = 0;
-                                    names.forEach(x => {
-                                        manage.list.push(x);
+                                    tmpList.forEach((x) => {
+                                        manage.list.push(x.name);
                                     });
                                     manage.change();
-                                    */
                                 }
                             });
                         },
@@ -170,7 +164,7 @@ let parse = {
                     click(s, i, manage) {
                         pop.dismiss();
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                        
+                        log(tmpList(i));
                         clearMyVar('dianbo$分类');
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');

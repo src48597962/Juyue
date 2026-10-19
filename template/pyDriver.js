@@ -92,13 +92,12 @@ let parse = {
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule(() => {
-                log('1');
                 let sourceList = $.require("jiekou").parse()._getpylist();
                 let tmpList = [];
-                log('2');
+
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                 hikerPop.setUseStartActivity(false);
-                log('3');
+
                 let sourceName = "";
                 let pyConfig = juItem.getAll();
                 let pySource = pyConfig.pySource || {};

@@ -150,7 +150,7 @@ let parse = {
                                     inputBox.setTitle(s);
                                     inputBox.setDefaultValue("");
                                     juItem.set('sourceListGroup', s);
-                                    sourceName = s;
+                                    sourceListGroup = s;
                                     tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
                                     manage.list.length = 0;
                                     tmpList.forEach((x) => {

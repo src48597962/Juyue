@@ -92,12 +92,13 @@ let parse = {
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + '(' + pylists.length+')',
             url: $('#noLoading#').lazyRule(() => {
+                log('1');
                 let sourceList = $.require("jiekou").parse()._getpylist();
                 let tmpList = [];
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
                 hikerPop.setUseStartActivity(false);
-                
+                log('2');
                 let sourceName = "";
                 let pyConfig = juItem.getAll();
                 let pySource = pyConfig.pySource || {};
@@ -109,6 +110,7 @@ let parse = {
                 let sourceListGroup = pyConfig.sourceListGroup || '全部';
                 let spen = pyConfig.selectBottomRescolumns || 2;
                 let inputBox;
+                log('3');
                 let pop = hikerPop.selectBottomRes({
                     options: [],
                     columns: spen,
@@ -119,13 +121,15 @@ let parse = {
                         hint: "输入py源关键字筛选",
                         title: sourceListGroup,
                         onChange(s, manage) {
-                            putMyVar("SrcJu_pysourceListFilter", s);// (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup))
-                            tmpList = sourceList.filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                            log('4');
+                            putMyVar("SrcJu_pysourceListFilter", s);
+                            tmpList = (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup)).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
                             manage.list.length = 0;
                             tmpList.forEach((x) => {
                                 manage.list.push(x.name);
                             });
                             manage.change();
+                            log('5');
                         },
                         defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
                         click(s, manage) {

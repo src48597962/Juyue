@@ -2,6 +2,12 @@ var newVersion = {
     "SrcJu": "2.8",
     "hint": "py文件需要py合集源",
     "JYUpdateRecords": [{
+        title: "beta V2.9",
+        records: [
+            "优化：二级及解析相关代码逻辑",
+            "优化：pyDrive文件功能再升级"
+        ]
+    },{
         title: "2026/10/11 V2.8",
         records: [
             "优化：一级执行增加优先处理显示预加载",

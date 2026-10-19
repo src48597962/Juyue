@@ -146,6 +146,7 @@ let parse = {
                                 click(s) {
                                     inputBox.setTitle(s);
                                     inputBox.setDefaultValue("");
+                                    pop.setTitle('测试');
                                     juItem.set('sourceListGroup', s);
                                     tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
                                     manage.list.length = 0;

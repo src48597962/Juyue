@@ -153,7 +153,7 @@ let parse = {
                                         manage.list.push(x.name);
                                     });
                                     manage.change();
-                                    manage.setTitle(s + '-合计：' + tmpList.length);
+                                    manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
                                 }
                             });
                         },

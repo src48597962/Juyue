@@ -1033,7 +1033,6 @@ function getCaseData() {
         type: '二级列表',
         title: MY_PARAMS.name||MY_PARAMS.pageTitle,
         picUrl: MY_PARAMS.img,
-        picBase64: convertBase64Image(MY_PARAMS.img),
         params: {
             url: MY_RULE.url.split(';')[0],
             find_rule: MY_RULE.find_rule,

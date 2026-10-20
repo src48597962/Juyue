@@ -170,18 +170,19 @@ let parse = {
                         pop.dismiss();
                         juItem.set('pySource', tmpList[i]);
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                        /*
                         clearMyVar('dianbo$分类');
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        
+                        clearMyVar('主页动态加载loading');
+                        */
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
 
-                        clearMyVar('主页动态加载loading');
                         refreshPage(true);
                         
                         return 'toast://' + '主页源已设置为：' + input;
@@ -382,12 +383,6 @@ let parse = {
                     let pylists = _readDir(input);
                     
                     if(pylists.length>0){
-                        clearMyVar('dianbo$分类');
-                        clearMyVar('dianbo$fold');
-                        clearMyVar('dianbo$classCache');
-                        clearMyVar('dianbo$flCache');
-                        clearMyVar('主页动态加载loading');
-
                         let importrecord = juItem.get('importrecord')||[];
                         if(importrecord.length>20){//保留20个记录
                             importrecord.shift();
@@ -467,18 +462,24 @@ let parse = {
                         let 分类 = [];
                         let 推荐 = [];
                         let 筛选;
-                        let classCache = storage0.getMyVar('dianbo$classCache');
-                        if (classCache) {
+                        let classCache = storage0.getMyVar('dianbo$classCache') || {};
+                        if (classCache.分类 && classCache.pyurl==pyurl) {
                             推荐 = classCache.推荐;
                             分类 = classCache.分类;
                             筛选 = classCache.筛选;
                         } else {
+                            clearMyVar('dianbo$分类');
+                            clearMyVar('dianbo$fold');
+                            clearMyVar('dianbo$classCache');
+                            clearMyVar('dianbo$flCache');
+                            clearMyVar('主页动态加载loading');
+
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
-                                storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
+                                storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐, pyurl: pyurl });
                             }
                         }
 

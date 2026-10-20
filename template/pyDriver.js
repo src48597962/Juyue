@@ -78,8 +78,8 @@ let parse = {
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';
         let pyname = pySource.name || '';
-        let pylists = storage0.getMyVar('pylists') || this._readDir(pypath);
-        if((pyurl==''||pyname=='')&&pylists.length>0){
+        let pylists = storage0.getMyVar('pylists');
+        if((pyurl==''||pyname=='')&&pylists&&pylists.length>0){
             let pydefault = pylists[0];
             pyurl = pydefault.url;
             pyname = pydefault.name;
@@ -114,7 +114,7 @@ let parse = {
                     columns: spen,
                     title: "当前:" + (sourceName||"未选择"),
                     noAutoDismiss: true,
-                    toPosition: index,
+                    toPosition: -1,
                     extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
                         hint: "输入py源关键字筛选",
                         title: sourceListGroup,
@@ -128,6 +128,11 @@ let parse = {
                             manage.change();
                             if(s==''){
                                 manage.setTitle("当前:" + (sourceName||"未选择") + "  " + sourceListGroup + ":" + tmpList.length);
+                                let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                                if(index2>-1){
+                                    manage.setSelectedIndex(index2);
+                                    manage.scrollToPosition(index2, false);
+                                }
                             }
                         },
                         defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
@@ -170,13 +175,6 @@ let parse = {
                         pop.dismiss();
                         juItem.set('pySource', tmpList[i]);
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                        /*
-                        clearMyVar('dianbo$分类');
-                        clearMyVar('dianbo$fold');
-                        clearMyVar('dianbo$classCache');
-                        clearMyVar('dianbo$flCache');
-                        clearMyVar('主页动态加载loading');
-                        */
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
@@ -238,7 +236,7 @@ let parse = {
                 longClick: [{
                     title: "删除",
                     js: $.toString((pyurl, pyname) => {
-                        return $("确定要删除<"+pyname+">本地源文件？").confirm((pyurl, pyname)=>{
+                        return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
                             deleteFile('file://' + pyurl);
                             let pylists = storage0.getMyVar('pylists');
                             pylists = pylists.filter(it=>it.url!=pyurl);

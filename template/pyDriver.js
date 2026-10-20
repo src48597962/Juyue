@@ -162,6 +162,10 @@ let parse = {
                                     });
                                     manage.change();
                                     manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
+                                    let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                                    if(index2>-1){
+                                        manage.scrollToPosition(index2, false);
+                                    }
                                 }
                             });
                         },

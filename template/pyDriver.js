@@ -144,7 +144,7 @@ let parse = {
                             hikerPop.selectCenter({
                                 options: selects, 
                                 columns: 3, 
-                                title: "切换源目录", 
+                                title: "切换源子目录", 
                                 position: groupnames.indexOf(s),
                                 click(s) {
                                     inputBox.setTitle(s);
@@ -168,14 +168,13 @@ let parse = {
                     },
                     click(s, i, manage) {
                         pop.dismiss();
+                        juItem.set('pySource', tmpList[i]);
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                        //log(tmpList[i]);
                         clearMyVar('dianbo$分类');
                         clearMyVar('dianbo$fold');
                         clearMyVar('dianbo$classCache');
                         clearMyVar('dianbo$flCache');
-                        //let homeSource = sourceList.find(v=>v.name===input);
-                        juItem.set('pySource', tmpList[i]);
+                        
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;

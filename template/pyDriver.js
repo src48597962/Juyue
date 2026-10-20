@@ -175,13 +175,16 @@ let parse = {
                     },
                     click(s, i, manage) {
                         pop.dismiss();
-                        juItem.set('pySource', tmpList[i]);
                         let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                        if(s==tmpList[i].name){
+                            tmpList[i].name = input;
+                        }
                         let sourceSet = juItem.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
+                        juItem.set('pySource', tmpList[i]);
 
                         refreshPage(true);
                         
@@ -225,6 +228,12 @@ let parse = {
                                     juItem.clear('pypath');
                                     juItem.clear('pySource');
                                     refreshPage(false);
+                                } else if (i === 4) {
+                                    pop.dismiss();
+                                    storage0.putMyVar('批量检测_py待检列表', sourceList);//写入待检测源
+                                    return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((sourceList) => {
+
+                                    }, sourceList)
                                 }
                             }
                         });

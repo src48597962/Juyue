@@ -72,6 +72,13 @@ let parse = {
         }
         return pylists;
     },
+    _clearMyVar: function(){
+        clearMyVar('dianbo$分类');
+        clearMyVar('dianbo$fold');
+        clearMyVar('dianbo$classCache');
+        clearMyVar('dianbo$flCache');
+        clearMyVar('主页动态加载loading');
+    },
     主页预加载: function(){
         let pyConfig = juItem.getAll();
         let pySource = pyConfig.pySource || {};
@@ -84,6 +91,7 @@ let parse = {
             pyname = pydefault.name;
             juItem.set('pySource', pydefault);
             toast('已默认第1个py为当前源');
+            this._clearMyVar();
         }
         
         let d = [];
@@ -91,7 +99,8 @@ let parse = {
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + (pylists?'(' + pylists.length+')':''),
             url: $('#noLoading#').lazyRule(() => {
-                let sourceList = $.require("jiekou").parse()._getpylist();
+                let parse = $.require("jiekou").parse();
+                let sourceList = parse._getpylist();
                 let tmpList = [];
 
                 const hikerPop = $.require(libspath + "plugins/hikerPop.js");
@@ -185,7 +194,7 @@ let parse = {
                         sourceSet[input] = pyset;
                         juItem.set('sourceSet', sourceSet);
                         juItem.set('pySource', tmpList[i]);
-
+                        parse._clearMyVar();
                         refreshPage(true);
                         
                         return 'toast://' + '主页源已设置为：' + input;
@@ -461,13 +470,6 @@ let parse = {
                         col_type: "text_center_1"
                     });
                 }else{
-                    if(getMyVar('当前py文件') != pyurl){
-                        clearMyVar('dianbo$分类');
-                        clearMyVar('dianbo$fold');
-                        clearMyVar('dianbo$classCache');
-                        clearMyVar('dianbo$flCache');
-                        clearMyVar('主页动态加载loading');
-                    }
                     let cate_id = getMyVar('dianbo$分类', '');
                     let fl = storage0.getMyVar('dianbo$flCache') || {};
                     let vodlists = [];
@@ -490,7 +492,6 @@ let parse = {
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
                                 storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
-                                putMyVar('当前py文件', pyurl);
                             }
                         }
 

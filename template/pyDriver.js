@@ -74,7 +74,6 @@ let parse = {
     },
     主页预加载: function(){
         let pyConfig = juItem.getAll();
-        let pypath = pyConfig.pypath || '';
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';
         let pyname = pySource.name || '';
@@ -90,7 +89,7 @@ let parse = {
         let d = [];
         d.push({
             title: (pyname?'当前:'+pyname:'选择py源'),
-            desc: '点击更换' + '(' + pylists.length+')',
+            desc: '点击更换' + (pylists?'(' + pylists.length+')':''),
             url: $('#noLoading#').lazyRule(() => {
                 let sourceList = $.require("jiekou").parse()._getpylist();
                 let tmpList = [];

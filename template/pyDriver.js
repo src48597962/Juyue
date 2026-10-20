@@ -461,7 +461,13 @@ let parse = {
                         col_type: "text_center_1"
                     });
                 }else{
-                    let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
+                    if(getMyVar('当前py文件') != pyurl){
+                        clearMyVar('dianbo$分类');
+                        clearMyVar('dianbo$fold');
+                        clearMyVar('dianbo$classCache');
+                        clearMyVar('dianbo$flCache');
+                        clearMyVar('主页动态加载loading');
+                    }
                     let cate_id = getMyVar('dianbo$分类', '');
                     let fl = storage0.getMyVar('dianbo$flCache') || {};
                     let vodlists = [];
@@ -471,24 +477,20 @@ let parse = {
                         let 分类 = [];
                         let 推荐 = [];
                         let 筛选;
-                        let classCache = storage0.getMyVar('dianbo$classCache') || {};
-                        if (classCache.分类 && classCache.pyurl==pyurl) {
+                        let fold = getMyVar('dianbo$fold', "0");//是否展开小分类筛选
+                        let classCache = storage0.getMyVar('dianbo$classCache');
+                        if (classCache) {
                             推荐 = classCache.推荐;
                             分类 = classCache.分类;
                             筛选 = classCache.筛选;
                         } else {
-                            clearMyVar('dianbo$分类');
-                            clearMyVar('dianbo$fold');
-                            clearMyVar('dianbo$classCache');
-                            clearMyVar('dianbo$flCache');
-                            clearMyVar('主页动态加载loading');
-
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
-                                storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐, pyurl: pyurl });
+                                storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
+                                putMyVar('当前py文件', pyurl);
                             }
                         }
 

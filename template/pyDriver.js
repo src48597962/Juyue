@@ -200,7 +200,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径"];
+                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测py文件"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -212,7 +212,7 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
-                                    let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序', '批量检测py文件'];
+                                    let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序'];
                                     let sourceSort = juItem.get('sourceSort', 0);
                                     hikerPop.selectCenter({
                                         options: sortlist,

@@ -280,18 +280,16 @@ let parse = {
                                                 }else{
                                                     message = '分类获取失败';
                                                 }
-                                                let cate_id = 分类[0].type_id;
-                                                let fl = {typeid: cate_id};
-                                                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(1), true, PythonHiker.toPyJson(fl));
-                                                let vodlists = json.list || [];
+                                                let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent");
+                                                let vodlists = homeVideo['list'] || home['list'] || [];
                                                 if (vodlists.length > 0) {
-                                                    message = message + '、列表获取正常';
+                                                    message = message + '、主页列表获取正常';
                                                     return {
                                                         error: 0,
                                                         message: message
                                                     };//测试，返回成功
                                                 }else{
-                                                    message = message + '、列表获取失败';
+                                                    message = message + '、主页列表获取失败';
                                                 }
                                             } catch (e) {
                                                 message = e.message;

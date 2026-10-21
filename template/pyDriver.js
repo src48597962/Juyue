@@ -200,7 +200,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测py文件"];
+                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,

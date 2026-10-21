@@ -650,11 +650,14 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                            log(home);
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
+                                if(推荐.length==0){
+                                    let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent");
+                                    推荐 = homeVideo['list'] || [];
+                                }
                                 storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
                             }
                         }
@@ -755,9 +758,6 @@ let parse = {
                     }
                     
                     if (cate_id!="tj") {
-                        fl.cateId = fl.cateId || cate_id;
-                        cate_id = fl.cateId;
-                        delete fl.cateId;
                         fl.typeid = cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];

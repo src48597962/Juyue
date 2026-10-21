@@ -239,6 +239,10 @@ let parse = {
                                     refreshPage(false);
                                 } else if (i === 4) {
                                     pop.dismiss();
+                                    let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                                    if(index2>-1){
+                                        tmpList[index2].name = tmpList[index2].name.replace(/[’‘]|<[^>]*>/g, "");
+                                    }
                                     storage0.putMyVar('批量检测_py待检列表', tmpList);//写入待检测源
                                     return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
                                         addListener("onClose", $.toString(() => {
@@ -358,7 +362,7 @@ let parse = {
                                                         let item = dataItem(taskResult.item);
                                                         log(taskResult.item);
                                                         log(item);
-                                                        item.desc = error.message;
+                                                        item.desc = result.message;
                                                         addItemAfter('checkLoading', item);
                                                     }
                                                     updateItem('checkLoading', {

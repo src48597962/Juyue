@@ -244,7 +244,7 @@ let parse = {
                                         tmpList[index2].name = tmpList[index2].name.replace(/[’‘]|<[^>]*>/g, "");
                                     }
                                     storage0.putMyVar('批量检测_py待检列表', tmpList);//写入待检测源
-                                    return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
+                                    return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                                         addListener("onClose", $.toString(() => {
                                             clearMyVar("批量检测_py待检列表");
                                             clearMyVar('批量检测中止');

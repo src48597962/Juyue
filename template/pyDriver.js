@@ -212,7 +212,7 @@ let parse = {
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
-                                    let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序'];
+                                    let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序', '批量检测py文件'];
                                     let sourceSort = juItem.get('sourceSort', 0);
                                     hikerPop.selectCenter({
                                         options: sortlist,
@@ -240,9 +240,161 @@ let parse = {
                                 } else if (i === 4) {
                                     pop.dismiss();
                                     storage0.putMyVar('批量检测_py待检列表', sourceList);//写入待检测源
-                                    return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((sourceList) => {
+                                    return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
+                                        addListener("onClose", $.toString(() => {
+                                            clearMyVar("批量检测_py待检列表");
+                                        }));
+                                        let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
+                                        let d = [];
+                                        d.push({
+                                            title: '批量检测中',
+                                            desc: '待检测源：' + checkSourceList.length,
+                                            col_type: 'text_center_1',
+                                            url: 'hiker://empty',
+                                            extra: {
+                                                id: 'checkLoading'
+                                            }
+                                        });
+                                        setResult(d);
+                                        // 测试
+                                        function getTestData(pySource) {
+                                            let pyurl = pySource.url;
+                                            let message = '';
+                                            try {
+                                                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                                                let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                                                let 分类 = home['class'] || [];
+                                                if (分类.length > 0) {
+                                                    message = '分类获取正常';
+                                                }
+                                                let cate_id = 分类[0].type_id;
+                                                let fl = {typeid: cate_id};
+                                                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(1), true, PythonHiker.toPyJson(fl));
+                                                let vodlists = json.list || [];
+                                                if (vodlists.length > 0) {
+                                                    message = message + '、列表获取正常';
+                                                }
+                                                return {
+                                                    error: 0,
+                                                    message: message
+                                                };//测试，返回成功
+                                            } catch (e) {
+                                                message = e.message;
+                                            }
+                                            return {
+                                                error: 1,
+                                                message: message
+                                            };//最后返回失败
+                                        }
 
-                                    }, sourceList)
+                                        function dataItem(it){
+                                            let selectmenu = ["删除", "跳过"];
+                                            return {
+                                                title: it.name,
+                                                url: $(selectmenu, 2).select((data) => {
+                                                    data = JSON.parse(base64Decode(data));
+                                                    if (input == "删除") {
+                                                        return $("确定删除："+data.name).confirm((data)=>{
+                                                            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                                            deleteData(data);
+                                                            deleteItem('test-' + data.id);
+                                                            let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                            checkList = checkList.filter(v=>v.id != data.id);
+                                                            storage0.putMyVar("批量检测_py待检列表", checkList);
+                                                            return 'toast://已删除:'+data.name;
+                                                        }, data)
+                                                    } else if (input == "跳过") {
+                                                        deleteItem('test-' + data.id);
+                                                        let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                        checkList = checkList.filter(v=>v.id != data.id);
+                                                        storage0.putMyVar("批量检测_py待检列表", checkList);
+                                                        return 'toast://已跳过';
+                                                    }
+                                                }, base64Encode(JSON.stringify(it))),
+                                                desc: '',
+                                                img: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
+                                                col_type: "icon_1_left_pic",
+                                                extra: {
+                                                    id: 'test-' + it.id
+                                                }
+                                            };
+                                        }
+                                        let task = function (item) {
+                                            return (function() {
+                                                let result = getTestData(item);
+                                                return {item:item, result:result};
+                                            })();
+                                        }
+
+                                        let list = checkSourceList.map((item) => {
+                                            return {
+                                                func: task,
+                                                param: item,
+                                                id: item.url
+                                            }
+                                        });
+
+                                        if (list.length > 0) {
+                                            showLoading('检测中，不要息屏，不要退出');
+                                            let checks = 0;
+                                            let errors = [];
+                                            be(list, {
+                                                func: function (obj, id, error, taskResult) {
+                                                    checks++;
+                                                    let result = taskResult.result;
+                                                    if(result.error){
+                                                        errors.push(taskResult.item);
+                                                        let item = dataItem(taskResult.item);
+                                                        item.desc = error.message;
+                                                        addItemAfter('checkLoading', item);
+                                                        updateItem('checkLoading', {
+                                                            title: '批量检测中，点击可中止',
+                                                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                                            url: $("#noLoading#").lazyRule(()=>{
+                                                                showLoading('拦截中');
+                                                                putMyVar('批量检测中止', '1');
+                                                                return "hiker://emtpy";
+                                                            })
+                                                        });
+                                                    }
+                                                    if(getMyVar('批量检测中止', '0') == '1'){
+                                                        return "break";
+                                                    }
+                                                },
+                                                param: {
+                                                }
+                                            });
+                                            updateItem('checkLoading', {
+                                                title: '点击复检，'+errors.length+'个疑似失效',
+                                                desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                                url: $("#noLoading#").lazyRule((error)=>{
+                                                    if(error==0){
+                                                        return 'toast://没有失效源';
+                                                    }
+                                                    refreshPage(true);
+                                                    return 'hiker://empty';
+                                                },errors.length),
+                                                extra: {
+                                                    longClick: [{
+                                                        title: "全部删除",
+                                                        js: $.toString(() => {
+                                                            return $("确定全部删除？").confirm(()=>{
+                                                                require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
+                                                                let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                                deleteData(checkList);
+                                                                storage0.putMyVar("批量检测_py待检列表", []);
+                                                                back(true);
+                                                                return 'toast://已全部删除';
+                                                            })
+                                                        })
+                                                    }]
+                                                }
+                                            });
+                                            hideLoading();
+                                            clearMyVar('批量检测中止');
+                                            storage0.putMyVar("批量检测_py待检列表", errors);
+                                        }
+                                    })
                                 }
                             }
                         });

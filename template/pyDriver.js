@@ -358,8 +358,6 @@ let parse = {
                                                     if(result.error){
                                                         errors.push(taskResult.item);
                                                         let item = dataItem(taskResult.item);
-                                                        log(taskResult.item);
-                                                        log(item);
                                                         item.desc = result.message;
                                                         addItemAfter('checkLoading', item);
                                                     }

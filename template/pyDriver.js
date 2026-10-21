@@ -284,19 +284,6 @@ let parse = {
                                                 }else{
                                                     message = '分类获取失败';
                                                 }
-                                                /*
-                                                let vodlists = home['list'] || [];
-                                                if(vodlists.length==0){
-                                                    let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
-                                                    vodlists = homeVideo['list'] || [];
-                                                }
-                                                if (vodlists.length > 0) {
-                                                    message = message + '、主页列表获取正常';
-                                                    
-                                                }else{
-                                                    message = message + '、主页列表获取失败';
-                                                }
-                                                */
                                             } catch (e) {
                                                 message = e.message;
                                             }

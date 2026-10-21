@@ -248,7 +248,6 @@ let parse = {
                                         addListener("onClose", $.toString(() => {
                                             clearMyVar("批量检测_py待检列表");
                                             clearMyVar('批量检测中止');
-                                            clearMyVar('pylists');
                                         }));
                                         addListener('onRefresh', $.toString(() => {
                                             clearMyVar('批量检测中止');
@@ -269,18 +268,23 @@ let parse = {
                                         setResult(d);
                                         
                                         // 测试
+                                        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                                         function getTestData(pySource) {
                                             let pyurl = pySource.url;
                                             let message = '';
                                             try {
-                                                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                                                 let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                                                 let 分类 = home['class'] || [];
                                                 if (分类.length > 0) {
                                                     message = '分类获取正常';
+                                                    return {
+                                                        error: 0,
+                                                        message: message
+                                                    };//测试，返回成功
                                                 }else{
                                                     message = '分类获取失败';
                                                 }
+                                                /*
                                                 let vodlists = home['list'] || [];
                                                 if(vodlists.length==0){
                                                     let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
@@ -288,13 +292,11 @@ let parse = {
                                                 }
                                                 if (vodlists.length > 0) {
                                                     message = message + '、主页列表获取正常';
-                                                    return {
-                                                        error: 0,
-                                                        message: message
-                                                    };//测试，返回成功
+                                                    
                                                 }else{
                                                     message = message + '、主页列表获取失败';
                                                 }
+                                                */
                                             } catch (e) {
                                                 message = e.message;
                                             }
@@ -322,6 +324,7 @@ let parse = {
                                                             let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                             checkList = checkList.filter(v=>v.url != data.url);
                                                             storage0.putMyVar("批量检测_py待检列表", checkList);
+                                                            clearMyVar('pylists');
                                                             return 'toast://已删除:'+data.name;
                                                         }, data)
                                                     } else if (input == "跳过") {
@@ -410,6 +413,7 @@ let parse = {
                                                                 })
                                                                 juItem.set('sourceSet', sourceSet);
                                                                 storage0.putMyVar("批量检测_py待检列表", []);
+                                                                clearMyVar('pylists');
                                                                 back(true);
                                                                 return 'toast://已全部删除';
                                                             })

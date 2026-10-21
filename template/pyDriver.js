@@ -239,7 +239,7 @@ let parse = {
                                     refreshPage(false);
                                 } else if (i === 4) {
                                     pop.dismiss();
-                                    storage0.putMyVar('批量检测_py待检列表', sourceList);//写入待检测源
+                                    storage0.putMyVar('批量检测_py待检列表', tmpList);//写入待检测源
                                     return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
                                         addListener("onClose", $.toString(() => {
                                             clearMyVar("批量检测_py待检列表");

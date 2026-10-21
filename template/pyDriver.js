@@ -266,6 +266,8 @@ let parse = {
                                                 let 分类 = home['class'] || [];
                                                 if (分类.length > 0) {
                                                     message = '分类获取正常';
+                                                }else{
+                                                    message = '分类获取失败';
                                                 }
                                                 let cate_id = 分类[0].type_id;
                                                 let fl = {typeid: cate_id};
@@ -273,11 +275,13 @@ let parse = {
                                                 let vodlists = json.list || [];
                                                 if (vodlists.length > 0) {
                                                     message = message + '、列表获取正常';
+                                                    return {
+                                                        error: 0,
+                                                        message: message
+                                                    };//测试，返回成功
+                                                }else{
+                                                    message = message + '、列表获取失败';
                                                 }
-                                                return {
-                                                    error: 0,
-                                                    message: message
-                                                };//测试，返回成功
                                             } catch (e) {
                                                 message = e.message;
                                             }
@@ -347,16 +351,16 @@ let parse = {
                                                         let item = dataItem(taskResult.item);
                                                         item.desc = error.message;
                                                         addItemAfter('checkLoading', item);
-                                                        updateItem('checkLoading', {
-                                                            title: '批量检测中，点击可中止',
-                                                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
-                                                            url: $("#noLoading#").lazyRule(()=>{
-                                                                showLoading('拦截中');
-                                                                putMyVar('批量检测中止', '1');
-                                                                return "hiker://emtpy";
-                                                            })
-                                                        });
                                                     }
+                                                    updateItem('checkLoading', {
+                                                        title: '批量检测中，点击可中止',
+                                                        desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                                        url: $("#noLoading#").lazyRule(()=>{
+                                                            showLoading('拦截中');
+                                                            putMyVar('批量检测中止', '1');
+                                                            return "hiker://emtpy";
+                                                        })
+                                                    });
                                                     if(getMyVar('批量检测中止', '0') == '1'){
                                                         return "break";
                                                     }

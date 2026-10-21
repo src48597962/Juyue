@@ -243,7 +243,12 @@ let parse = {
                                     return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
                                         addListener("onClose", $.toString(() => {
                                             clearMyVar("批量检测_py待检列表");
+                                            clearMyVar('批量检测中止');
                                         }));
+                                        addListener('onRefresh', $.toString(() => {
+                                            clearMyVar('批量检测中止');
+                                        }));
+
                                         let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
                                         let d = [];
                                         d.push({
@@ -256,6 +261,7 @@ let parse = {
                                             }
                                         });
                                         setResult(d);
+                                        
                                         // 测试
                                         function getTestData(pySource) {
                                             let pyurl = pySource.url;
@@ -395,7 +401,6 @@ let parse = {
                                                 }
                                             });
                                             hideLoading();
-                                            clearMyVar('批量检测中止');
                                             storage0.putMyVar("批量检测_py待检列表", errors);
                                         }
                                     })

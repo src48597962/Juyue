@@ -318,14 +318,14 @@ let parse = {
                                                             let sourceSet = juItem.get('sourceSet') || {};
                                                             delete sourceSet[pyname];
                                                             juItem.set('sourceSet', sourceSet);
-                                                            deleteItem('data_' + it.dir + '_' + it.name);
+                                                            deleteItem('data_' + data.dir + '_' + data.name);
                                                             let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                             checkList = checkList.filter(v=>v.url != data.url);
                                                             storage0.putMyVar("批量检测_py待检列表", checkList);
                                                             return 'toast://已删除:'+data.name;
                                                         }, data)
                                                     } else if (input == "跳过") {
-                                                        deleteItem('data_' + it.dir + '_' + it.name);
+                                                        deleteItem('data_' + data.dir + '_' + data.name);
                                                         let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                         checkList = checkList.filter(v=>v.url != data.url);
                                                         storage0.putMyVar("批量检测_py待检列表", checkList);

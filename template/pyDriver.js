@@ -248,6 +248,7 @@ let parse = {
                                         addListener('onRefresh', $.toString(() => {
                                             clearMyVar('批量检测中止');
                                         }));
+                                        setPageTitle('批量检测py文件');
 
                                         let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
                                         let d = [];
@@ -307,14 +308,14 @@ let parse = {
                                                         return $("确定删除："+data.name).confirm((data)=>{
                                                             require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuPublic.js');
                                                             deleteData(data);
-                                                            deleteItem('test-' + data.id);
+                                                            deleteItem('data_' + it.dir + '_' + it.name);
                                                             let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                             checkList = checkList.filter(v=>v.id != data.id);
                                                             storage0.putMyVar("批量检测_py待检列表", checkList);
                                                             return 'toast://已删除:'+data.name;
                                                         }, data)
                                                     } else if (input == "跳过") {
-                                                        deleteItem('test-' + data.id);
+                                                        deleteItem('data_' + it.dir + '_' + it.name);
                                                         let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                         checkList = checkList.filter(v=>v.id != data.id);
                                                         storage0.putMyVar("批量检测_py待检列表", checkList);
@@ -325,7 +326,7 @@ let parse = {
                                                 img: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                                                 col_type: "icon_1_left_pic",
                                                 extra: {
-                                                    id: 'test-' + it.id
+                                                    id: 'test_' + it.dir + '_' + it.name
                                                 }
                                             };
                                         }

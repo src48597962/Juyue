@@ -659,7 +659,7 @@ let parse = {
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
                                 if(推荐.length==0){
-                                    let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent");
+                                    let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
                                     推荐 = homeVideo['list'] || [];
                                 }
                                 storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });

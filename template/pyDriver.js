@@ -200,7 +200,7 @@ let parse = {
                         return 'toast://' + '主页源已设置为：' + input;
                     },
                     menuClick(manage) {
-                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径"];
+                        let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测文件"];
                         hikerPop.selectCenter({
                             options: menuarr,
                             columns: 2,
@@ -247,11 +247,9 @@ let parse = {
                                     return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
                                         addListener("onClose", $.toString(() => {
                                             clearMyVar("批量检测_py待检列表");
-                                            clearMyVar('批量检测中止');
+                                            putMyVar('批量检测中止', '1');
                                         }));
-                                        addListener('onRefresh', $.toString(() => {
-                                            clearMyVar('批量检测中止');
-                                        }));
+                                        clearMyVar('批量检测中止');
                                         setPageTitle('批量检测py文件');
 
                                         let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
@@ -268,11 +266,11 @@ let parse = {
                                         setResult(d);
                                         
                                         // 测试
-                                        let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                                         function getTestData(pySource) {
                                             let pyurl = pySource.url;
                                             let message = '';
                                             try {
+                                                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                                                 let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                                                 let 分类 = home['class'] || [];
                                                 if (分类.length > 0) {

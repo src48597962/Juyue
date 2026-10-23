@@ -837,6 +837,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
+        log(html);
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
         let detail1 = json.vod_actor || "";

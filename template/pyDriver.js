@@ -893,7 +893,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: json.vod_id.startsWith('book:')?'小说':pySource.type,
+            type: json.vod_id.startsWith('book:')?'小说':json.vod_id.startsWith('audio:')?'音频':pySource.type,
             lazyData: pySource
         }  
     },
@@ -997,9 +997,15 @@ let parse = {
                         }
                     }catch(e){}
                     urls.push(playUrl+'#isVideo=true#');
-                }else if(playUrl.startsWith('http') && !playUrl.includes('.m4a') && !playUrl.includes('.mp3')){
-                    urls.push(playUrl+'#isVideo=true#');
-                    playUrl = playUrl+'#isVideo=true#';
+                }else if(playUrl.startsWith('http')){
+                    let playide;
+                    if(playUrl.includes('.m4a') || playUrl.includes('.mp3') || url.startsWith('audio:') || this.dataObj.type=='音频'){
+                        playide = '#isMusic=true#';
+                    }else{
+                        playide = '#isVideo=true#';
+                    }
+                    urls.push(playUrl + playide);
+                    playUrl = playUrl + playide;
                 }
             }else if($.type(playUrl) == "array"){
                 urls = playUrl;

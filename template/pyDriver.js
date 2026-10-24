@@ -766,6 +766,8 @@ let parse = {
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
+                    d = d.concat(this._vodlistsF(pySource, vodlists));
+                    /*
                     let sourceSet = juItem.get('sourceSet') || {};
                     let pyset = sourceSet[pyname] || {};
                     let isyiparse = pyset['yiparse'] || 0;
@@ -783,6 +785,7 @@ let parse = {
                             }
                         })
                     })
+                    */
                 }
             }else{
                 d.push({
@@ -792,6 +795,56 @@ let parse = {
                 });
             }
         }
+        return d;
+    },
+    _vodlistsF: function(pySource, vodlists){
+        let sourceSet = juItem.get('sourceSet') || {};
+        let pyset = sourceSet[pySource.name] || {};
+        let isyiparse = pyset['yiparse'] || 0;
+
+        function yiparseF(url, MY_PARAMS) {
+            let parse = $.require("jiekou").parse();
+            eval("let 二级获取 = " + parse['二级'])
+            let erLoadData = 二级获取.call(parse, url);
+            let list = erLoadData.list[0];
+            let line = erLoadData.line[0];
+            let dataObj = {line: line, lazyData: erLoadData.lazyData};
+            parse.dataObj = dataObj;
+            eval("let 解析2 = " + parse['解析']);
+            let playUrl = 解析2.call(parse, list[0].url);
+            if(list.length>1){
+                toast('此片选集较多，建议取消一级播放');
+            }
+            return playUrl;
+        }
+        function folderlistF(vod_id){
+            return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((url, _vodlistsF) => {
+                let pySource = MY_PARAMS.pySource;
+                let pyurl = pySource.url;
+                let cate_id = url;
+                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(MY_PAGE), true, PythonHiker.toPyJson({}));
+                let vodlists = json.list || [];
+                let d = _vodlistsF(pySource, vodlists);
+                setResult(d);
+            }, vod_id, this._vodlistsF)
+        }
+
+        let d = [];
+        vodlists.forEach(it=>{
+            d.push({
+                title: it.vod_name,
+                desc: it.vod_remarks || it.vod_year || '',
+                img: it.vod_pic,
+                url: it.vod_tag=='folder' ? folderlistF(it.vod_id.toString(), isyiparse?yiparseF:undefined) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
+                    return yiparseF(url, params);
+                }, it.vod_id.toString(), {pySource: pySource}, yiparseF) : it.vod_id.toString(),
+                col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
+                extra: {
+                    pySource: pySource
+                }
+            })
+        })
         return d;
     },
     _yiparseF: function(url, MY_PARAMS) {
@@ -804,6 +857,9 @@ let parse = {
         parse.dataObj = dataObj;
         eval("let 解析2 = " + parse['解析']);
         let playUrl = 解析2.call(parse, list[0].url);
+        if(list.length>1){
+            toast('此片选集较多，建议取消一级播放');
+        }
         return playUrl;
     },
     _folderlistF: function(vod_id, yiparseF){

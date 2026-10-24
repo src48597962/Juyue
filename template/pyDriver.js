@@ -832,18 +832,24 @@ let parse = {
 
         let d = [];
         vodlists.forEach(it=>{
-            d.push({
+            let vodobj = {
                 title: it.vod_name,
                 desc: it.vod_remarks || it.vod_year || '',
                 img: it.vod_pic,
-                url: it.vod_tag=='folder' ? folderlistF(it.vod_id.toString(), this._vodlistsF) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
+                url: isyiparse ? $('').lazyRule((url, params, yiparseF) => {
                     return yiparseF(url, params);
                 }, it.vod_id.toString(), {pySource: pySource}, yiparseF) : it.vod_id.toString(),
                 col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                 extra: {
                     pySource: pySource
                 }
-            })
+            }
+            if(it.vod_tag=='folder'){
+                vodobj.url = folderlistF(it.vod_id.toString(), this._vodlistsF);
+                d.push(vodobj);
+            }else{
+                d.push(toerji(vodobj));
+            }
         })
         return d;
     },

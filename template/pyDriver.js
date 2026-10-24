@@ -817,7 +817,7 @@ let parse = {
             }
             return playUrl;
         }
-        function folderlistF(vod_id){
+        function folderlistF(vod_id, _vodlistsF){
             return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((url, _vodlistsF) => {
                 let pySource = MY_PARAMS.pySource;
                 let pyurl = pySource.url;
@@ -827,7 +827,7 @@ let parse = {
                 let vodlists = json.list || [];
                 let d = _vodlistsF(pySource, vodlists);
                 setResult(d);
-            }, vod_id, this._vodlistsF)
+            }, vod_id, _vodlistsF)
         }
 
         let d = [];
@@ -836,7 +836,7 @@ let parse = {
                 title: it.vod_name,
                 desc: it.vod_remarks || it.vod_year || '',
                 img: it.vod_pic,
-                url: it.vod_tag=='folder' ? folderlistF(it.vod_id.toString(), isyiparse?yiparseF:undefined) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
+                url: it.vod_tag=='folder' ? folderlistF(it.vod_id.toString(), this._vodlistsF) : isyiparse ? $('').lazyRule((url, params, yiparseF) => {
                     return yiparseF(url, params);
                 }, it.vod_id.toString(), {pySource: pySource}, yiparseF) : it.vod_id.toString(),
                 col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),

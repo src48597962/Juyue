@@ -86,6 +86,12 @@ let parse = {
             Object.keys(pyConfig).forEach(it=>{
                 juItemS.set(it, pyConfig[it]);
             })
+            let items = {};
+            let itemsstr = fetch(`${libspath}juItem.json`);
+            if (itemsstr != "") {
+                eval("items=" + itemsstr + ";");
+            }
+            delete items[this.id];
         }
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';

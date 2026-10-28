@@ -86,6 +86,8 @@ let parse = {
             Object.keys(pyConfig).forEach(it=>{
                 juItemS.set(it, pyConfig[it]);
             })
+            log(this.id);
+            log(jkdata.id);
             let items = {};
             let itemsstr = fetch(`hiker://files/data/聚阅/juItem.json`);
             if (itemsstr != "") {

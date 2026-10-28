@@ -86,14 +86,14 @@ let parse = {
             Object.keys(pyConfig).forEach(it=>{
                 juItemS.set(it, pyConfig[it]);
             })
-            log(this.id);
-            log(jkdata.id);
             let items = {};
-            let itemsstr = fetch(`hiker://files/data/聚阅/juItem.json`);
+            let juItemfile = `${libspath}juItem.json`;
+            let itemsstr = fetch(juItemfile);
             if (itemsstr != "") {
                 eval("items=" + itemsstr + ";");
             }
             delete items[this.id];
+            writeFile(juItemfile, JSON.stringify(items));
         }
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';

@@ -162,8 +162,9 @@ function juFileF(id){
     }
     return juFileO;
 }
-let juItem = juItemF();
-let juItem2 = juItemF('Juyue', 1);
+let juItem = juItemF();  //接口源中使用，跟源保存，源删除则自动删除，重置也会自动删除
+let juItemS = juItemF('', 1);  //接口源中使用，永久保存
+let juItem2 = juItemF('Juyue', 1);  //聚阅开发代码使用，永久保存
 let juFile = juFileF();
 
 // 获取Juconfig

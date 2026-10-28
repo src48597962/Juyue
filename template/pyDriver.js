@@ -87,7 +87,7 @@ let parse = {
                 juItemS.set(it, pyConfig[it]);
             })
             let items = {};
-            let juItemfile = `${libspath}juItem.json`;
+            let juItemfile = `hiker://files/data/聚阅/juItem.json`;
             let itemsstr = fetch(juItemfile);
             if (itemsstr != "") {
                 eval("items=" + itemsstr + ";");

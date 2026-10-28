@@ -363,6 +363,13 @@ function deleteData(data){
     if (itemsstr != "") {
         eval("items=" + itemsstr + ";");
     }
+    let juItem2file = `${rulepath}juItem.json`;
+    let items2 = {};
+    let itemsstr2 = fetch(juItem2file);
+    if (itemsstr2 != "") {
+        eval("items2=" + itemsstr2 + ";");
+    }
+
     // 取得 java.io.File 类的引用
     let File = Packages.java.io.File;
     
@@ -371,6 +378,7 @@ function deleteData(data){
             deleteFile(it.url);
         }
         delete items[it.id];
+        delete items2[it.id];
         let target = new File(getPath("hiker://files/data2/聚阅/juFile/"+it.id).replace("file://", ""));
         if (target.exists()) {
             deleteDir(target);
@@ -379,6 +387,7 @@ function deleteData(data){
         datalist.splice(index, 1);
     })
     writeFile(juItemfile, JSON.stringify(items));
+    writeFile(juItem2file, JSON.stringify(items2));
     writeFile(jkfile, JSON.stringify(datalist));
     clearMyVar('SrcJu_searchMark');
     clearMyVar('duodatalist');

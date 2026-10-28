@@ -1684,7 +1684,10 @@ function sousuo() {
                     if(parse['聚合搜索']){
                         try{
                             eval("let 数据 = " + parse['聚合搜索'].toString());
-                            let getData = 数据.call(parse, keyword) || [];
+                            let getData = 数据.call(parse, keyword);
+                            if($.type(getData)=='string'){
+                                getData = JSON.parse(getData);
+                            }
                             judata = judata.concat(getData);
                         }catch(e){
                             log(it.name+'>读取聚合搜索失败>'+e.message);

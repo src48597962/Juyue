@@ -17,7 +17,7 @@ let parse = {
             return match ? _type[match[1]] : undefined;
         }
         showLoading("扫描目录py文件");
-        input = input || juItem.get('pypath');
+        input = input || juItemS.get('pypath');
         let pyfiles = readDir2(input).filter(v=>v.name.endsWith('.py'));
         let pylists = pyfiles.map(it=>{
             return {
@@ -33,7 +33,7 @@ let parse = {
     },
     _getpylist: function() {
         let pylists = storage0.getMyVar('pylists') || this._readDir();
-        let sourceSet = juItem.get('sourceSet') || {};
+        let sourceSet = juItemS.get('sourceSet') || {};
         pylists.forEach(it=>{
             let pyset = sourceSet[it.name] || {};
             it.sort = pyset['sort'] || 0;
@@ -42,7 +42,7 @@ let parse = {
                 it.type = stype || it.type;
             }
         })
-        let sourceSort = juItem.get('sourceSort', 0);
+        let sourceSort = juItemS.get('sourceSort', 0);
         if(sourceSort == 1){
             function sortByPinyin(arr) {
                 let arrNew = arr.sort((a, b) => a.name.localeCompare(b.name));
@@ -80,8 +80,13 @@ let parse = {
         clearMyVar('主页动态加载loading');
     },
     主页预加载: function(){
-        log(juItemS.getAll());
-        let pyConfig = juItem.getAll();
+        let pyConfig = juItemS.getAll();
+        if(Object.keys(pyConfig).length==0){
+            pyConfig = juItem.getAll();
+            Object.keys(pyConfig).forEach(it=>{
+                juItemS.set(it, pyConfig[it]);
+            })
+        }
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';
         let pyname = pySource.name || '';
@@ -90,7 +95,7 @@ let parse = {
             let pydefault = pylists[0];
             pyurl = pydefault.url;
             pyname = pydefault.name;
-            juItem.set('pySource', pydefault);
+            juItemS.set('pySource', pydefault);
             toast('已默认第1个py为当前源');
             this._clearMyVar();
         }
@@ -108,7 +113,7 @@ let parse = {
                 hikerPop.setUseStartActivity(false);
 
                 let sourceName = "";
-                let pyConfig = juItem.getAll();
+                let pyConfig = juItemS.getAll();
                 let pySource = pyConfig.pySource || {};
                 let index = sourceList.findIndex(v=>v.url==pySource.url);
                 if(index>-1){
@@ -162,7 +167,7 @@ let parse = {
                                 click(s) {
                                     inputBox.setTitle(s);
                                     inputBox.setDefaultValue("");
-                                    juItem.set('sourceListGroup', s);
+                                    juItemS.set('sourceListGroup', s);
                                     sourceListGroup = s;
                                     tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
                                     manage.list.length = 0;
@@ -189,12 +194,12 @@ let parse = {
                         if(s==tmpList[i].name){
                             tmpList[i].name = input;
                         }
-                        let sourceSet = juItem.get('sourceSet') || {};
+                        let sourceSet = juItemS.get('sourceSet') || {};
                         let pyset = sourceSet[input] || {};
                         pyset['sort'] = (pyset['sort'] || 0) + 1;
                         sourceSet[input] = pyset;
-                        juItem.set('sourceSet', sourceSet);
-                        juItem.set('pySource', tmpList[i]);
+                        juItemS.set('sourceSet', sourceSet);
+                        juItemS.set('pySource', tmpList[i]);
                         parse._clearMyVar();
                         refreshPage(true);
                         
@@ -209,12 +214,12 @@ let parse = {
                             click(s, i) {
                                 if (i === 0) {
                                     spen = spen == 3 ? 2 : 3;
-                                    juItem.set('selectBottomRescolumns', spen);
+                                    juItemS.set('selectBottomRescolumns', spen);
                                     manage.changeColumns(spen);
                                     manage.scrollToPosition(index, false);
                                 } else if (i === 1) {
                                     let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序'];
-                                    let sourceSort = juItem.get('sourceSort', 0);
+                                    let sourceSort = juItemS.get('sourceSort', 0);
                                     hikerPop.selectCenter({
                                         options: sortlist,
                                         columns: 1,
@@ -222,7 +227,7 @@ let parse = {
                                         position: sourceSort,
                                         click(a, i) {
                                             pop.dismiss();
-                                            juItem.set('sourceSort', i);
+                                            juItemS.set('sourceSort', i);
                                             hikerPop.runOnNewThread(() => {
                                                 return 'toast://列表排序设置为:' + a;
                                             });
@@ -235,8 +240,8 @@ let parse = {
                                 } else if (i === 3) {
                                     pop.dismiss();
                                     clearMyVar('pylists');
-                                    juItem.clear('pypath');
-                                    juItem.clear('pySource');
+                                    juItemS.clear('pypath');
+                                    juItemS.clear('pySource');
                                     refreshPage(false);
                                 } else if (i === 4) {
                                     pop.dismiss();
@@ -303,9 +308,9 @@ let parse = {
                                                             let pyurl = data.url;
                                                             let pyname = data.name;
                                                             deleteFile('file://' + pyurl);
-                                                            let sourceSet = juItem.get('sourceSet') || {};
+                                                            let sourceSet = juItemS.get('sourceSet') || {};
                                                             delete sourceSet[pyname];
-                                                            juItem.set('sourceSet', sourceSet);
+                                                            juItemS.set('sourceSet', sourceSet);
                                                             deleteItem('data_' + data.dir + '_' + data.name);
                                                             let checkList = storage0.getMyVar("批量检测_py待检列表");
                                                             checkList = checkList.filter(v=>v.url != data.url);
@@ -390,14 +395,14 @@ let parse = {
                                                         js: $.toString(() => {
                                                             return $("确定全部删除？").confirm(()=>{
                                                                 let checkList = storage0.getMyVar("批量检测_py待检列表");
-                                                                let sourceSet = juItem.get('sourceSet') || {};
+                                                                let sourceSet = juItemS.get('sourceSet') || {};
                                                                 checkList.forEach(data=>{
                                                                     let pyurl = data.url;
                                                                     let pyname = data.name;
                                                                     deleteFile('file://' + pyurl);
                                                                     delete sourceSet[pyname];
                                                                 })
-                                                                juItem.set('sourceSet', sourceSet);
+                                                                juItemS.set('sourceSet', sourceSet);
                                                                 storage0.putMyVar("批量检测_py待检列表", []);
                                                                 clearMyVar('pylists');
                                                                 back(true);
@@ -429,10 +434,10 @@ let parse = {
                             let pylists = storage0.getMyVar('pylists');
                             pylists = pylists.filter(it=>it.url!=pyurl);
                             storage0.putMyVar('pylists', pylists);
-                            juItem.clear('pySource');
-                            let sourceSet = juItem.get('sourceSet') || {};
+                            juItemS.clear('pySource');
+                            let sourceSet = juItemS.get('sourceSet') || {};
                             delete sourceSet[pyname];
-                            juItem.set('sourceSet', sourceSet);
+                            juItemS.set('sourceSet', sourceSet);
                             
                             refreshPage(false);
                             return "toast://已删除当前py源";
@@ -458,13 +463,13 @@ let parse = {
                 },{
                     title: "设置",
                     js: $.toString((pySource) => {
-                        let sourceSet = juItem.get('sourceSet') || {};
+                        let sourceSet = juItemS.get('sourceSet') || {};
                         let pyset = sourceSet[pySource.name] || {};
                         let isyiparse = pyset['yiparse'] || 0;
                         let stype = pyset['type'] || pySource.type || '未指定';
 
                         sourceSet[input] = pyset;
-                        juItem.set('sourceSet', sourceSet);
+                        juItemS.set('sourceSet', sourceSet);
 
                         return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype, 'py文件重命名'], 1).select((pySource,sourceSet)=>{
                             let pyname = pySource.name;
@@ -480,7 +485,7 @@ let parse = {
                                     sm = '一级播放';
                                 }
                                 sourceSet[pyname] = pyset;
-                                juItem.set('sourceSet', sourceSet);
+                                juItemS.set('sourceSet', sourceSet);
                                 refreshPage(false);
                                 return "toast://" + pyname + ">已切换为：" + sm;
                             }else if(input.includes('类型')){
@@ -493,8 +498,8 @@ let parse = {
                                         pySource.type = input;
                                     }
                                     sourceSet[pySource.name] = pyset;
-                                    juItem.set('sourceSet', sourceSet);
-                                    juItem.set('pySource', pySource);
+                                    juItemS.set('sourceSet', sourceSet);
+                                    juItemS.set('pySource', pySource);
                                     return "toast://" + pySource.name + ">类型设置为：" + input;
                                 }, pySource, sourceSet, pyset)
                             }else if(input.includes('重命名')){
@@ -508,10 +513,10 @@ let parse = {
                                     deleteFile('file://'+pySource.url);
                                     sourceSet[input] = sourceSet[pySource.name];
                                     delete sourceSet[pySource.name];
-                                    juItem.set('sourceSet', sourceSet);
+                                    juItemS.set('sourceSet', sourceSet);
                                     pySource.name = input;
                                     pySource.url = newurl;
-                                    juItem.set('pySource', pySource);
+                                    juItemS.set('pySource', pySource);
                                     clearMyVar('pylists');
                                     refreshPage(false);
                                     return "hiker://empty";
@@ -526,7 +531,7 @@ let parse = {
     },
     主页: function(){
         let d = [];
-        let pyConfig = juItem.getAll();
+        let pyConfig = juItemS.getAll();
         let pypath = pyConfig.pypath || '';
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';
@@ -569,16 +574,16 @@ let parse = {
                     let pylists = _readDir(input);
                     
                     if(pylists.length>0){
-                        let importrecord = juItem.get('importrecord')||[];
+                        let importrecord = juItemS.get('importrecord')||[];
                         if(importrecord.length>20){//保留20个记录
                             importrecord.shift();
                         }
                         if(!importrecord.some(item => item==input)){
                             importrecord.push(input);
-                            juItem.set('importrecord', importrecord);
+                            juItemS.set('importrecord', importrecord);
                         }
 
-                        juItem.set('pypath', input);
+                        juItemS.set('pypath', input);
                         refreshPage(true);
                     }
 
@@ -593,7 +598,7 @@ let parse = {
                 title: '🆖 历史记录',
                 col_type: "rich_text"
             });
-            let importrecord = juItem.get('importrecord')||[];
+            let importrecord = juItemS.get('importrecord')||[];
             let lists = importrecord;
             lists.reverse();
             
@@ -612,9 +617,9 @@ let parse = {
                             longClick: [{
                                 title: "删除",
                                 js: $.toString((url) => {
-                                    let importrecord = juItem.get('importrecord')||[];
+                                    let importrecord = juItemS.get('importrecord')||[];
                                     importrecord = importrecord.filter(v=>v!=url);
-                                    juItem.set('importrecord', importrecord);
+                                    juItemS.set('importrecord', importrecord);
                                     refreshPage(false);
                                     return "toast://已删除";
                                 },lists[i])
@@ -780,7 +785,7 @@ let parse = {
         return d;
     },
     _vodlistsF: function(pySource, vodlists){
-        let sourceSet = juItem.get('sourceSet') || {};
+        let sourceSet = juItemS.get('sourceSet') || {};
         let pyset = sourceSet[pySource.name] || {};
         let isyiparse = pyset['yiparse'] || 0;
 
@@ -901,7 +906,7 @@ let parse = {
         }  
     },
     搜索: function(name, source){
-        let pySource = source || juItem.get('pySource') || {};
+        let pySource = source || juItemS.get('pySource') || {};
         let pyurl = pySource.url;
         let d = [];
         if(pyurl){

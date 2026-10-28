@@ -80,6 +80,7 @@ let parse = {
         clearMyVar('主页动态加载loading');
     },
     主页预加载: function(){
+        log(juItemS.getAll());
         let pyConfig = juItem.getAll();
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';

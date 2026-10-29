@@ -32,6 +32,8 @@ let parse = {
         return pylists;
     },
     _getpylist: function() {
+        log(jkdata);
+        log(this.jkdata);
         let pylists = storage0.getMyVar('pylists') || this._readDir();
         let sourceSet = juItemS.get('sourceSet') || {};
         pylists.forEach(it=>{
@@ -86,14 +88,6 @@ let parse = {
             Object.keys(pyConfig).forEach(it=>{
                 juItemS.set(it, pyConfig[it]);
             })
-            let items = {};
-            let juItemfile = `hiker://files/data/聚阅/juItem.json`;
-            let itemsstr = fetch(juItemfile);
-            if (itemsstr != "") {
-                eval("items=" + itemsstr + ";");
-            }
-            delete items[this.id];
-            writeFile(juItemfile, JSON.stringify(items));
         }
         let pySource = pyConfig.pySource || {};
         let pyurl = pySource.url || '';

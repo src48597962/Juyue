@@ -32,7 +32,6 @@ let parse = {
         return pylists;
     },
     _getpylist: function() {
-        log(this.jkdata);
         let pylists = storage0.getMyVar('pylists') || this._readDir();
         let sourceSet = juItemS.get('sourceSet') || {};
         pylists.forEach(it=>{

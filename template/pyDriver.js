@@ -769,7 +769,7 @@ let parse = {
                     
                     if (cate_id!="tj") {
                         fl.typeid = getMyVar('folderid') || cate_id;
-                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                        let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
                     d = d.concat(this._vodlistsF(pySource, vodlists));

@@ -104,11 +104,10 @@ let parse = {
 
 
         let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
-        let current = getMyVar("test.live.source", "simple_live");
         let rows = ui.actionBar(
             {
             left: {
-                title: (pyname?'当前:'+pyname:'选择py源') + (pylists?' 「' + pylists.length+'」':''),
+                title: (pyname?'当前：'+pyname:'选择py源') + (pylists?'「' + pylists.length+'」':''),
                 icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: $('#noLoading#').lazyRule(() => {
                     let parse = $.require("jiekou").parse();

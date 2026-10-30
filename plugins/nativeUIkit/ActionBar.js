@@ -1,8 +1,7 @@
 // by:鬼佬的原生组件工坊
-const cPath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/")) + "/";
-var C = $.require(cPath + "Config.js");
-var Host = $.require(cPath + "NativeCarousel.js");
-var Pictures = $.require(cPath + "CommentAvatar.js");
+var C = $.require(codePath + "plugins/nativeUIkit/Config.js");
+var Host = $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js");
+var Pictures = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js");
 function text(value) {
     return typeof value === "string" ? value.replace(/^\s+|\s+$/g, "") : "";
 }

@@ -43,7 +43,7 @@ function settings(options) {
         return /^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(String(value || "")) ? String(value) : fallback;
     }
     return {
-        height: number(options.height, 64, 48, 120),
+        height: number(options.height, 64, 40, 120),
         inset: number(options.inset, 16, 0, 40),
         iconSize: number(options.iconSize, 32, 16, 56),
         iconShape: /^(circle|rounded|square)$/.test(options.iconShape) ? options.iconShape : "circle",

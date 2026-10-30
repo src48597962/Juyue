@@ -541,7 +541,7 @@ let parse = {
                     }, pyurl)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:24, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);
@@ -1136,24 +1136,13 @@ let parse = {
                                     col_type: 'scroll_button'
                                 })
                             }
-                            putMyVar('dianbo$分类', cate_id);
+                            //putMyVar('dianbo$分类', cate_id);
 
                             if (推荐.length > 0) {
                                 if (cate_id == 'tj') {
                                     vodlists = 推荐;//当前分类为推荐，取推荐列表
                                 }
-                                d.push({
-                                    title: cate_id == 'tj' ? '““””<b><span style="color:' + Color + '">' + '推荐' + '</span></b>' : '推荐',
-                                    url: $('#noLoading#').lazyRule(() => {
-                                        putMyVar('dianbo$分类', 'tj');
-                                        refreshPage(true);
-                                        return "hiker://empty";
-                                    }),
-                                    col_type: 'scroll_button',
-                                    extra: {
-                                        backgroundColor: cate_id=='tj'?"#20" + Color.replace('#',''):undefined
-                                    }
-                                });
+                                分类.push({type_id: 'tj', type_name: '推荐'});
                             }
 
                             分类.forEach((it, i) => {

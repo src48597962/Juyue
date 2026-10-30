@@ -522,10 +522,12 @@ function field(object, name) {
     return null;
 }
 function host(activity) {
-    var fragment = field(activity, "articleListFragment");
+    var fragment = field(activity, "articleListFragment"),
+        home = false;
     if (!fragment) {
         var adapter = field(activity, "viewPagerAdapter");
         if (adapter) {
+            home = true;
             // Rhino can hide methods whose declaring Java class is non-public.
             var getter = adapter.getClass().getMethod("getCurrentFragment");
             getter.setAccessible(true);
@@ -536,39 +538,114 @@ function host(activity) {
     var recycler = root
         ? root.findViewById(com.example.hikerview.R.id.frag_article_list_recycler_view)
         : null;
-    return { fragment: fragment, recycler: recycler };
+    return { fragment: fragment, recycler: recycler, home: home };
 }
 function closeKey(activeKey) {
     return C.ns + "native.carousel.page.v1" + activeKey.slice(activeKey.lastIndexOf(".activity."));
 }
+// Persist each ticket as an O(1) linked node, rather than rewriting the full page map.
+function closeNode(activeKey) {
+    return activeKey + ".close.node.v2";
+}
+function readNode(activeKey) {
+    var text = getMyVar(closeNode(activeKey), "");
+    return text ? JSON.parse(text) : null;
+}
+function writeNode(activeKey, value) {
+    putMyVar(closeNode(activeKey), value ? JSON.stringify(value) : "");
+}
 function registerTicket(activeKey, ticket) {
     var key = closeKey(activeKey);
     var previous = getMyVar(key, "");
-    var tickets = previous ? JSON.parse(previous) : {};
-    tickets[activeKey] = ticket;
-    putMyVar(key, JSON.stringify(tickets));
-    // Page variables survive module re-evaluation; the close action reads the latest tickets.
-    if (!previous && typeof addListener === "function")
+    // A module may be reloaded while a legacy page is alive. Convert its JSON index once.
+    if (previous && previous.indexOf("linked-v2:") !== 0) {
+        var legacy = JSON.parse(previous);
+        putMyVar(key, "linked-v2:");
+        Object.keys(legacy).forEach(function (oldKey) {
+            registerTicket(oldKey, legacy[oldKey]);
+        });
+    }
+    var old = readNode(activeKey);
+    if (old) forgetTicket(activeKey, old.ticket);
+    var headText = getMyVar(key, "");
+    var head = headText.indexOf("linked-v2:") === 0 ? headText.slice(10) : "";
+    var next = head ? readNode(head) : null;
+    writeNode(activeKey, { ticket: ticket, previous: "", next: next ? head : "" });
+    if (next) {
+        next.previous = activeKey;
+        writeNode(head, next);
+    }
+    putMyVar(key, "linked-v2:" + activeKey);
+    // The listener uses persisted nodes, so even a close before the UI queue runs is exact.
+    var listenerKey = key + ".listener.v2";
+    if (!getMyVar(listenerKey, "") && typeof addListener === "function") {
+        putMyVar(listenerKey, "1");
         addListener(
             "onClose",
-            $.toString(function (key) {
-                var tickets = JSON.parse(getMyVar(key, "") || "{}");
-                putMyVar(key, "");
-                var api = $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js");
-                Object.keys(tickets).forEach(function (activeKey) {
-                    api.release(tickets[activeKey]);
-                });
-            }, key)
+            $.toString(
+                function (key, listenerKey) {
+                    $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js").releasePage(key);
+                    putMyVar(listenerKey, "");
+                },
+                key,
+                listenerKey
+            )
         );
+    }
 }
 function forgetTicket(activeKey, ticket) {
-    var indexKey = closeKey(activeKey);
-    var text = getMyVar(indexKey, "");
-    if (text) {
-        var tickets = JSON.parse(text);
-        if (tickets[activeKey] === ticket) delete tickets[activeKey];
-        putMyVar(indexKey, JSON.stringify(tickets));
+    var key = closeKey(activeKey);
+    var node = readNode(activeKey);
+    if (!node) {
+        var text = getMyVar(key, "");
+        if (text && text.indexOf("linked-v2:") !== 0) {
+            var legacy = JSON.parse(text);
+            if (legacy[activeKey] === ticket) {
+                delete legacy[activeKey];
+                putMyVar(key, JSON.stringify(legacy));
+            }
+        }
+        return;
     }
+    if (node.ticket !== ticket) return;
+    var previous = node.previous ? readNode(node.previous) : null;
+    var next = node.next ? readNode(node.next) : null;
+    if (previous) {
+        previous.next = node.next;
+        writeNode(node.previous, previous);
+    } else if (getMyVar(key, "") === "linked-v2:" + activeKey) {
+        putMyVar(key, node.next ? "linked-v2:" + node.next : "");
+    }
+    if (next) {
+        next.previous = node.previous;
+        writeNode(node.next, next);
+    }
+    writeNode(activeKey, null);
+}
+function releasePage(key) {
+    if (String(key).indexOf(C.ns + "native.carousel.page.v1") !== 0) return;
+    var text = getMyVar(key, "");
+    if (text.indexOf("linked-v2:") !== 0) {
+        var legacy = JSON.parse(text || "{}");
+        Object.keys(legacy).forEach(function (activeKey) {
+            release(legacy[activeKey]);
+        });
+        putMyVar(key, "");
+        return;
+    }
+    var activeKey = text.slice(10);
+    var seen = {};
+    while (activeKey && !seen["$" + activeKey]) {
+        seen["$" + activeKey] = true;
+        var node = readNode(activeKey);
+        if (!node) break;
+        var next = node.next;
+        release(node.ticket);
+        // Stale tickets have no active owner but their ledger node must still be removed.
+        forgetTicket(activeKey, node.ticket);
+        activeKey = next;
+    }
+    putMyVar(key, "");
 }
 function release(ticket, namespace) {
     var key = namespace ? C.ns + C.safe(namespace) + ".native.carousel.token.v1" : tokenKey;
@@ -633,7 +710,11 @@ function sharedHost(activity) {
         if (hostManagers[i].activity.equals(activity)) return hostManagers[i];
     }
     var handler = new android.os.Handler(android.os.Looper.getMainLooper());
-    var members = [],
+    var members = {},
+        byId = {},
+        bound = {},
+        idleUsers = [],
+        memberCount = 0,
         h = null,
         stopped = false,
         scanning = false;
@@ -652,16 +733,26 @@ function sharedHost(activity) {
             return value !== manager;
         });
     }
-    function each(fn) {
-        members.slice().forEach(function (member) {
-            if (!member.current()) member.dispose();
-            else {
-                try {
-                    fn(member);
-                } catch (error) {
-                    member.failure(error);
-                }
+    function visit(member, fn) {
+        if (!member.current()) member.dispose();
+        else {
+            try {
+                fn(member);
+            } catch (error) {
+                member.failure(error);
             }
+        }
+    }
+    function each(fn) {
+        Object.keys(members).forEach(function (key) {
+            if (members[key]) visit(members[key], fn);
+        });
+    }
+    function matching(id, fn) {
+        var entries = byId["$" + id];
+        if (!entries) return;
+        Object.keys(entries).forEach(function (key) {
+            if (entries[key]) visit(entries[key], fn);
         });
     }
     function foreground() {
@@ -692,8 +783,18 @@ function sharedHost(activity) {
                 var view = h.recycler.getChildAt(i);
                 views["$" + rowId(view, adapter, list, offset)] = view;
             }
-            each(function (member) {
-                member.sync(h, views["$" + member.id] || null);
+            // Only previous attachments and current visible identities participate in layout scans.
+            Object.keys(bound).forEach(function (key) {
+                var member = bound[key];
+                if (member && !views["$" + member.id])
+                    visit(member, function (value) {
+                        value.sync(h, null);
+                    });
+            });
+            Object.keys(views).forEach(function (key) {
+                matching(key.slice(1), function (member) {
+                    member.sync(h, views[key]);
+                });
             });
         } finally {
             scanning = false;
@@ -713,19 +814,24 @@ function sharedHost(activity) {
                 var offset =
                     typeof adapter.getHeaderLayoutCount === "function" ? adapter.getHeaderLayoutCount() : 0;
                 var id = rowId(view, adapter, list, offset);
-                each(function (member) {
-                    if (member.id === id) member.sync(h, view);
+                matching(id, function (member) {
+                    member.sync(h, view);
                 });
             },
             onChildViewDetachedFromWindow: function (view) {
-                each(function (member) {
-                    member.detach(view);
+                Object.keys(bound).forEach(function (key) {
+                    if (bound[key])
+                        visit(bound[key], function (member) {
+                            member.detach(view);
+                        });
                 });
             }
         });
     var layout = new android.view.ViewTreeObserver.OnGlobalLayoutListener({ onGlobalLayout: scan });
     var watch = runnable(function () {
-        each(function () { });
+        each(function (member) {
+            member.checkParked();
+        });
         if (stopped) return;
         var delay = 500;
         try {
@@ -759,23 +865,52 @@ function sharedHost(activity) {
     var manager = {
         activity: activity,
         add: function (member) {
-            members.push(member);
-            members.slice().forEach(function (previous) {
-                if (previous !== member && previous.key === member.key) previous.dispose();
-            });
+            var key = "$" + member.key;
+            // Reserve the new membership before disposing the last previous owner.
+            memberCount++;
+            if (members[key] && members[key] !== member) members[key].dispose();
+            members[key] = member;
+            var id = "$" + member.id;
+            if (!byId[id]) byId[id] = {};
+            byId[id][key] = member;
             handler.removeCallbacks(watch);
             handler.post(watch);
         },
-        release: function (key, ticket) {
-            members.slice().forEach(function (member) {
-                if (member.key === key && member.ticket === ticket) member.dispose();
-            });
-        },
-        remove: function (member) {
-            members = members.filter(function (value) {
+        cacheIdleUser: function (member) {
+            idleUsers = idleUsers.filter(function (value) {
                 return value !== member;
             });
-            if (!members.length) stop();
+            idleUsers.push(member);
+            // A few recent rows keep instant back-scroll; older user Views/images are released.
+            while (idleUsers.length > 12) idleUsers.shift().recycleWidget();
+        },
+        attached: function (member, value) {
+            if (value)
+                idleUsers = idleUsers.filter(function (entry) {
+                    return entry !== member;
+                });
+            var key = "$" + member.key;
+            if (value) bound[key] = member;
+            else if (bound[key] === member) delete bound[key];
+        },
+        release: function (key, ticket) {
+            var member = members["$" + key];
+            if (member && member.ticket === ticket) member.dispose();
+        },
+        remove: function (member) {
+            var key = "$" + member.key;
+            if (members[key] !== member) return;
+            delete members[key];
+            delete bound[key];
+            idleUsers = idleUsers.filter(function (value) {
+                return value !== member;
+            });
+            var id = "$" + member.id;
+            if (byId[id]) {
+                delete byId[id][key];
+                if (!Object.keys(byId[id]).length) delete byId[id];
+            }
+            if (--memberCount === 0) stop();
         }
     };
     hostManagers.push(manager);
@@ -811,6 +946,7 @@ function mount(rowItem, scope, factory) {
                 widget = null,
                 record = null,
                 disposed = false,
+                parked = false,
                 attempts = 0;
             function current() {
                 return (
@@ -860,8 +996,24 @@ function mount(rowItem, scope, factory) {
                         record.view.setMinimumHeight(Math.max(0, height));
                 }
             }
+            function removeDrawGuard(saved) {
+                if (!saved || !saved.drawGuard) return;
+                try {
+                    saved.observer.removeOnPreDrawListener(saved.drawGuard);
+                } catch (ignore) { }
+                // Android can merge a floating observer into the new window observer on reattach.
+                try {
+                    var live = saved.view.getViewTreeObserver();
+                    if (live !== saved.observer) live.removeOnPreDrawListener(saved.drawGuard);
+                } catch (ignore) { }
+                saved.drawGuard = null;
+                saved.observer = null;
+            }
             function restore() {
+                manager.attached(member, false);
                 if (!record) return;
+                removeDrawGuard(record);
+                parked = false;
                 if (widget && widget.view.getParent()) widget.view.getParent().removeView(widget.view);
                 // Opt-in only: release post thumbnails while retaining text and layout state.
                 if (widget && typeof widget.suspend === "function") widget.suspend();
@@ -879,6 +1031,7 @@ function mount(rowItem, scope, factory) {
                 );
                 record.view.setMinimumHeight(record.minimum);
                 record = null;
+                if (widget && widget.recycleIdle === true && !disposed) manager.cacheIdleUser(member);
             }
             function dispose() {
                 if (disposed) return;
@@ -899,6 +1052,7 @@ function mount(rowItem, scope, factory) {
             function visible() {
                 return (
                     current() &&
+                    !parked &&
                     record !== null &&
                     manager.activity.equals(context()) &&
                     activity.hasWindowFocus() &&
@@ -942,9 +1096,11 @@ function mount(rowItem, scope, factory) {
                 if (itemId(record.view) !== rowItem.extra.id) return false;
                 return record.view.performLongClick() === true;
             }
-            function itemId(view) {
-                var position = h.recycler.getChildAdapterPosition(view),
-                    adapter = h.recycler.getAdapter();
+            function itemId(view, target) {
+                target = target || h;
+                if (!target || !target.recycler) return "";
+                var position = target.recycler.getChildAdapterPosition(view),
+                    adapter = target.recycler.getAdapter();
                 if (position < 0 || !adapter) return "";
                 var offset =
                     typeof adapter.getHeaderLayoutCount === "function" ? adapter.getHeaderLayoutCount() : 0;
@@ -953,13 +1109,109 @@ function mount(rowItem, scope, factory) {
                 if (position < 0 || position >= list.size()) return "";
                 return String(list.get(position).getBaseExtra().getId() || "");
             }
+            // Cached home tabs may be drawn again before the shared host's next 500ms poll.
+            // Preserve verified home-tab rows for every shared widget; recycled identities still restore.
+            function keepCachedRow() {
+                return (
+                    current() &&
+                    record !== null &&
+                    record.host.home &&
+                    record.view.getParent() &&
+                    record.view.getParent().equals(record.host.recycler) &&
+                    itemId(record.view, record.host) === rowItem.extra.id
+                );
+            }
+            function keepCachedWidget() {
+                return (
+                    keepCachedRow() &&
+                    widget.view.getParent() &&
+                    widget.view.getParent().equals(record.view)
+                );
+            }
+            function parkOrRestore() {
+                if (!keepCachedWidget()) {
+                    restore();
+                    return;
+                }
+                if (!parked) {
+                    if (typeof widget.park === "function") widget.park();
+                    else if (typeof widget.suspend === "function") widget.suspend();
+                }
+                parked = true;
+                manager.attached(member, false);
+            }
+            function installDrawGuard() {
+                if (!record || !record.host.home || typeof record.view.getViewTreeObserver !== "function")
+                    return;
+                var observer = record.view.getViewTreeObserver();
+                if (
+                    record.drawGuard &&
+                    (observer === record.observer ||
+                        (typeof observer.equals === "function" && observer.equals(record.observer)))
+                )
+                    return;
+                removeDrawGuard(record);
+                var saved = record;
+                var guard = new android.view.ViewTreeObserver.OnPreDrawListener({
+                    onPreDraw: function () {
+                        if (record !== saved) return true;
+                        try {
+                            if (!current()) dispose();
+                            else if (!keepCachedWidget()) {
+                                // Refresh may strip the native child while keeping this exact adapter row.
+                                if (spec.kind === "actionBar" && keepCachedRow() && !widget.view.getParent()) {
+                                    h = saved.host;
+                                    bind(saved.view);
+                                } else restore();
+                            } else {
+                                // Only opt-in widgets resume here; ordinary background tabs keep their old gate.
+                                if (parked && widget.resumeBeforeDraw === true) {
+                                    var owner = host(activity);
+                                    if (
+                                        owner.recycler &&
+                                        owner.recycler.equals(saved.host.recycler) &&
+                                        manager.activity.equals(context()) &&
+                                        activity.hasWindowFocus()
+                                    ) {
+                                        h = owner;
+                                        saved.host = owner;
+                                        parked = false;
+                                        manager.attached(member, true);
+                                        if (typeof widget.resume === "function") widget.resume();
+                                    }
+                                }
+                                var row = saved.view,
+                                    dirty =
+                                        row.getPaddingLeft() ||
+                                        row.getPaddingTop() ||
+                                        row.getPaddingRight() ||
+                                        row.getPaddingBottom() ||
+                                        row.getLayoutParams().height !== widget.view.getLayoutParams().height;
+                                for (var i = 0; !dirty && i < row.getChildCount(); i++) {
+                                    var child = row.getChildAt(i);
+                                    if (!child.equals(widget.view) && child.getVisibility() !== 8) dirty = true;
+                                }
+                                // Avoid remeasuring TextViews on every frame; setMaxWidth can request layout.
+                                if (dirty) applyHost(row);
+                            }
+                        } catch (error) {
+                            failure(error);
+                        }
+                        // Android/Rhino requires a primitive boolean, never an omitted return value.
+                        return true;
+                    }
+                });
+                observer.addOnPreDrawListener(guard);
+                saved.observer = observer;
+                saved.drawGuard = guard;
+            }
             // 返回或重绑定后恢复宿主布局，保留已经展开的卡片实例。
             function applyHost(view) {
                 var metrics = activity.getResources().getDisplayMetrics();
                 var measured = typeof widget.measureHeight === "function";
                 var width = measured
                     ? view.getWidth() ||
-                    h.recycler.getWidth() ||
+                    record.host.recycler.getWidth() ||
                     metrics.widthPixels ||
                     360 * metrics.density
                     : 0;
@@ -1008,7 +1260,11 @@ function mount(rowItem, scope, factory) {
                     widget.view.getParent() &&
                     widget.view.getParent().equals(view)
                 ) {
+                    record.host = h;
+                    parked = false;
+                    manager.attached(member, true);
                     applyHost(view);
+                    installDrawGuard();
                     if (typeof widget.resume === "function") widget.resume();
                     return;
                 }
@@ -1035,6 +1291,7 @@ function mount(rowItem, scope, factory) {
                 }
                 record = {
                     view: view,
+                    host: h,
                     height: lp.height,
                     minimum: view.getMinimumHeight(),
                     padding: [
@@ -1061,6 +1318,9 @@ function mount(rowItem, scope, factory) {
                 ownership.put("update", runnable(syncUpdate));
                 widget.view.setTag(ownership);
                 view.addView(widget.view, params);
+                parked = false;
+                manager.attached(member, true);
+                installDrawGuard();
                 if (typeof widget.resume === "function") widget.resume();
             }
             function failure(error) {
@@ -1080,17 +1340,29 @@ function mount(rowItem, scope, factory) {
                 current: current,
                 dispose: dispose,
                 failure: failure,
+                checkParked: function () {
+                    if (record && parked && !keepCachedWidget()) restore();
+                },
+                recycleWidget: function () {
+                    if (record || !widget || widget.recycleIdle !== true) return;
+                    widget.destroy();
+                    widget = null;
+                },
                 sync: function (next, found) {
                     h = next;
                     attempts = 0;
                     syncUpdate();
-                    if (record && (!found || !record.view.equals(found))) restore();
+                    if (record && !found) parkOrRestore();
+                    else if (record && !record.view.equals(found)) restore();
                     if (found) bind(found);
                 },
                 detach: function (view) {
-                    if (record && record.view.equals(view)) restore();
+                    if (record && record.view.equals(view)) parkOrRestore();
                 },
-                detachHost: restore,
+                detachHost: function () {
+                    parkOrRestore();
+                    h = null;
+                },
                 missing: function () {
                     if (++attempts >= 30) throw new Error("Carousel list host unavailable");
                 }
@@ -1108,5 +1380,6 @@ $.exports = {
     create: create,
     mount: mount,
     update: update,
-    release: release
+    release: release,
+    releasePage: releasePage
 };

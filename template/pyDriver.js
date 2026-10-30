@@ -76,7 +76,7 @@ let parse = {
         clearMyVar('dianbo$分类');
         clearMyVar('dianbo$fold');
         clearMyVar('dianbo$classCache');
-        clearMyVar('dianbo$flCache');
+        clearMyVar('dianbo$筛选');
         clearMyVar('主页动态加载loading');
     },
     主页预加载: function(){
@@ -534,7 +534,7 @@ let parse = {
                     }, pyurl)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:30, rightHitPadding: 10, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:30, rightHitPadding: 5, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);
@@ -1085,7 +1085,7 @@ let parse = {
                     });
                 }else{
                     let cate_id = getMyVar('dianbo$分类', '');
-                    let fl = storage0.getMyVar('dianbo$flCache') || {};
+                    let fl = storage0.getMyVar('dianbo$筛选') || {};
                     let vodlists = [];
                     let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                     
@@ -1122,7 +1122,7 @@ let parse = {
                                         title: fold === '1' ? '““””<b><span style="color: #F54343">∧</span></b>' : '““””<b><span style="color:' + Color + '">∨</span></b>',
                                     url: $('#noLoading#').lazyRule((fold) => {
                                         putMyVar('dianbo$fold', fold === '1' ? '0' : '1');
-                                        clearMyVar('dianbo$flCache');
+                                        clearMyVar('dianbo$筛选');
                                         refreshPage(false);
                                         return "hiker://empty";
                                     }, fold),
@@ -1156,7 +1156,7 @@ let parse = {
                                     title: cate_id == itid ? '““””<b><span style="color:' + Color + '">' + itname + '</span></b>' : itname,
                                     url: $('#noLoading#').lazyRule((itid) => {
                                         putMyVar('dianbo$分类', itid);
-                                        clearMyVar('dianbo$flCache');
+                                        clearMyVar('dianbo$筛选');
                                         refreshPage(true);
                                         return "hiker://empty";
                                     }, itid),
@@ -1184,9 +1184,9 @@ let parse = {
                                                     d.push({
                                                         title: fl[it.key] == itit.v ? '““””<b><span style="color:' + Color + '">' + itit.n + '</span></b>' : itit.n,
                                                         url: $('#noLoading#').lazyRule((flkey, itid) => {
-                                                            let fl = storage0.getMyVar('dianbo$flCache') || {};
+                                                            let fl = storage0.getMyVar('dianbo$筛选') || {};
                                                             fl[flkey] = itid;
-                                                            storage0.putMyVar('dianbo$flCache', fl);
+                                                            storage0.putMyVar('dianbo$筛选', fl);
                                                             refreshPage(true);
                                                             return "hiker://empty";
                                                         }, it.key, itit.v),
@@ -1204,7 +1204,7 @@ let parse = {
                                     }
                                 });
                             }
-                            storage0.putMyVar('dianbo$flCache', fl);
+                            //storage0.putMyVar('dianbo$筛选', fl);
                         }
                     }
                     

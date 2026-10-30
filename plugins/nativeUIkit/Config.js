@@ -10,13 +10,6 @@ function write(key, value) {
 function safe(value) {
   return encodeURIComponent(String(value)).replace(/%/g, "_");
 }
-function route(page, values) {
-  var url = "hiker://page/" + page + "#noLoading#?rule=" + title;
-  Object.keys(values || {}).forEach(function (key) {
-    if (key !== "rule") url += "&" + key + "=" + encodeURIComponent(String(values[key]));
-  });
-  return url;
-}
 function layout() {
   var value = read("layout", "banner");
   return ["banner", "landscape", "portrait"].indexOf(value) >= 0 ? value : "banner";
@@ -36,7 +29,6 @@ $.exports = {
   read: read,
   write: write,
   safe: safe,
-  route: route,
   layout: layout,
   style: style,
   dataset: dataset

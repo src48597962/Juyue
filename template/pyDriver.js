@@ -101,6 +101,54 @@ let parse = {
         }
         
         let d = [];
+
+
+        let ui = $.require("Api?rule=原生组件工坊");
+        let current = getMyVar("test.live.source", "simple_live");
+        let rows = ui.actionBar(
+            {
+            left: {
+                title: "当前：" + current,
+                icon: "https://psstatic.cdn.bcebos.com/basics/2025_wiseindex/wiseindex-logo_1756889417000.png",
+                url: "toast://当前选择：" + current
+            },
+            right: {
+                text: "切换源 ›",
+                url: $("#noLoading#").lazyRule(function () {
+                return $(["simple_live", "直播源A", "直播源B"], 1, "选择直播源").select(function () {
+                    if (input === getMyVar("test.live.source", "simple_live")) return "hiker://empty";
+                    putMyVar("test.live.source", input);
+                    refreshPage(false);
+                    return "hiker://empty";
+                });
+                })
+            },
+            longClick: [
+                {
+                title: "查看当前源",
+                js: $.toString(function () {
+                    return "toast://当前选择：" + getMyVar("test.live.source", "simple_live");
+                })
+                },
+                {
+                title: "重置为 simple_live",
+                js: $.toString(function () {
+                    putMyVar("test.live.source", "simple_live");
+                    refreshPage(false);
+                    return "hiker://empty";
+                })
+                }
+            ]
+            },
+            { iconShape: "circle", iconRadius: 8 }
+        );
+        log($.type(rows));
+        ui.mount(rows);
+
+
+
+
+
         d.push({
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + (pylists?'(' + pylists.length+')':''),

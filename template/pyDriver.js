@@ -109,7 +109,7 @@ let parse = {
             {
             left: {
                 title: "当前：" + current,
-                icon: "https://psstatic.cdn.bcebos.com/basics/2025_wiseindex/wiseindex-logo_1756889417000.png",
+                icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: "toast://当前选择：" + current
             },
             right: {

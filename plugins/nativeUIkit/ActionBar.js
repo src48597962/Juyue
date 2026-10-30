@@ -1,4 +1,4 @@
-
+// by:鬼佬的原生组件工坊
 var C = $.require("Config?rule=原生组件工坊");
 var Host = $.require("NativeCarousel?rule=原生组件工坊");
 var Pictures = $.require("CommentAvatar?rule=原生组件工坊");

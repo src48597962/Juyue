@@ -1136,7 +1136,7 @@ let parse = {
                                     col_type: 'scroll_button'
                                 })
                             }
-                            //putMyVar('dianbo$分类', cate_id);
+                            putMyVar('dianbo$分类', cate_id);
 
                             if (推荐.length > 0) {
                                 if (cate_id == 'tj') {
@@ -1199,8 +1199,9 @@ let parse = {
                                         })
                                     }
                                 });
+                                storage0.putMyVar('dianbo$筛选', fl);
                             }
-                            //storage0.putMyVar('dianbo$筛选', fl);
+                            
                         }
                     }
                     

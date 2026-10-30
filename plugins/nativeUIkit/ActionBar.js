@@ -2,6 +2,7 @@
 var C = $.require(codePath + "plugins/nativeUIkit/Config.js");
 var Host = $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js");
 var Pictures = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js");
+
 function text(value) {
     return typeof value === "string" ? value.replace(/^\s+|\s+$/g, "") : "";
 }
@@ -43,8 +44,10 @@ function settings(options) {
         return /^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(String(value || "")) ? String(value) : fallback;
     }
     return {
-        height: number(options.height, 64, 40, 120),
+        height: number(options.height, 64, 48, 120),
         inset: number(options.inset, 16, 0, 40),
+        leftHitPadding: number(options.leftHitPadding, 0, 0, 64),
+        rightHitPadding: number(options.rightHitPadding, 0, 0, 64),
         iconSize: number(options.iconSize, 32, 16, 56),
         iconShape: /^(circle|rounded|square)$/.test(options.iconShape) ? options.iconShape : "circle",
         iconRadius: number(options.iconRadius, 8, 0, 28),
@@ -78,7 +81,8 @@ function row(value, scope, options) {
     if (Array.isArray(value.longClick)) extra.longClick = value.longClick.slice();
     return [
         {
-            title: item.left.title || item.right.text,
+            // The adapter can draw this placeholder before the native mount UI task.
+            title: " ",
             col_type: "text_center_1",
             url: "hiker://empty",
             extra: extra
@@ -196,9 +200,13 @@ function create(context, spec, open, visible, longPress) {
     }
     function loadImage() {
         stopImage();
+        if (!item.left.icon || state.disposed || state.suspended) {
+            placeholder.setVisibility(0);
+            icon.setVisibility(8);
+            return;
+        }
         placeholder.setVisibility(0);
         icon.setVisibility(8);
-        if (!item.left.icon || state.disposed || state.suspended) return;
         var target = { width: dp(options.iconSize), height: dp(options.iconSize), maxPixels: 65536 };
         if (options.imageDecoder) target.decoderModule = options.imageDecoder;
         job = Pictures.load(item.left.icon, icon, placeholder, options.imageHeaders, target, {
@@ -217,21 +225,35 @@ function create(context, spec, open, visible, longPress) {
         var actionWidth = item.right.text
             ? Math.min(
                 Math.floor(available * 0.45),
-                Math.max(dp(48), Math.ceil(rightTarget.getPaint().measureText(item.right.text)) + dp(8))
+                Math.max(
+                    dp(48),
+                    Math.ceil(rightTarget.getPaint().measureText(item.right.text)) +
+                    dp(8 + options.rightHitPadding)
+                )
             )
             : 0;
-        rightTarget.setMaxWidth(Math.max(1, actionWidth));
+        // The trailing inset belongs to the button, not the inert root.
+        // Reserve the same visual width while making the outer edge clickable.
+        var edge = item.right.text ? dp(options.inset) : 0;
+        rightTarget.setPadding(dp(8 + options.rightHitPadding), 0, edge, 0);
+        rightTarget.setMinimumWidth(dp(48) + edge);
+        rightTarget.setMaxWidth(Math.max(1, actionWidth + edge));
+        leftTarget.setPadding(0, 0, dp(options.leftHitPadding), 0);
         var iconWidth = item.left.icon || item.left.iconText ? dp(options.iconSize + 10) : 0;
         var textWidth = Math.max(
             1,
-            available - actionWidth - (item.right.text ? dp(8) : 0) - iconWidth
+            available -
+            actionWidth -
+            (item.right.text ? dp(8) : 0) -
+            iconWidth -
+            dp(options.leftHitPadding)
         );
         title.setMaxWidth(textWidth);
         subtitle.setMaxWidth(textWidth);
         return dp(options.height);
     }
     function paint() {
-        root.setPadding(dp(options.inset), 0, dp(options.inset), 0);
+        root.setPadding(dp(options.inset), 0, item.right.text ? 0 : dp(options.inset), 0);
         root.setMinimumHeight(dp(options.height));
         root.setBackground(shape(options.background, 0));
         title.setText(item.left.title);
@@ -290,17 +312,21 @@ function create(context, spec, open, visible, longPress) {
             item = next;
             options = nextOptions;
             paint();
-            if (reload) loadImage();
+            if (reload) {
+                loadImage();
+            }
             return true;
         },
         suspend: function () {
             if (state.disposed || state.suspended) return;
             state.suspended = true;
-            stopImage();
+            // Keep the subscription and painted bitmap while a cached tab is parked.
+            // The real host may return before the next image frame; reloading here causes a gray flash.
         },
         resume: function () {
             if (state.disposed || !state.suspended) return;
             state.suspended = false;
+            if (job && (typeof job.state !== "function" || job.state() !== "error")) return;
             loadImage();
         },
         destroy: function () {
@@ -338,6 +364,7 @@ function demoButton(label) {
 $.exports = {
     apiVersion: 1,
     longPressVersion: 1,
+    hitPaddingVersion: 1,
     imageDecoderVersion: 1,
     normalize: normalize,
     row: row,

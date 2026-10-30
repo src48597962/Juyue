@@ -142,9 +142,8 @@ let parse = {
             },
             { iconShape: "circle", iconRadius: 8 }
         );
-        log($.type(rows));
+        d = d.concat(rows);
         ui.mount(rows);
-
 
 
 

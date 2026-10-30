@@ -1,4 +1,4 @@
-// by:鬼佬的原生组件工坊
+// by.旧巷陌人(鬼佬)的原生组件工坊
 var ns = "native.workshop.v1.";
 var title = "原生组件工坊";
 function read(key, fallback) {

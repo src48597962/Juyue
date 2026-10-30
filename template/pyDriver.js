@@ -440,7 +440,7 @@ let parse = {
                     sourceSet[input] = pyset;
                     juItemS.set('sourceSet', sourceSet);
 
-                    return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype, 'py文件重命名'], 1).select((pySource,sourceSet)=>{
+                    return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
                         let pyname = pySource.name;
                         let pyset = sourceSet[pyname] || {};
                         if(input.includes('播放')){
@@ -471,25 +471,6 @@ let parse = {
                                 juItemS.set('pySource', pySource);
                                 return "toast://" + pySource.name + ">类型设置为：" + input;
                             }, pySource, sourceSet, pyset)
-                        }else if(input.includes('重命名')){
-                            return $(pySource.name, '输入新的文件名称').input((pySource, sourceSet)=>{
-                                input = input.trim();
-                                if(input==''){
-                                    return 'hiker://empty';
-                                }
-                                let newurl = pySource.url.replace(pySource.name, input);
-                                writeFile('file://'+newurl, fetch('file://'+pySource.url));
-                                deleteFile('file://'+pySource.url);
-                                sourceSet[input] = sourceSet[pySource.name];
-                                delete sourceSet[pySource.name];
-                                juItemS.set('sourceSet', sourceSet);
-                                pySource.name = input;
-                                pySource.url = newurl;
-                                juItemS.set('pySource', pySource);
-                                clearMyVar('pylists');
-                                refreshPage(false);
-                                return "hiker://empty";
-                            }, pySource, sourceSet)
                         }
                     }, pySource, sourceSet, pyset)
                 }, pySource)
@@ -528,6 +509,29 @@ let parse = {
                     js: $.toString((pyurl) => {
                         return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
                     }, pyurl)
+                },{
+                    title: "重命名",
+                    js: $.toString((pySource) => {
+                        return $(pySource.name, '输入新的文件名称').input((pySource)=>{
+                            input = input.trim();
+                            if(input==''){
+                                return 'hiker://empty';
+                            }
+                            let newurl = pySource.url.replace(pySource.name, input);
+                            writeFile('file://'+newurl, fetch('file://'+pySource.url));
+                            deleteFile('file://'+pySource.url);
+                            let sourceSet = juItemS.get('sourceSet') || {};
+                            sourceSet[input] = sourceSet[pySource.name];
+                            delete sourceSet[pySource.name];
+                            juItemS.set('sourceSet', sourceSet);
+                            pySource.name = input;
+                            pySource.url = newurl;
+                            juItemS.set('pySource', pySource);
+                            clearMyVar('pylists');
+                            refreshPage(false);
+                            return "hiker://empty";
+                        }, pySource)
+                    }, pySource)
                 }]
             },
             { iconShape: "circle", iconSize: 26, height: 0, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }

@@ -19,6 +19,17 @@ function richText(value, options) {
     var opts = prepare(options);
     return component("RichText").row(value, opts.scope, opts);
 }
+function markdown(value, options) {
+    var opts = prepare(options);
+    return component("Markdown").row(value, opts.scope, opts);
+}
+function markdownFile(source, options) {
+    var opts = prepare(options);
+    return component("Markdown").fileRow(source, opts.scope, opts);
+}
+function readMarkdown(source, options) {
+    return component("Markdown").read(source, options);
+}
 function searchBox(options) {
     var opts = prepare(options);
     return component("NativeSearchBox").row(opts, opts.scope);
@@ -104,7 +115,7 @@ function comments(values, options) {
     return component("CommentList").row(values, value.scope, value);
 }
 
-/** 用户列表：返回一张白色圆角卡片，包含头像、昵称、数量、时间和关注按钮。 */
+/** 用户列表：白色圆角卡片，超过8人自动分块为可回收行，保留头像、昵称、数量、时间和关注按钮。 */
 function users(values, options) {
     var value = prepare(options);
     return component("UserList").row(values, value.scope, value);
@@ -160,6 +171,8 @@ function mountRows(rows) {
             ticket = component("TopicGrid").mount(row);
         else if (extra.nativeView && extra.nativeView.kind === "movieDetailHeader")
             ticket = component("MovieDetailHeader").mount(row);
+        else if (extra.nativeView && extra.nativeView.kind === "markdown")
+            ticket = component("Markdown").mount(row);
         else if (extra.nativeView && extra.nativeView.kind === "richText")
             ticket = component("RichText").mount(row);
         else if (extra.nativeView && extra.nativeView.kind === "newsList")
@@ -238,6 +251,8 @@ function show(kind, values, options) {
     if (kind === "actionBar") widget = actionBar;
     if (kind === "movieDetailHeader") widget = movieDetailHeader;
     if (kind === "richText") widget = richText;
+    if (kind === "markdown") widget = markdown;
+    if (kind === "markdownFile") widget = markdownFile;
     if (kind === "timeline") widget = timeline;
     if (kind === "featureCards") widget = featureCards;
     if (!widget) return [];
@@ -256,6 +271,8 @@ function demoButton(kind, label) {
     if (kind === "actionBar") return component("ActionBar").demoButton(label);
     if (kind === "movieDetailHeader") return component("MovieDetailHeader").demoButton(label);
     if (kind === "richText") return component("RichText").demoButton(label);
+    if (kind === "markdown" || kind === "markdownFile")
+        return component("Markdown").demoButton(label);
     if (kind === "searchBox") return component("NativeSearchBox").demoButton(label);
     if (kind === "captchaDialog") return component("CaptchaDialog").demoButton(label);
     if (kind === "brandCategories") return component("BrandCategories").demoButton(label);
@@ -293,6 +310,9 @@ $.exports = {
     actionBar: actionBar,
     movieDetailHeader: movieDetailHeader,
     richText: richText,
+    markdown: markdown,
+    markdownFile: markdownFile,
+    readMarkdown: readMarkdown,
     searchBox: searchBox,
     captchaDialog: captchaDialog,
     closeCaptchaDialog: closeCaptchaDialog,

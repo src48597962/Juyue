@@ -110,6 +110,13 @@ let parse = {
                 title: (pyname||'选择py源') + (pylists?'「' + pylists.length+'」':''),
                 icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: $('#noLoading#').lazyRule(() => {
+                    let nowtime = Date.now();
+                    let oldtime = parseInt(getMyVar('切源时间','0'))||0;
+                    if(nowtime < (oldtime + 1 * 1000)){
+                        return 'hiker://empty';//节流
+                    }
+                    putMyVar('切源时间', nowtime + '');
+                    
                     let parse = $.require("jiekou").parse();
                     let sourceList = parse._getpylist();
                     let tmpList = [];
@@ -534,7 +541,7 @@ let parse = {
                     }, pyurl)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:10, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:24, rightHitPadding: 40, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

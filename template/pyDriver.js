@@ -108,12 +108,12 @@ let parse = {
         let rows = ui.actionBar(
             {
             left: {
-                title: "当前：" + current,
+                title: (pyname?'当前:'+pyname:'选择py源'),
                 icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: "toast://当前选择：" + current
             },
             right: {
-                text: "切换源 ›",
+                text: '点击更换' + (pylists?'(' + pylists.length+')':''),
                 url: $("#noLoading#").lazyRule(function () {
                 return $(["simple_live", "直播源A", "直播源B"], 1, "选择直播源").select(function () {
                     if (input === getMyVar("test.live.source", "simple_live")) return "hiker://empty";

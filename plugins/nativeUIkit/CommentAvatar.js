@@ -51,10 +51,170 @@ function applyDecoder(input, url, headers, module) {
         if (output !== input) input.close();
     }
 }
-function decode(url, headers, sampleSize, requestJob) {
+// Persist encoded image bytes after transport decoding, never a re-encoded Bitmap.
+// Context is supplied by PostCard; other callers keep the existing in-memory contract.
+var postDiskLocks = null,
+    postDiskTrimAt = 0;
+function initPostDiskLocks() {
+    if (!postDiskLocks) {
+        postDiskLocks = [];
+        for (var stripe = 0; stripe < 16; stripe++)
+            postDiskLocks.push(new java.util.concurrent.locks.ReentrantLock());
+    }
+}
+function postDiskFile(context, url, headers, target, requestJob, openInput) {
+    if (!context || typeof context.getCacheDir !== "function" || !/^https?:\/\//i.test(url))
+        return null;
+    var decoder = target && target.decoderModule ? String(target.decoderModule) : "";
+    var revision = "";
+    if (decoder) {
+        var adapter = $.require(decoder);
+        revision = JSON.stringify([
+            String(adapter.cacheVersion || adapter.imageDecoderVersion || ""),
+            String(adapter.decode || ""),
+            String(adapter.streamDecoder || "")
+        ]);
+    }
+    var identity = JSON.stringify([
+        "post-bytes-v1",
+        String(url),
+        decoder,
+        revision,
+        Object.keys(headers || {})
+            .sort()
+            .map(function (name) {
+                return [name, String(headers[name])];
+            })
+    ]);
+    var digest = java.security.MessageDigest.getInstance("SHA-256").digest(
+        new java.lang.String(identity).getBytes("UTF-8")
+    );
+    var key = "";
+    for (var k = 0; k < digest.length; k++) key += ("0" + (digest[k] & 255).toString(16)).slice(-2);
+    initPostDiskLocks();
+    var lock = postDiskLocks[parseInt(key.charAt(0), 16)];
+    lock.lock();
+    var input = null,
+        output = null,
+        temporary = null;
+    function cancelled() {
+        if (requestJob && requestJob.cancelled) throw new Error("Image request cancelled");
+    }
+    function valid(file) {
+        if (!file.isFile() || file.length() <= 0 || file.length() > 16 * 1024 * 1024) return false;
+        var stream = new java.io.FileInputStream(file),
+            magic = [];
+        try {
+            for (var n = 0; n < 12; n++) magic.push(stream.read());
+        } finally {
+            stream.close();
+        }
+        var image =
+            (magic[0] === 255 && magic[1] === 216 && magic[2] === 255) ||
+            (magic[0] === 137 && magic[1] === 80 && magic[2] === 78 && magic[3] === 71) ||
+            (magic[0] === 71 && magic[1] === 73 && magic[2] === 70 && magic[3] === 56) ||
+            (magic[0] === 82 &&
+                magic[1] === 73 &&
+                magic[2] === 70 &&
+                magic[3] === 70 &&
+                magic[8] === 87 &&
+                magic[9] === 69 &&
+                magic[10] === 66 &&
+                magic[11] === 80);
+        if (!image) return false;
+        var bounds = new android.graphics.BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        android.graphics.BitmapFactory.decodeFile(String(file.getAbsolutePath()), bounds);
+        return bounds.outWidth > 0 && bounds.outHeight > 0;
+    }
+    function trim(folder, now, force) {
+        if (!force && now - postDiskTrimAt < 60000) return;
+        postDiskTrimAt = now;
+        var files = folder.listFiles(),
+            entries = [],
+            bytes = 0;
+        for (var i = 0; files && i < files.length; i++) {
+            var entry = files[i],
+                name = String(entry.getName()),
+                age = now - Number(entry.lastModified());
+            if (/\.part$/.test(name)) {
+                if (age > 3600000) entry.delete();
+                continue;
+            }
+            if (!/^[a-f0-9]{64}\.image$/.test(name)) continue;
+            if (age > 86400000 || entry.length() <= 0 || entry.length() > 16 * 1024 * 1024) {
+                entry.delete();
+                continue;
+            }
+            entries.push(entry);
+            bytes += Number(entry.length());
+        }
+        entries.sort(function (a, b) {
+            return a.lastModified() - b.lastModified();
+        });
+        for (
+            var j = 0;
+            j < entries.length && (bytes > 64 * 1024 * 1024 || entries.length - j > 256);
+            j++
+        ) {
+            var old = entries[j],
+                size = Number(old.length());
+            if (old.delete()) bytes -= size;
+        }
+    }
+    try {
+        cancelled();
+        var folder = new java.io.File(context.getCacheDir(), "hiker-post-images-v1");
+        if (!folder.isDirectory() && !folder.mkdirs()) throw new Error("Post image cache directory");
+        var file = new java.io.File(folder, key + ".image");
+        var now = java.lang.System.currentTimeMillis();
+        // A fixed lifetime forces refresh after a day, independent of hit frequency.
+        if (file.isFile() && now - Number(file.lastModified()) <= 86400000 && valid(file)) {
+            trim(folder, now, false);
+            return file;
+        }
+        if (file.exists()) file.delete();
+        input = openInput();
+        temporary = new java.io.File(folder, key + "." + java.lang.System.nanoTime() + ".part");
+        output = new java.io.FileOutputStream(temporary);
+        var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 16384),
+            length,
+            total = 0;
+        while ((length = input.read(buffer)) !== -1) {
+            cancelled();
+            total += Number(length);
+            if (total > 16 * 1024 * 1024) throw new Error("Post image byte limit");
+            output.write(buffer, 0, length);
+        }
+        output.close();
+        output = null;
+        input.close();
+        input = null;
+        cancelled();
+        if (!valid(temporary)) throw new Error("Post image payload invalid");
+        if (!temporary.renameTo(file)) throw new Error("Post image cache commit");
+        temporary = null;
+        trim(folder, now, true);
+        return file;
+    } finally {
+        try {
+            if (input) input.close();
+        } finally {
+            try {
+                if (output) output.close();
+            } finally {
+                if (temporary) temporary.delete();
+                lock.unlock();
+            }
+        }
+    }
+}
+
+function decode(url, headers, sampleSize, requestJob, diskContext) {
     var conn = null,
         input = null,
-        decoded = null;
+        decoded = null,
+        diskFile = null;
     var target = sampleSize && typeof sampleSize === "object" ? sampleSize : null;
     var adaptive = target && !target.sampleSize;
     function openInput() {
@@ -126,7 +286,25 @@ function decode(url, headers, sampleSize, requestJob) {
                 decoded = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             } else decoded = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         } else {
-            input = openInput();
+            if (diskContext && /^https?:\/\//i.test(String(url))) {
+                try {
+                    diskFile = postDiskFile(diskContext, url, headers, target, requestJob, openInput);
+                } catch (cacheError) {
+                    if (requestJob && requestJob.cancelled) return null;
+                    if (input) {
+                        input.close();
+                        input = null;
+                    }
+                    if (conn) {
+                        conn.disconnect();
+                        conn = null;
+                    }
+                    // Cache storage is optional; retain the prior direct-stream path if storage fails.
+                }
+            }
+            input = diskFile
+                ? new java.io.BufferedInputStream(new java.io.FileInputStream(diskFile), 65536)
+                : openInput();
             if (adaptive) {
                 // Read dimensions without allocating pixels, then decode the same buffered response.
                 input.mark(1024 * 1024);
@@ -139,10 +317,20 @@ function decode(url, headers, sampleSize, requestJob) {
                 } catch (resetError) {
                     input.close();
                     if (conn && typeof conn.disconnect === "function") conn.disconnect();
-                    input = openInput();
+                    input = diskFile
+                        ? new java.io.BufferedInputStream(new java.io.FileInputStream(diskFile), 65536)
+                        : openInput();
                 }
             }
             if (requestJob && requestJob.cancelled) return null;
+            decoded = android.graphics.BitmapFactory.decodeStream(input, null, options);
+        }
+        // A truncated cached body can pass dimensions but fail full decoding. Drop it and retry once.
+        if (!decoded && diskFile && (!requestJob || !requestJob.cancelled)) {
+            diskFile.delete();
+            if (input) input.close();
+            input = openInput();
+            options.inJustDecodeBounds = false;
             decoded = android.graphics.BitmapFactory.decodeStream(input, null, options);
         }
     } catch (error) {
@@ -324,7 +512,9 @@ var postPool = null,
     postSubscribers = 0,
     postPending = {},
     postCache = [],
-    postBytes = 0;
+    postBytes = 0,
+    postParkBytes = 0,
+    postParkEntries = 0;
 function discardPost(entry) {
     if (!entry || entry.cached || entry.refs) return;
     var bitmap = entry.bitmap;
@@ -372,10 +562,14 @@ function postCacheInfo() {
         bytes: postBytes,
         pending: Object.keys(postPending).length,
         owners: postOwners,
-        subscribers: postSubscribers
+        subscribers: postSubscribers,
+        parkedBytes: postParkBytes,
+        parkedEntries: postParkEntries
     };
 }
-function cachedPost(url, image, fallback, headers, sampleSize, notify) {
+function cachedPost(url, image, fallback, headers, sampleSize, notify, diskContext) {
+    // Subscriptions are created on the UI thread; publish locks before any workers start.
+    if (diskContext && typeof diskContext.getCacheDir === "function") initPostDiskLocks();
     var target =
         sampleSize && typeof sampleSize === "object"
             ? {
@@ -413,7 +607,8 @@ function cachedPost(url, image, fallback, headers, sampleSize, notify) {
         released: false,
         status: "pending"
     },
-        job = null;
+        job = null,
+        parkedEntry = null;
     postSubscribers++;
     function state(value) {
         subscriber.status = value;
@@ -455,7 +650,7 @@ function cachedPost(url, image, fallback, headers, sampleSize, notify) {
             var requestJob = job;
             requestJob.task = runnable(function () {
                 if (requestJob.cancelled) return;
-                var bitmap = decode(url, requestHeaders, target, requestJob);
+                var bitmap = decode(url, requestHeaders, target, requestJob, diskContext);
                 postHandler.post(
                     runnable(function () {
                         if (requestJob.cancelled || postPending[key] !== requestJob) {
@@ -498,8 +693,37 @@ function cachedPost(url, image, fallback, headers, sampleSize, notify) {
         }
         return true;
     }
+    function unpark() {
+        if (!parkedEntry) return;
+        parkedEntry.parkRefs--;
+        if (!parkedEntry.parkRefs) {
+            postParkBytes -= parkedEntry.bytes;
+            postParkEntries--;
+        }
+        parkedEntry = null;
+    }
     subscribe();
     return {
+        // Retained hidden-tab pixels have a separate aggregate bound, not one budget per card.
+        park: function () {
+            if (subscriber.released || subscriber.status !== "ready" || !subscriber.entry) return false;
+            if (parkedEntry) return true;
+            var entry = subscriber.entry;
+            if (
+                !entry.parkRefs &&
+                (postParkEntries >= 64 || postParkBytes + entry.bytes > 8 * 1024 * 1024)
+            )
+                return false;
+            if (!entry.parkRefs) {
+                entry.parkRefs = 0;
+                postParkBytes += entry.bytes;
+                postParkEntries++;
+            }
+            entry.parkRefs++;
+            parkedEntry = entry;
+            return true;
+        },
+        unpark: unpark,
         state: function () {
             return subscriber.status;
         },
@@ -508,6 +732,7 @@ function cachedPost(url, image, fallback, headers, sampleSize, notify) {
         },
         destroy: function () {
             if (subscriber.released) return;
+            unpark();
             subscriber.released = true;
             subscriber.status = "released";
             subscriber.notify = null;
@@ -535,7 +760,7 @@ function load(url, image, fallback, headers, sampleSize, cacheIcon, notify) {
     if (!/^(https?:\/\/|file:\/\/|data:image\/(png|jpeg|webp|gif);base64,)/.test(String(url || "")))
         return { destroy: function () { } };
     if (cacheIcon && cacheIcon.post)
-        return cachedPost(url, image, fallback, headers, sampleSize, notify);
+        return cachedPost(url, image, fallback, headers, sampleSize, notify, cacheIcon.context);
     if (cacheIcon) return cachedIcon(url, image, fallback, headers, sampleSize, notify);
     if (!pool) pool = java.util.concurrent.Executors.newFixedThreadPool(2);
     owners++;
@@ -601,3 +826,4 @@ $.exports = {
     releasePosts: releasePosts,
     postCacheInfo: postCacheInfo
 };
+

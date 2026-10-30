@@ -107,7 +107,7 @@ let parse = {
         let rows = ui.actionBar(
             {
             left: {
-                title: (pyname?'当前：'+pyname:'选择py源') + (pylists?'「' + pylists.length+'」':''),
+                title: (pyname?'当前:'+pyname:'选择py源') + (pylists?'「' + pylists.length+'」':''),
                 icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: $('#noLoading#').lazyRule(() => {
                     let parse = $.require("jiekou").parse();
@@ -431,31 +431,104 @@ let parse = {
             },
             right: {
                 text: '设置',
-                url: $("#noLoading#").lazyRule(function () {
-                return $(["simple_live", "直播源A", "直播源B"], 1, "选择直播源").select(function () {
-                    if (input === getMyVar("test.live.source", "simple_live")) return "hiker://empty";
-                    putMyVar("test.live.source", input);
-                    refreshPage(false);
-                    return "hiker://empty";
-                });
-                })
+                url: $('#noLoading#').lazyRule((pySource) => {
+                    let sourceSet = juItemS.get('sourceSet') || {};
+                    let pyset = sourceSet[pySource.name] || {};
+                    let isyiparse = pyset['yiparse'] || 0;
+                    let stype = pyset['type'] || pySource.type || '未指定';
+
+                    sourceSet[input] = pyset;
+                    juItemS.set('sourceSet', sourceSet);
+
+                    return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype, 'py文件重命名'], 1).select((pySource,sourceSet)=>{
+                        let pyname = pySource.name;
+                        let pyset = sourceSet[pyname] || {};
+                        if(input.includes('播放')){
+                            let sm;
+                            let isyiparse = pyset['yiparse'] || 0;
+                            if(isyiparse){
+                                delete pyset['yiparse'];
+                                sm = '二级播放';
+                            }else{
+                                pyset['yiparse'] = 1;
+                                sm = '一级播放';
+                            }
+                            sourceSet[pyname] = pyset;
+                            juItemS.set('sourceSet', sourceSet);
+                            refreshPage(false);
+                            return "toast://" + pyname + ">已切换为：" + sm;
+                        }else if(input.includes('类型')){
+                            return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pySource, sourceSet, pyset)=>{
+                                if(input=='未指定'){
+                                    delete pyset['type'];
+                                    delete pySource['type'];
+                                }else{
+                                    pyset['type'] = input;
+                                    pySource.type = input;
+                                }
+                                sourceSet[pySource.name] = pyset;
+                                juItemS.set('sourceSet', sourceSet);
+                                juItemS.set('pySource', pySource);
+                                return "toast://" + pySource.name + ">类型设置为：" + input;
+                            }, pySource, sourceSet, pyset)
+                        }else if(input.includes('重命名')){
+                            return $(pySource.name, '输入新的文件名称').input((pySource, sourceSet)=>{
+                                input = input.trim();
+                                if(input==''){
+                                    return 'hiker://empty';
+                                }
+                                let newurl = pySource.url.replace(pySource.name, input);
+                                writeFile('file://'+newurl, fetch('file://'+pySource.url));
+                                deleteFile('file://'+pySource.url);
+                                sourceSet[input] = sourceSet[pySource.name];
+                                delete sourceSet[pySource.name];
+                                juItemS.set('sourceSet', sourceSet);
+                                pySource.name = input;
+                                pySource.url = newurl;
+                                juItemS.set('pySource', pySource);
+                                clearMyVar('pylists');
+                                refreshPage(false);
+                                return "hiker://empty";
+                            }, pySource, sourceSet)
+                        }
+                    }, pySource, sourceSet, pyset)
+                }, pySource)
             },
-            longClick: [
-                {
-                title: "查看当前源",
-                js: $.toString(function () {
-                    return "toast://当前选择：" + getMyVar("test.live.source", "simple_live");
-                })
-                },
-                {
-                title: "重置为 simple_live",
-                js: $.toString(function () {
-                    putMyVar("test.live.source", "simple_live");
-                    refreshPage(false);
-                    return "hiker://empty";
-                })
-                }
-            ]
+            longClick: [{
+                    title: "删除",
+                    js: $.toString((pyurl, pyname) => {
+                        return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
+                            deleteFile('file://' + pyurl);
+                            let pylists = storage0.getMyVar('pylists');
+                            pylists = pylists.filter(it=>it.url!=pyurl);
+                            storage0.putMyVar('pylists', pylists);
+                            juItemS.clear('pySource');
+                            let sourceSet = juItemS.get('sourceSet') || {};
+                            delete sourceSet[pyname];
+                            juItemS.set('sourceSet', sourceSet);
+                            
+                            refreshPage(false);
+                            return "toast://已删除当前py源";
+                        }, pyurl, pyname)
+                    }, pyurl, pyname)
+                },{
+                    title: "重载",
+                    js: $.toString((pyurl) => {
+                        GM.clear(pyurl);
+                        refreshPage(false);
+                        return "toast://已重新加载当前py源文件";
+                    }, pyurl)
+                },{
+                    title: "分享",
+                    js: $.toString((pyurl) => {
+                        return 'share://file://'+ pyurl;
+                    }, pyurl)
+                },{
+                    title: "编辑",
+                    js: $.toString((pyurl) => {
+                        return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
+                    }, pyurl)
+                }]
             },
             { iconShape: "circle", iconSize: 26, height: 0, inset: 9, namespace: MY_RULE.title, scope: 'pymenu' }
         );
@@ -463,8 +536,8 @@ let parse = {
         ui.mount(rows);
 
 
-
-
+        
+        /*
         d.push({
             title: (pyname?'当前:'+pyname:'选择py源'),
             desc: '点击更换' + (pylists?'(' + pylists.length+')':''),
@@ -890,7 +963,7 @@ let parse = {
                     }, pySource)
                 }]
             }
-        })
+        })*/
         return d;
     },
     主页: function(){

@@ -493,16 +493,16 @@ let parse = {
                         }, pyurl, pyname)
                     }, pyurl, pyname)
                 },{
+                    title: "分享",
+                    js: $.toString((pyurl) => {
+                        return 'share://file://'+ pyurl;
+                    }, pyurl)
+                },{
                     title: "重载",
                     js: $.toString((pyurl) => {
                         GM.clear(pyurl);
                         refreshPage(false);
                         return "toast://已重新加载当前py源文件";
-                    }, pyurl)
-                },{
-                    title: "分享",
-                    js: $.toString((pyurl) => {
-                        return 'share://file://'+ pyurl;
                     }, pyurl)
                 },{
                     title: "编辑",
@@ -534,7 +534,7 @@ let parse = {
                     }, pySource)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:34, rightHitPadding: 60, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:10, rightHitPadding: 10, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

@@ -1242,11 +1242,13 @@ let parse = {
             return playUrl;
         }
         function folderlistF(vod_id, _vodlistsF){
+            /*
             return $('').lazyRule((url) => {
                 putMyVar('folderid', url);
                 refreshPage(false);
                 return 'hiker://empty';
             }, vod_id)
+            */
             return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((url, _vodlistsF) => {
                 let pySource = MY_PARAMS.pySource;
                 let pyurl = pySource.url;

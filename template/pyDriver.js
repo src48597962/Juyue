@@ -140,7 +140,7 @@ let parse = {
                 }
             ]
             },
-            { iconShape: "circle", iconRadius: 8 }
+            { iconShape: "circle", iconSize: 26 }
         );
         d = d.concat(rows);
         ui.mount(rows);

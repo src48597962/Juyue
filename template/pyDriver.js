@@ -103,8 +103,7 @@ let parse = {
         let d = [];
 
 
-        //let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
-        let ui = $.require("Api?rule=原生组件工坊");
+        let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
         let current = getMyVar("test.live.source", "simple_live");
         let rows = ui.actionBar(
             {
@@ -141,7 +140,7 @@ let parse = {
                 }
             ]
             },
-            { iconShape: "circle", iconSize: 28, height: 40 }
+            { iconShape: "circle", iconSize: 26, height: 0, inset: 8, namespace: MY_RULE.title, scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

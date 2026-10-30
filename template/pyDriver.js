@@ -430,7 +430,7 @@ let parse = {
                 })
             },
             right: {
-                text: '⚙️设置\t\t',
+                text: '⚙️设置 ',
                 url: $('#noLoading#').lazyRule((pySource) => {
                     let sourceSet = juItemS.get('sourceSet') || {};
                     let pyset = sourceSet[pySource.name] || {};
@@ -530,7 +530,7 @@ let parse = {
                     }, pyurl)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, inset: 12, namespace: MY_RULE.title, scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, inset: 15, namespace: MY_RULE.title, scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

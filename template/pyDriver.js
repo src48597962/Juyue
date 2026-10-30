@@ -107,7 +107,7 @@ let parse = {
         let rows = ui.actionBar(
             {
             left: {
-                title: (pyname?'当前:'+pyname:'选择py源') + (pylists?'「' + pylists.length+'」':''),
+                title: (pyname||'选择py源') + (pylists?'「' + pylists.length+'」':''),
                 icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
                 url: $('#noLoading#').lazyRule(() => {
                     let parse = $.require("jiekou").parse();

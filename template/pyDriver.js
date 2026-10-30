@@ -140,7 +140,7 @@ let parse = {
                 }
             ]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, inset: 8, namespace: MY_RULE.title, scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, inset: 9, namespace: MY_RULE.title, scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

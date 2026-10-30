@@ -430,7 +430,7 @@ let parse = {
                 })
             },
             right: {
-                text: '⚙️设置',
+                text: '⚙️设置\t\t',
                 url: $('#noLoading#').lazyRule((pySource) => {
                     let sourceSet = juItemS.get('sourceSet') || {};
                     let pyset = sourceSet[pySource.name] || {};

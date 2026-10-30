@@ -1,4 +1,4 @@
-// by:旧巷陌人(鬼佬)的原生组件工坊
+// by.旧巷陌人(鬼佬)的原生组件工坊
 var components = {};
 function component(name) {
     if (!components[name]) {

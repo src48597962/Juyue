@@ -498,19 +498,7 @@ let parse = {
                         return 'share://file://'+ pyurl;
                     }, pyurl)
                 },{
-                    title: "重载",
-                    js: $.toString((pyurl) => {
-                        GM.clear(pyurl);
-                        refreshPage(false);
-                        return "toast://已重新加载当前py源文件";
-                    }, pyurl)
-                },{
-                    title: "编辑",
-                    js: $.toString((pyurl) => {
-                        return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
-                    }, pyurl)
-                },{
-                    title: "重命名",
+                    title: "改名",
                     js: $.toString((pySource) => {
                         return $(pySource.name, '输入新的文件名称').input((pySource)=>{
                             input = input.trim();
@@ -532,9 +520,21 @@ let parse = {
                             return "hiker://empty";
                         }, pySource)
                     }, pySource)
+                },{
+                    title: "重载",
+                    js: $.toString((pyurl) => {
+                        GM.clear(pyurl);
+                        refreshPage(false);
+                        return "toast://已重新加载当前py源文件";
+                    }, pyurl)
+                },{
+                    title: "编辑",
+                    js: $.toString((pyurl) => {
+                        return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
+                    }, pyurl)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:50, rightHitPadding: 50, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:30, rightHitPadding: 10, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

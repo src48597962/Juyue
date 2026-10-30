@@ -1,5 +1,5 @@
 // by:鬼佬的原生组件工坊
-var C = $.require("Config?rule=原生组件工坊");
+var C = $.require(codePath + "plugins/nativeUIkit/Config.js");
 var tokenKey = C.ns + "native.carousel.token.v1";
 function normalize(values, options) {
     var style = (options || {}).style || "cards";
@@ -186,7 +186,7 @@ function create(context, spec, open, visible) {
                     if (url.indexOf("data:image/png;base64,") === 0) {
                         var bytes = android.util.Base64.decode(url.slice(url.indexOf(",") + 1), 0);
                         if (spec.imageDecoder) {
-                            input = $.require("CommentAvatar?rule=原生组件工坊").applyDecoder(
+                            input = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js").applyDecoder(
                                 new java.io.ByteArrayInputStream(bytes),
                                 url,
                                 spec.imageHeaders,
@@ -225,7 +225,7 @@ function create(context, spec, open, visible) {
                             if (code !== 200 && code !== 206) throw new Error("Poster HTTP " + code);
                             input = conn.getInputStream();
                             if (spec.imageDecoder)
-                                input = $.require("CommentAvatar?rule=原生组件工坊").applyDecoder(
+                                input = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js").applyDecoder(
                                     input,
                                     target,
                                     spec.imageHeaders,
@@ -554,7 +554,7 @@ function registerTicket(activeKey, ticket) {
             $.toString(function (key) {
                 var tickets = JSON.parse(getMyVar(key, "") || "{}");
                 putMyVar(key, "");
-                var api = $.require("NativeCarousel?rule=原生组件工坊");
+                var api = $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js");
                 Object.keys(tickets).forEach(function (activeKey) {
                     api.release(tickets[activeKey]);
                 });

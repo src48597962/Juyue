@@ -534,7 +534,7 @@ let parse = {
                     }, pySource)
                 }]
             },
-            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:10, rightHitPadding: 10, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            { iconShape: "circle", iconSize: 26, height: 0, leftHitPadding:50, rightHitPadding: 50, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
         );
         d = d.concat(rows);
         ui.mount(rows);

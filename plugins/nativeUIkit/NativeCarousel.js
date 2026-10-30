@@ -1,4 +1,4 @@
-// by:鬼佬的原生组件工坊
+// by.旧巷陌人(鬼佬)的原生组件工坊
 var C = $.require(codePath + "plugins/nativeUIkit/Config.js");
 var tokenKey = C.ns + "native.carousel.token.v1";
 function normalize(values, options) {

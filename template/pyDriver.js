@@ -1142,7 +1142,7 @@ let parse = {
                                 if (cate_id == 'tj') {
                                     vodlists = 推荐;//当前分类为推荐，取推荐列表
                                 }
-                                分类.push({type_id: 'tj', type_name: '推荐'});
+                                分类.unshift({type_id: 'tj', type_name: '推荐'});
                             }
 
                             分类.forEach((it, i) => {

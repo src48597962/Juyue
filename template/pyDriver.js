@@ -720,7 +720,7 @@ let parse = {
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                             if(isshowlog){
-                                log('获取homeContent>' + home);
+                                log('获取homeContent>' + JSON.stringify(home));
                             }
                             分类 = home['class'] || [];
                             筛选 = home['filters'];

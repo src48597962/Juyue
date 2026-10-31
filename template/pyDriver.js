@@ -705,7 +705,7 @@ let parse = {
                     let fl = storage0.getMyVar('dianbo$筛选') || {};
                     let vodlists = [];
                     let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-                    let isshowlog = juItemS.get('showlog ', 0);
+                    let isshowlog = juItemS.get('showlog', 0);
                     
                     if(page==1){
                         let 分类 = [];
@@ -917,7 +917,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
-        let isshowlog = juItemS.get('showlog ', 0);
+        let isshowlog = juItemS.get('showlog', 0);
         if(isshowlog){
             log('获取detailContent>' + JSON.stringify(html));
         }
@@ -968,7 +968,7 @@ let parse = {
             return lines.join("\n");
         }
         
-        let vod_id = json.vod_id||'';
+        let vod_id = json.vod_id || '';
         return {
             detail1: "‘‘’’<font color=#FA7298>"+extractActorText(detail1)+"</font>",
             detail2: "‘‘’’<font color=#336633>"+extractActorText(detail2)+"</font>",
@@ -976,7 +976,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: vod_id.startsWith('book:')?'小说':vod_id.startsWith('audio:')?'音频':pySource.type,
+            //type: vod_id.startsWith('book:')?'小说':vod_id.startsWith('audio:')?'音频':pySource.type,
             lazyData: pySource
         }  
     },
@@ -1009,7 +1009,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        let isshowlog = juItemS.get('showlog ', 0);
+        let isshowlog = juItemS.get('showlog', 0);
         if(isshowlog){
             log('获取playerContent>' + JSON.stringify(play));
         }

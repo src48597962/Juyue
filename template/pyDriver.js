@@ -490,19 +490,19 @@ let parse = {
                                 sm = '主页显示列表';
                             }
                             refreshPage(false);
-                            return "toast://" + pyname + ">已切换为：" + sm;
+                            return "toast://目录显示>已切换为：" + sm;
                         }else if(input.includes('日志')){
                             let sm;
                             let isshowlog = juItemS.get('showlog ', 0);
                             if(isshowlog){
                                 juItemS.clear('showlog ');
-                                sm = '关闭调试请求日志';
+                                sm = '关闭';
                             }else{
                                 juItemS.set('showlog ', 1);
-                                sm = '显示调试请求日志';
+                                sm = '打开';
                             }
                             refreshPage(false);
-                            return "toast://" + pyname + ">已切换为：" + sm;
+                            return "toast://请求日志>已切换为：" + sm;
                         }
                         
                     }, pySource, sourceSet)
@@ -720,7 +720,7 @@ let parse = {
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                             if(isshowlog){
-                                log('获取homeContent>' + home.toString());
+                                log('获取homeContent>' + home);
                             }
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
@@ -729,7 +729,7 @@ let parse = {
                                 if(推荐.length==0){
                                     let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
                                     if(isshowlog){
-                                        log('获取homeVideoContent>' + homeVideo.toString());
+                                        log('获取homeVideoContent>' + homeVideo);
                                     }
                                     推荐 = homeVideo['list'] || [];
                                 }
@@ -827,7 +827,7 @@ let parse = {
                         fl.typeid = fl.folderid || cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         if(isshowlog){
-                            log('获取categoryContent>' + json.toString());
+                            log('获取categoryContent>' + json);
                         }
                         vodlists = json.list || [];
                     }

@@ -976,7 +976,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            //type: vod_id.startsWith('book:')?'小说':vod_id.startsWith('audio:')?'音频':pySource.type,
+            type: vod_id.startsWith('book:')?'小说':vod_id.startsWith('audio:')?'音频':pySource.type,
             lazyData: pySource
         }  
     },

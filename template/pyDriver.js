@@ -448,7 +448,7 @@ let parse = {
                     sourceSet[input] = pyset;
                     juItemS.set('sourceSet', sourceSet);
 
-                    return $(['是否一级播放：' + (isyiparse?'是':'否'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
+                    return $(['当前源播放：' + (isyiparse?'一级':'二级'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
                         let pyname = pySource.name;
                         let pyset = sourceSet[pyname] || {};
                         if(input.includes('播放')){
@@ -792,7 +792,7 @@ let parse = {
                     }
                     
                     if (cate_id!="tj") {
-                        fl.typeid = getMyVar('folderid') || cate_id;
+                        fl.typeid = fl.folderid || cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         vodlists = json.list || [];
                     }
@@ -809,10 +809,7 @@ let parse = {
         return d;
     },
     _vodlistsF: function(pySource, vodlists){
-        let sourceSet = juItemS.get('sourceSet') || {};
-        let pyset = sourceSet[pySource.name] || {};
-        let isyiparse = pyset['yiparse'] || 0;
-
+        // 一级播放解析
         function yiparseF(url, MY_PARAMS) {
             let parse = $.require("jiekou").parse();
             eval("let 二级获取 = " + parse['二级'])
@@ -828,25 +825,34 @@ let parse = {
             }
             return playUrl;
         }
-        function folderlistF(vod_id, _vodlistsF){
-            /*
-            return $('').lazyRule((url) => {
-                putMyVar('folderid', url);
-                refreshPage(false);
-                return 'hiker://empty';
-            }, vod_id)
-            */
-            return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((url, _vodlistsF) => {
-                let pySource = MY_PARAMS.pySource;
-                let pyurl = pySource.url;
-                let cate_id = url;
-                let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-                let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(MY_PAGE), true, PythonHiker.toPyJson({}));
-                let vodlists = json.list || [];
-                let d = _vodlistsF(pySource, vodlists);
-                setResult(d);
-            }, vod_id, _vodlistsF)
+        // 子目录url方法
+        function folderlistF(vod_id, _vodlistsF, isyifolder){
+            if(isyifolder){
+                return $('').lazyRule((url) => {
+                    let fl = storage0.getMyVar('dianbo$筛选') || {};
+                    fl.folderid = url;
+                    storage0.putMyVar('dianbo$筛选', fl);
+                    refreshPage(false);
+                    return 'hiker://empty';
+                }, vod_id)
+            }else{
+                return $("hiker://empty##fypage#noRecordHistory##noHistory#").rule((url, _vodlistsF) => {
+                    let pySource = MY_PARAMS.pySource;
+                    let pyurl = pySource.url;
+                    let cate_id = url;
+                    let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                    let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(MY_PAGE), true, PythonHiker.toPyJson({}));
+                    let vodlists = json.list || [];
+                    let d = _vodlistsF(pySource, vodlists);
+                    setResult(d);
+                }, vod_id, _vodlistsF)
+            }
         }
+
+        let sourceSet = juItemS.get('sourceSet') || {};
+        let pyset = sourceSet[pySource.name] || {};
+        let isyiparse = pyset['yiparse'] || 0;
+        let isyifolder = pyset['yifolder'] || 0;
 
         let d = [];
         vodlists.forEach(it=>{
@@ -863,7 +869,7 @@ let parse = {
                 }
             }
             if(it.vod_tag=='folder'){
-                vodobj.url = folderlistF(it.vod_id.toString(), this._vodlistsF);
+                vodobj.url = folderlistF(it.vod_id.toString(), this._vodlistsF, isyifolder);
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

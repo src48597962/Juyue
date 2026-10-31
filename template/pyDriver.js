@@ -103,7 +103,8 @@ let parse = {
         let d = [];
 
 
-        let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
+        //let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
+        let ui = $.require("Api?rule=原生组件工坊");
         let rows = ui.actionBar(
             {
             left: {

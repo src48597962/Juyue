@@ -493,7 +493,7 @@ let parse = {
                             return "toast://目录显示>已切换为：" + sm;
                         }else if(input.includes('日志')){
                             let sm;
-                            let isshowlog = juItemS.get('showlog ', 0);
+                            let isshowlog = juItemS.get('showlog', 0);
                             if(isshowlog){
                                 juItemS.clear('showlog');
                                 sm = '关闭';

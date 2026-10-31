@@ -444,11 +444,11 @@ let parse = {
                     let pyset = sourceSet[pySource.name] || {};
                     let isyiparse = pyset['yiparse'] || 0;
                     let stype = pyset['type'] || pySource.type || '未指定';
+                    let isyifolder = juItemS.get('yifolder', 0);
+                    let isshowlog = juItemS.get('showlog', 0);
 
-                    sourceSet[input] = pyset;
-                    juItemS.set('sourceSet', sourceSet);
 
-                    return $(['当前源播放：' + (isyiparse?'一级':'二级'), '当前源类型：' + stype], 1).select((pySource,sourceSet)=>{
+                    return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '全局目录展示：'+(isyifolder?'主页':'新页面'), '显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
                         let pyname = pySource.name;
                         let pyset = sourceSet[pyname] || {};
                         if(input.includes('播放')){
@@ -479,8 +479,33 @@ let parse = {
                                 juItemS.set('pySource', pySource);
                                 return "toast://" + pySource.name + ">类型设置为：" + input;
                             }, pySource, sourceSet, pyset)
+                        }else if(input.includes('目录')){
+                            let sm;
+                            let isyifolder = juItemS.get('yifolder', 0);
+                            if(isyifolder){
+                                juItemS.clear('yifolder');
+                                sm = '新页面显示列表';
+                            }else{
+                                juItemS.set('yifolder', 1);
+                                sm = '主页显示列表';
+                            }
+                            refreshPage(false);
+                            return "toast://" + pyname + ">已切换为：" + sm;
+                        }else if(input.includes('日志')){
+                            let sm;
+                            let isshowlog = juItemS.get('showlog ', 0);
+                            if(isshowlog){
+                                juItemS.clear('showlog ');
+                                sm = '关闭调试请求日志';
+                            }else{
+                                juItemS.set('showlog ', 1);
+                                sm = '显示调试请求日志';
+                            }
+                            refreshPage(false);
+                            return "toast://" + pyname + ">已切换为：" + sm;
                         }
-                    }, pySource, sourceSet, pyset)
+                        
+                    }, pySource, sourceSet)
                 }, pySource)
             },
             longClick: [{
@@ -680,6 +705,7 @@ let parse = {
                     let fl = storage0.getMyVar('dianbo$筛选') || {};
                     let vodlists = [];
                     let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                    let isshowlog = juItemS.get('showlog ', 0);
                     
                     if(page==1){
                         let 分类 = [];
@@ -693,12 +719,18 @@ let parse = {
                             筛选 = classCache.筛选;
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                            if(isshowlog){
+                                log('获取homeContent>' + home.toString());
+                            }
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
                             推荐 = home['list'] || [];
                             if (分类.length > 0) {
                                 if(推荐.length==0){
                                     let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
+                                    if(isshowlog){
+                                        log('获取homeVideoContent>' + homeVideo.toString());
+                                    }
                                     推荐 = homeVideo['list'] || [];
                                 }
                                 storage0.putMyVar('dianbo$classCache', { 分类: 分类, 筛选: 筛选, 推荐: 推荐 });
@@ -794,6 +826,9 @@ let parse = {
                     if (cate_id!="tj") {
                         fl.typeid = fl.folderid || cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
+                        if(isshowlog){
+                            log('获取categoryContent>' + json.toString());
+                        }
                         vodlists = json.list || [];
                     }
                     d = d.concat(this._vodlistsF(pySource, vodlists));
@@ -852,7 +887,7 @@ let parse = {
         let sourceSet = juItemS.get('sourceSet') || {};
         let pyset = sourceSet[pySource.name] || {};
         let isyiparse = pyset['yiparse'] || 0;
-        let isyifolder = pyset['yifolder'] || 0;
+        let isyifolder = juItemS.get('yifolder', 0);
 
         let d = [];
         vodlists.forEach(it=>{

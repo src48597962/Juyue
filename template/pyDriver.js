@@ -967,8 +967,8 @@ let parse = {
             }
             return lines.join("\n");
         }
-
-
+        
+        let vod_id = json.vod_id||'';
         return {
             detail1: "‘‘’’<font color=#FA7298>"+extractActorText(detail1)+"</font>",
             detail2: "‘‘’’<font color=#336633>"+extractActorText(detail2)+"</font>",
@@ -976,7 +976,7 @@ let parse = {
             img: 图片,
             line: 线路,
             list: 选集,
-            type: json.vod_id.startsWith('book:')?'小说':json.vod_id.startsWith('audio:')?'音频':pySource.type,
+            type: vod_id.startsWith('book:')?'小说':vod_id.startsWith('audio:')?'音频':pySource.type,
             lazyData: pySource
         }  
     },

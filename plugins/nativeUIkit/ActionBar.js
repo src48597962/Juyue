@@ -44,10 +44,8 @@ function settings(options) {
         return /^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(String(value || "")) ? String(value) : fallback;
     }
     return {
-        height: number(options.height, 64, 48, 120),
+        height: number(options.height, 64, 0, 120),
         inset: number(options.inset, 16, 0, 40),
-        leftHitPadding: number(options.leftHitPadding, 0, 0, 64),
-        rightHitPadding: number(options.rightHitPadding, 0, 0, 64),
         iconSize: number(options.iconSize, 32, 16, 56),
         iconShape: /^(circle|rounded|square)$/.test(options.iconShape) ? options.iconShape : "circle",
         iconRadius: number(options.iconRadius, 8, 0, 28),
@@ -72,16 +70,23 @@ function row(value, scope, options) {
         "actionBar." +
         C.safe(scope || "default");
     var spec = settings(options);
+    var bottom = number(options.paddingBottom, 0, 0, 120);
+    if (bottom) spec.paddingBottom = bottom;
+    var split = number(options.rightHitWidth, 0, 0, 320);
+    if (split) spec.rightHitWidth = split;
+    else {
+        var left = number(options.leftHitWidth, 0, 0, 320);
+        if (left) spec.leftHitWidth = left;
+    }
     spec.kind = "actionBar";
+    spec.scope = String(scope || "default");
     spec.item = item;
     spec.tokenKey = id + ".token.v1";
     spec.errorTitle = "双端操作栏加载失败";
     var extra = { id: id, lineVisible: false, nativeView: spec };
-    // Keep row-menu metadata out of the native view spec; preserve serialized callbacks verbatim.
     if (Array.isArray(value.longClick)) extra.longClick = value.longClick.slice();
     return [
         {
-            // The adapter can draw this placeholder before the native mount UI task.
             title: " ",
             col_type: "text_center_1",
             url: "hiker://empty",
@@ -102,6 +107,10 @@ function create(context, spec, open, visible, longPress) {
         options = settings(spec);
     var job = null,
         lastWidth = 0,
+        measuredWidth = 0,
+        measuredScale = 0,
+        bottom = dp(number(spec.paddingBottom, 0, 0, 120)),
+        split = number(spec.rightHitWidth, 0, 0, 320) || -number(spec.leftHitWidth, 0, 0, 320),
         longViews = [];
     Pictures.retainPosts();
     function dp(value) {
@@ -121,7 +130,46 @@ function create(context, spec, open, visible, longPress) {
         value.setCornerRadius(dp(radius));
         return value;
     }
-    var root = new Linear(context);
+    var touchTarget = null,
+        touchX = 0,
+        touchY = 0;
+    var root = new JavaAdapter(
+        Linear,
+        {
+            dispatchTouchEvent: function (event) {
+                if (!split) return root.super$dispatchTouchEvent(event);
+                if (!active()) return false;
+                var action = event.getActionMasked(),
+                    x = event.getX(),
+                    y = event.getY();
+                if (action === 0) {
+                    var width = root.getWidth(),
+                        boundary = split > 0 ? width - dp(split) : dp(-split);
+                    touchTarget =
+                        item.right.text && x >= Math.max(0, Math.min(width, boundary))
+                            ? rightTarget
+                            : leftTarget;
+                    touchX = x;
+                    touchY = y;
+                }
+                if (!touchTarget) return false;
+                var copy = android.view.MotionEvent.obtain(event),
+                    target = touchTarget;
+                try {
+                    copy.offsetLocation(target.getWidth() / 2 - touchX, target.getHeight() / 2 - touchY);
+                    if (event.getPointerCount() > 1) {
+                        copy.setAction(3);
+                        touchTarget = null;
+                    }
+                    return target.dispatchTouchEvent(copy);
+                } finally {
+                    copy.recycle();
+                    if (action === 1 || action === 3) touchTarget = null;
+                }
+            }
+        },
+        context
+    );
     root.setOrientation(0);
     root.setGravity(16);
     var leftSlot = new Frame(context);
@@ -172,7 +220,6 @@ function create(context, spec, open, visible, longPress) {
         view.setOnLongClickListener(
             new View.OnLongClickListener({
                 onLongClick: hold,
-                // Original row owns its native menu and haptic feedback.
                 onLongClickUseDefaultHapticFeedback: function () {
                     return false;
                 }
@@ -181,17 +228,20 @@ function create(context, spec, open, visible, longPress) {
         longViews.push(view);
     }
     function bind(view, side) {
-        var value = item[side];
+        var value = item[side] || {};
         var hasText = side === "left" ? !!value.title : !!value.text;
+        var clickable = hasText && !!(value.url || (split && side === "right"));
         view.setOnClickListener(
-            hasText && value.url
+            clickable
                 ? new View.OnClickListener({
                     onClick: function (target) {
-                        if (active()) open({ id: item.id, side: side, url: item[side].url }, target);
+                        if (active() && item[side].url)
+                            open({ id: item.id, side: side, url: item[side].url }, target);
                     }
                 })
                 : null
         );
+        if (view.setClickable) view.setClickable(clickable);
     }
     function stopImage() {
         if (job) job.destroy();
@@ -214,6 +264,24 @@ function create(context, spec, open, visible, longPress) {
             context: context
         });
     }
+    function compactHeight() {
+        function fontHeight(view) {
+            var metrics = view.getPaint().getFontMetricsInt();
+            return Math.max(1, Number(metrics.bottom) - Number(metrics.top));
+        }
+        var leftHeight = item.left.title
+            ? fontHeight(title) + (item.left.subtitle ? fontHeight(subtitle) : 0)
+            : 0;
+        var iconHeight =
+            item.left.title && (item.left.icon || item.left.iconText) ? dp(options.iconSize) : 0;
+        return Math.max(
+            dp(options.height),
+            leftHeight,
+            iconHeight,
+            item.right.text ? fontHeight(rightTarget) : 0,
+            1
+        );
+    }
     function measure(width) {
         lastWidth = Math.max(
             1,
@@ -221,39 +289,34 @@ function create(context, spec, open, visible, longPress) {
                 Number(width) || Number(context.getResources().getDisplayMetrics().widthPixels) || dp(360)
             )
         );
+        var scale = context.getResources().getDisplayMetrics().scaledDensity || density;
+        if (measuredWidth === lastWidth && measuredScale === scale)
+            return (options.height < 48 ? compactHeight() : dp(options.height)) + bottom;
+        measuredWidth = lastWidth;
+        measuredScale = scale;
         var available = Math.max(1, lastWidth - dp(options.inset * 2));
         var actionWidth = item.right.text
             ? Math.min(
                 Math.floor(available * 0.45),
-                Math.max(
-                    dp(48),
-                    Math.ceil(rightTarget.getPaint().measureText(item.right.text)) +
-                    dp(8 + options.rightHitPadding)
-                )
+                Math.max(dp(48), Math.ceil(rightTarget.getPaint().measureText(item.right.text)) + dp(8))
             )
             : 0;
-        // The trailing inset belongs to the button, not the inert root.
-        // Reserve the same visual width while making the outer edge clickable.
         var edge = item.right.text ? dp(options.inset) : 0;
-        rightTarget.setPadding(dp(8 + options.rightHitPadding), 0, edge, 0);
+        rightTarget.setPadding(dp(8), 0, edge, 0);
         rightTarget.setMinimumWidth(dp(48) + edge);
         rightTarget.setMaxWidth(Math.max(1, actionWidth + edge));
-        leftTarget.setPadding(0, 0, dp(options.leftHitPadding), 0);
+        leftTarget.setPadding(0, 0, 0, 0);
         var iconWidth = item.left.icon || item.left.iconText ? dp(options.iconSize + 10) : 0;
         var textWidth = Math.max(
             1,
-            available -
-            actionWidth -
-            (item.right.text ? dp(8) : 0) -
-            iconWidth -
-            dp(options.leftHitPadding)
+            available - actionWidth - (item.right.text ? dp(8) : 0) - iconWidth
         );
         title.setMaxWidth(textWidth);
         subtitle.setMaxWidth(textWidth);
-        return dp(options.height);
+        return (options.height < 48 ? compactHeight() : dp(options.height)) + bottom;
     }
     function paint() {
-        root.setPadding(dp(options.inset), 0, item.right.text ? 0 : dp(options.inset), 0);
+        root.setPadding(dp(options.inset), 0, item.right.text ? 0 : dp(options.inset), bottom);
         root.setMinimumHeight(dp(options.height));
         root.setBackground(shape(options.background, 0));
         title.setText(item.left.title);
@@ -273,7 +336,6 @@ function create(context, spec, open, visible, longPress) {
         iconBox.setLayoutParams(new Linear.LayoutParams(dp(options.iconSize), dp(options.iconSize)));
         placeholder.setText(item.left.iconText);
         placeholder["setTextColor(int)"](Color.parseColor(options.actionColor) | 0);
-        // Clip the common container so downloaded images and text share the same outline.
         var radius =
             options.iconShape === "circle"
                 ? dp(options.iconSize) / 2
@@ -286,8 +348,10 @@ function create(context, spec, open, visible, longPress) {
         iconBox.setClipToOutline(radius > 0);
         namesParams.setMargins(item.left.icon || item.left.iconText ? dp(10) : 0, 0, 0, 0);
         names.setLayoutParams(namesParams);
+        bind(root, split ? "left" : "");
         bind(leftTarget, "left");
         bind(rightTarget, "right");
+        measuredWidth = 0;
         measure(lastWidth);
     }
     longClick(root);
@@ -311,6 +375,9 @@ function create(context, spec, open, visible, longPress) {
                 JSON.stringify(nextOptions.imageHeaders) !== JSON.stringify(options.imageHeaders);
             item = next;
             options = nextOptions;
+            bottom = dp(number(nextSpec.paddingBottom, 0, 0, 120));
+            split =
+                number(nextSpec.rightHitWidth, 0, 0, 320) || -number(nextSpec.leftHitWidth, 0, 0, 320);
             paint();
             if (reload) {
                 loadImage();
@@ -320,8 +387,6 @@ function create(context, spec, open, visible, longPress) {
         suspend: function () {
             if (state.disposed || state.suspended) return;
             state.suspended = true;
-            // Keep the subscription and painted bitmap while a cached tab is parked.
-            // The real host may return before the next image frame; reloading here causes a gray flash.
         },
         resume: function () {
             if (state.disposed || !state.suspended) return;
@@ -332,6 +397,7 @@ function create(context, spec, open, visible, longPress) {
         destroy: function () {
             if (state.disposed) return;
             state.disposed = true;
+            root.setOnClickListener(null);
             leftTarget.setOnClickListener(null);
             rightTarget.setOnClickListener(null);
             longViews.forEach(function (view) {
@@ -351,26 +417,39 @@ function mount(item, scope) {
         item.extra.nativeView.kind !== "actionBar"
     )
         return;
-    return Host.mount(item, scope, create);
+    return Host.mount(item, scope === undefined ? item.extra.nativeView.scope : scope, create);
 }
-function demoButton(label) {
-    return {
-        title: String(label || "双端操作栏"),
-        col_type: "text_center_1",
-        url: "hiker://page/action_bar_demo.v#noLoading#?rule=原生组件工坊",
-        extra: { lineVisible: false }
-    };
+function update(item, scope) {
+    if (arguments.length > 1) return Host.update(item, scope);
+    var extra = item && item.extra;
+    var spec = extra && extra.nativeView;
+    if (
+        !spec ||
+        spec.kind !== "actionBar" ||
+        typeof extra.id !== "string" ||
+        spec.tokenKey !== extra.id + ".token.v1" ||
+        typeof spec.scope !== "string" ||
+        !spec.scope ||
+        !normalize(spec.item) ||
+        typeof updateItem !== "function"
+    )
+        return false;
+    if (!Host.update(item, spec.scope)) return false;
+    updateItem(extra.id, item);
+    return true;
 }
+
 $.exports = {
     apiVersion: 1,
     longPressVersion: 1,
-    hitPaddingVersion: 1,
+    hitWidthVersion: 1,
     imageDecoderVersion: 1,
+    nativeUpdateVersion: 1,
     normalize: normalize,
     row: row,
     create: create,
     mount: mount,
-    update: Host.update,
-    release: Host.release,
-    demoButton: demoButton
+    update: update,
+    updateRowVersion: 1,
+    release: Host.release
 };

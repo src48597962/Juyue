@@ -448,7 +448,7 @@ let parse = {
                     let isshowlog = juItemS.get('showlog', 0);
 
 
-                    return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '全局目录展示：'+(isyifolder?'主页':'新页面'), '显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
+                    return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '全局目录展示：'+(isyifolder?'主页':'新页面'), '全局显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
                         let pyname = pySource.name;
                         let pyset = sourceSet[pyname] || {};
                         if(input.includes('播放')){

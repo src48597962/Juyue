@@ -96,6 +96,193 @@ function runnable(fn) {
         }
     });
 }
+// Span touch listeners consume DOWN, so Android View never schedules its own hold.
+function spanLongPress(context, hold, active) {
+    var handler = new android.os.Handler(android.os.Looper.getMainLooper());
+    var pending = null,
+        held = false,
+        x = 0,
+        y = 0;
+    var slop = android.view.ViewConfiguration.get(context).getScaledTouchSlop();
+    var task = new java.lang.Runnable({
+        run: function () {
+            if (pending && active()) held = hold(pending) === true;
+        }
+    });
+    function cancel() {
+        handler.removeCallbacks(task);
+        pending = null;
+        held = false;
+    }
+    return {
+        down: function (view, event) {
+            cancel();
+            pending = view;
+            x = event.getX();
+            y = event.getY();
+            handler.postDelayed(task, android.view.ViewConfiguration.getLongPressTimeout());
+        },
+        moved: function (event) {
+            var dx = event.getX() - x,
+                dy = event.getY() - y;
+            return (
+                dx * dx + dy * dy > slop * slop ||
+                (typeof event.getPointerCount === "function" && event.getPointerCount() !== 1)
+            );
+        },
+        up: function () {
+            var value = held;
+            cancel();
+            return value;
+        },
+        cancel: cancel
+    };
+}
+// Bind hit targets only; decorative children retain parent taps.
+function bindLongPress(widget, hold, visible) {
+    if (!widget || typeof hold !== "function") return widget;
+    var root = widget.view,
+        records = {},
+        added = [],
+        dead = false,
+        paused = false;
+    var View = android.view.View,
+        Group = android.view.ViewGroup;
+    var handler = new android.os.Handler(android.os.Looper.getMainLooper());
+    function live(view) {
+        if (dead || paused || (visible && !visible())) return false;
+        if (typeof view.isEnabled === "function" && !view.isEnabled()) return false;
+        if (typeof view.isShown === "function" && !view.isShown()) return false;
+        return belongs(view);
+    }
+    function belongs(view) {
+        for (var node = view; node; node = node.getParent())
+            if (node === root || node.equals(root)) return true;
+        return false;
+    }
+    // Java identity buckets verify aliases/collisions.
+    function entry(view, remove) {
+        var key = "$" + java.lang.System.identityHashCode(view),
+            bucket = records[key] || [],
+            record;
+        for (var i = 0; i < bucket.length; i++) {
+            record = bucket[i];
+            if (record.view === view || record.view.equals(view)) {
+                if (remove) {
+                    bucket.splice(i, 1);
+                    if (!bucket.length) delete records[key];
+                }
+                return record;
+            }
+        }
+        if (remove) return null;
+        record = { view: view, bound: false, group: false };
+        bucket.push(record);
+        records[key] = bucket;
+        return record;
+    }
+    function forget(view) {
+        var record = entry(view, true);
+        if (record) {
+            if (record.bound) {
+                view.setOnLongClickListener(null);
+                if (typeof view.setLongClickable === "function") view.setLongClickable(false);
+            }
+            if (record.group) view.setOnHierarchyChangeListener(null);
+        }
+        if (typeof view.getChildCount === "function")
+            for (var i = 0; i < view.getChildCount(); i++) forget(view.getChildAt(i));
+    }
+    function scan(view) {
+        if (dead || !view) return;
+        if (typeof android.widget.EditText === "function" && view instanceof android.widget.EditText)
+            return;
+        var record = entry(view);
+        var existing = typeof view.isLongClickable === "function" && view.isLongClickable();
+        var target = view === root || (typeof view.isClickable === "function" && view.isClickable());
+        if (
+            target &&
+            !existing &&
+            !record.bound &&
+            typeof view.setOnLongClickListener === "function"
+        ) {
+            view.setOnLongClickListener(
+                new View.OnLongClickListener({
+                    onLongClick: function (target) {
+                        return live(target) && hold(target) === true;
+                    },
+                    onLongClickUseDefaultHapticFeedback: function () {
+                        return false;
+                    }
+                })
+            );
+            record.bound = true;
+        }
+        if (typeof view.getChildCount === "function") {
+            if (!record.group && typeof view.setOnHierarchyChangeListener === "function") {
+                view.setOnHierarchyChangeListener(
+                    new Group.OnHierarchyChangeListener({
+                        onChildViewAdded: function (parent, child) {
+                            added.push({ parent: parent, view: child });
+                            handler.removeCallbacks(refresh);
+                            handler.post(refresh);
+                        },
+                        onChildViewRemoved: function (parent, child) {
+                            forget(child);
+                        }
+                    })
+                );
+                record.group = true;
+            }
+            for (var i = 0; i < view.getChildCount(); i++) scan(view.getChildAt(i));
+        }
+    }
+    var refresh = new java.lang.Runnable({
+        run: function () {
+            var pending = added;
+            added = [];
+            pending.forEach(function (value) {
+                var parent = value.view.getParent();
+                if (!dead && !paused && parent && parent.equals(value.parent) && belongs(value.view))
+                    scan(value.view);
+            });
+        }
+    });
+    scan(root);
+    function wrap(name, action) {
+        var original = widget[name];
+        widget[name] = function () {
+            action();
+            if (typeof original === "function") return original.apply(widget, arguments);
+        };
+    }
+    wrap("suspend", function () {
+        paused = true;
+        added = [];
+        handler.removeCallbacks(refresh);
+    });
+    if (typeof widget.park === "function")
+        wrap("park", function () {
+            paused = true;
+            added = [];
+            handler.removeCallbacks(refresh);
+        });
+    wrap("resume", function () {
+        if (!paused) return;
+        paused = false;
+        added = [];
+        handler.removeCallbacks(refresh);
+        if (!dead) scan(root);
+    });
+    wrap("destroy", function () {
+        dead = true;
+        added = [];
+        handler.removeCallbacks(refresh);
+        forget(root);
+        records = {};
+    });
+    return widget;
+}
 function create(context, spec, open, visible) {
     var Frame = android.widget.FrameLayout;
     var Linear = android.widget.LinearLayout;
@@ -417,7 +604,15 @@ function create(context, spec, open, visible) {
         false,
         new Pager.PageTransformer({
             transformPage: function (view, position) {
-                view.setAlpha(banner || overlay || Math.abs(position) < 0.01 ? 1 : 0.8);
+                view.setAlpha(
+                    banner || overlay
+                        ? 1
+                        : spec.portrait
+                            ? Math.abs(position) < 0.01
+                                ? 1
+                                : 0.8
+                            : 1 - 0.2 * Math.min(1, Math.abs(position))
+                );
             }
         })
     );
@@ -665,7 +860,7 @@ function release(ticket, namespace) {
         );
     });
 }
-// Ticket-bound data survives offscreen rows and delayed initial binding.
+// Ticket updates survive delayed/offscreen binding.
 function update(rowItem, scope) {
     var spec = rowItem && rowItem.extra && rowItem.extra.nativeView;
     if (!spec) return false;
@@ -704,7 +899,7 @@ function pageKey(key, activity) {
     return key + ".activity." + java.lang.System.identityHashCode(activity);
 }
 var hostManagers = [];
-// One host lookup, listener pair and visible-row index per Activity, regardless of card count.
+// One loop and visible-row index per Activity.
 function sharedHost(activity) {
     for (var i = 0; i < hostManagers.length; i++) {
         if (hostManagers[i].activity.equals(activity)) return hostManagers[i];
@@ -783,7 +978,7 @@ function sharedHost(activity) {
                 var view = h.recycler.getChildAt(i);
                 views["$" + rowId(view, adapter, list, offset)] = view;
             }
-            // Only previous attachments and current visible identities participate in layout scans.
+            // Scan bound and visible rows only.
             Object.keys(bound).forEach(function (key) {
                 var member = bound[key];
                 if (member && !views["$" + member.id])
@@ -866,7 +1061,7 @@ function sharedHost(activity) {
         activity: activity,
         add: function (member) {
             var key = "$" + member.key;
-            // Reserve the new membership before disposing the last previous owner.
+            // Reserve membership before replacing its owner.
             memberCount++;
             if (members[key] && members[key] !== member) members[key].dispose();
             members[key] = member;
@@ -881,7 +1076,7 @@ function sharedHost(activity) {
                 return value !== member;
             });
             idleUsers.push(member);
-            // A few recent rows keep instant back-scroll; older user Views/images are released.
+            // Bound idle-user retention for quick back-scroll.
             while (idleUsers.length > 12) idleUsers.shift().recycleWidget();
         },
         attached: function (member, value) {
@@ -938,7 +1133,7 @@ function mount(rowItem, scope, factory) {
     registerTicket(activeKey, ticket);
     activity.runOnUiThread(
         runnable(function () {
-            // Skip work invalidated while waiting for the UI queue during a fast category switch.
+            // Drop mounts invalidated in the UI queue.
             if (getMyVar(activeKey, "") !== ticket || activity.isFinishing() || activity.isDestroyed())
                 return;
             var manager = sharedHost(activity);
@@ -955,6 +1150,41 @@ function mount(rowItem, scope, factory) {
                     !activity.isFinishing() &&
                     !activity.isDestroyed()
                 );
+            }
+            var adapterSnapshot = "";
+            function syncAdapter(view) {
+                if (spec.kind !== "actionBar" || !current() || !view) return;
+                var item = itemId(view, h, true);
+                if (
+                    !item ||
+                    String(item.getBaseExtra().getId() || "") !== rowItem.extra.id ||
+                    typeof item.getExtra !== "function"
+                )
+                    return;
+                var raw = String(item.getExtra() || "");
+                if (!raw || raw === adapterSnapshot) return;
+                var extra;
+                try {
+                    extra = JSON.parse(raw);
+                } catch (ignore) {
+                    return;
+                }
+                var next = extra && extra.nativeView;
+                if (
+                    !next ||
+                    extra.id !== rowItem.extra.id ||
+                    next.kind !== "actionBar" ||
+                    next.tokenKey !== spec.tokenKey ||
+                    next.scope !== spec.scope ||
+                    !next.item ||
+                    next.item.id !== spec.item.id
+                )
+                    return;
+                if (widget && (typeof widget.update !== "function" || widget.update(next) === false))
+                    return;
+                spec = next;
+                adapterSnapshot = raw;
+                if (widget && record) applyHost(record.view);
             }
             var appliedUpdate = "";
             function syncUpdate() {
@@ -1001,7 +1231,7 @@ function mount(rowItem, scope, factory) {
                 try {
                     saved.observer.removeOnPreDrawListener(saved.drawGuard);
                 } catch (ignore) { }
-                // Android can merge a floating observer into the new window observer on reattach.
+                // Reattach can merge the observer into a new window.
                 try {
                     var live = saved.view.getViewTreeObserver();
                     if (live !== saved.observer) live.removeOnPreDrawListener(saved.drawGuard);
@@ -1015,7 +1245,7 @@ function mount(rowItem, scope, factory) {
                 removeDrawGuard(record);
                 parked = false;
                 if (widget && widget.view.getParent()) widget.view.getParent().removeView(widget.view);
-                // Opt-in only: release post thumbnails while retaining text and layout state.
+                // Suspend opt-in images; retain text/layout.
                 if (widget && typeof widget.suspend === "function") widget.suspend();
                 record.children.forEach(function (child) {
                     child.view.setVisibility(child.visibility);
@@ -1087,16 +1317,10 @@ function mount(rowItem, scope, factory) {
             // Use the original row listener so menus stay owned by the calling rule.
             function longPress() {
                 if (!visible()) return false;
-                // Only ActionBar opts into the client default menu; other kinds keep their old gate.
-                if (
-                    spec.kind !== "actionBar" &&
-                    (!rowItem.extra.longClick || !rowItem.extra.longClick.length)
-                )
-                    return false;
                 if (itemId(record.view) !== rowItem.extra.id) return false;
                 return record.view.performLongClick() === true;
             }
-            function itemId(view, target) {
+            function itemId(view, target, entry) {
                 target = target || h;
                 if (!target || !target.recycler) return "";
                 var position = target.recycler.getChildAdapterPosition(view),
@@ -1107,19 +1331,22 @@ function mount(rowItem, scope, factory) {
                 var list = adapter.getList();
                 position -= offset;
                 if (position < 0 || position >= list.size()) return "";
-                return String(list.get(position).getBaseExtra().getId() || "");
+                var item = list.get(position);
+                return entry ? item : String(item.getBaseExtra().getId() || "");
             }
-            // Cached home tabs may be drawn again before the shared host's next 500ms poll.
-            // Preserve verified home-tab rows for every shared widget; recycled identities still restore.
-            function keepCachedRow() {
+            // Cached tabs may draw before the 500ms poll.
+            // Keep verified cached rows; restore recycled identities.
+            function keepAdapterRow() {
                 return (
                     current() &&
                     record !== null &&
-                    record.host.home &&
                     record.view.getParent() &&
                     record.view.getParent().equals(record.host.recycler) &&
                     itemId(record.view, record.host) === rowItem.extra.id
                 );
+            }
+            function keepCachedRow() {
+                return keepAdapterRow() && record.host.home;
             }
             function keepCachedWidget() {
                 return (
@@ -1141,7 +1368,11 @@ function mount(rowItem, scope, factory) {
                 manager.attached(member, false);
             }
             function installDrawGuard() {
-                if (!record || !record.host.home || typeof record.view.getViewTreeObserver !== "function")
+                if (
+                    !record ||
+                    (!record.host.home && spec.kind !== "actionBar") ||
+                    typeof record.view.getViewTreeObserver !== "function"
+                )
                     return;
                 var observer = record.view.getViewTreeObserver();
                 if (
@@ -1157,47 +1388,60 @@ function mount(rowItem, scope, factory) {
                         if (record !== saved) return true;
                         try {
                             if (!current()) dispose();
-                            else if (!keepCachedWidget()) {
-                                // Refresh may strip the native child while keeping this exact adapter row.
-                                if (spec.kind === "actionBar" && keepCachedRow() && !widget.view.getParent()) {
-                                    h = saved.host;
-                                    bind(saved.view);
-                                } else restore();
-                            } else {
-                                // Only opt-in widgets resume here; ordinary background tabs keep their old gate.
-                                if (parked && widget.resumeBeforeDraw === true) {
-                                    var owner = host(activity);
-                                    if (
-                                        owner.recycler &&
-                                        owner.recycler.equals(saved.host.recycler) &&
-                                        manager.activity.equals(context()) &&
-                                        activity.hasWindowFocus()
-                                    ) {
-                                        h = owner;
-                                        saved.host = owner;
-                                        parked = false;
-                                        manager.attached(member, true);
-                                        if (typeof widget.resume === "function") widget.resume();
+                            else {
+                                // updateItem can replace data without replacing the child.
+                                h = saved.host;
+                                syncAdapter(saved.view);
+                                if (
+                                    !(
+                                        keepCachedWidget() ||
+                                        (spec.kind === "actionBar" &&
+                                            keepAdapterRow() &&
+                                            widget.view.getParent() &&
+                                            widget.view.getParent().equals(saved.view))
+                                    )
+                                ) {
+                                    // Refresh may strip only the native child.
+                                    if (spec.kind === "actionBar" && keepAdapterRow() && !widget.view.getParent()) {
+                                        h = saved.host;
+                                        bind(saved.view);
+                                    } else restore();
+                                } else {
+                                    // Resume only opt-in widgets before draw.
+                                    if (parked && widget.resumeBeforeDraw === true) {
+                                        var owner = host(activity);
+                                        if (
+                                            owner.recycler &&
+                                            owner.recycler.equals(saved.host.recycler) &&
+                                            manager.activity.equals(context()) &&
+                                            activity.hasWindowFocus()
+                                        ) {
+                                            h = owner;
+                                            saved.host = owner;
+                                            parked = false;
+                                            manager.attached(member, true);
+                                            if (typeof widget.resume === "function") widget.resume();
+                                        }
                                     }
+                                    var row = saved.view,
+                                        dirty =
+                                            row.getPaddingLeft() ||
+                                            row.getPaddingTop() ||
+                                            row.getPaddingRight() ||
+                                            row.getPaddingBottom() ||
+                                            row.getLayoutParams().height !== widget.view.getLayoutParams().height;
+                                    for (var i = 0; !dirty && i < row.getChildCount(); i++) {
+                                        var child = row.getChildAt(i);
+                                        if (!child.equals(widget.view) && child.getVisibility() !== 8) dirty = true;
+                                    }
+                                    // setMaxWidth can request layout: measure only when dirty.
+                                    if (dirty) applyHost(row);
                                 }
-                                var row = saved.view,
-                                    dirty =
-                                        row.getPaddingLeft() ||
-                                        row.getPaddingTop() ||
-                                        row.getPaddingRight() ||
-                                        row.getPaddingBottom() ||
-                                        row.getLayoutParams().height !== widget.view.getLayoutParams().height;
-                                for (var i = 0; !dirty && i < row.getChildCount(); i++) {
-                                    var child = row.getChildAt(i);
-                                    if (!child.equals(widget.view) && child.getVisibility() !== 8) dirty = true;
-                                }
-                                // Avoid remeasuring TextViews on every frame; setMaxWidth can request layout.
-                                if (dirty) applyHost(row);
                             }
                         } catch (error) {
                             failure(error);
                         }
-                        // Android/Rhino requires a primitive boolean, never an omitted return value.
+                        // Android requires a primitive boolean.
                         return true;
                     }
                 });
@@ -1254,6 +1498,7 @@ function mount(rowItem, scope, factory) {
             }
             function bind(view) {
                 syncUpdate();
+                syncAdapter(view);
                 if (
                     record &&
                     record.view.equals(view) &&
@@ -1271,8 +1516,8 @@ function mount(rowItem, scope, factory) {
                 restore();
                 if (!(view instanceof android.view.ViewGroup))
                     throw new Error("Carousel row is not a ViewGroup");
-                // Dispose an earlier mount synchronously before taking the row snapshot.
-                // Its delayed restore must never resize or reveal children in the new mount.
+                // Dispose old mount before snapshot; late restore must not touch new rows.
+
                 for (var oldIndex = view.getChildCount() - 1; oldIndex >= 0; oldIndex--) {
                     var tag = view.getChildAt(oldIndex).getTag();
                     if (
@@ -1282,7 +1527,12 @@ function mount(rowItem, scope, factory) {
                         tag.get("dispose").run();
                     }
                 }
-                if (!widget) widget = makeView(activity, spec, open, visible, longPress);
+                if (!widget)
+                    widget = bindLongPress(
+                        makeView(activity, spec, open, visible, longPress),
+                        longPress,
+                        visible
+                    );
                 var lp = view.getLayoutParams(),
                     children = [];
                 for (var i = 0; i < view.getChildCount(); i++) {
@@ -1351,7 +1601,7 @@ function mount(rowItem, scope, factory) {
                 sync: function (next, found) {
                     h = next;
                     attempts = 0;
-                    syncUpdate();
+                    if (!found) syncUpdate();
                     if (record && !found) parkOrRestore();
                     else if (record && !record.view.equals(found)) restore();
                     if (found) bind(found);
@@ -1378,6 +1628,8 @@ $.exports = {
     row: row,
     model: model,
     create: create,
+    bindLongPress: bindLongPress,
+    spanLongPress: spanLongPress,
     mount: mount,
     update: update,
     release: release,

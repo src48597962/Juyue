@@ -5,7 +5,8 @@ var newVersion = {
         title: "beta V2.9",
         records: [
             "优化：二级及解析相关代码逻辑",
-            "优化：pyDrive文件功能再升级"
+            "优化：pyDrive代码文件功能各种升级",
+            "新增：py合集选源组件使用鬼佬新组件"
         ]
     },{
         title: "2026/10/11 V2.8",

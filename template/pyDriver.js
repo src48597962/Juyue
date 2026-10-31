@@ -752,7 +752,8 @@ let parse = {
                             });
 
                             if (筛选 && fold == '1') {
-                                //log(筛选);
+                                log(筛选);
+                                log(cate_id);
                                 Object.entries(筛选).forEach(([key, value]) => {
                                     //log(`Key: ${key}, Value: ${value}`);
                                     if (key == cate_id) {

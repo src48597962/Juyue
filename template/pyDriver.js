@@ -752,6 +752,7 @@ let parse = {
                             });
 
                             if (筛选 && fold == '1') {
+                                log(筛选);
                                 Object.entries(筛选).forEach(([key, value]) => {
                                     //log(`Key: ${key}, Value: ${value}`);
                                     if (key == cate_id) {
@@ -760,7 +761,7 @@ let parse = {
                                         }
                                         value.forEach(it => {
                                             if (it.value.length > 0) {
-                                                fl[it.key] = fl[it.key] || (it.value[0].v=="全部"?it.value[0].v:undefined);
+                                                fl[it.key] = fl[it.key] || (it.value[0].n=="全部"?it.value[0].v:undefined);
                                                 it.value.forEach((itit) => {
                                                     d.push({
                                                         title: fl[it.key] == itit.v ? '““””<b><span style="color:' + Color + '">' + itit.n + '</span></b>' : itit.n,

@@ -495,10 +495,10 @@ let parse = {
                             let sm;
                             let isshowlog = juItemS.get('showlog ', 0);
                             if(isshowlog){
-                                juItemS.clear('showlog ');
+                                juItemS.clear('showlog');
                                 sm = '关闭';
                             }else{
-                                juItemS.set('showlog ', 1);
+                                juItemS.set('showlog', 1);
                                 sm = '打开';
                             }
                             refreshPage(false);

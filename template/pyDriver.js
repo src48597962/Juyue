@@ -968,7 +968,7 @@ let parse = {
             return lines.join("\n");
         }
         
-        let vod_id = json.vod_id || '';
+        let vod_id = json.vod_id || url;
         return {
             detail1: "‘‘’’<font color=#FA7298>"+extractActorText(detail1)+"</font>",
             detail2: "‘‘’’<font color=#336633>"+extractActorText(detail2)+"</font>",

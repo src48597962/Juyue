@@ -729,7 +729,7 @@ let parse = {
                                 if(推荐.length==0){
                                     let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
                                     if(isshowlog){
-                                        log('获取homeVideoContent>' + homeVideo);
+                                        log('获取homeVideoContent>' + JSON.stringify(homeVideo));
                                     }
                                     推荐 = homeVideo['list'] || [];
                                 }
@@ -827,7 +827,7 @@ let parse = {
                         fl.typeid = fl.folderid || cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         if(isshowlog){
-                            log('获取categoryContent>' + json);
+                            log('获取categoryContent>' + JSON.stringify(json));
                         }
                         vodlists = json.list || [];
                     }
@@ -917,7 +917,10 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
-        //log(html);
+        let isshowlog = juItemS.get('showlog ', 0);
+        if(isshowlog){
+            log('获取detailContent>' + JSON.stringify(html));
+        }
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
         let detail1 = json.vod_actor || "";
@@ -1006,7 +1009,10 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        //log(play);
+        let isshowlog = juItemS.get('showlog ', 0);
+        if(isshowlog){
+            log('获取playerContent>' + JSON.stringify(play));
+        }
         let novel;
         if(play.jx=='1' || play.parse=='1'){
             return $.require("parseUrl").解析(play.url||url, {header: play.header});
@@ -1052,6 +1058,9 @@ let parse = {
                     let psrc = paramObj.src || paramObj.url;
                     try{
                         let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
+                        if(isshowlog){
+                            log('获取localProxy>' + JSON.stringify(res));
+                        }
                         if(res[0]==200){
                             let pym3u8 = 'hiker://files/_cache/py/proxy.m3u8';
                             writeFile(pym3u8, res[2]);

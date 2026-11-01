@@ -1,5 +1,6 @@
 // by.旧巷陌人(鬼佬)的原生组件工坊
-var C = $.require(codePath + "plugins/nativeUIkit/Config.js");
+const modulePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/")) + "/";
+var C = $.require(modulePath + "Config.js");
 var tokenKey = C.ns + "native.carousel.token.v1";
 function normalize(values, options) {
     var style = (options || {}).style || "cards";
@@ -373,7 +374,7 @@ function create(context, spec, open, visible) {
                     if (url.indexOf("data:image/png;base64,") === 0) {
                         var bytes = android.util.Base64.decode(url.slice(url.indexOf(",") + 1), 0);
                         if (spec.imageDecoder) {
-                            input = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js").applyDecoder(
+                            input = $.require(modulePath + "CommentAvatar.js").applyDecoder(
                                 new java.io.ByteArrayInputStream(bytes),
                                 url,
                                 spec.imageHeaders,
@@ -412,7 +413,7 @@ function create(context, spec, open, visible) {
                             if (code !== 200 && code !== 206) throw new Error("Poster HTTP " + code);
                             input = conn.getInputStream();
                             if (spec.imageDecoder)
-                                input = $.require(codePath + "plugins/nativeUIkit/CommentAvatar.js").applyDecoder(
+                                input = $.require(modulePath + "CommentAvatar.js").applyDecoder(
                                     input,
                                     target,
                                     spec.imageHeaders,
@@ -778,12 +779,13 @@ function registerTicket(activeKey, ticket) {
         addListener(
             "onClose",
             $.toString(
-                function (key, listenerKey) {
-                    $.require(codePath + "plugins/nativeUIkit/NativeCarousel.js").releasePage(key);
+                function (key, listenerKey, modulePath) {
+                    $.require(modulePath + "NativeCarousel.js").releasePage(key);
                     putMyVar(listenerKey, "");
                 },
                 key,
-                listenerKey
+                listenerKey,
+                modulePath
             )
         );
     }

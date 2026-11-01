@@ -1,8 +1,9 @@
 // by.旧巷陌人(鬼佬)的原生组件工坊
+const modulePath = module.modulePath.slice(0, module.modulePath.lastIndexOf("/")) + "/";
 var components = {};
 function component(name) {
     if (!components[name]) {
-        components[name] = $.require(codePath + "plugins/nativeUIkit/" + name + ".js");
+        components[name] = $.require(modulePath + name + ".js");
     }
     return components[name];
 }

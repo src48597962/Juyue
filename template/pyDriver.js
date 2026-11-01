@@ -897,14 +897,14 @@ let parse = {
                 img: it.vod_pic,
                 url: isyiparse ? $('').lazyRule((url, params, yiparseF) => {
                     return yiparseF(url, params);
-                }, it.vod_id.toString(), {pySource: pySource}, yiparseF) : it.vod_id.toString(),
+                }, it.vod_id, {pySource: pySource}, yiparseF) : it.vod_id,
                 col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                 extra: {
                     pySource: pySource
                 }
             }
             if(it.vod_tag=='folder'){
-                vodobj.url = folderlistF(it.vod_id.toString(), this._vodlistsF, isyifolder);
+                vodobj.url = folderlistF(it.vod_id, this._vodlistsF, isyifolder);
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

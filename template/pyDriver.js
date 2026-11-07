@@ -1134,11 +1134,11 @@ let parse = {
                 headers = parseHttpHeaders(play.header, urls);
             }
 
-            if(headers.length>0 && urls.length>0){
+            if(urls.length>1 || headers.length>0){
                 return JSON.stringify({
                     names: names.length==urls.length?names:undefined,
                     urls: urls,
-                    headers: headers
+                    headers: headers.length==urls.length?headers:undefined
                 }); 
             }
         }

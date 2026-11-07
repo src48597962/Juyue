@@ -513,7 +513,8 @@ let parse = {
                     title: "删除",
                     js: $.toString((pyurl, pyname) => {
                         return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
-                            let pylists = storage0.getMyVar('pylists') || $.require("jiekou").parse()._getpylist();
+                            let parse = $.require("jiekou").parse();
+                            let pylists = storage0.getMyVar('pylists') || parse._getpylist();
                             let group = juItemS.get('sourceListGroup') || '全部';
                             let grouppylist = group=='全部'?pylists:pylists.filter(it=>it.dir==group);
                             let index = grouppylist.findIndex(v=>v.url==pyurl);
@@ -528,6 +529,7 @@ let parse = {
                                 }else{
                                     juItemS.clear('pySource');
                                 }
+                                parse._clearMyVar();
                             }
 
                             pylists = pylists.filter(it=>it.url!=pyurl);

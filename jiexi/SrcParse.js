@@ -189,7 +189,7 @@ function SrcParse(vipUrl, dataObj) {
         return "hiker://page/list?rule=百度网盘&realurl=" + vipUrl;
     }else if(vipUrl.includes('.123684.com')){
         return "toast://暂不支持123盘";
-    }else if(isVipVideo(vipUrl)){
+    }else if(isVipVideo(vipUrl)&&!vipUrl.includes('=http')){
         if(vipUrl.indexOf('html?')>-1){
             vipUrl = vipUrl.split('html?')[0]+'html';
         }

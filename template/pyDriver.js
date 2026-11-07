@@ -497,10 +497,10 @@ let parse = {
                             let isshowlog = getMyVar('showlog', '0');
                             if(isshowlog){
                                 clearMyVar('showlog');
-                                sm = '关闭';
+                                sm = '关闭显示';
                             }else{
                                 putMyVar('showlog', '1');
-                                sm = '打开';
+                                sm = '临时显示';
                             }
                             refreshPage(false);
                             return "toast://请求日志>已切换为：" + sm;

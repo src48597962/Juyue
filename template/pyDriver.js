@@ -1085,15 +1085,15 @@ let parse = {
                     playUrl = playUrl + playide;
                 }
             }else if($.type(playUrl) == "array"){
-                const httpArr = playUrl.filter(item => {
-                    return typeof item === 'string' && item.startsWith('http');
+                let httpArr = playUrl.filter(item => {
+                    return $.type(item) == 'string' && item.startsWith('http');
                 });
-                const otherArr = playUrl.filter(item => {
-                    return typeof item === 'string' && !item.startsWith('http');
+                let otherArr = playUrl.filter(item => {
+                    return $.type(item) == 'string' && !item.startsWith('http');
                 });
                 if(httpArr.length>0){
                     urls = httpArr;
-                    if(otherArr.length===httpArr.length){
+                    if(otherArr.length==httpArr.length){
                         names = otherArr;
                     }
                 }else{

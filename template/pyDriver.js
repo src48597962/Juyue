@@ -445,7 +445,7 @@ let parse = {
                     let isyiparse = pyset['yiparse'] || 0;
                     let stype = pyset['type'] || pySource.type || '未指定';
                     let isyifolder = juItemS.get('yifolder', 0);
-                    let isshowlog = getMyVar('showlog', '0');
+                    let isshowlog = getMyVar('showlog') || 0;
 
 
                     return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '子目录展示：'+(isyifolder?'主页':'新页面'), '显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
@@ -494,7 +494,7 @@ let parse = {
                         }else if(input.includes('日志')){
                             juItemS.clear('showlog');//临时
                             let sm;
-                            let isshowlog = getMyVar('showlog', '0');
+                            let isshowlog = getMyVar('showlog') || 0;
                             if(isshowlog){
                                 clearMyVar('showlog');
                                 sm = '关闭显示';
@@ -722,7 +722,7 @@ let parse = {
                     let fl = storage0.getMyVar('dianbo$筛选') || {};
                     let vodlists = [];
                     let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-                    let isshowlog = getMyVar('showlog', '0');
+                    let isshowlog = getMyVar('showlog') || 0;
                     
                     if(page==1){
                         let 分类 = [];
@@ -934,7 +934,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
-        let isshowlog = getMyVar('showlog', '0');
+        let isshowlog = getMyVar('showlog') || 0;
         if(isshowlog){
             log('获取detailContent>' + JSON.stringify(html));
         }
@@ -1026,7 +1026,7 @@ let parse = {
         let pyurl = pySource.url;
         let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
-        let isshowlog = getMyVar('showlog', '0');
+        let isshowlog = getMyVar('showlog') || 0;
         if(isshowlog){
             log('获取playerContent>' + JSON.stringify(play));
         }

@@ -512,14 +512,27 @@ let parse = {
                     title: "删除",
                     js: $.toString((pyurl, pyname) => {
                         return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
-                            deleteFile('file://' + pyurl);
-                            let pylists = storage0.getMyVar('pylists');
+                            let pylists = storage0.getMyVar('pylists') || $.require("jiekou").parse()._getpylist();
+                            let group = juItemS.get('sourceListGroup') || '全部';
+                            let grouppylist = group=='全部'?pylists:pylists.filter(it=>it.dir==group);
+                            let index = grouppylist.findIndex(v=>v.url==pyurl);
+                            if(index>-1){
+                                if(grouppylist.length>index+1){
+                                    juItemS.set('pySource', grouppylist[index+1]);
+                                }else if(grouppylist.length>1){
+                                    juItemS.set('pySource', grouppylist[index-1]);
+                                }else{
+                                    juItemS.clear('pySource');
+                                }
+                            }
+
                             pylists = pylists.filter(it=>it.url!=pyurl);
                             storage0.putMyVar('pylists', pylists);
-                            juItemS.clear('pySource');
+
                             let sourceSet = juItemS.get('sourceSet') || {};
                             delete sourceSet[pyname];
                             juItemS.set('sourceSet', sourceSet);
+                            deleteFile('file://' + pyurl);
                             
                             refreshPage(false);
                             return "toast://已删除当前py源";

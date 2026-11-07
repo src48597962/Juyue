@@ -517,11 +517,14 @@ let parse = {
                             let group = juItemS.get('sourceListGroup') || '全部';
                             let grouppylist = group=='全部'?pylists:pylists.filter(it=>it.dir==group);
                             let index = grouppylist.findIndex(v=>v.url==pyurl);
+                            let sm = '';
                             if(index>-1){
                                 if(grouppylist.length>index+1){
                                     juItemS.set('pySource', grouppylist[index+1]);
+                                    sm = '，已切到下一个';
                                 }else if(grouppylist.length>1){
                                     juItemS.set('pySource', grouppylist[index-1]);
+                                    sm = '，已切到上一个';
                                 }else{
                                     juItemS.clear('pySource');
                                 }
@@ -536,7 +539,7 @@ let parse = {
                             deleteFile('file://' + pyurl);
                             
                             refreshPage(false);
-                            return "toast://已删除当前py源";
+                            return "toast://已删除当前py源" + sm;
                         }, pyurl, pyname)
                     }, pyurl, pyname)
                 },{

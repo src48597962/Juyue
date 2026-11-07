@@ -587,6 +587,9 @@ let parse = {
         })*/
         return d;
     },
+    _sharfile: function(data){
+
+    },
     主页: function(){
         let d = [];
         let pyConfig = juItemS.getAll();
@@ -1018,6 +1021,7 @@ let parse = {
             return $.require("parseUrl").解析(play.url||url, {header: play.header});
         }
         let urls = [];
+        let names = [];
         let headers = [];
         let playUrl = play.url || play.playUrl;
         if(playUrl){
@@ -1081,7 +1085,20 @@ let parse = {
                     playUrl = playUrl + playide;
                 }
             }else if($.type(playUrl) == "array"){
-                urls = playUrl;
+                const httpArr = playUrl.filter(item => {
+                    return typeof item === 'string' && item.startsWith('http');
+                });
+                const otherArr = playUrl.filter(item => {
+                    return typeof item === 'string' && !item.startsWith('http');
+                });
+                if(httpArr.length>0){
+                    urls = httpArr;
+                    if(otherArr.length===httpArr.length){
+                        names = otherArr;
+                    }
+                }else{
+                    urls = playUrl;
+                }
             }
             
             if(!novel && play.header){
@@ -1119,6 +1136,7 @@ let parse = {
 
             if(headers.length>0 && urls.length>0){
                 return JSON.stringify({
+                    names: names.length==urls.length?names:undefined,
                     urls: urls,
                     headers: headers
                 }); 

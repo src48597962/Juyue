@@ -985,14 +985,15 @@ let parse = {
                 d.push(vodobj);
             }else if($.type(it.vod_id)=='string' && it.vod_id.startsWith('{')){
                 let vod = JSON.parse(it.vod_id);
-                vodobj.url = `web://`+vod.url+`'`;
-                /*$(vod.url + "#gameTheme#").rule(() => {
+                vodobj.url = $(vod.url + "#noRecordHistory##noHistory##gameTheme#").rule(() => {
                     let d = [];
                     d.push({
-
+                        url: MY_URL,
+                        desc: 'float&&100%',
+                        col_type: 'x5_webview_single'
                     })
                     setResult(d);
-                });*/
+                });
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

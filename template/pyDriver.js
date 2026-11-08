@@ -629,15 +629,15 @@ let parse = {
             return "toast://有效接口数为0，无法分享";
         }
         let gzip = $.require(libspath + "plugins/gzip.js");
-        let sharetxt = gzip.zip(JSON.stringify({id: this.id, data: sharelist}));
+        let sharetxt = gzip.zip(JSON.stringify(sharelist));
         let sharetxtlength = sharetxt.length;
         if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
             return "toast://超出字符最大限制，建议用云6或文件分享";
         }
 
         if(input=='云口令文件'){
-            let code = '聚阅子源@py合集￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
-            let sharefile = 'hiker://files/_cache/【聚阅子源】_py合集_'+sharelist.length+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
+            let code = '聚阅子源@py合集@'+this.id+'￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
+            let sharefile = 'hiker://files/_cache/【聚阅子源@py合集】_'+sharelist.length+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
             writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             if(fileExist(sharefile)){
                 return 'share://'+sharefile;

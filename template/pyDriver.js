@@ -630,7 +630,7 @@ let parse = {
             return "toast://有效接口数为0，无法分享";
         }
         let gzip = $.require(libspath + "plugins/gzip.js");
-        let sharetxt = gzip.zip(JSON.stringify({sourceid: this.id, sourcename: 'py合集', type: 'file', data: sharelist}));
+        let sharetxt = gzip.zip(JSON.stringify({sourceid: this.id, sourcename: 'py合集', type: 'file', pathkey: 'pypath', data: sharelist}));
         let sharetxtlength = sharetxt.length;
         if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
             return "toast://超出字符最大限制，建议用云6或文件分享";

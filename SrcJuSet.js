@@ -1593,7 +1593,6 @@ function importConfirm2() {
         clearMyVar("选择列表项");
     },importfile));
 
-    let sourcename;
     let importdatas = storage0.getMyVar('importConfirm', []);
     if(!getMyVar('importConfirm')){
         //云口令导入
@@ -1606,7 +1605,8 @@ function importConfirm2() {
             strs = strs.filter(v=>v&&v.includes('聚阅子源@'));
             strs.forEach(it=>{
                 try{
-                    sourcename = it.split('￥')[0].split('@')[1];
+                    let sourceid = it.split('￥')[0].split('@')[2];
+                    let sourcename = it.split('￥')[0].split('@')[1];
                     let code = aesDecode('Juyue', it.split('￥')[1]);
                     let text;
                     if(/^http|^云/.test(code)){//云分享
@@ -1620,6 +1620,8 @@ function importConfirm2() {
                         let imports = JSON.parse(sharetxt); 
                         imports.forEach(item=>{
                             if(!importdatas.some(v=>v.name==item.name)){
+                                item.sourceid = sourceid;
+                                item.sourcename = sourcename;
                                 importdatas.unshift(item);
                             }
                         })
@@ -1635,7 +1637,6 @@ function importConfirm2() {
         }
         storage0.putMyVar('importConfirm', importdatas);
     }
-    log(sourcename);
     log(importdatas);
     /*
     //获取现有接口

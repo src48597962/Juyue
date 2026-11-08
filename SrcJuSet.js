@@ -1635,6 +1635,8 @@ function importConfirm2() {
         }
         storage0.putMyVar('importConfirm', importdatas);
     }
+    log(sourcename);
+    log(importdatas);
     /*
     //获取现有接口
     let datalist = [];

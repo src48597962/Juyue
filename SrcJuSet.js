@@ -1607,6 +1607,7 @@ function importConfirm2() {
                 try{
                     let sourceid = it.split('￥')[0].split('@')[2];
                     let sourcename = it.split('￥')[0].split('@')[1];
+                    
                     let code = aesDecode('Juyue', it.split('￥')[1]);
                     let text;
                     if(/^http|^云/.test(code)){//云分享
@@ -1639,7 +1640,6 @@ function importConfirm2() {
     }
     log(importdatas);
     let d = [];
-    /*
     //获取现有接口
     let datalist = [];
     let sourcedata = fetch(jkfile);

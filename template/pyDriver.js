@@ -977,7 +977,8 @@ let parse = {
                 }, it.vod_id, {pySource: pySource}, yiparseF) : it.vod_id,
                 col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                 extra: {
-                    pySource: pySource
+                    pySource: pySource,
+                    noDetail: it.type=='browser'?1:undefined
                 }
             }
             if(it.vod_tag=='folder'){

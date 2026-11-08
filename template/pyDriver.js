@@ -985,15 +985,18 @@ let parse = {
                 d.push(vodobj);
             }else if($.type(it.vod_id)=='string' && it.vod_id.startsWith('{')){
                 let vod = JSON.parse(it.vod_id);
-                vodobj.url = $(vod.url + "#noRecordHistory##noHistory#").rule(() => {
-                    let d = [];
-                    d.push({
-                        url: MY_URL,
-                        desc: 'float&&100%',
-                        col_type: 'x5_webview_single'
-                    })
-                    setResult(d);
-                });
+                if(vod.type=='browser'){
+                    vodobj.url = $("hiker://empty###noRecordHistory##noHistory#").rule((url) => {
+                        let d = [];
+                        d.push({
+                            url: url,
+                            desc: 'float&&100%',
+                            col_type: 'x5_webview_single'
+                        })
+                        setResult(d);
+                    }, vod.url);
+                }
+                
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

@@ -546,9 +546,12 @@ let parse = {
                     }, pyurl, pyname)
                 },{
                     title: "分享",
-                    js: $.toString((pyurl) => {
-                        return 'share://file://'+ pyurl;
-                    }, pyurl)
+                    js: $.toString((pySource) => {
+                        let parse = $.require("jiekou").parse();
+                        return parse._sharfile([pySource]);
+                        
+                        //return 'share://file://'+ pySource.url;
+                    }, pySource)
                 },{
                     title: "改名",
                     js: $.toString((pySource) => {

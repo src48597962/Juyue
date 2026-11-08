@@ -651,7 +651,7 @@ let parse = {
             hideLoading();
             if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
                 log('剪贴板地址>'+pasteurl);
-                let code = '聚阅子源@py合集￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
+                let code = '聚阅子源@py合集@'+this.id+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
                 copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
                 return "toast://聚阅子源@py合集，分享口令已生成";
             }else{

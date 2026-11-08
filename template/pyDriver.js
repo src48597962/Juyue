@@ -977,12 +977,15 @@ let parse = {
                 }, it.vod_id, {pySource: pySource}, yiparseF) : it.vod_id,
                 col_type: it.col_type || (it.vod_pic?'movie_3':'text_2'),
                 extra: {
-                    pySource: pySource,
-                    noDetail: it.type=='browser'?1:undefined
+                    pySource: pySource
                 }
             }
             if(it.vod_tag=='folder'){
                 vodobj.url = folderlistF(it.vod_id, this._vodlistsF, isyifolder);
+                d.push(vodobj);
+            }else if($.type(it.vod_id)=='object'){
+                let vod_id = it.vod_id;
+                vodobj.url = vod_id.url;
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

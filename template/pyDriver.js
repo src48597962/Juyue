@@ -985,7 +985,7 @@ let parse = {
                 d.push(vodobj);
             }else if($.type(it.vod_id)=='string' && it.vod_id.startsWith('{')){
                 let vod = JSON.parse(it.vod_id);
-                vodobj.url = `vod.url@lazyRule=.js:'x5://input'`
+                vodobj.url = `hiker://empty@lazyRule=.js:'x5://`+vod.url
                 /*$(vod.url + "#gameTheme#").rule(() => {
                     let d = [];
                     d.push({

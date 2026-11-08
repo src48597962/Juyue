@@ -547,10 +547,17 @@ let parse = {
                 },{
                     title: "分享",
                     js: $.toString((pySource) => {
-                        let parse = $.require("jiekou").parse();
-                        return parse._sharfile([pySource]);
-                        
-                        //return 'share://file://'+ pySource.url;
+                        let pastes = getPastes();
+                        pastes.push('云口令文件');
+                        pastes.push('py原始文件');
+                        return $(pastes,2).select((pySource)=>{
+                            if(input=='py原始文件'){
+                                return 'share://file://'+ pySource.url;
+                            }else{
+                                let parse = $.require("jiekou").parse();
+                                return parse._sharfile(input, [pySource]);
+                            }
+                        }, pySource)
                     }, pySource)
                 },{
                     title: "改名",
@@ -609,7 +616,7 @@ let parse = {
         })*/
         return d;
     },
-    _sharfile: function(datalist){
+    _sharfile: function(input, datalist){
         datalist = datalist || [];
         let sharelist = [];
         datalist.forEach(it=>{

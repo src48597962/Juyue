@@ -980,13 +980,12 @@ let parse = {
                     pySource: pySource
                 }
             }
-            log($.type(it.vod_id));
             if(it.vod_tag=='folder'){
                 vodobj.url = folderlistF(it.vod_id, this._vodlistsF, isyifolder);
                 d.push(vodobj);
-            }else if($.type(it.vod_id)=='object'){
-                let vod_id = it.vod_id;
-                vodobj.url = vod_id.url;
+            }else if($.type(it.vod_id)=='string' && it.vod_id.startsWith('{')){
+                let vod = JSON.parse(it.vod_id);
+                vodobj.url = vod.url;
                 d.push(vodobj);
             }else{
                 d.push(toerji(vodobj));

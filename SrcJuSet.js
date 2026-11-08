@@ -1638,6 +1638,7 @@ function importConfirm2() {
         storage0.putMyVar('importConfirm', importdatas);
     }
     log(importdatas);
+    let d = [];
     /*
     //获取现有接口
     let datalist = [];
@@ -1671,7 +1672,7 @@ function importConfirm2() {
     let oldnum = importdatas.length - newdatas.length;
     let Color = getItem('主题颜色','#3399cc');
 
-    let d = [];
+    
     if(isDarkMode() || getItem('不显示沉浸图')=='1'){
         for(let i=0;i<2;i++){
             d.push({

@@ -793,7 +793,7 @@ let parse = {
                         } else {
                             let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
                             if(isshowlog){
-                                log('获取homeContent>' + JSON.stringify(home));
+                                log('获取主页分类>' + JSON.stringify(home));
                             }
                             分类 = home['class'] || [];
                             筛选 = home['filters'];
@@ -802,7 +802,7 @@ let parse = {
                                 if(推荐.length==0){
                                     let homeVideo = PythonHiker.runPyGetReuslt(pyurl, "homeVideoContent") || {};
                                     if(isshowlog){
-                                        log('获取homeVideoContent>' + JSON.stringify(homeVideo));
+                                        log('获取主页列表>' + JSON.stringify(homeVideo));
                                     }
                                     推荐 = homeVideo['list'] || [];
                                 }
@@ -900,7 +900,7 @@ let parse = {
                         fl.typeid = fl.folderid || cate_id;
                         let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", fl.typeid, PythonHiker.toInt(page), true, PythonHiker.toPyJson(fl));
                         if(isshowlog){
-                            log('获取categoryContent>' + JSON.stringify(json));
+                            log('获取分类列表>' + JSON.stringify(json));
                         }
                         vodlists = json.list || [];
                     }
@@ -950,6 +950,10 @@ let parse = {
                     let cate_id = url;
                     let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
                     let json = PythonHiker.runPyGetReuslt(pyurl, "categoryContent", cate_id, PythonHiker.toInt(MY_PAGE), true, PythonHiker.toPyJson({}));
+                    let isshowlog = getMyVar('showlog') || 0;
+                    if(isshowlog){
+                        log('获取分类列表>' + JSON.stringify(json));
+                    }
                     let vodlists = json.list || [];
                     let d = _vodlistsF(pySource, vodlists);
                     setResult(d);
@@ -992,7 +996,7 @@ let parse = {
         let html = PythonHiker.runPyGetReuslt(pyurl, "detailContent", PythonHiker.toPyJson([url]));
         let isshowlog = getMyVar('showlog') || 0;
         if(isshowlog){
-            log('获取detailContent>' + JSON.stringify(html));
+            log('获取二级内容>' + JSON.stringify(html));
         }
         let list = html.list || [];
         let json = list.length>0?list[0]:{};
@@ -1084,7 +1088,7 @@ let parse = {
         let play = PythonHiker.runPyGetReuslt(pyurl, "playerContent", this.dataObj.line, url, PythonHiker.toPyJson([]));
         let isshowlog = getMyVar('showlog') || 0;
         if(isshowlog){
-            log('获取playerContent>' + JSON.stringify(play));
+            log('获取播放解析>' + JSON.stringify(play));
         }
         let novel;
         if(play.jx=='1' || play.parse=='1'){
@@ -1133,7 +1137,7 @@ let parse = {
                     try{
                         let res = PythonHiker.runPyGetReuslt(pyurl, "localProxy", paramObj);
                         if(isshowlog){
-                            log('获取localProxy>' + JSON.stringify(res));
+                            log('获取播放代理>' + JSON.stringify(res));
                         }
                         if(res[0]==200){
                             let pym3u8 = 'hiker://files/_cache/py/proxy.m3u8';

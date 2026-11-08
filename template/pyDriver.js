@@ -621,8 +621,9 @@ let parse = {
         let sharelist = [];
         datalist.forEach(it=>{
             sharelist.push({
-                name: it.name,
-                pystr: fetch('file://' + it.url)
+                name: it.name + '.py',
+                dir: it.dir,
+                filestr: fetch('file://' + it.url)
             })
         })
         if(sharelist.length==0){

@@ -630,14 +630,14 @@ let parse = {
             return "toast://有效接口数为0，无法分享";
         }
         let gzip = $.require(libspath + "plugins/gzip.js");
-        let sharetxt = gzip.zip(JSON.stringify(sharelist));
+        let sharetxt = gzip.zip(JSON.stringify({sourceid: this.id, sourcename: 'py合集', type: 'file', data: sharelist}));
         let sharetxtlength = sharetxt.length;
         if(sharetxtlength>200000 && /云剪贴板2|云剪贴板5|云剪贴板9|云剪贴板10/.test(input)){
             return "toast://超出字符最大限制，建议用云6或文件分享";
         }
 
         if(input=='云口令文件'){
-            let code = '聚阅子源@py合集@'+this.id+'￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
+            let code = '聚阅子源@py合集￥' + aesEncode('Juyue', sharetxt) + '￥云口令文件';
             let sharefile = 'hiker://files/_cache/【聚阅子源@py合集】_'+sharelist.length+'_'+$.dateFormat(new Date(),"HHmmss")+'.hiker';
             writeFile(sharefile, '云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
             if(fileExist(sharefile)){
@@ -651,8 +651,7 @@ let parse = {
             let pasteurl = sharePaste(sharetxt, input);
             hideLoading();
             if(/^http|^云/.test(pasteurl) && pasteurl.includes('/')){
-                log('剪贴板地址>'+pasteurl);
-                let code = '聚阅子源@py合集@'+this.id+'￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
+                let code = '聚阅子源@py合集￥'+aesEncode('Juyue', pasteurl)+'￥' + sm2 + (input?'('+input.replace('剪贴板','')+')':'');
                 copy('云口令：'+code+`@import=js:$.require("hiker://page/import?rule=聚阅");`);
                 return "toast://聚阅子源@py合集，分享口令已生成";
             }else{

@@ -1605,9 +1605,7 @@ function importConfirm2() {
             strs = strs.filter(v=>v&&v.includes('聚阅子源@'));
             strs.forEach(it=>{
                 try{
-                    let sourceid = it.split('￥')[0].split('@')[2];
                     let sourcename = it.split('￥')[0].split('@')[1];
-                    
                     let code = aesDecode('Juyue', it.split('￥')[1]);
                     let text;
                     if(/^http|^云/.test(code)){//云分享
@@ -1619,13 +1617,19 @@ function importConfirm2() {
                         let gzip = $.require(libspath + "plugins/gzip.js");
                         let sharetxt = gzip.unzip(text);
                         let imports = JSON.parse(sharetxt); 
-                        imports.forEach(item=>{
-                            if(!importdatas.some(v=>v.name==item.name)){
-                                item.sourceid = sourceid;
-                                item.sourcename = sourcename;
-                                importdatas.unshift(item);
-                            }
-                        })
+                        let sourceid = imports.sourceid;
+                        if(imports.type=='file'&&imports.pathkey){
+                            let filepath = juItemS.get(imports.pathkey,'',sourceid) + '新导入/' + (imports.dir=='root'?'':imports.dir+'/');
+                            imports.data.forEach(item=>{
+                                if(!importdatas.some(v=>v.name==item.name)){
+                                    item.sourceid = sourceid;
+                                    item.sourcename = sourcename;
+                                    item.path = filepath;
+                                    importdatas.unshift(item);
+                                }
+                            })
+                        }
+                        
                     }
                 } catch (e) {
                     log("聚阅子源：获取口令数据出错>" + e.message);
@@ -1874,6 +1878,5 @@ function importConfirm2() {
             }
         });
     })
-*/
     setResult(d);
 }

@@ -1698,7 +1698,7 @@ function importConfirm2() {
         title: '待导入列表',
         col_type: "rich_text"
     });
-    importlist.forEach(it=>{
+    importdatas.forEach(it=>{
         d.push({
             title: it.name,
             desc: it.sourcename,

@@ -980,6 +980,7 @@ let parse = {
                     pySource: pySource
                 }
             }
+            log($.type(it.vod_id));
             if(it.vod_tag=='folder'){
                 vodobj.url = folderlistF(it.vod_id, this._vodlistsF, isyifolder);
                 d.push(vodobj);

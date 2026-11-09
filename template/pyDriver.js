@@ -219,7 +219,7 @@ let parse = {
                             return 'toast://' + '主页源已设置为：' + input;
                         },
                         menuClick(manage) {
-                            let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测文件"];
+                            let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测文件", "分享列表文件"];
                             hikerPop.selectCenter({
                                 options: menuarr,
                                 columns: 2,
@@ -429,6 +429,14 @@ let parse = {
                                                 storage0.putMyVar("批量检测_py待检列表", errors);
                                             }
                                         })
+                                    } else if (i === 5) {
+                                        pop.dismiss();
+                                        let pastes = getPastes();
+                                        pastes.push('云口令文件');
+                                        return $(pastes,2).select((tmpList)=>{
+                                            let parse = $.require("jiekou").parse();
+                                            return parse._sharfile(input, tmpList);
+                                        }, tmpList)
                                     }
                                 }
                             });

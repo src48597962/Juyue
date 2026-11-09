@@ -1689,7 +1689,7 @@ function importConfirm2() {
             })
 
             back(false);
-            return "toast://"+Object.entries(importnum).map(([k,v]) => `${k}导入${v}`).join(',');
+            return "toast://聚阅子源："+Object.entries(importnum).map(([k,v]) => `${k}导入${v}`).join(',');
         }),
         col_type: 'text_center_1',
         extra: {
@@ -1697,7 +1697,7 @@ function importConfirm2() {
         }
     });
     d.push({
-        col_type: "line"
+        col_type: "blank_block"
     });
     importdatas.forEach(it=>{
         d.push({

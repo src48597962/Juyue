@@ -1697,7 +1697,7 @@ function importConfirm2() {
         }
     });
     d.push({
-        col_type: "blank_block"
+        col_type: "line_blank"
     });
     importdatas.forEach(it=>{
         d.push({

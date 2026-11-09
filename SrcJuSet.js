@@ -1584,12 +1584,7 @@ function importConfirm(importStr) {
 
     setResult(d);
 }
-// 文件导入方法
-function importfile(datalist) {
-    datalist.forEach(it=>{
-        writeFile(it.path+it.name, it.filestr);
-    })
-}
+
 // 云口令子源导入确认页
 function importConfirm2() {
     let importfile = "hiker://files/_cache/Juyue/cloudimport2.txt";
@@ -1686,17 +1681,23 @@ function importConfirm2() {
         title: "““””<big><b><font color="+Color+">📲 聚阅子源导入  </font></b></big>",
         desc: "共计" + importdatas.length + "/新增" + newdatas.length + "/存在" + oldnum ,
         url: $('').lazyRule(() => {
-            require(config.聚阅.replace(/[^/]*$/,'') + 'SrcJuSet.js');
             let importlist = storage0.getMyVar('importConfirm', []).filter(v=>v.type=='file');
-            importfile(importlist);
+            let importnum = {};
+            importlist.forEach(it=>{
+                importnum[it.sourcename] = (importnum[it.sourcename] || 0) + 1;
+                writeFile(it.path+it.name, it.filestr);
+            })
+
             back(false);
-            return "toast://导入"+importlist.length;
+            return "toast://"+Object.entries(importnum).map(([k,v]) => `${k}导入${v}`).join(',');
         }),
-        col_type: 'text_center_1'
+        col_type: 'text_center_1',
+        extra: {
+            lineVisible: false
+        }
     });
     d.push({
-        title: '待导入列表',
-        col_type: "rich_text"
+        col_type: "line"
     });
     importdatas.forEach(it=>{
         d.push({

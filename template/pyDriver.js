@@ -99,529 +99,533 @@ let parse = {
             toast('已默认第1个py为当前源');
             this._clearMyVar();
         }
-        
-        let d = [];
+        let leftUrl = $('#noLoading#').lazyRule(() => {
+            let nowtime = Date.now();
+            let oldtime = parseInt(getMyVar('切源时间','0'))||0;
+            if(nowtime < (oldtime + 1 * 1000)){
+                return 'hiker://empty';//节流
+            }
+            putMyVar('切源时间', nowtime + '');
+            
+            let parse = $.require("jiekou").parse();
+            let sourceList = parse._getpylist();
+            let tmpList = [];
 
+            const hikerPop = $.require(libspath + "plugins/hikerPop.js");
+            hikerPop.setUseStartActivity(false);
 
-        let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
-        //let ui = $.require("Api?rule=原生组件工坊");
-        let rows = ui.actionBar(
-            {
-            left: {
-                title: (pyname||'选择py源') + (pylists?'「' + pylists.length+'」':''),
-                icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
-                url: $('#noLoading#').lazyRule(() => {
-                    let nowtime = Date.now();
-                    let oldtime = parseInt(getMyVar('切源时间','0'))||0;
-                    if(nowtime < (oldtime + 1 * 1000)){
-                        return 'hiker://empty';//节流
-                    }
-                    putMyVar('切源时间', nowtime + '');
-                    
-                    let parse = $.require("jiekou").parse();
-                    let sourceList = parse._getpylist();
-                    let tmpList = [];
-
-                    const hikerPop = $.require(libspath + "plugins/hikerPop.js");
-                    hikerPop.setUseStartActivity(false);
-
-                    let sourceName = "";
-                    let pyConfig = juItemS.getAll();
-                    let pySource = pyConfig.pySource || {};
-                    let index = sourceList.findIndex(v=>v.url==pySource.url);
-                    if(index>-1){
-                        sourceName = pySource.name;
-                        sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
-                    }
-                    let sourceListGroup = pyConfig.sourceListGroup || '全部';
-                    let spen = pyConfig.selectBottomRescolumns || 2;
-                    let inputBox;
-                    let pop = hikerPop.selectBottomRes({
-                        options: [],
-                        columns: spen,
-                        title: "当前:" + (sourceName||"未选择"),
-                        noAutoDismiss: true,
-                        toPosition: -1,
-                        extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
-                            hint: "输入py源关键字筛选",
-                            title: sourceListGroup,
-                            onChange(s, manage) {
-                                putMyVar("SrcJu_pysourceListFilter", s);
-                                tmpList = (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup)).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+            let sourceName = "";
+            let pyConfig = juItemS.getAll();
+            let pySource = pyConfig.pySource || {};
+            let index = sourceList.findIndex(v=>v.url==pySource.url);
+            if(index>-1){
+                sourceName = pySource.name;
+                sourceList[index].name = `‘‘’’<strong><font color="`+getItem('主题颜色','#6dc9ff')+`">`+sourceList[index].name+`</front></strong>`;
+            }
+            let sourceListGroup = pyConfig.sourceListGroup || '全部';
+            let spen = pyConfig.selectBottomRescolumns || 2;
+            let inputBox;
+            let pop = hikerPop.selectBottomRes({
+                options: [],
+                columns: spen,
+                title: "当前:" + (sourceName||"未选择"),
+                noAutoDismiss: true,
+                toPosition: -1,
+                extraInputBox: (inputBox = new hikerPop.ResExtraInputBox({
+                    hint: "输入py源关键字筛选",
+                    title: sourceListGroup,
+                    onChange(s, manage) {
+                        putMyVar("SrcJu_pysourceListFilter", s);
+                        tmpList = (sourceListGroup=='全部'?sourceList:sourceList.filter(x => x.dir==sourceListGroup)).filter(x => x.name.toLowerCase().includes(s.toLowerCase()));
+                        manage.list.length = 0;
+                        tmpList.forEach((x) => {
+                            manage.list.push(x.name);
+                        });
+                        manage.change();
+                        if(s==''){
+                            manage.setTitle("当前:" + (sourceName||"未选择") + "  " + sourceListGroup + ":" + tmpList.length);
+                            let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                            if(index2>-1){
+                                manage.scrollToPosition(index2, false);
+                            }
+                        }
+                    },
+                    defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
+                    click(s, manage) {
+                        function uniqueArr(arr) {
+                            let res = [];
+                            for (let v of arr) {
+                                if (res.indexOf(v) === -1) res.push(v);
+                            }
+                            return res;
+                        }
+                        let groupnames = uniqueArr(sourceList.map(v=>v.dir));
+                        let selects = ['全部'].concat(groupnames);
+                        hikerPop.selectCenter({
+                            options: selects, 
+                            columns: 3, 
+                            title: "切换源子目录", 
+                            position: groupnames.indexOf(s),
+                            click(s) {
+                                inputBox.setTitle(s);
+                                inputBox.setDefaultValue("");
+                                juItemS.set('sourceListGroup', s);
+                                sourceListGroup = s;
+                                tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
                                 manage.list.length = 0;
                                 tmpList.forEach((x) => {
                                     manage.list.push(x.name);
                                 });
                                 manage.change();
-                                if(s==''){
-                                    manage.setTitle("当前:" + (sourceName||"未选择") + "  " + sourceListGroup + ":" + tmpList.length);
-                                    let index2 = tmpList.findIndex(v=>v.url==pySource.url);
-                                    if(index2>-1){
-                                        manage.scrollToPosition(index2, false);
-                                    }
+                                manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
+                                let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                                if(index2>-1){
+                                    manage.scrollToPosition(index2, false);
                                 }
-                            },
-                            defaultValue: getMyVar("SrcJu_pysourceListFilter", ""),
-                            click(s, manage) {
-                                function uniqueArr(arr) {
-                                    let res = [];
-                                    for (let v of arr) {
-                                        if (res.indexOf(v) === -1) res.push(v);
-                                    }
-                                    return res;
-                                }
-                                let groupnames = uniqueArr(sourceList.map(v=>v.dir));
-                                let selects = ['全部'].concat(groupnames);
+                            }
+                        });
+                    },
+                    titleVisible: true
+                })),
+                longClick(s, i, manage) {
+                    
+                },
+                click(s, i, manage) {
+                    pop.dismiss();
+                    let input = s.replace(/[’‘]|<[^>]*>/g, "");
+                    if(s==tmpList[i].name){
+                        tmpList[i].name = input;
+                    }
+                    let sourceSet = juItemS.get('sourceSet') || {};
+                    let pyset = sourceSet[input] || {};
+                    pyset['sort'] = (pyset['sort'] || 0) + 1;
+                    sourceSet[input] = pyset;
+                    juItemS.set('sourceSet', sourceSet);
+                    juItemS.set('pySource', tmpList[i]);
+                    parse._clearMyVar();
+                    refreshPage(true);
+                    
+                    return 'toast://' + '主页源已设置为：' + input;
+                },
+                menuClick(manage) {
+                    let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测文件", "分享列表文件"];
+                    hikerPop.selectCenter({
+                        options: menuarr,
+                        columns: 2,
+                        title: "请选择",
+                        click(s, i) {
+                            if (i === 0) {
+                                spen = spen == 3 ? 2 : 3;
+                                juItemS.set('selectBottomRescolumns', spen);
+                                manage.changeColumns(spen);
+                                manage.scrollToPosition(index, false);
+                            } else if (i === 1) {
+                                let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序'];
+                                let sourceSort = juItemS.get('sourceSort', 0);
                                 hikerPop.selectCenter({
-                                    options: selects, 
-                                    columns: 3, 
-                                    title: "切换源子目录", 
-                                    position: groupnames.indexOf(s),
-                                    click(s) {
-                                        inputBox.setTitle(s);
-                                        inputBox.setDefaultValue("");
-                                        juItemS.set('sourceListGroup', s);
-                                        sourceListGroup = s;
-                                        tmpList = s=='全部'?sourceList:sourceList.filter(x => x.dir==s);
-                                        manage.list.length = 0;
-                                        tmpList.forEach((x) => {
-                                            manage.list.push(x.name);
+                                    options: sortlist,
+                                    columns: 1,
+                                    title: "选择排序方式",
+                                    position: sourceSort,
+                                    click(a, i) {
+                                        pop.dismiss();
+                                        juItemS.set('sourceSort', i);
+                                        hikerPop.runOnNewThread(() => {
+                                            return 'toast://列表排序设置为:' + a;
                                         });
-                                        manage.change();
-                                        manage.setTitle("当前:" + (sourceName||"未选择") + "  " + s + ":" + tmpList.length);
-                                        let index2 = tmpList.findIndex(v=>v.url==pySource.url);
-                                        if(index2>-1){
-                                            manage.scrollToPosition(index2, false);
-                                        }
                                     }
                                 });
-                            },
-                            titleVisible: true
-                        })),
-                        longClick(s, i, manage) {
-                            
-                        },
-                        click(s, i, manage) {
-                            pop.dismiss();
-                            let input = s.replace(/[’‘]|<[^>]*>/g, "");
-                            if(s==tmpList[i].name){
-                                tmpList[i].name = input;
-                            }
-                            let sourceSet = juItemS.get('sourceSet') || {};
-                            let pyset = sourceSet[input] || {};
-                            pyset['sort'] = (pyset['sort'] || 0) + 1;
-                            sourceSet[input] = pyset;
-                            juItemS.set('sourceSet', sourceSet);
-                            juItemS.set('pySource', tmpList[i]);
-                            parse._clearMyVar();
-                            refreshPage(true);
-                            
-                            return 'toast://' + '主页源已设置为：' + input;
-                        },
-                        menuClick(manage) {
-                            let menuarr = ["改变列表样式", "改变排序方式", "更新目录缓存", "更换目录路径", "批量检测文件", "分享列表文件"];
-                            hikerPop.selectCenter({
-                                options: menuarr,
-                                columns: 2,
-                                title: "请选择",
-                                click(s, i) {
-                                    if (i === 0) {
-                                        spen = spen == 3 ? 2 : 3;
-                                        juItemS.set('selectBottomRescolumns', spen);
-                                        manage.changeColumns(spen);
-                                        manage.scrollToPosition(index, false);
-                                    } else if (i === 1) {
-                                        let sortlist = ['按文件时间排序', '按文件名称排序', '按使用频率排序'];
-                                        let sourceSort = juItemS.get('sourceSort', 0);
-                                        hikerPop.selectCenter({
-                                            options: sortlist,
-                                            columns: 1,
-                                            title: "选择排序方式",
-                                            position: sourceSort,
-                                            click(a, i) {
-                                                pop.dismiss();
-                                                juItemS.set('sourceSort', i);
-                                                hikerPop.runOnNewThread(() => {
-                                                    return 'toast://列表排序设置为:' + a;
+                            } else if (i === 2) {
+                                pop.dismiss();
+                                clearMyVar('pylists');
+                                return 'toast://已更新目录缓存';
+                            } else if (i === 3) {
+                                pop.dismiss();
+                                clearMyVar('pylists');
+                                juItemS.clear('pypath');
+                                juItemS.clear('pySource');
+                                refreshPage(false);
+                            } else if (i === 4) {
+                                pop.dismiss();
+                                let index2 = tmpList.findIndex(v=>v.url==pySource.url);
+                                if(index2>-1){
+                                    tmpList[index2].name = tmpList[index2].name.replace(/[’‘]|<[^>]*>/g, "");
+                                }
+                                storage0.putMyVar('批量检测_py待检列表', tmpList);//写入待检测源
+                                return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
+                                    addListener("onClose", $.toString(() => {
+                                        clearMyVar("批量检测_py待检列表");
+                                        putMyVar('批量检测中止', '1');
+                                    }));
+                                    clearMyVar('批量检测中止');
+                                    setPageTitle('批量检测py文件');
+
+                                    let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
+                                    let d = [];
+                                    d.push({
+                                        title: '批量检测中',
+                                        desc: '待检测源：' + checkSourceList.length,
+                                        col_type: 'text_center_1',
+                                        url: 'hiker://empty',
+                                        extra: {
+                                            id: 'checkLoading'
+                                        }
+                                    });
+                                    setResult(d);
+                                    
+                                    // 测试
+                                    function getTestData(pySource) {
+                                        let pyurl = pySource.url;
+                                        let message = '';
+                                        try {
+                                            let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
+                                            let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
+                                            let 分类 = home['class'] || [];
+                                            if (分类.length > 0) {
+                                                message = '分类获取正常';
+                                                return {
+                                                    error: 0,
+                                                    message: message
+                                                };//测试，返回成功
+                                            }else{
+                                                message = '分类获取失败';
+                                            }
+                                        } catch (e) {
+                                            message = e.message;
+                                        }
+                                        return {
+                                            error: 1,
+                                            message: message
+                                        };//最后返回失败
+                                    }
+
+                                    function dataItem(it){
+                                        let selectmenu = ["删除", "跳过"];
+                                        return {
+                                            title: it.name,
+                                            url: $(selectmenu, 2).select((data) => {
+                                                data = JSON.parse(base64Decode(data));
+                                                if (input == "删除") {
+                                                    return $("确定删除："+data.name).confirm((data)=>{
+                                                        let pyurl = data.url;
+                                                        let pyname = data.name;
+                                                        deleteFile('file://' + pyurl);
+                                                        let sourceSet = juItemS.get('sourceSet') || {};
+                                                        delete sourceSet[pyname];
+                                                        juItemS.set('sourceSet', sourceSet);
+                                                        deleteItem('data_' + data.dir + '_' + data.name);
+                                                        let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                        checkList = checkList.filter(v=>v.url != data.url);
+                                                        storage0.putMyVar("批量检测_py待检列表", checkList);
+                                                        clearMyVar('pylists');
+                                                        return 'toast://已删除:'+data.name;
+                                                    }, data)
+                                                } else if (input == "跳过") {
+                                                    deleteItem('data_' + data.dir + '_' + data.name);
+                                                    let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                    checkList = checkList.filter(v=>v.url != data.url);
+                                                    storage0.putMyVar("批量检测_py待检列表", checkList);
+                                                    return 'toast://已跳过';
+                                                }
+                                            }, base64Encode(JSON.stringify(it))),
+                                            desc: '',
+                                            img: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
+                                            col_type: "icon_1_left_pic",
+                                            extra: {
+                                                id: 'test_' + it.dir + '_' + it.name
+                                            }
+                                        };
+                                    }
+                                    let task = function (item) {
+                                        return (function() {
+                                            let result = getTestData(item);
+                                            return {item:item, result:result};
+                                        })();
+                                    }
+
+                                    let list = checkSourceList.map((item) => {
+                                        return {
+                                            func: task,
+                                            param: item,
+                                            id: item.url
+                                        }
+                                    });
+
+                                    if (list.length > 0) {
+                                        showLoading('检测中，不要息屏，不要退出');
+                                        let checks = 0;
+                                        let errors = [];
+                                        be(list, {
+                                            func: function (obj, id, error, taskResult) {
+                                                checks++;
+                                                let result = taskResult.result;
+                                                if(result.error){
+                                                    errors.push(taskResult.item);
+                                                    let item = dataItem(taskResult.item);
+                                                    item.desc = result.message;
+                                                    addItemAfter('checkLoading', item);
+                                                }
+                                                updateItem('checkLoading', {
+                                                    title: '批量检测中，点击可中止',
+                                                    desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                                    url: $("#noLoading#").lazyRule(()=>{
+                                                        showLoading('拦截中');
+                                                        putMyVar('批量检测中止', '1');
+                                                        return "hiker://emtpy";
+                                                    })
                                                 });
+                                                if(getMyVar('批量检测中止', '0') == '1'){
+                                                    return "break";
+                                                }
+                                            },
+                                            param: {
                                             }
                                         });
-                                    } else if (i === 2) {
-                                        pop.dismiss();
-                                        clearMyVar('pylists');
-                                        return 'toast://已更新目录缓存';
-                                    } else if (i === 3) {
-                                        pop.dismiss();
-                                        clearMyVar('pylists');
-                                        juItemS.clear('pypath');
-                                        juItemS.clear('pySource');
-                                        refreshPage(false);
-                                    } else if (i === 4) {
-                                        pop.dismiss();
-                                        let index2 = tmpList.findIndex(v=>v.url==pySource.url);
-                                        if(index2>-1){
-                                            tmpList[index2].name = tmpList[index2].name.replace(/[’‘]|<[^>]*>/g, "");
-                                        }
-                                        storage0.putMyVar('批量检测_py待检列表', tmpList);//写入待检测源
-                                        return $("hiker://empty#noRecordHistory##noHistory##noRefresh#").rule(() => {
-                                            addListener("onClose", $.toString(() => {
-                                                clearMyVar("批量检测_py待检列表");
-                                                putMyVar('批量检测中止', '1');
-                                            }));
-                                            clearMyVar('批量检测中止');
-                                            setPageTitle('批量检测py文件');
-
-                                            let checkSourceList = storage0.getMyVar("批量检测_py待检列表") || [];
-                                            let d = [];
-                                            d.push({
-                                                title: '批量检测中',
-                                                desc: '待检测源：' + checkSourceList.length,
-                                                col_type: 'text_center_1',
-                                                url: 'hiker://empty',
-                                                extra: {
-                                                    id: 'checkLoading'
+                                        updateItem('checkLoading', {
+                                            title: '点击复检，'+errors.length+'个疑似失效',
+                                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
+                                            url: $("#noLoading#").lazyRule((error)=>{
+                                                if(error==0){
+                                                    return 'toast://没有失效源';
                                                 }
-                                            });
-                                            setResult(d);
-                                            
-                                            // 测试
-                                            function getTestData(pySource) {
-                                                let pyurl = pySource.url;
-                                                let message = '';
-                                                try {
-                                                    let PythonHiker = $.require(codePath + "plugins/PythonHiker.js");
-                                                    let home = PythonHiker.runPyGetReuslt(pyurl, "homeContent", true);
-                                                    let 分类 = home['class'] || [];
-                                                    if (分类.length > 0) {
-                                                        message = '分类获取正常';
-                                                        return {
-                                                            error: 0,
-                                                            message: message
-                                                        };//测试，返回成功
-                                                    }else{
-                                                        message = '分类获取失败';
-                                                    }
-                                                } catch (e) {
-                                                    message = e.message;
-                                                }
-                                                return {
-                                                    error: 1,
-                                                    message: message
-                                                };//最后返回失败
-                                            }
-
-                                            function dataItem(it){
-                                                let selectmenu = ["删除", "跳过"];
-                                                return {
-                                                    title: it.name,
-                                                    url: $(selectmenu, 2).select((data) => {
-                                                        data = JSON.parse(base64Decode(data));
-                                                        if (input == "删除") {
-                                                            return $("确定删除："+data.name).confirm((data)=>{
+                                                refreshPage(true);
+                                                return 'hiker://empty';
+                                            },errors.length),
+                                            extra: {
+                                                longClick: [{
+                                                    title: "全部删除",
+                                                    js: $.toString(() => {
+                                                        return $("确定全部删除？").confirm(()=>{
+                                                            let checkList = storage0.getMyVar("批量检测_py待检列表");
+                                                            let sourceSet = juItemS.get('sourceSet') || {};
+                                                            checkList.forEach(data=>{
                                                                 let pyurl = data.url;
                                                                 let pyname = data.name;
                                                                 deleteFile('file://' + pyurl);
-                                                                let sourceSet = juItemS.get('sourceSet') || {};
                                                                 delete sourceSet[pyname];
-                                                                juItemS.set('sourceSet', sourceSet);
-                                                                deleteItem('data_' + data.dir + '_' + data.name);
-                                                                let checkList = storage0.getMyVar("批量检测_py待检列表");
-                                                                checkList = checkList.filter(v=>v.url != data.url);
-                                                                storage0.putMyVar("批量检测_py待检列表", checkList);
-                                                                clearMyVar('pylists');
-                                                                return 'toast://已删除:'+data.name;
-                                                            }, data)
-                                                        } else if (input == "跳过") {
-                                                            deleteItem('data_' + data.dir + '_' + data.name);
-                                                            let checkList = storage0.getMyVar("批量检测_py待检列表");
-                                                            checkList = checkList.filter(v=>v.url != data.url);
-                                                            storage0.putMyVar("批量检测_py待检列表", checkList);
-                                                            return 'toast://已跳过';
-                                                        }
-                                                    }, base64Encode(JSON.stringify(it))),
-                                                    desc: '',
-                                                    img: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
-                                                    col_type: "icon_1_left_pic",
-                                                    extra: {
-                                                        id: 'test_' + it.dir + '_' + it.name
-                                                    }
-                                                };
-                                            }
-                                            let task = function (item) {
-                                                return (function() {
-                                                    let result = getTestData(item);
-                                                    return {item:item, result:result};
-                                                })();
-                                            }
-
-                                            let list = checkSourceList.map((item) => {
-                                                return {
-                                                    func: task,
-                                                    param: item,
-                                                    id: item.url
-                                                }
-                                            });
-
-                                            if (list.length > 0) {
-                                                showLoading('检测中，不要息屏，不要退出');
-                                                let checks = 0;
-                                                let errors = [];
-                                                be(list, {
-                                                    func: function (obj, id, error, taskResult) {
-                                                        checks++;
-                                                        let result = taskResult.result;
-                                                        if(result.error){
-                                                            errors.push(taskResult.item);
-                                                            let item = dataItem(taskResult.item);
-                                                            item.desc = result.message;
-                                                            addItemAfter('checkLoading', item);
-                                                        }
-                                                        updateItem('checkLoading', {
-                                                            title: '批量检测中，点击可中止',
-                                                            desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
-                                                            url: $("#noLoading#").lazyRule(()=>{
-                                                                showLoading('拦截中');
-                                                                putMyVar('批量检测中止', '1');
-                                                                return "hiker://emtpy";
                                                             })
-                                                        });
-                                                        if(getMyVar('批量检测中止', '0') == '1'){
-                                                            return "break";
-                                                        }
-                                                    },
-                                                    param: {
-                                                    }
-                                                });
-                                                updateItem('checkLoading', {
-                                                    title: '点击复检，'+errors.length+'个疑似失效',
-                                                    desc: '已检：' + checks + ' 剩余：' + (checkSourceList.length-checks),
-                                                    url: $("#noLoading#").lazyRule((error)=>{
-                                                        if(error==0){
-                                                            return 'toast://没有失效源';
-                                                        }
-                                                        refreshPage(true);
-                                                        return 'hiker://empty';
-                                                    },errors.length),
-                                                    extra: {
-                                                        longClick: [{
-                                                            title: "全部删除",
-                                                            js: $.toString(() => {
-                                                                return $("确定全部删除？").confirm(()=>{
-                                                                    let checkList = storage0.getMyVar("批量检测_py待检列表");
-                                                                    let sourceSet = juItemS.get('sourceSet') || {};
-                                                                    checkList.forEach(data=>{
-                                                                        let pyurl = data.url;
-                                                                        let pyname = data.name;
-                                                                        deleteFile('file://' + pyurl);
-                                                                        delete sourceSet[pyname];
-                                                                    })
-                                                                    juItemS.set('sourceSet', sourceSet);
-                                                                    storage0.putMyVar("批量检测_py待检列表", []);
-                                                                    clearMyVar('pylists');
-                                                                    back(true);
-                                                                    return 'toast://已全部删除';
-                                                                })
-                                                            })
-                                                        }]
-                                                    }
-                                                });
-                                                hideLoading();
-                                                storage0.putMyVar("批量检测_py待检列表", errors);
+                                                            juItemS.set('sourceSet', sourceSet);
+                                                            storage0.putMyVar("批量检测_py待检列表", []);
+                                                            clearMyVar('pylists');
+                                                            back(true);
+                                                            return 'toast://已全部删除';
+                                                        })
+                                                    })
+                                                }]
                                             }
-                                        })
-                                    } else if (i === 5) {
-                                        pop.dismiss();
-                                        let pastes = getPastes();
-                                        pastes.push('云口令文件');
-                                        return $(pastes,2).select((tmpList)=>{
-                                            let parse = $.require("jiekou").parse();
-                                            return parse._sharfile(input, tmpList);
-                                        }, tmpList)
+                                        });
+                                        hideLoading();
+                                        storage0.putMyVar("批量检测_py待检列表", errors);
                                     }
-                                }
-                            });
+                                })
+                            } else if (i === 5) {
+                                pop.dismiss();
+                                let pastes = getPastes();
+                                pastes.push('云口令文件');
+                                return $(pastes,2).select((tmpList)=>{
+                                    let parse = $.require("jiekou").parse();
+                                    return parse._sharfile(input, tmpList);
+                                }, tmpList)
+                            }
                         }
                     });
-                    return 'hiker://empty';
-                })
-            },
-            right: {
-                text: '⚙️设置',
-                url: $('#noLoading#').lazyRule((pySource) => {
-                    let sourceSet = juItemS.get('sourceSet') || {};
-                    let pyset = sourceSet[pySource.name] || {};
+                }
+            });
+            return 'hiker://empty';
+        });
+        let rightUrl = $('#noLoading#').lazyRule((pySource) => {
+            let sourceSet = juItemS.get('sourceSet') || {};
+            let pyset = sourceSet[pySource.name] || {};
+            let isyiparse = pyset['yiparse'] || 0;
+            let stype = pyset['type'] || pySource.type || '未指定';
+            let isyifolder = juItemS.get('yifolder', 0);
+            let isshowlog = getMyVar('showlog') || 0;
+
+
+            return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '子目录展示：'+(isyifolder?'主页':'新页面'), '显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
+                let pyname = pySource.name;
+                let pyset = sourceSet[pyname] || {};
+                if(input.includes('播放')){
+                    let sm;
                     let isyiparse = pyset['yiparse'] || 0;
-                    let stype = pyset['type'] || pySource.type || '未指定';
-                    let isyifolder = juItemS.get('yifolder', 0);
-                    let isshowlog = getMyVar('showlog') || 0;
-
-
-                    return $(['当前源播放：'+(isyiparse?'一级':'二级'), '当前源类型：'+stype, '子目录展示：'+(isyifolder?'主页':'新页面'), '显示调试日志：'+(isshowlog?'是':'否')], 1).select((pySource,sourceSet)=>{
-                        let pyname = pySource.name;
-                        let pyset = sourceSet[pyname] || {};
-                        if(input.includes('播放')){
-                            let sm;
-                            let isyiparse = pyset['yiparse'] || 0;
-                            if(isyiparse){
-                                delete pyset['yiparse'];
-                                sm = '二级播放';
-                            }else{
-                                pyset['yiparse'] = 1;
-                                sm = '一级播放';
-                            }
-                            sourceSet[pyname] = pyset;
-                            juItemS.set('sourceSet', sourceSet);
-                            refreshPage(false);
-                            return "toast://" + pyname + ">已切换为：" + sm;
-                        }else if(input.includes('类型')){
-                            return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pySource, sourceSet, pyset)=>{
-                                if(input=='未指定'){
-                                    delete pyset['type'];
-                                    delete pySource['type'];
-                                }else{
-                                    pyset['type'] = input;
-                                    pySource.type = input;
-                                }
-                                sourceSet[pySource.name] = pyset;
-                                juItemS.set('sourceSet', sourceSet);
-                                juItemS.set('pySource', pySource);
-                                return "toast://" + pySource.name + ">类型设置为：" + input;
-                            }, pySource, sourceSet, pyset)
-                        }else if(input.includes('目录')){
-                            let sm;
-                            let isyifolder = juItemS.get('yifolder', 0);
-                            if(isyifolder){
-                                juItemS.clear('yifolder');
-                                sm = '新页面显示列表';
-                            }else{
-                                juItemS.set('yifolder', 1);
-                                sm = '主页显示列表';
-                            }
-                            refreshPage(false);
-                            return "toast://目录显示>已切换为：" + sm;
-                        }else if(input.includes('日志')){
-                            juItemS.clear('showlog');//临时
-                            let sm;
-                            let isshowlog = getMyVar('showlog') || 0;
-                            if(isshowlog){
-                                clearMyVar('showlog');
-                                sm = '关闭显示';
-                            }else{
-                                putMyVar('showlog', '1');
-                                sm = '临时显示';
-                            }
-                            refreshPage(false);
-                            return "toast://请求日志>已切换为：" + sm;
+                    if(isyiparse){
+                        delete pyset['yiparse'];
+                        sm = '二级播放';
+                    }else{
+                        pyset['yiparse'] = 1;
+                        sm = '一级播放';
+                    }
+                    sourceSet[pyname] = pyset;
+                    juItemS.set('sourceSet', sourceSet);
+                    refreshPage(false);
+                    return "toast://" + pyname + ">已切换为：" + sm;
+                }else if(input.includes('类型')){
+                    return $(["漫画", "视频", "音频", "小说", "图集", "未指定"], 3).select((pySource, sourceSet, pyset)=>{
+                        if(input=='未指定'){
+                            delete pyset['type'];
+                            delete pySource['type'];
+                        }else{
+                            pyset['type'] = input;
+                            pySource.type = input;
                         }
-                        
-                    }, pySource, sourceSet)
+                        sourceSet[pySource.name] = pyset;
+                        juItemS.set('sourceSet', sourceSet);
+                        juItemS.set('pySource', pySource);
+                        return "toast://" + pySource.name + ">类型设置为：" + input;
+                    }, pySource, sourceSet, pyset)
+                }else if(input.includes('目录')){
+                    let sm;
+                    let isyifolder = juItemS.get('yifolder', 0);
+                    if(isyifolder){
+                        juItemS.clear('yifolder');
+                        sm = '新页面显示列表';
+                    }else{
+                        juItemS.set('yifolder', 1);
+                        sm = '主页显示列表';
+                    }
+                    refreshPage(false);
+                    return "toast://目录显示>已切换为：" + sm;
+                }else if(input.includes('日志')){
+                    juItemS.clear('showlog');//临时
+                    let sm;
+                    let isshowlog = getMyVar('showlog') || 0;
+                    if(isshowlog){
+                        clearMyVar('showlog');
+                        sm = '关闭显示';
+                    }else{
+                        putMyVar('showlog', '1');
+                        sm = '临时显示';
+                    }
+                    refreshPage(false);
+                    return "toast://请求日志>已切换为：" + sm;
+                }
+                
+            }, pySource, sourceSet)
+        }, pySource);
+        let longClick = [{
+            title: "删除",
+            js: $.toString((pyurl, pyname) => {
+                return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
+                    let parse = $.require("jiekou").parse();
+                    let pylists = storage0.getMyVar('pylists') || parse._getpylist();
+                    let group = juItemS.get('sourceListGroup') || '全部';
+                    let grouppylist = group=='全部'?pylists:pylists.filter(it=>it.dir==group);
+                    let index = grouppylist.findIndex(v=>v.url==pyurl);
+                    let sm = '';
+                    if(index>-1){
+                        if(grouppylist.length>index+1){
+                            juItemS.set('pySource', grouppylist[index+1]);
+                            sm = '，已切到下一个';
+                        }else if(grouppylist.length>1){
+                            juItemS.set('pySource', grouppylist[index-1]);
+                            sm = '，已切到上一个';
+                        }else{
+                            juItemS.clear('pySource');
+                        }
+                        parse._clearMyVar();
+                    }
+
+                    pylists = pylists.filter(it=>it.url!=pyurl);
+                    storage0.putMyVar('pylists', pylists);
+
+                    let sourceSet = juItemS.get('sourceSet') || {};
+                    delete sourceSet[pyname];
+                    juItemS.set('sourceSet', sourceSet);
+                    deleteFile('file://' + pyurl);
+                    
+                    refreshPage(false);
+                    return "toast://已删除当前py源" + sm;
+                }, pyurl, pyname)
+            }, pyurl, pyname)
+        },{
+            title: "分享",
+            js: $.toString((pySource) => {
+                let pastes = getPastes();
+                pastes.push('云口令文件');
+                pastes.push('py原始文件');
+                return $(pastes,2).select((pySource)=>{
+                    if(input=='py原始文件'){
+                        return 'share://file://'+ pySource.url;
+                    }else{
+                        let parse = $.require("jiekou").parse();
+                        return parse._sharfile(input, [pySource]);
+                    }
                 }, pySource)
-            },
-            longClick: [{
-                    title: "删除",
-                    js: $.toString((pyurl, pyname) => {
-                        return $("确定要删除<"+pyname+".py>？").confirm((pyurl, pyname)=>{
-                            let parse = $.require("jiekou").parse();
-                            let pylists = storage0.getMyVar('pylists') || parse._getpylist();
-                            let group = juItemS.get('sourceListGroup') || '全部';
-                            let grouppylist = group=='全部'?pylists:pylists.filter(it=>it.dir==group);
-                            let index = grouppylist.findIndex(v=>v.url==pyurl);
-                            let sm = '';
-                            if(index>-1){
-                                if(grouppylist.length>index+1){
-                                    juItemS.set('pySource', grouppylist[index+1]);
-                                    sm = '，已切到下一个';
-                                }else if(grouppylist.length>1){
-                                    juItemS.set('pySource', grouppylist[index-1]);
-                                    sm = '，已切到上一个';
-                                }else{
-                                    juItemS.clear('pySource');
-                                }
-                                parse._clearMyVar();
-                            }
-
-                            pylists = pylists.filter(it=>it.url!=pyurl);
-                            storage0.putMyVar('pylists', pylists);
-
-                            let sourceSet = juItemS.get('sourceSet') || {};
-                            delete sourceSet[pyname];
-                            juItemS.set('sourceSet', sourceSet);
-                            deleteFile('file://' + pyurl);
-                            
-                            refreshPage(false);
-                            return "toast://已删除当前py源" + sm;
-                        }, pyurl, pyname)
-                    }, pyurl, pyname)
-                },{
-                    title: "分享",
-                    js: $.toString((pySource) => {
-                        let pastes = getPastes();
-                        pastes.push('云口令文件');
-                        pastes.push('py原始文件');
-                        return $(pastes,2).select((pySource)=>{
-                            if(input=='py原始文件'){
-                                return 'share://file://'+ pySource.url;
-                            }else{
-                                let parse = $.require("jiekou").parse();
-                                return parse._sharfile(input, [pySource]);
-                            }
-                        }, pySource)
-                    }, pySource)
-                },{
-                    title: "改名",
-                    js: $.toString((pySource) => {
-                        return $(pySource.name, '输入新的文件名称').input((pySource)=>{
-                            input = input.trim();
-                            if(input==''){
-                                return 'hiker://empty';
-                            }
-                            let newurl = pySource.url.replace(pySource.name, input);
-                            writeFile('file://'+newurl, fetch('file://'+pySource.url));
-                            deleteFile('file://'+pySource.url);
-                            let sourceSet = juItemS.get('sourceSet') || {};
-                            sourceSet[input] = sourceSet[pySource.name];
-                            delete sourceSet[pySource.name];
-                            juItemS.set('sourceSet', sourceSet);
-                            pySource.name = input;
-                            pySource.url = newurl;
-                            juItemS.set('pySource', pySource);
-                            clearMyVar('pylists');
-                            refreshPage(false);
-                            return "hiker://empty";
-                        }, pySource)
-                    }, pySource)
-                },{
-                    title: "重载",
-                    js: $.toString((pyurl) => {
-                        GM.clear(pyurl);
-                        refreshPage(false);
-                        return "toast://已重新加载当前py源文件";
-                    }, pyurl)
-                },{
-                    title: "编辑",
-                    js: $.toString((pyurl) => {
-                        return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
-                    }, pyurl)
-                }]
-            },
-            { iconShape: "circle", iconSize: 26, height: 0, paddingBottom:8, rightHitWidth: 80, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
-        );
-        d = d.concat(rows);
-        ui.mount(rows);
-
-        /*
-        d.push({
-            title: (pyname?'当前:'+pyname:'选择py源'),
-            desc: '点击更换' + (pylists?'(' + pylists.length+')':''),
-            url: $('#noLoading#').lazyRule(() => {
-                return 'hiker://empty';
-            }),
-            img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
-            col_type: 'avatar',
-            extra: {
-                longClick: []
-            }
-        })*/
+            }, pySource)
+        },{
+            title: "改名",
+            js: $.toString((pySource) => {
+                return $(pySource.name, '输入新的文件名称').input((pySource)=>{
+                    input = input.trim();
+                    if(input==''){
+                        return 'hiker://empty';
+                    }
+                    let newurl = pySource.url.replace(pySource.name, input);
+                    writeFile('file://'+newurl, fetch('file://'+pySource.url));
+                    deleteFile('file://'+pySource.url);
+                    let sourceSet = juItemS.get('sourceSet') || {};
+                    sourceSet[input] = sourceSet[pySource.name];
+                    delete sourceSet[pySource.name];
+                    juItemS.set('sourceSet', sourceSet);
+                    pySource.name = input;
+                    pySource.url = newurl;
+                    juItemS.set('pySource', pySource);
+                    clearMyVar('pylists');
+                    refreshPage(false);
+                    return "hiker://empty";
+                }, pySource)
+            }, pySource)
+        },{
+            title: "重载",
+            js: $.toString((pyurl) => {
+                GM.clear(pyurl);
+                refreshPage(false);
+                return "toast://已重新加载当前py源文件";
+            }, pyurl)
+        },{
+            title: "编辑",
+            js: $.toString((pyurl) => {
+                return 'editFile://file://'+ pyurl + `@js=toast('需重载后才可以生效');`;
+            }, pyurl)
+        }];
+        let d = [];
+        if(MY_NAME=="海阔视界"){
+            let ui = $.require(codePath + "plugins/nativeUIkit/Api.js");
+            //let ui = $.require("Api?rule=原生组件工坊");
+            let rows = ui.actionBar(
+                {
+                left: {
+                    title: (pyname||'选择py源') + (pylists?'「' + pylists.length+'」':''),
+                    icon: "https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp",
+                    url: leftUrl
+                },
+                right: {
+                    text: '⚙️设置',
+                    url: rightUrl
+                },
+                longClick: longClick
+                },
+                { iconShape: "circle", iconSize: 26, height: 0, paddingBottom:8, rightHitWidth: 80, inset: 15, actionSize: 16, namespace: '聚阅', scope: 'pymenu' }
+            );
+            d = d.concat(rows);
+            ui.mount(rows);
+        }else{
+            d.push({
+                title: (pyname?'当前:'+pyname:'选择py源'),
+                desc: '点击更换' + (pylists?'(' + pylists.length+')':''),
+                url: leftUrl,
+                img: 'https://pic.pngsucai.com/00/87/33/7cf2329520ab81fd.webp',
+                col_type: 'avatar',
+                extra: {
+                    longClick: longClick.concat([{
+                        title: "设置",
+                        js: $.toString((rightUrl) => {
+                            return rightUrl;
+                        }, rightUrl)
+                    }])
+                }
+            })
+        }
         return d;
     },
     _sharfile: function(input, datalist){
